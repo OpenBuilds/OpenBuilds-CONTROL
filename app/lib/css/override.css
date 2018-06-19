@@ -1,0 +1,96 @@
+#FROslider {
+	box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+	position: absolute;
+	left: 24px;
+	margin: 0 auto;
+	height: 130px;
+	background: #222;
+	border-radius: 15px;
+}
+
+.ui-slider-range-min {
+  background: #444;
+  height: 5px;
+  width: 300px;
+  position: absolute;
+  /* background: #222; */
+  border: none;
+  border-radius: 10px;
+  outline: none;
+}
+
+#handle {
+  width: 60px;
+  height: 24px;
+  border-radius: 20px;
+  background: #222;
+	color: #fff;
+  position: absolute;
+	text-align: center;
+  margin-left: -20px;
+  /* margin-top: 8px; */
+  cursor: pointer;
+  outline: none;
+	box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+}
+
+#SROslider {
+	box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+	position: absolute;
+	left: 24px;
+	margin: 0 auto;
+	height: 130px;
+	background: #222;
+	border-radius: 15px;
+}
+
+#handle2 {
+  width: 60px;
+  height: 24px;
+  border-radius: 20px;
+  background: #222;
+	color: #fff;
+  position: absolute;
+	text-align: center;
+  margin-left: -20px;
+  /* margin-top: 8px; */
+  cursor: pointer;
+  outline: none;
+	box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+}
+
+.sliderlabel {
+	box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+  width: 60px;
+  height: 24px;
+  border-radius: 20px;
+  background: #222;
+	color: #fff;
+  position: absolute;
+	text-align: center;
+  margin-left: -24px;
+  position: relative;
+	bottom: -130px;
+  cursor: pointer;
+  outline: none;
+}

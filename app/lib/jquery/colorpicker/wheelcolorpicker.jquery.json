@@ -1,0 +1,30 @@
+{
+	"name": "wheelcolorpicker",
+	"version": "3.0.5",
+	"title": "Wheel Color Picker",
+	"author": {
+		"name": "Fajar Chandra",
+		"url": "https://raffer.one/"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	],
+	"dependencies": {
+		"jquery": ">=1.7"
+	},
+	"description": "The Wheel Color Picker plugin adds color picker functionality to HTML form inputs in round color wheel style. The Wheel Color Picker can be displayed as a popup dialog as users focus the input, or embedded inline.",
+	"keywords": [
+		"ui",
+		"form",
+		"input",
+		"color",
+		"colorpicker"
+	],
+	"homepage": "https://raffer.one/projects/jquery-wheelcolorpicker",
+	"docs": "https://github.com/fujaru/jquery-wheelcolorpicker/wiki",
+	"demo": "http://files.jar2.net/jquery/wheelcolorpicker/example-v3/example.html",
+	"bugs": "https://github.com/fujaru/jquery-wheelcolorpicker/issues"
+}

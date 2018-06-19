@@ -1,0 +1,317 @@
+.de2 .den2, .de2 .dene2, .de2 .denem2, .de2 .deneme2, .de2 .deneme2 .denememe2, .de2 .light_up, .de2 .light_down, .de2 .light_left, .de2 .light_right, .de2 .dot2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.den2 {
+  box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border-radius: 100%;
+  background: #222;
+}
+
+.dene2 {
+  z-index: 4;
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.3);
+}
+
+.denem2 {
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border-radius: 50%;
+  background: #888;
+}
+
+.deneme2 {
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+  border-radius: 100%;
+  background: #bbb;
+}
+
+.denememe2 {
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+  border-radius: 100%;
+  /* background: #eee; */
+  color: #f00;
+  z-index: 10;
+  display: inline-block;
+}
+
+.den2 .switch2 {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.den2 .switch2 label {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 70px;
+  margin-top: -35px;
+  transform-origin: 0% 50%;
+}
+
+.den2 .switch2 label:after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 100%;
+  height: 30px;
+  transform: rotate(-30deg);
+}
+
+.den2 .switch2 label:before {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 1px;
+  width: 100%;
+  height: 30px;
+  transform: rotate(30deg);
+}
+
+.den2 .switch2 label span {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  font-size: 15px;
+  line-height: 70px;
+  text-align: center;
+  text-shadow: 0 1px 0 #444;
+}
+
+.den2 .switch2 label:nth-child(1) {
+  transform: rotate(-90deg);
+}
+
+.den2 .switch2 label:nth-child(1) span {
+  right: 2px;
+  transform: rotate(90deg);
+}
+
+.den2 .switch2 label:nth-child(2) {
+  transform: rotate(90deg);
+}
+
+.den2 .switch2 label:nth-child(2) span {
+  transform: rotate(-90deg);
+}
+
+.den2 .switch2 label:nth-child(3) {
+  transform: rotate(180deg);
+}
+
+.den2 .switch2 label:nth-child(3) span {
+  transform: rotate(180deg);
+}
+
+.den2 .switch2 label:nth-child(4) {
+  transform: rotate(0deg);
+}
+
+.den2 .switch2 label:nth-child(4) span {
+  transform: rotate(0deg);
+}
+
+
+.den2 .switch2 input {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.den2 .light_up {
+  z-index: 1;
+  width: 50%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(-90deg);
+  transition: all .25s;
+}
+
+.den2 .light_up span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 16px;
+  left: -15px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+.den2 .light_down {
+  z-index: 1;
+  width: 50%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(90deg);
+  transition: all .25s;
+}
+
+.den2 .light_down span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 16px;
+  left: -15px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+.den2 .light_left {
+  z-index: 1;
+  width: 50%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(180deg);
+  transition: all .25s;
+}
+
+.den2 .light_left span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 16px;
+  left: -15px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+.den2 .light_right {
+  z-index: 1;
+  width: 50%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(0deg);
+  transition: all .25s;
+}
+
+.den2 .light_right span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 16px;
+  left: -15px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+/* .den2 .switch2 label:hover ~ .light_up span {
+  opacity: 0.4;
+  left: 15px;
+} */
+
+.den2 #switch_up:hover ~ .light_up span {
+  opacity: 0.4;
+  left: 15px;
+  /* transform: rotate(-90deg); */
+}
+
+
+.den2 #switch_down:hover ~ .light_down span {
+  opacity: 0.4;
+  left: 15px;
+  /* transform: rotate(-180deg); */
+}
+
+.den2 #switch_left:hover ~ .light_left span {
+  opacity: 0.4;
+  left: 15px;
+  /* transform: rotate(0deg); */
+}
+
+.den2 #switch_right:hover ~ .light_right span {
+  opacity: 0.4;
+  left: 15px;
+  /* transform: rotate(90deg); */
+}
+/* LINE */
+
+.den2 hr.line2 {
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 0;
+  margin-top: -1px;
+  border-width: 1px 0;
+  border-style: solid;
+  border-top-color: #3c3d3f;
+  border-bottom-color: #666769;
+  transform: rotate(-45deg);
+}
+
+.den2 hr.line2:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+
+.flatselect {
+  height: 20px;
+  text-shadow: 1px 1px 20px #444;
+  width: 80px;
+  max-width: 80px;
+  position: absolute;
+  top: 26px;
+  left: -5px;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  padding: 0em 0em 0em 0em;
+  border: 1px solid #666;
+  background-color:rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  text-align-last:center;
+  text-align: center;
+  font-size: 11px;
+  outline: none;
+  display: inline-block;
+  /* Fix for IE 11 */
+  &::-ms-expand {
+    display: none;
+  }
+}
+
+.flatselect:hover {
+  background-color:rgba(255, 255, 255, 0.7);
+  background: radial-gradient(ellipse at center, rgba(0,255,0,0.3) 0%, rgba(0,255,0,0.3) 50%, transparent 80%);
+}

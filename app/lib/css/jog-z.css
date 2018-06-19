@@ -1,0 +1,149 @@
+.de-z .den-z, .de-z .den-z .dene2, .de-z .den-z .denem2, .de-z .den-z .deneme2, .de-z .light_zP, .de-z .light_zM {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.den-z {
+  box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) ,
+    0 5px 30px 0 rgba(255,255,255,.25) ,
+    0 0 0 1px rgba(0,0,0,.75);
+  position: relative;
+  height: 150px;
+  margin: -75px 0 0 -40px; */
+  border-radius: 100%;
+  background: #222;
+  width: 80px;
+  border-radius: 40px;
+  }
+
+.den-z hr.line-z {
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 0;
+  margin-top: -1px;
+  border-width: 1px 0;
+  border-style: solid;
+  border-top-color: #3c3d3f;
+  border-bottom-color: #666769;
+  /* transform: rotate(-45deg); */
+}
+
+.den-z .switch-z input {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}
+.den-z .switch-z label {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 70px;
+  margin-top: -35px;
+  transform-origin: 0% 50%;
+}
+.den-z .switch-z label:after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 100%;
+  height: 30px;
+  transform: rotate(-30deg);
+}
+.den-z .switch-z label:before {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 1px;
+  width: 100%;
+  height: 30px;
+  transform: rotate(30deg);
+}
+.den-z .switch-z label span {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  font-size: 15px;
+  line-height: 70px;
+  text-align: center;
+  text-shadow: 0 1px 0 #444;
+}
+.den-z .switch-z label:nth-child(1) {
+  transform: rotate(-90deg);
+}
+.den-z .switch-z label:nth-child(1) span {
+  right: 2px;
+  transform: rotate(90deg);
+}
+.den-z .switch-z label:nth-child(2) {
+  transform: rotate(90deg);
+}
+.den-z .switch-z label:nth-child(2) span {
+  transform: rotate(-90deg);
+}
+.den-z .light_zP {
+  z-index: 1;
+  width: 100%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(-90deg);
+  transition: all .25s;
+}
+
+.den-z .light_zP span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 14px;
+  left: -45px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+.den-z .light_zM {
+  z-index: 1;
+  width: 100%;
+  height: 100px;
+  margin-top: -50px;
+  transform-origin: 0% 50%;
+  transform: rotate(90deg);
+  transition: all .25s;
+}
+
+.den-z .light_zM span {
+  opacity: 0.4;
+  /* opacity: 0; */
+  position: absolute;
+  top: 14px;
+  left: -45px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(ellipse at center, rgba(0,255,0,.75) 30%, transparent 50%, transparent 90%);
+  transition: all .25s;
+}
+
+.den-z #switch_zP:hover ~ .light_zP span {
+  opacity: 0.4;
+  left: 15px;
+  /* trans0form: rotate(-90deg); */
+}
+
+
+.den-z #switch_zM:hover ~ .light_zM span {
+  opacity: 0.4;
+  left: 15px;
+  /* transform: rotate(-180deg); */
+}

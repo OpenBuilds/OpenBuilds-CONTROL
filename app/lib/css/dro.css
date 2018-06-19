@@ -1,0 +1,142 @@
+/* DRO Modern */
+
+.channelstrip {
+  user-select: none;
+  /* background: rgb(50,50,50); */
+  box-shadow: 0 0 0 2px rgba(200,200,200,1);
+  border-radius: 4px;
+  padding: .25rem;
+  /* margin: .25rem; */
+  width: 150px;
+  min-width: 150px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+
+.horizontal-dro {
+  height: 1.5rem;
+  margin-top: .2rem;
+  background: #222;
+  border-radius: 1px;
+  box-shadow:
+   0 0 10px 5px rgba(255,255,255,.05),
+   0 3px 10px 5px rgba(120,120,120,.8) inset,
+   0 5px 10px 5px rgba(180,190,200,.5) inset,
+   0 0 0 1px rgba(0,0,0,.75) ;
+  position: relative;
+  background: linear-gradient(-10deg,
+       transparent 10%,
+       rgba(255,255,255,.1) 60%,
+       transparent 62%,
+       transparent
+  );
+  text-shadow: 0 0 20px rgba(10,10,70,.75);
+}
+.dro-value {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  right: 20px;
+  bottom: 0;
+  /* font-family: 'VT323'; */
+  font-size: 1.4rem;
+  align-items: right;
+  text-align: right;
+  display: block;
+  margin-top: -.24rem;
+  padding-left: .2rem;
+  text-transform: uppercase;
+  padding: 0 .4rem;
+  /* box-shadow:
+    0 1px 2px 1px rgba(0,0,0,.8) inset,
+    0 -1px 2px 1px rgba(0,0,0,.8) inset; */
+}
+.dro-label {
+  text-shadow:  1px 1px 1px rgba(120,120,120,.75);
+  text-align: center;
+  display: block;
+  margin-top: -.24rem;
+  padding-left: .2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  /* font-family: 'VT323'; */
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  padding: 0 .1rem;
+}
+.dro-settings {
+  text-shadow:  1px 1px 1px rgba(0,0,0,.75);
+  text-align: center;
+  display: block;
+  margin-top: .04rem;
+  padding-right: .2rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  /* font-family: 'VT323'; */
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  padding: 0 .1rem;
+}
+
+
+/* VU METER */
+
+.horizontal-meter {
+  height: .7rem;
+  margin-top: .2rem;
+  background: #222;
+  border-radius: 1px;
+  box-shadow:
+    0 0 10px 5px rgba(255,255,255,.05),
+    0 3px 5px 1px rgba(0,0,0,.8) inset,
+    0 5px 30px 0 rgba(255,255,255,.25) inset,
+    0 0 0 1px rgba(0,0,0,.75);
+  position: relative;
+}
+.vu-activity {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+  repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,1) 2px,
+    transparent 3px,
+    transparent 3px
+  ),
+  linear-gradient(90deg,
+    rgb(0,255,0),
+    rgb(0,255,0) 70%,
+    rgb(255,255,0) 70%,
+    rgb(255,255,0) 90%,
+    rgb(255,0,0) 90%
+  );
+  box-shadow:
+    0 1px 2px 1px rgba(0,0,0,.8) inset,
+    0 -1px 2px 1px rgba(0,0,0,.8) inset;
+}
+.vu-label {
+  font-family: 'VT323';
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  text-shadow:  1px 1px 1px rgba(0,0,0,.75);
+  text-align: center;
+  display: block;
+  margin-top: -.44rem;
+  padding-left: .2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}

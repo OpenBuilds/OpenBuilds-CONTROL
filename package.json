@@ -1,0 +1,63 @@
+{
+  "name": "ProjectMakr",
+  "version": "0.0.1",
+  "license": "AGPL-3.0",
+  "description": "Machine Interface Driver for OpenBuilds",
+  "author": "github.com/openbuilds",
+  "devDependencies": {
+    "copyfiles": "^1.2.0",
+    "electron": "^1.6.x",
+    "electron-builder": "^14.1.1",
+    "electron-rebuild": "^1.5.7",
+    "ncp": "^2.0.0"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "ip": "^1.1.5",
+    "md5": "^2.2.1",
+    "serialport": "^4.0.7",
+    "socket.io": "^2.0.4"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "echo \"Please run 'npm run dist' to create a local installer, or run 'npm run nightlylinux' or 'npm run nightlywindows' to build distributable installers for each platform\" ",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "dist": "build",
+    "distmac": "build --mac ",
+    "distwinx86": "build --win --ia32 ",
+    "distwinx64": "build --win --x64",
+    "distlinx86": "build --linux --ia32 ",
+    "distlinx64": "build --linux --x64"
+  },
+  "keywords": [
+    "usb"
+  ],
+  "build": {
+    "appId": "openbuilds.projectmakr",
+    "productName": "ProjectMakr",
+    "asar": true,
+    "files": [
+      "**/*"
+    ],
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.graphics-design"
+    },
+    "dmg": {
+      "icon": "build/icon.icns",
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    }
+  }
+}
