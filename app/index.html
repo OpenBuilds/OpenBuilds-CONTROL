@@ -1,564 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ProjectMakr</title>
+    <title>OpenBuilds Machine Driver</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="author" content="Peter vd Walt">
+    <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="lib/nprogress/nprogress.css" />
-    <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
-    <!-- <link rel="stylesheet" href="lib/bootstrap/css/bootswatch-darkly.min.css" /> -->
-    <link rel="stylesheet" href="lib/jquery/jquery-ui/jquery-ui.min.css" />
-    <!-- <link rel="stylesheet" href="lib/jquery/colorpicker/css/wheelcolorpicker.css" /> -->
-    <link rel="stylesheet" href="lib/css/dro.css" />
-    <link rel="stylesheet" href="lib/css/jog.css" />
-    <link rel="stylesheet" href="lib/css/jog-z.css" />
-    <link rel="stylesheet" href="lib/css/jog-step.css" />
-    <link rel="stylesheet" href="lib/css/jogcontainer.css" />
-    <link rel="stylesheet" href="lib/css/override.css" />
-    <link rel="stylesheet" href="lib/css/main.css" />
+    <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="lib/bootstrap4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
 
-   <!-- Begin page content -->
-
-   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-     <a class="navbar-brand" href="#">ProjectMakr</a>
-     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-       <span class="navbar-toggler-icon"></span>
-     </button>
-     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-     <!-- <ul class="navbar-nav mr-auto">
-       <li class="nav-item active">
-         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link" href="#">Link</a>
-       </li>
-       <li class="nav-item dropdown">
-         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-           Dropdown
-         </a>
-         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-           <a class="dropdown-item" href="#">Action</a>
-           <a class="dropdown-item" href="#">Another action</a>
-           <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#">Something else here</a>
-         </div>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link disabled" href="#">Disabled</a>
-       </li>
-     </ul> -->
-     <!-- <form class="form-inline my-2 my-lg-0">
-        <input class="form-control" id="color" data-wcp-preview="true" />
-     </form> -->
-     <form class="form-inline my-2 my-lg-0">
-       <span class="fa-stack fa-fw" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-         <i id="navbell" class="fa fa-bell fa-stack-1x text-danger"></i>
-         <i class="fa fa-bell-o fa-stack-1x"></i>
-       </span>
-       &nbsp;&nbsp;
-       <div class="input-group input-group-sm">
+  <div class="container" style="height: 98vh ;">
+    <form class="form-inline my-2 my-lg-0">
+      <div class="input-group input-group-sm" style="width: 100%;">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1" style="color: #fff;"><i class="fa fa-usb" aria-hidden="true"></i></span>
+          <span class="input-group-text"><i class="fab fa-usb"></i></span>
         </div>
         <select class="form-control" id="portUSB">`
           <option value="">Waiting for USB</option>
         </select>
-          <span class="input-group-btn">
-            <button onclick="selectPort()" id="connectBtn" class="btn btn-sm btn-success" type="button">Connect</button>
-            <button style="display:none;" onclick="closePort()" id="disconnectBtn" class="btn btn-sm btn-danger" type="button">Disconnect</button>
+        <span class="input-group-btn">
+          <button onclick="selectPort()" id="connectBtn" class="btn btn-sm btn-success" type="button">Connect</button>
+          <button style="display:none;" onclick="closePort()" id="disconnectBtn" class="btn btn-sm btn-danger" type="button">Disconnect</button>
+        </span>
+      </div>
+    </form>
+
+    <form class="form-inline my-2 my-lg-0">
+      <div class="col-2">
+        <span class="badge badge-pill badge-light" style="width: 100%;">
+          <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+            <i class="far fa-bell"></i>
+            <i id="navbell" class="fas fa-bell text-danger"></i>
           </span>
-        </div>
-     </form>
-   </div>
- </nav>
-
-
-
-      <div class="container-fluid h-100">
-        <div class="row h-100">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header clearfix">
-                <div class="float-left">
-                  <!-- left -->
-                  <h5>console</h5>
-                </div>
-                <div class="float-right">
-                  <div class="btn-group btn-group-xs btn-group-justified btn-group-sm mr-2" role="group" aria-label="First group">
-                    <button id="sdlist" data-toggle="tooltip" data-placement="bottom" title="Upload GCODE to SD Card" class="btn btn-xs btn-success needs-connection"><i class="fa fa-fw"><img style="margin-top: -5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB3SURBVDhP5dIxCoAgGMVxp87UVmPHaSvoAHWjaAjbOlb93/AtYp+r0IMficlT0FBlWkyODm5m3NgyLqxwowIt0km0m3a1sf1zY4vs+2TmPtPgwIIeA3R0GxcLRpxQUS7FgtKCvxREpK/P7HALdF3p60vpOqtJCC/FOilHxm6RMAAAAABJRU5ErkJggg=="></i>LIST</button>
-                    <button id="sdtogglemodal" data-toggle="tooltip" data-placement="bottom" title="Upload GCODE to SD Card" class="btn btn-xs btn-success needs-connection"><i class="fa fa-fw"><img style="margin-top: -5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB3SURBVDhP5dIxCoAgGMVxp87UVmPHaSvoAHWjaAjbOlb93/AtYp+r0IMficlT0FBlWkyODm5m3NgyLqxwowIt0km0m3a1sf1zY4vs+2TmPtPgwIIeA3R0GxcLRpxQUS7FgtKCvxREpK/P7HALdF3p60vpOqtJCC/FOilHxm6RMAAAAABJRU5ErkJggg=="></i>UPLOAD</button>
-                    <button id="playbtn" data-toggle="tooltip" data-placement="bottom" title="Run GCODE over USB" class="btn btn-xs btn-success needs-connection" onclick="runJob()"><i class="fa fa-play fa-fw"></i>PLAY</button>
-                    <button id="pausebtn" data-toggle="tooltip" data-placement="bottom" title="Pause" class="btn btn-xs btn-success needs-connection" onclick="pauseJob();"><i class="fa fa-pause fa-fw"></i></button>
-                    <button id="stopbtn" data-toggle="tooltip" data-placement="bottom" title="Stop" class="btn btn-xs btn-success needs-connection" onclick="stopJob();"><i class="fa fa-stop fa-fw"></i></button>
-                    <button id="clralarmbtn" data-toggle="tooltip" data-placement="bottom" title="Clear Alarm" class="btn btn-xs btn-success needs-connection" onclick="clearAlarm()"><i class="fa fa-bell-slash fa-fw"></i></button>
-                  </div>
-                </div>
-                <div class="float-right">
-                <!--  -->
-                </div>
-              </div>
-              <div class="card-block">
-                <div class="pull-left">
-                  <span class="badge badge-pill badge-secondary"><span id="connectStatus">Not Connected</span></span>
-                  <span class="badge badge-pill badge-secondary"><span id="runStatus">Not Connected</span></span>
-                </div>
-                <div id="console"></div>
-              </div>
-              <div class="card-footer" style="height: 32px; padding-top: 0px; padding-bottom: 0px;padding-left: 0px; padding-right: 0px">
-                  <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1" style="color: #fff;"><i class="fa fa-terminal"></i></span>
-                    </div>
-                    <input id="command" type="text" autocomplete="on" class="form-control needs-connection" />
-                    <div class="input-group-btn btn-group-sm">
-                      <button id="sendCommand" class="btn btn-success needs-connection" type="button">
-                          <i class="fa fa-play" style="margin-right: 10px;"></i> Send
-                      </button>
-                      <button class="emptylog btn btn-success" type="button" onclick="$('#console').empty();">
-                          <i class="fa fa-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-8">
-            <div class="card">
-              <div class="card-header" style="height: 54px;">
-                <div class="float-left">
-                  <h5>control</h5>
-                </div>
-              </div>
-              <div class="card-block">
-                <div class="container-fluid">
-
-                  <div class="row">
-                    <div class="col-md-12">
-
-                      <div class="container-fluid">
-                        <div class="row no-gutters">
-                          <div class="col-xs-auto">
-                            <div class="container-dro">
-                                <div class="horizontal-dro">
-                                  <div class="dro-label" style="color: #f22">X</div>
-                                  <div class="dro-value" style="color: #f22" id="ModernXPos">0.00</div>
-                                  <div class="dro-settings" style="color: #ccc">
-                                    <i id="xMotorSet" class="fa fa-cog" aria-hidden="true"></i>
-                                  </div>
-                                </div>
-                                <div class="horizontal-meter">
-                                  <div id="xMotorVU" class="vu-activity" style="clip-path: inset(0px 0.9902% 0px 0px);"></div>
-                                </div>
-                                <div class="horizontal-dro">
-                                  <div class="dro-label" style="color: #2f2">Y</div>
-                                  <div class="dro-value" style="color: #2f2" id="ModernYPos">0.00</div>
-                                  <div class="dro-settings" style="color: #ccc"><i class="fa fa-cog" aria-hidden="true"></i></div>
-                                </div>
-                                <div class="horizontal-meter">
-                                  <div id="yMotorVU" class="vu-activity" style="clip-path: inset(0px 25.9902% 0px 0px);"></div>
-                                </div>
-                                <div class="horizontal-dro">
-                                  <div class="dro-label" style="color: #0cf">Z</div>
-                                  <div class="dro-value" style="color: #0cf" id="ModernZPos">0.00</div>
-                                  <div class="dro-settings" style="color: #ccc"><i class="fa fa-cog" aria-hidden="true"></i></div>
-                                </div>
-                                <div class="horizontal-meter">
-                                  <div id="zMotorVU" class="vu-activity" style="clip-path: inset(0px 50.9902% 0px 0px);"></div>
-                                </div>
-                                <div class="horizontal-dro">
-                                  <div class="dro-label" style="color: #ff2">A</div>
-                                  <div class="dro-value" style="color: #ff2" id="ModernAPos">0.00</div>
-                                  <div class="dro-settings" style="color: #ccc"><i class="fa fa-cog" aria-hidden="true"></i></div>
-                                </div>
-                                <div class="horizontal-meter">
-                                  <div id="aMotorVU" class="vu-activity" style="clip-path: inset(0px 77.9902% 0px 0px);"></div>
-                                </div>
-
-                              </div>
-                          </div>
-                          <div class="col-xs-auto">
-                            <div class="container-jog">
-                              <div class="de2">
-                                <div class="den2">
-                                  <hr class="line2">
-                                  <hr class="line2">
-                                  <div class="switch2">
-                                    <label id="label_up" for="switch_up"><span>Y+</span></label>
-                                    <label id="label_down" for="switch_down"><span>Y-</span></label>
-                                    <label id="label_left" for="switch_left"><span>X-</span></label>
-                                    <label id="label_right" for="switch_right"><span>X+</span></label>
-                                    <input id="switch_up" name="jog" checked type="radio" value="y+">
-                                    <input id="switch_down" name="jog" type="radio" value="y-">
-                                    <input id="switch_left" name="jog" type="radio" value="x-">
-                                    <input id="switch_right" name="jog" type="radio" value="x+">
-                                    <div class="light_up"><span></span></div>
-                                    <div class="light_down"><span></span></div>
-                                    <div class="light_left"><span></span></div>
-                                    <div class="light_right"><span></span></div>
-                                    <div class="dene2">
-                                      <div class="denem2">
-                                        <div class="deneme2">
-                                          <div class="denememe2">
-                                            <select class="flatselect" id="xyfeedrate">
-                                              <option value="500">500mm/min</option>
-                                              <option value="1000" selected>1000mm/min</option>
-                                              <option value="1500">1500mm/min</option>
-                                              <option value="2000">2000mm/min</option>
-                                              <option value="3000">3000mm/min</option>
-                                              <option value="4000">4000mm/min</option>
-                                            </select>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-xs-auto text-center">
-                            <div class="container-jog-z">
-                              <div class="de-z">
-                                <div class="den-z">
-                                  <hr class="line-z">
-                                  <div class="switch-z">
-                                    <label id="label_zP" for="switch_zP"><span>Z+</span></label>
-                                    <label id="label_zM" for="switch_zM"><span>Z-</span></label>
-                                    <input id="switch_zP" name="jog" checked type="radio" value="z+">
-                                    <input id="switch_zM" name="jog" checked type="radio" value="z-">
-                                    <div class="light_zP"><span></span></div>
-                                    <div class="light_zM"><span></span></div>
-                                    <div class="dene2">
-                                      <div class="denem2">
-                                        <div class="deneme2">
-                                          <div class="denememe2">
-                                            <select class="flatselect"  id="zfeedrate">
-                                              <option value="100">100mm/min</option>
-                                              <option value="300">300mm/min</option>
-                                              <option value="500" selected>500mm/min</option>
-                                              <option value="800">800mm/min</option>
-                                              <option value="1000">1000mm/min</option>
-                                              <option value="1500">1500mm/min</option>
-
-                                            </select>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-xs-auto">
-                            <div class="container-size">
-                              <div class="de">
-                                <div class="den">
-                                  <hr class="line">
-                                  <hr class="line">
-                                  <hr class="line">
-                                  <div class="switch">
-                                    <label for="switch_off"><span>0.1</span></label>
-                                    <label for="switch_1"><span>1</span></label>
-                                    <label for="switch_2"><span>5</span></label>
-                                    <label for="switch_3"><span>10</span></label>
-                                    <label for="switch_4"><span>50</span></label>
-                                    <label for="switch_5"><span>100</span></label>
-                                    <input id="switch_off" name="switch" checked type="radio" value="0.1">
-                                    <input id="switch_1" name="switch" type="radio" value="1">
-                                    <input id="switch_2" name="switch" type="radio" value="5">
-                                    <input id="switch_3" name="switch" type="radio" value="10">
-                                    <input id="switch_4" name="switch" type="radio" value="50">
-                                    <input id="switch_5" name="switch" type="radio" value="100">
-                                    <div class="light"><span></span></div>
-                                    <div class="dot"><span></span></div>
-                                    <div class="dene">
-                                      <div class="denem">
-                                        <div class="deneme">
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-xs-auto">
-                            <div class="container-override">
-                              <div id="FROslider"><div id="handle" class="ui-slider-handle"></div><div class="sliderlabel">feed</div></div>
-                              <div id="SROslider" style="margin-left: 70px;"><div id="handle2" class="ui-slider-handle"></div><div class="sliderlabel">tool</div></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div id="tempControls" style="padding: 5px; max-width: 300px">
-                        <div id="tempcontrolsT0">
-                          <div class="drolabel">T0:</div>
-                          <div id="T0CurTemp" class="droTemp text-dark">0</div>
-                          <div id="T0SetTemp" class="droTemp text-dark" style="display:none;">
-                              <input id="T0SetTempInput" type="text" style="border: 0px; width: 120px; height: 28px; font-size: 18px; text-align: center; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-weight: 700;">
-                              <button type="button" style="border: 0px; height: 28px;" id="T0Set">set</button>
-                          </div>
-                          <div class="droUnit" style="margin-left: 0px;"> &#8451;</div><br />
-                        </div>
-                        <div id="tempcontrolsT1">
-                          <div class="drolabel">T1:</div>
-                          <div id="T1CurTemp" class="droTemp text-dark">0</div>
-                          <div id="T1SetTemp" class="droTemp text-dark" style="display:none;">
-                            <input id="T1SetTempInput" type="text" style="border: 0px; width: 120px; height: 28px; font-size: 18px; text-align: center; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-weight: 700;">
-                            <button type="button" style="border: 0px; height: 28px;" id="T1Set">set</button>
-                          </div>
-                          <div class="droUnit" style="margin-left: 0px;"> &#8451;</div><br />
-                        </div>
-                        <div id="tempcontrolsB0">
-                          <div class="drolabel">B:</div>
-                          <div id="B0CurTemp" class="droTemp text-dark">0</div>
-                          <div id="B0SetTemp" class="droTemp text-dark" style="display:none;">
-                            <input id="B0SetTempInput" type="text" style="border: 0px; width: 120px; height: 28px; font-size: 18px; text-align: center; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-weight: 700;">
-                            <button type="button" style="border: 0px; height: 28px;" id="B0Set">set</button>
-                          </div>
-                          <div class="droUnit" style="margin-left: 0px;"> &#8451;</div><br />
-                          <div id="monitor" style="width: calc(99% - 20px); height:140px; display:block;"></div>
-                        </div>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-
-
-              </div>
-          </div>
-        </div>
+        </span>
       </div>
-        <p>
-        <div class="row h-100">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header clearfix">
-                <div class="float-left">
-                  <h5>gcode</h5>
-                </div>
-                <div class="float-right">
-                  <span data-toggle="tooltip" data-placement="bottom" title="Open GCODE"   class="btn btn-xs btn-success btn-file" title="Open a png, .jpg, .jpeg, .bmp, .gcode, .svg, .dxf, or .stl file" id="openbutton"><i class="fa fa-folder-open fa-fw"></i>open<input id="file" type="file" accept=".png,.jpg,.jpeg,.bmp,.gcode,.g,.svg,.dxf,.stl" /></span>
-                  <button data-toggle="tooltip" data-placement="bottom" title="Save GCODE" class="btn btn-xs btn-sm btn-success btn-file" title="Export GCODE to a file" onclick="saveFile()"><i class="fa fa-save fa-fw"></i>save</span></button>
-                </div>
-              </div>
-              <div class="card-block">
-                <div class="float-left">
-                  <span class="badge badge-pill badge-secondary">Line: <span id="gcodesent">0</span>/<span id="gcodetobesent">0</span></span>
-                </div>
-                <div id="editor"></div>
-              </div>
-              <div class="card-footer" style="height: 32px; padding-top: 2px; padding-left: 2px;">
-                <div class="float-left">
-                  <div class="btn-group btn-group-xs btn-group-justified btn-group-sm mr-2" role="group" aria-label="First group">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="btn btn-xs btn-success" onclick="editor.execCommand('replace')"><i class="fa fa-search fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="btn btn-xs btn-success" onclick="editor.execCommand('selectall')"><i class="fa fa-clipboard fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="btn btn-xs btn-success" onclick="editor.execCommand('undo')"><i class="fa fa-undo fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Redo" class="btn btn-xs btn-success" onclick="editor.execCommand('redo')"><i class="fa fa-repeat fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Go to End" class="btn btn-xs btn-success" onclick="editor.execCommand('gotoend')"><i class="fa fa-chevron-down fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Go to Start" class="btn btn-xs btn-success" onclick="editor.execCommand('gotostart')"><i class="fa fa-chevron-up fa-fw"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Clear Editor" class="btn btn-xs btn-success" onclick="editor.execCommand('selectall'); editor.execCommand('del'); clearViewer(); doPreview();"><i class="fa fa-eraser fa-fw"></i></button>
-                    <!-- <button data-toggle="tooltip" data-placement="bottom" title="Editor Settings" class="btn btn-xs btn-success btn-file" onclick="editor.execCommand('showSettingsMenu')"><i class="fa fa-cogs fa-fw"></i></span></button> -->
-                  </div>
-                </div>
+      <div class="col-5">
+        <span class="badge badge-pill badge-light" style="width: 100%;"><span id="connectStatus">Not Connected</span></span>
+      </div>
+      <div class="col-5">
+        <span class="badge badge-pill badge-light" style="width: 100%;"><span id="runStatus">Not Connected</span></span>
+      </div>
+    </form>
 
-                <div class="float-right">
-                  <div class="btn-group btn-group-xs btn-group-justified btn-group-sm mr-2" role="group">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Render GCODE Preview" class="btn btn-xs btn-success btn-file" onclick="doPreview();"><span id="previewbtntext"><i class="fa fa-star-o fa-fw"></i>preview</span></button>
-                  </div>
-                </div>
-              </div>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#manual">Manual</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab"  href="#consoletab">Console</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab"  href="#settings">Settings</a>
+      </li>
+    </ul>
+
+    <div class="tab-content" style="height: calc(100% - 345px); max-height: !important calc(100% - 345px)">
+      <div class="tab-pane active" id="manual" role="tabpanel" aria-labelledby="home-tab">
+
+      </div>
+      <div class="tab-pane" id="consoletab" role="tabpanel" aria-labelledby="profile-tab">
+        <br>
+        <div id="console"></div>
+
+        <div class="fixed-bottom m-3">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-terminal"></i></span>
+            </div>
+            <input id="commagrnd" type="text" autocomplete="on" class="form-control needs-connection" />
+            <div class="btn-group btn-group-sm">
+              <button id="sendCommand" class="btn btn-dark needs-connection" type="button">
+                  <i class="fa fa-play" style="margin-right: 10px;"></i> Send
+              </button>
+              <button class="emptylog btn btn-dark" type="button" onclick="$('#console').empty();">
+                  <i class="fa fa-trash"></i>
+              </button>
             </div>
           </div>
-          <div class="col-md-8">
-            <div class="card">
+        </div>
 
-              <div class="card-header" style="height: 54px;">
-                <div class="float-left">
-                  <h5>preview</h5>
+      </div>
+      <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+        <br>
+        <div style="overflow-y: auto;  max-height: calc(100vh - 200px); height: calc(100vh - 200px);">
+             <div style="display: none;" id="grblconfig"></div>
+             <div id="grbl-placeholder">
+                <div class="alert alert-danger" role="alert">
+                  You need to connect to a compatible controller first!
                 </div>
-                <div class="float-right">
-                  <button data-toggle="tooltip" data-placement="bottom" title="Reset View" class="btn btn-xs btn-sm btn-success" title="Empties Viewer Display" onclick="controls.reset()"><i class="fa fa-window-restore fa-fw"></i></span></button>
-                  <div class="btn-group" role="group" aria-label="Simulator">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Run Simulator" id="simstartbtn" class="btn btn-xs btn-sm btn-success" title="Run realtime simulation" onclick="sim(0);"><i class="fa fa-fighter-jet fa-fw"></i>sim play</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Stop Simulator" id="simstopbtn" style="display: none;" class="btn btn-xs btn-sm btn-success" title="Stop realtime simulation" onclick="simstop();"><i class="fa fa-stop fa-fw"></i>sim stop</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Set Simulation Speed" class="btn btn-sm btn-xs btn-success" title="Set sim speed" onclick="simSpeed();"><i class="fa fa-tachometer fa-fw"></i><span id="simspeedval">1</span>x</button>
-                  </div>
-                  <button data-toggle="tooltip" data-placement="bottom" title="Clear preview" class="btn btn-sm btn-xs btn-success" title="Empties Viewer Display" onclick="editor.execCommand('selectall'); editor.execCommand('del'); clearViewer(); doPreview();"><i class="fa fa-eraser fa-fw"></i>clear</span></button>
-                </div>
-              </div>
-              <div class="card-block" id="renderCard">
-                <div id="renderArea" style="display: block;"></div>
-                <div id="conetext" class="form-group " style="position:absolute;top:45px;left:10px; padding-left: 5px; padding-right: 5px; display:none;">
-                  <span class="badge badge-success"><span id="simgcode"></span></span><br>
-                </div>
-                <div class="card mb-2" style="max-width: 20rem; display: block; position: absolute; bottom:0px; right:10px;">
-                  <div class="card-body" style="padding: 5px;">
-                    <button type="button" class="btn btn-xs btn-success" data-toggle="collapse" href="#viewform">View</button>
-                    <div class="collapse" id="viewform">
-                      <div class="form-check" style="margin-bottom: 1px;">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="" checked>
-                          Machine
-                        </label>
-                      </div>
-                      <div class="form-check" style="margin-bottom: 1px;">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="" checked id="view-grid">
-                          Grid
-                        </label>
-                      </div>
-                      <div class="form-check" style="margin-bottom: 1px;">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="" checked id="view-gcode">
-                          GCODE
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-          </div>
+             </div>
+             <div class="fixed-bottom m-3">
+               <button type="button" id="grblSaveBtn" onclick="grblSaveSettings();" class="btn btn-lg btn-success" disabled>Save</button>
+             </div>
         </div>
       </div>
     </div>
-  </div>
 
-   <footer class="footer">
-     <div class="container">
-       <span class="text-muted"><!-- copyright --></span>
-     </div>
-   </footer>
 
-</div>
-
-<!-- Off-canvas Elements -->
-
-<!-- Context Menu for Editor -->
-<div class="dropdown-menu" id="editorContextMenu" aria-labelledby="dropdownMenuButton" style=" position: absolute; display:none;">
-    <span id="dropdowncontent"></span>
-</div>
-
-<!-- Modal for SD Upload -->
-<div class="modal" id="sdupload_modal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">sd upload</h5>
-        <button id="sdmodalclosebtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="sduploadform">
-          <form class="form">
-            <h5>Please enter a name for the new file.  <br><small>It will be uploaded to the SD Card and saved as this name</small></h5>
-            <div class="input-group">
-              <span class="input-group-addon">Filename: </span>
-              <input type="text" class="form-control" id="sdfilename" value="file.gcode">
-            </div>
-          </form>
-        </div>
-        <div id="sduploadprogress" style="display: none;">
-          <div class="progress" style="width: 100%;">
-            <div id="sdprogressup" class="progress-bar progress-bar-striped progress-warning" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%"></div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="sduploadbtn" onclick="sdUpload()" class="btn btn-outline-primary">start upload</button>
-        <button type="button" id="sduploadcancelbtn"class="btn btn-success" data-dismiss="modal">Close</button>
-      </div>
     </div>
-  </div>
-</div>
-
-<!-- Modal for SD Upload -->
-<div class="modal" id="sdlist_modal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">sd list</h5>
-        <button id="sdlistclosebtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="sdlistcontent"></div>
-        <table class="table small table-striped table-hover">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col" style="border-top: 0px;">Filename</th>
-              <th scope="col" style="border-top: 0px;">Action</th>
-            </tr>
-          </thead>
-          <tbody id="sdfilelist">
-        </table>
-
-      </div>
-      <div class="modal-footer">
-        <!-- <button type="button" id="sdlistbtn" onclick="sdUpload()" class="btn btn-outline-primary">start upload</button> -->
-        <button type="button" id="sdlistcancelbtn"class="btn btn-success" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
 
   </body>
 
-  <script src="/lib/lodash.core.js"></script>
-
-  <script src="lib/nprogress/nprogress.js"></script>
-
-  <script type="text/javascript" src="./lib/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="./lib/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="./lib/jquery/jquery.flow.js"></script>
-  <script type="text/javascript" src="./lib/jquery/jquery-ui/jquery-ui.min.js"></script>
-  <!-- <script type="text/javascript" src="./lib/jquery/colorpicker/jquery.wheelcolorpicker.js"></script> -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="./lib/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="./lib/ace/src-noconflict/ace.js"></script>
-  <script type="text/javascript" src="./js/samplefile.js"></script>
-  <script type="text/javascript" src="./lib/threejs/three.min.js"></script>
-  <script type="text/javascript" src="./lib/threejs/GridRect.js"></script>
-  <script type="text/javascript" src="./lib/threejs/OrbitControls.js"></script>
-  <script type="text/javascript" src="./lib/threejs/Projector.js"></script>
-  <script type="text/javascript" src="./lib/threejs/CanvasRenderer.js"></script>
-  <script type="text/javascript" src="./lib/threejs/CSS3DRenderer.js"></script>
-  <script type="text/javascript" src="./lib/threejs/TransformControls.js"></script>
-  <script type="text/javascript" src="./lib/threejs/TweenMax.min.js"></script>
-  <script type="text/javascript" src="./lib/threejs/Stats.js"></script>
-
-  <script type="text/javascript" src="./js/jog.js"></script>
-
-  <!-- <script type="text/javascript" src="js/tempgraph.js"></script> -->
-
-  <script type="text/javascript" src="./js/viewer.js"></script>
-
-  <script type="text/javascript" src="./js/gcode-viewer/gcode-parser.js"></script>
-
+  <script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
+  <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/popper.min.js"></script>
+  <script type="text/javascript" src="lib/bootstrap4/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/lib/lodash.core.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" src="./js/websocket.js"></script>
-
-  <script type="text/javascript" src="./js/trinamic.js"></script>
-
-  <script src="./js/main.js"></script>
-
+  <script type="text/javascript" src="js/websocket.js"></script>
+<script type="text/javascript" src="js/grblsettings.js"></script>
 </html>

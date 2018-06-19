@@ -1,0 +1,31 @@
+#console {
+    /*font-family: "Courier New", Courier, monospace;*/
+    font-family: "Lucida Console", Monaco, monospace;
+    max-height: calc(100vh - 200px);
+    height: calc(100vh - 200px);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: none;
+    text-align: left;
+    /* background-color: #444; */
+    padding: 0px;
+    font-size: 12px;
+    padding-left: 20px;
+    white-space:normal;
+    margin-bottom: 0px;
+    /*margin-top: 15px;*/
+}
+
+.pf {
+    margin-top: 0px;
+    margin-bottom: -4px;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+select{
+  font-family: FontAwesome, sans-serif;
+}

@@ -8,7 +8,10 @@ const serialport = require('serialport');
 var SerialPort = serialport;
 var md5 = require('md5');
 var ip = require("ip");
-console.dir(ip.address());
+var _ = require('lodash');
+var oldportslist;
+const iconPath = path.join(__dirname, 'app/icon.png');
+
 
 var iosocket;
 
@@ -240,12 +243,37 @@ var status = {
 };
 
 SerialPort.list(function(err, ports) {
+  oldportslist = ports;
   status.comms.interfaces.ports = ports;
 });
 
 var PortCheckinterval = setInterval(function() {
   SerialPort.list(function(err, ports) {
     status.comms.interfaces.ports = ports;
+    // If we found a new port?
+    if (!_.isEqual(ports, oldportslist)) {
+      var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
+      if (newPorts.length > 0) {
+        console.log("Plugged " + newPorts[0].comName);
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver Detected a new Port",
+          content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
+        })
+      }
+      var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
+      if (removedPorts.length > 0) {
+        console.log("Unplugged " + removedPorts[0].comName);
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver Detected a disconnected Port",
+          content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
+        })
+      }
+    }
+
+
+    oldportslist = ports;
   });
 }, 500);
 
@@ -353,13 +381,13 @@ io.on("connection", function(socket) {
         };
         command = command.replace(/(\r\n|\n|\r)/gm, "");
 
-        if (command != "?" && command != "M105") {
+        if (command != "?" && command != "M105" && data.length > 0) {
           // if (command != "?" && command != "M105" && command.indexOf("M911") == -1 ) {
           var string = "";
           if (status.comms.sduploading) {
             string += "SD: "
           }
-          string += data + "  [ " + command + " ]"
+          string += data //+ "  [ " + command + " ]"
           io.sockets.emit('data', string);
           // console.log("DATA RECV: Command: " + command + " || " + data.replace(/(\r\n|\n|\r)/gm,""));
         }
@@ -1674,14 +1702,106 @@ function isElectron() {
 const electron = require('electron');
 // Module to control application life.
 const electronApp = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const Tray = electron.Tray;
+const nativeImage = require('electron').nativeImage
+const Menu = require('electron').Menu
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+var appIcon = null,
+  jogWindow = null,
+  mainWindow = null
 
 if (electronApp) {
   // Module to create native browser window.
-  const BrowserWindow = electron.BrowserWindow;
 
-  // Keep a global reference of the window object, if you don't, the window will
-  // be closed automatically when the JavaScript object is garbage collected.
-  var mainWindow;
+
+
+  function createApp() {
+    createTrayIcon();
+    // createWindow();
+    // createJogWindow();
+  }
+
+  function createTrayIcon() {
+    appIcon = new Tray(
+      nativeImage.createFromPath(iconPath)
+    )
+    const contextMenu = Menu.buildFromTemplate([{
+        label: 'Launch Full Application',
+        click() {
+          createWindow();
+        }
+      },
+      {
+        label: 'Quit Machine Driver',
+        click() {
+          appIcon.destroy();
+          electronApp.exit(0);
+        }
+      }
+    ])
+    appIcon.on('click', function() {
+      // console.log("Clicked Systray")
+      if (jogWindow === null) {
+        createJogWindow();
+        jogWindow.show()
+      } else {
+        jogWindow.show()
+      }
+    })
+    // Call this again for Linux because we modified the context menu
+    appIcon.setContextMenu(contextMenu)
+
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "Driver Started",
+      content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
+    })
+  }
+
+  function createJogWindow() {
+    // Create the browser window.
+    jogWindow = new BrowserWindow({
+      width: 600,
+      height: 600,
+      fullscreen: false,
+      center: true,
+      resizable: true,
+      title: "OpenBuilds Machine Driver",
+      frame: true,
+      autoHideMenuBar: true,
+      icon: '/app/favicon.png'
+    });
+
+    var ipaddr = ip.address();
+    // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
+    jogWindow.loadURL("http://localhost:3000/");
+
+    jogWindow.on('minimize', function(event) {
+      event.preventDefault();
+      jogWindow.hide();
+    });
+
+    jogWindow.on('close', function(event) {
+      event.preventDefault();
+      jogWindow.hide();
+      return false;
+    });
+
+    // Emitted when the window is closed.
+    jogWindow.on('closed', function() {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      jogWindow = null;
+    });
+    jogWindow.once('ready-to-show', () => {
+      jogWindow.show()
+    })
+    // jogWindow.maximize()
+    // jogWindow.webContents.openDevTools()
+  }
 
   function createWindow() {
     // Create the browser window.
@@ -1694,7 +1814,7 @@ if (electronApp) {
       title: "ProjectMakr",
       frame: true,
       autoHideMenuBar: true,
-      icon: '/public/favicon.png'
+      icon: '/app/favicon.png'
     });
 
     // and load the index.html of the app.
@@ -1704,7 +1824,16 @@ if (electronApp) {
     // mainWindow.loadURL(`//` + ipaddr + `:3000/`)
     mainWindow.loadURL("http://localhost:3000");
 
+    mainWindow.on('minimize', function(event) {
+      event.preventDefault();
+      mainWindow.hide();
+    });
 
+    mainWindow.on('close', function(event) {
+      event.preventDefault();
+      mainWindow.hide();
+      return false;
+    });
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
@@ -1717,7 +1846,8 @@ if (electronApp) {
       mainWindow.show()
     })
     mainWindow.maximize()
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
+
   };
 
   electronApp.commandLine.appendSwitch("--ignore-gpu-blacklist");
@@ -1725,7 +1855,7 @@ if (electronApp) {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  electronApp.on('ready', createWindow);
+  electronApp.on('ready', createApp);
 
   // Quit when all windows are closed.
   electronApp.on('window-all-closed', function() {
@@ -1733,6 +1863,7 @@ if (electronApp) {
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
       electronApp.quit();
+      appIcon.destroy();
     }
   });
 
@@ -1740,7 +1871,13 @@ if (electronApp) {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-      createWindow();
+      createApp();
     }
   });
+
+  // Autostart on Login
+  electronApp.setLoginItemSettings({
+    openAtLogin: true,
+    args: []
+  })
 }

@@ -1,5 +1,5 @@
 {
-  "name": "ProjectMakr",
+  "name": "OpenBuildsMachineDriver",
   "version": "0.0.1",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
@@ -14,6 +14,7 @@
   "dependencies": {
     "express": "^4.16.2",
     "ip": "^1.1.5",
+    "lodash": "^4.17.10",
     "md5": "^2.2.1",
     "serialport": "^4.0.7",
     "socket.io": "^2.0.4"
@@ -34,7 +35,7 @@
   ],
   "build": {
     "appId": "openbuilds.projectmakr",
-    "productName": "ProjectMakr",
+    "productName": "OpenBuilds Machine Driver",
     "asar": true,
     "files": [
       "**/*"
