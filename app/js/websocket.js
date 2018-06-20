@@ -39,6 +39,10 @@ function initSocket() {
     populatePortsMenu();
   }, 2000);
 
+  socket.on('disconnect', function() {
+    console.log("WEBSOCKET DISCONNECTED")
+  });
+
   socket.on('data', function(data) {
     var toPrint = data;
     if (data.indexOf("Done saving file.") != -1) {
@@ -66,7 +70,9 @@ function initSocket() {
     };
 
     if (data.indexOf('Grbl') != -1) {
-      socket.emit('runCommand', '$$');
+      console.log(data)
+      // socket.emit('runCommand', '$$');
+      sendGcode('$$')
     }
 
     printLog(toPrint)
