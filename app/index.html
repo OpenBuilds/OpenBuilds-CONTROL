@@ -6,110 +6,167 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="metro4:init" content="true">
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-    <link rel="stylesheet" href="lib/bootstrap4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/metro4/css/metro-all.css" />
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
 
-  <div class="container" style="height: 98vh ;">
-    <form class="form-inline my-2 my-lg-0">
-      <div class="input-group input-group-sm" style="width: 100%;">
-        <div class="input-group-prepend">
-          <span class="input-group-text"><i class="fab fa-usb"></i></span>
-        </div>
-        <select class="form-control" id="portUSB">`
-          <option value="">Waiting for USB</option>
-        </select>
-        <span class="input-group-btn">
-          <button onclick="selectPort()" id="connectBtn" class="btn btn-sm btn-success" type="button">Connect</button>
-          <button style="display:none;" onclick="closePort()" id="disconnectBtn" class="btn btn-sm btn-danger" type="button">Disconnect</button>
-        </span>
+    <div class="window" style="height: 100vh;">
+      <div class="window-caption" style="-webkit-app-region: drag;">
+          <span class="icon mif-cog"></span>
+          <span class="title">OpenBuids Machine Driver</span>
+          <div class="buttons" style="-webkit-app-region: no-drag">
+              <span data-role="hint" data-hint-position="bottom" data-hint-text="Minimize to Tray" data-cls-hint="bg-cyan fg-white drop-shadow" class="btn-min" onclick="socket.emit('minimise')"></span>
+              <span data-role="hint" data-hint-position="bottom" data-hint-text="Quit" data-cls-hint="bg-cyan fg-white drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
+          </div>
       </div>
-    </form>
+      <div class="window-content p-2" style="height: 100%">
 
-    <form class="form-inline my-2 my-lg-0">
-      <div class="col-2">
-        <span class="badge badge-pill badge-light" style="width: 100%;">
-          <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-            <i class="far fa-bell"></i>
-            <i id="navbell" class="fas fa-bell text-danger"></i>
-          </span>
-        </span>
-      </div>
-      <div class="col-5">
-        <span class="badge badge-pill badge-light" style="width: 100%;"><span id="connectStatus">Not Connected</span></span>
-      </div>
-      <div class="col-5">
-        <span class="badge badge-pill badge-light" style="width: 100%;"><span id="runStatus">Not Connected</span></span>
-      </div>
-    </form>
+        <nav data-role="ribbonmenu">
+          <ul class="tabs-holder">
+              <li><a href="#section-one" onclick="connectionPanel();">Connection</a></li>
+              <li><a href="#section-two" onclick="manualcontrolPanel();">Manual Control</a></li>
+              <li><a href="#section-three" onclick="jobcontrolPanel();">Job Setup</a></li>
+          </ul>
 
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#manual">Manual</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab"  href="#consoletab">Console</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab"  href="#settings">Settings</a>
-      </li>
-    </ul>
+          <div class="content-holder">
 
-    <div class="tab-content" style="height: calc(100% - 345px); max-height: !important calc(100% - 345px)">
-      <div class="tab-pane active" id="manual" role="tabpanel" aria-labelledby="home-tab">
+              <div class="section" id="section-one">
 
-      </div>
-      <div class="tab-pane" id="consoletab" role="tabpanel" aria-labelledby="profile-tab">
-        <br>
-        <div id="console"></div>
+                <div class="group">
+                  <div class="form-group" style="width: calc(100vw - 90px);">
+                    <form class="inline-form">
+                      <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" id="portUSB">`
+                        <option value="">Waiting for USB</option>
+                      </select>
+                      <button class="button success" onclick="selectPort()" id="connectBtn" type="button">Connect</button>
+                      <button class="button alert"style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
+                    </form>
+                    <center><small class="text-muted">Establish connection to the machine</small></center>
+                  </div>
+                  <span class="title">Machine Interface</span>
 
-        <div class="fixed-bottom m-3">
-          <div class="input-group input-group-sm">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-terminal"></i></span>
-            </div>
-            <input id="commagrnd" type="text" autocomplete="on" class="form-control needs-connection" />
-            <div class="btn-group btn-group-sm">
-              <button id="sendCommand" class="btn btn-dark needs-connection" type="button">
-                  <i class="fa fa-play" style="margin-right: 10px;"></i> Send
+                </div>
+                <div class="group" style="width: 90px;">
+
+                  <button class="ribbon-button">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Abort!</span>
+                  </button>
+                  <span class="title">E-Stop</span>
+                </div>
+
+              </div>
+              <div class="section" id="section-two">
+
+                <div class="group">
+                  <div class="form-group" style="width: calc(100vw - 90px);">
+
+                  </div>
+                  <span class="title">Manual</span>
+
+                </div>
+                <div class="group" style="width: 90px;">
+
+                  <button class="ribbon-button">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Abort!</span>
+                  </button>
+                  <span class="title">E-Stop</span>
+                </div>
+
+              </div>
+              <div class="section" id="section-three">
+
+                <div class="group">
+                  <div class="form-group" style="width: calc(100vw - 90px);">
+
+                  </div>
+                  <span class="title">Job Control</span>
+
+                </div>
+                <div class="group" style="width: 90px;">
+
+                  <button class="ribbon-button">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Abort!</span>
+                  </button>
+                  <span class="title">E-Stop</span>
+                </div>
+
+              </div>
+          </div>
+      </nav>
+
+          <div id="connectionPanel">
+          <div id="console"></div>
+          <div class="fixed-bottom m-3 mb-8">
+            <form class="inline-form">
+              <input data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" />
+              <button id="sendCommand" class="button dark needs-connection" type="button">
+                <i class="fa fa-play" style="margin-right: 10px;"></i> Send
               </button>
-              <button class="emptylog btn btn-dark" type="button" onclick="$('#console').empty();">
-                  <i class="fa fa-trash"></i>
+              <button class="button dark emptylog" type="button" onclick="$('#console').empty();">
+                <i class="fa fa-trash"></i>
               </button>
-            </div>
+            </form>
           </div>
         </div>
 
-      </div>
-      <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-        <br>
-        <div style="overflow-y: auto;  max-height: calc(100vh - 200px); height: calc(100vh - 200px);">
-             <div style="display: none;" id="grblconfig"></div>
-             <div id="grbl-placeholder">
-                <div class="alert alert-danger" role="alert">
-                  You need to connect to a compatible controller first!
-                </div>
-             </div>
-             <div class="fixed-bottom m-3">
-               <button type="button" id="grblSaveBtn" onclick="grblSaveSettings();" class="btn btn-lg btn-success" disabled>Save</button>
-             </div>
+        <!-- Bottom StatusBar -->
+        <div class="fixed-bottom ml-5">
+          <form class="inline-form">
+            <span class="badge inline bg-gray fg-white">
+              <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                <i class="far fa-bell"></i>
+                <i id="navbell" class="fas fa-bell text-danger"></i>
+              </span>
+            </span>
+            &nbsp;
+            <span class="badge inline bg-gray fg-white" id="connectStatus">Not Connected</span>
+            &nbsp;
+            <span class="badge inline bg-gray fg-white" id="runStatus">Not Connected</span>
+          </form>
         </div>
+
+        <!-- <div style="display: none;" id="grblconfig"></div>
+        <div id="grbl-placeholder">
+          You need to connect to a compatible controller first!
+        </div>
+        <button type="button" id="grblSaveBtn" onclick="grblSaveSettings();" disabled>Save</button> -->
+
       </div>
     </div>
 
 
-    </div>
+
 
   </body>
 
   <script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="lib/popper.min.js"></script>
-  <script type="text/javascript" src="lib/bootstrap4/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
+
   <script type="text/javascript" src="/lib/lodash.core.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="js/websocket.js"></script>
-<script type="text/javascript" src="js/grblsettings.js"></script>
+  <script type="text/javascript" src="js/grblsettings.js"></script>
+  <script type="text/javascript" src="js/metroactions.js"></script>
 </html>

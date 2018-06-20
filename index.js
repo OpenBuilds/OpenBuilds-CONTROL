@@ -309,6 +309,15 @@ io.on("connection", function(socket) {
     io.sockets.emit("status", status);
   }, 200);
 
+  socket.on("minimise", function(data) {
+    jogWindow.hide();
+  });
+  socket.on("maximise", function(data) {});
+  socket.on("quit", function(data) {
+    appIcon.destroy();
+    electronApp.exit(0);
+  });
+
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 
     if (status.comms.connectionStatus < 1) {
@@ -322,6 +331,11 @@ io.on("connection", function(socket) {
 
       port.on("error", function(err) {
         console.log("Error: ", err.message);
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver encountered a Port error",
+          content: "OpenBuilds Machine Driver received the following error: " + err.message
+        })
         // stopPort();
         // status.comms.connectionStatus = 0;
       });
@@ -402,6 +416,11 @@ io.on("connection", function(socket) {
           status.machine.firmware.version = data.substr(5, 4); // get version
           status.machine.firmware.date = "";
           console.log("GRBL detected");
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver has established a Connection",
+            content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+          })
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
@@ -413,6 +432,11 @@ io.on("connection", function(socket) {
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver has established a Connection",
+            content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+          })
           status.machine.firmware.type = "smoothie";
           status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
           status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
@@ -1769,11 +1793,12 @@ if (electronApp) {
       center: true,
       resizable: true,
       title: "OpenBuilds Machine Driver",
-      frame: true,
+      frame: false,
       autoHideMenuBar: true,
       icon: '/app/favicon.png'
     });
 
+    jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
     var ipaddr = ip.address();
     // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
     jogWindow.loadURL("http://localhost:3000/");
