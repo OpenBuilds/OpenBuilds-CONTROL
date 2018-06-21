@@ -11,6 +11,20 @@ var simstopped = false;
 
 $(document).ready(function() {
   initSocket();
+
+  $("#command").keyup(function(event) {
+    event.preventDefault()
+    if (event.keyCode === 13) {
+      $("#sendCommand").click();
+    }
+    return false;
+  });
+
+  $("form").submit(function() {
+    return false;
+  });
+
+
 });
 
 function printLog(string) {
@@ -68,21 +82,38 @@ function initSocket() {
       var descr = grblSettingCodes[key];
       toPrint = data + "  ;" + descr
     };
-
-    if (data.indexOf('Grbl') != -1) {
-      console.log(data)
-      // socket.emit('runCommand', '$$');
-      sendGcode('$$')
-    }
+    //
+    // if (data.indexOf('Grbl') != -1) {
+    //   console.log(data)
+    //   // socket.emit('runCommand', '$$');
+    //   sendGcode('$$')
+    //   $("#grblButtons").show()
+    //   $("#firmwarename").html('Grbl')
+    // }
 
     printLog(toPrint)
 
   });
 
+  socket.on("grbl", function(data) {
+    showGrbl(true)
+  });
+
+  function showGrbl(bool) {
+    if (bool) {
+      sendGcode('$$')
+      $("#grblButtons").show()
+      $("#firmwarename").html('Grbl')
+    } else {
+      $("#grblButtons").hide()
+      $("#firmwarename").html('')
+    }
+  }
+
   socket.on("queueCount", function(data) {
     // if(laststatus.comms.connectionStatus > 2) {
     // editor.gotoLine(parseInt(data[1]) - parseInt(data[0]) )
-    $('#gcodesent').html(parseInt(data[0]));
+    $('#gcodesent').html("Queue: " + parseInt(data[0]));
     // }
     sduploading = data[2];
     if (sduploading) {
@@ -120,9 +151,14 @@ function initSocket() {
         $('#command').attr('disabled', true);
       }
       $("#sendCommand").prop('disabled', true);
-      $("#portUSB").prop('disabled', false);
+      if ($('#portUSB').val() != "") {
+        $('#portUSB').parent(".select").removeClass('disabled')
+      } else {
+        $('#portUSB').parent(".select").addClass('disabled')
+      }
       $('#portUSB').parent(".select").addClass('success')
       $('#portUSB').parent(".select").removeClass('alert')
+      showGrbl(false)
     } else if (status.comms.connectionStatus == 1 || status.comms.connectionStatus == 2) { // Connected, but not Playing yet
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
@@ -135,7 +171,7 @@ function initSocket() {
       $("#sdtogglemodal").prop('disabled', false);
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
-      $("#portUSB").prop('disabled', true);
+      $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
     } else if (status.comms.connectionStatus == 3) { // Busy Streaming GCODE
@@ -150,7 +186,7 @@ function initSocket() {
       $("#sdtogglemodal").prop('disabled', true);
       $("#command").attr('disabled', true);
       $("#sendCommand").prop('disabled', true);
-      $("#portUSB").prop('disabled', true);
+      $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
     } else if (status.comms.connectionStatus == 4) { // Paused
@@ -165,7 +201,7 @@ function initSocket() {
       $("#sdtogglemodal").prop('disabled', true);
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
-      $("#portUSB").prop('disabled', true);
+      $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
     } else if (status.comms.connectionStatus == 5) { // Alarm State
@@ -180,16 +216,16 @@ function initSocket() {
       $("#sdtogglemodal").prop('disabled', true);
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
-      $("#portUSB").prop('disabled', true);
+      $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
     }
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-    $('#xPos').html(status.machine.position.work.x);
-    $('#yPos').html(status.machine.position.work.y);
-    $('#zPos').html(status.machine.position.work.z);
+    $('#xPos').html(status.machine.position.work.x + " mm");
+    $('#yPos').html(status.machine.position.work.y + " mm");
+    $('#zPos').html(status.machine.position.work.z + " mm");
 
     $('#ModernXPos').html(parseFloat(status.machine.position.work.x).toFixed(3));
     $('#ModernYPos').html(parseFloat(status.machine.position.work.y).toFixed(3));
@@ -308,6 +344,7 @@ function populatePortsMenu() {
   response += `</optgroup></select>`
   var select = $("#portUSB").data("select");
   select.data(response);
+  $('#portUSB').parent(".select").removeClass('disabled')
 }
 
 function sendGcode(gcode) {

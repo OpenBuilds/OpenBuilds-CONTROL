@@ -27,12 +27,15 @@ function confirmQuit() {
 
 function connectionPanel() {
   $('#connectionPanel').show()
+  $('#manualControlPanel').hide()
 }
 
 function manualcontrolPanel() {
   $('#connectionPanel').hide()
+  $('#manualControlPanel').show()
 }
 
 function jobcontrolPanel() {
   $('#connectionPanel').hide()
+  $('#manualControlPanel').hide()
 }

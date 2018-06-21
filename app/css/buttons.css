@@ -1,0 +1,105 @@
+.glossydro {
+  display: block;
+  text-decoration: none;
+  background-color: #f7f7f7;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
+  color: #a7a7a7;
+  margin: 5px;
+  width: 150px;
+  height: 42px;
+  position: relative;
+  text-align: right;
+  padding-right: 6px;
+  padding-left: 6px;
+  line-height: 40px;
+  border-radius: 6px;
+  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  border: solid 1px transparent;
+  font-weight:900;
+  font-size: 18px;
+}
+
+.glossybtn:link, .glossybtn:visited {
+  display: block;
+  text-decoration: none;
+  background-color: #f7f7f7;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
+  color: #a7a7a7;
+  margin: 5px;
+  width: 60px;
+  height: 60px;
+  position: relative;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 6px;
+  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  border: solid 1px transparent;
+}
+
+.glossybtn:active {
+  box-shadow: none;
+  background-color: #f2f2f2;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  background-image: -webkit-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -moz-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -ms-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -o-linear-gradient(top, #f2f2f2, #c1c1c1);
+  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #ccc;
+
+}
+
+.glossybtn:hover {
+  text-decoration: none;
+  color: #555;
+  background: #f5f5f5;
+}​
+
+
+
+
+/* .glossybtnsm:link, .glossybtnsm:visited {
+  display: block;
+  text-decoration: none;
+  background-color: #f7f7f7;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
+  background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
+  color: #a7a7a7;
+  margin: 5px;
+  width: 60px;
+  height: 60px;
+  position: relative;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 10%;
+  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  border: solid 1px transparent;
+}
+
+.glossybtnsm:active {
+  box-shadow: none;
+  background-color: #f2f2f2;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  background-image: -webkit-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -moz-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -ms-linear-gradient(top, #f2f2f2, #c1c1c1);
+  background-image: -o-linear-gradient(top, #f2f2f2, #c1c1c1);
+    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #ccc;
+
+}
+
+.glossybtnsm:hover {
+  text-decoration: none;
+  color: #555;
+  background: #f5f5f5;
+}​ */

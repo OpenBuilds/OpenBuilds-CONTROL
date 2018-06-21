@@ -1,172 +1,502 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>OpenBuilds Machine Driver</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="author" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="metro4:init" content="true">
-    <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-    <link rel="stylesheet" href="lib/metro4/css/metro-all.css" />
-    <link rel="stylesheet" href="css/main.css" />
-  </head>
-  <body>
 
-    <div class="window" style="height: 100vh;">
-      <div class="window-caption" style="-webkit-app-region: drag;">
-          <span class="icon mif-cog"></span>
-          <span class="title">OpenBuids Machine Driver</span>
-          <div class="buttons" style="-webkit-app-region: no-drag">
-              <span data-role="hint" data-hint-position="bottom" data-hint-text="Minimize to Tray" data-cls-hint="bg-cyan fg-white drop-shadow" class="btn-min" onclick="socket.emit('minimise')"></span>
-              <span data-role="hint" data-hint-position="bottom" data-hint-text="Quit" data-cls-hint="bg-cyan fg-white drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
-          </div>
-      </div>
-      <div class="window-content p-2" style="height: 100%">
+<head>
+  <title>OpenBuilds Machine Driver</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="metro4:init" content="true">
+  <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+  <link rel="stylesheet" href="lib/metro4/css/metro-all.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
 
-        <nav data-role="ribbonmenu">
-          <ul class="tabs-holder">
-              <li><a href="#section-one" onclick="connectionPanel();">Connection</a></li>
-              <li><a href="#section-two" onclick="manualcontrolPanel();">Manual Control</a></li>
-              <li><a href="#section-three" onclick="jobcontrolPanel();">Job Setup</a></li>
-          </ul>
+<body>
 
-          <div class="content-holder">
 
-              <div class="section" id="section-one">
-
-                <div class="group">
-                  <div class="form-group" style="width: calc(100vw - 90px);">
-                    <form class="inline-form">
-                      <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" id="portUSB">`
-                        <option value="">Waiting for USB</option>
-                      </select>
-                      <button class="button success" onclick="selectPort()" id="connectBtn" type="button">Connect</button>
-                      <button class="button alert"style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
-                    </form>
-                    <center><small class="text-muted">Establish connection to the machine</small></center>
-                  </div>
-                  <span class="title">Machine Interface</span>
-
-                </div>
-                <div class="group" style="width: 90px;">
-
-                  <button class="ribbon-button">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
-                      </span>
-                    </span>
-                    <span class="caption">Abort!</span>
-                  </button>
-                  <span class="title">E-Stop</span>
-                </div>
-
-              </div>
-              <div class="section" id="section-two">
-
-                <div class="group">
-                  <div class="form-group" style="width: calc(100vw - 90px);">
-
-                  </div>
-                  <span class="title">Manual</span>
-
-                </div>
-                <div class="group" style="width: 90px;">
-
-                  <button class="ribbon-button">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
-                      </span>
-                    </span>
-                    <span class="caption">Abort!</span>
-                  </button>
-                  <span class="title">E-Stop</span>
-                </div>
-
-              </div>
-              <div class="section" id="section-three">
-
-                <div class="group">
-                  <div class="form-group" style="width: calc(100vw - 90px);">
-
-                  </div>
-                  <span class="title">Job Control</span>
-
-                </div>
-                <div class="group" style="width: 90px;">
-
-                  <button class="ribbon-button">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                        <i class="fa-inverse far fa-hand-paper" data-fa-transform="shrink-1"></i>
-                      </span>
-                    </span>
-                    <span class="caption">Abort!</span>
-                  </button>
-                  <span class="title">E-Stop</span>
-                </div>
-
-              </div>
-          </div>
-      </nav>
-
-          <div id="connectionPanel">
-          <div id="console"></div>
-          <div class="fixed-bottom m-3 mb-8">
-            <form class="inline-form">
-              <input data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" />
-              <button id="sendCommand" class="button dark needs-connection" type="button">
-                <i class="fa fa-play" style="margin-right: 10px;"></i> Send
-              </button>
-              <button class="button dark emptylog" type="button" onclick="$('#console').empty();">
-                <i class="fa fa-trash"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Bottom StatusBar -->
-        <div class="fixed-bottom ml-5">
-          <form class="inline-form">
-            <span class="badge inline bg-gray fg-white">
-              <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                <i class="far fa-bell"></i>
-                <i id="navbell" class="fas fa-bell text-danger"></i>
-              </span>
-            </span>
-            &nbsp;
-            <span class="badge inline bg-gray fg-white" id="connectStatus">Not Connected</span>
-            &nbsp;
-            <span class="badge inline bg-gray fg-white" id="runStatus">Not Connected</span>
-          </form>
-        </div>
-
-        <!-- <div style="display: none;" id="grblconfig"></div>
-        <div id="grbl-placeholder">
-          You need to connect to a compatible controller first!
-        </div>
-        <button type="button" id="grblSaveBtn" onclick="grblSaveSettings();" disabled>Save</button> -->
-
+  <div class="window" style="height: 100vh;">
+    <div class="window-caption" style="-webkit-app-region: drag;">
+      <span class="icon mif-cog"></span>
+      <span class="title">OpenBuids Machine Driver</span>
+      <div class="buttons" style="-webkit-app-region: no-drag">
+        <span data-role="hint" data-hint-position="bottom" data-hint-text="Minimize to Tray" data-cls-hint="bg-light fg-dark drop-shadow" class="btn-min" onclick="socket.emit('minimise')"></span>
+        <span data-role="hint" data-hint-position="bottom" data-hint-text="Quit" data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
       </div>
     </div>
+    <div class="window-content" style="height: 100%; overflow: hidden  !important;">
+
+      <nav data-role="ribbonmenu" class="mt-1">
+        <ul class="tabs-holder">
+          <li><a href="#section-one" onclick="connectionPanel();">Connection</a></li>
+          <li><a href="#section-two" onclick="manualcontrolPanel();">Manual Control</a></li>
+          <li><a href="#section-three" onclick="jobcontrolPanel();">Job Setup</a></li>
+        </ul>
+        <div class="content-holder">
+          <div class="section" id="section-one">
+            <div class="group">
+              <div class="form-group" style="width: calc(100vw - 200px);">
+                <form class="inline-form">
+                  <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" id="portUSB">
+                    <option value="">Waiting for USB</option>
+                  </select>
+                  <button class="button success" onclick="selectPort()" id="connectBtn" type="button">Connect</button>
+                  <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
+                </form>
+                <center><small class="text-muted">Establish connection to the machine</small></center>
+              </div>
+              <span class="title">Machine Interface</span>
+            </div>
+            <div class="group" style="width: 140px;">
+              <div id="grblButtons" style="display: none;">
+                <div class="ribbon-group">
+                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                    <span class="icon">
+                      <span class="mif-unlock"></span>
+                    </span>
+                    <span class="caption">Unlock</span>
+                  </button>
+                  <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                    <span class="icon">
+                      <span class="mif-loop"></span>
+                    </span>
+                    <span class="caption">Reset</span>
+                  </button>
+                </div>
+              </div>
+              <span class="title" id="firmwarename"></span>
+            </div>
+            <div class="group" style="width: 50px;">
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+          </div>
+          <div class="section" id="section-two">
+            <div class="group" style="width: calc(100vw - 40px);">
+              <button class="ribbon-button" onclick="sendGcode('M3 S1000')">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-bookmark" data-fa-transform="rotate-180"></i>
+                    <i class="fas fa-screwdriver fg-green" data-fa-transform="rotate-135 down-3"></i>
+                  </span>
+                </span>
+                <span class="caption">Tool<br>On</span>
+              </button>
+              <button class="ribbon-button" onclick="sendGcode('M5')">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-bookmark" data-fa-transform="rotate-180"></i>
+                    <i class="fas fa-screwdriver fg-green" data-fa-transform="rotate-135 down-3"></i>
+                    <i class="fas fa-ban fg-red" data-fa-transform="grow-4"></i>
+                  </span>
+                </span>
+                <span class="caption">Tool<br>Off</span>
+              </button>
+              <button class="ribbon-button" onclick="sendGcode('$H')">
+                <span class="icon">
+                  <i class="fas fa-home"></i>
+                </span>
+                <span class="caption">Home<br>All</span>
+              </button>
+              <button class="ribbon-button" onclick="sendGcode('$X')">
+                <span class="icon">
+                  <i class="fas fa-unlock-alt"></i>
+                </span>
+                <span class="caption">Unlock</span>
+              </button>
+              <button class="ribbon-button" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
+                <span class="icon">
+                  <i class="fas fa-crosshairs"></i>
+                </span>
+                <span class="caption">Set<br>Zero</span>
+              </button>
+              <span class="title">Control</span>
+            </div>
+            <div class="group" style="width: 50px;">
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+          </div>
+          <div class="section" id="section-three">
+            <div class="group" style="width: 300px;">
+              <button class="ribbon-button" onclick="sendGcode('$H')">
+                <span class="icon">
+                  <i class="fas fa-home"></i>
+                </span>
+                <span class="caption">Home<br>All</span>
+              </button>
+
+              <button class="ribbon-button">
+                <span class="icon">
+                  <i class="fas fa-play"></i>
+                </span>
+                <span class="caption">Run<br>Job</span>
+              </button>
+
+              <button class="ribbon-button">
+                <span class="icon">
+                  <i class="fas fa-pause"></i>
+                </span>
+                <span class="caption">Pause</span>
+              </button>
+
+              <button class="ribbon-button">
+                <span class="icon">
+                  <i class="fas fa-stop"></i>
+                </span>
+                <span class="caption">Abort<br>Job</span>
+              </button>
+
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', true)">
+                <span class="icon">
+                  <i class="fas fa-bell-slash"></i>
+                </span>
+                <span class="caption">Clear<br>Alarm</span>
+              </button>
+
+              <button class="ribbon-button" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
+                <span class="icon">
+                  <i class="fas fa-crosshairs"></i>
+                </span>
+                <span class="caption">Set<br>Zero</span>
+              </button>
+
+
+              <!-- <button class="ribbon-button">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="far fa-square"></i>
+                    <i class="fas fa-arrows-alt" data-fa-transform="shrink-6 left-0.3"></i>
+                  </span>
+                </span>
+                <span class="caption">Check<br>Size</span>
+              </button> -->
+
+              <span class="title">Job Control</span>
+            </div>
+            <div class="group" style="width: calc(100vw - 350px);">
+
+              <span class="title">Override</span>
+            </div>
+            <div class="group" style="width: 50px;">
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+
+      <div id="connectionPanel">
+        <div id="console"></div>
+        <div class="fixed-bottom m-3 mb-8">
+          <form class="inline-form" style="width: 100%;">
+            <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
+            <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
+              <i class="fa fa-play" style="margin-right: 10px;"></i> Send
+            </button>
+            <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
+              <i class="fa fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <div id="manualControlPanel" style="display: none;">
+        <br>
+        <center>
+          <table>
+            <tr>
+              <td rowspan="2">
+                <table>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-red">X</div>
+                        <div class="float-right fg-red" id="xPos">0.000</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-green">Y</div>
+                        <div class="float-right fg-green" id="yPos">0.000</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-blue">Z</div>
+                        <div class="float-right fg-blue" id="zPos">0.000</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+              </td>
+
+              <td>
+                <a href="#" class="glossybtn" id="yP">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-up fg-green" data-fa-transform="grow-4 down-18.5"></i>
+                  <span class="fa-layers-text fg-green" data-fa-transform="up-14" style="font-weight:900">Y+</span>
+                </span>
+              </a>
+              </td>
+
+              <td>
+              </td>
+
+              <td>
+              </td>
+
+              <td>
+                <a href="#" class="glossybtn" id="zP">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-up fg-blue" data-fa-transform="grow-4 down-18.5"></i>
+                  <span class="fa-layers-text fg-blue" data-fa-transform="up-14" style="font-weight:900">Z+</span>
+                </span>
+              </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" class="glossybtn" id="xM">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-left fg-red" data-fa-transform="grow-4 up-10.5"></i>
+                  <span class="fa-layers-text fg-red" data-fa-transform="down-22" style="font-weight:900">X-</span>
+                </span>
+              </a>
+              </td>
+
+              <td>
+                <a href="#" class="glossybtn" id="yM">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-down fg-green" data-fa-transform="grow-4 up-10.5"></i>
+                  <span class="fa-layers-text fg-green" data-fa-transform="down-22" style="font-weight:900">Y-</span>
+                </span>
+              </a>
+              </td>
+
+              <td>
+                <a href="#" class="glossybtn" id="xP">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-right fg-red" data-fa-transform="grow-4 up-10.5"></i>
+                  <span class="fa-layers-text fg-red" data-fa-transform="down-22" style="font-weight:900">X+</span>
+                </span>
+              </a>
+              </td>
+
+              <td>
+              </td>
+
+              <td>
+                <a href="#" class="glossybtn" id="zM">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-10.5"></i>
+                  <span class="fa-layers-text fg-blue" data-fa-transform="down-22" style="font-weight:900">Z-</span>
+                </span>
+              </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; width: 150px; line-height: 25px;" id="gotozero">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span class="fa-layers-text fg-amber" data-fa-transform="down-1 " style="font-weight:900">GOTOZERO</span>
+                </span>
+              </a>
+              </td>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; line-height: 25px;" id="dist01">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1 " style="font-weight:900 ">0.1mm</span>
+                </span>
+              </a>
+              </td>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; line-height: 25px;" id="dist1">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1 " style="font-weight:900">1mm</span>
+                </span>
+              </a>
+              </td>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; line-height: 25px;" id="dist10">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1 " style="font-weight:900">10mm</span>
+                </span>
+              </a>
+              </td>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; line-height: 25px;" id="dist100">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1 " style="font-weight:900">100mm</span>
+                </span>
+              </a>
+              </td>
+              <td>
+                <a href="#" class="glossybtn" style="height: 30px; line-height: 25px;" id="dist500">
+                <span class=" fa-layers fa-fw ">
+                  <!-- <i class="fas fa-arrow-down fg-blue " data-fa-transform="grow-4 up-5.5 "></i> -->
+                  <span id="dist500label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1 " style="font-weight:900">500mm</span>
+                </span>
+              </a>
+              </td>
+
+            </tr>
+          </table>
+        </center>
+
+        <!-- <div class="grid ">
+          <div class="row ">
+            <div class="cell-4 ">
+              <input style="text-align: right; " class="m-1 alert " data-prepend="X " data-role="input " data-clear-button="false " data-role="input " id="xPos " type="text " autocomplete="on " readonly value="0.00 " />
+              <input style="text-align: right; " class="m-1 success " data-prepend="Y " data-role="input " data-clear-button="false " data-role="input " id="yPos " type="text " autocomplete="on " readonly value="0.00 " />
+              <input style="text-align: right; " class="m-1 primary " data-prepend="Z " data-role="input " data-clear-button="false " data-role="input " id="zPos " type="text " autocomplete="on " readonly value="0.00 " />
+            </div>
+            <div class="cell-7 ">
+              <div data-role="buttongroup " data-cls-active="bg-red fg-white ">
+                <button class="button ">0.1mm</button>
+                <button class="button ">1mm</button>
+                <button class="button ">10mm</button>
+                <button class="button ">100mm</button>
+              </div>
+            </div>
+          </div>
+        </div> -->
 
 
 
 
-  </body>
 
-  <script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
-  <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
+        <!-- <button class="button large ">
+          <span class="fa-layers fa-fw fa-2x ">
+            <i class="fas fa-arrow-right " data-fa-transform=" grow-4.5 left-2.5 down-1.5 "></i>
+            <span class="fa-layers-text " data-fa-transform="grow-4.5 shrink-11.5 rotate-90 down-1.5 right-10.5 " style="font-weight:900 ">X+</span>
+          </span>
+        </button> -->
+        <!-- <div class="tiles-grid ">
 
-  <script type="text/javascript" src="/lib/lodash.core.js"></script>
-  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" src="js/websocket.js"></script>
-  <script type="text/javascript" src="js/grblsettings.js"></script>
-  <script type="text/javascript" src="js/metroactions.js"></script>
+          <div data-role="tile " data-size="small " class="bg-red tile-small " style="grid-column-start: 2; grid-row: 1 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-up " data-fa-transform="shrink-6 up-2.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 down-5 left-1.5 " style="font-weight:900 ">Y+</span>
+            </span>
+          </div>
+          <div data-role="tile " data-size="small " class="bg-red tile-small " style="grid-column-start: 2; grid-row: 2 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-down " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">Y-</span>
+            </span>
+          </div>
+
+          <div data-role="tile " data-size="small " class="bg-green tile-small " style="grid-column-start: 1; grid-row: 2 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-left " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">X-</span>
+            </span>
+          </div>
+          <div data-role="tile " data-size="small " class="bg-green tile-small " style="grid-column-start: 3; grid-row: 2 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-right " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">X+</span>
+            </span>
+          </div>
+
+          <div data-role="tile " data-size="small " class="bg-blue tile-small " style="grid-column-start: 4; grid-row: 1 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-up " data-fa-transform="shrink-6 up-2.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 down-5 left-1.5 " style="font-weight:900 ">Z+</span>
+            </span>
+          </div>
+          <div data-role="tile " data-size="small " class="bg-blue tile-small " style="grid-column-start: 4; grid-row: 2 ">
+            <span class="fa-layers fa-fw fa-4x ">
+              <i class="fas fa-arrow-down " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
+              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">Z-</span>
+            </span>
+          </div>
+        </div>-->
+      </div>
+      <!-- Bottom StatusBar -->
+      <div class="fixed-bottom ">
+        <div class="row ">
+          <div class="cell-3 ">
+            <div>
+              <span class="badge inline bg-gray fg-white " style="width: 100%; ">
+                <span class="fa-layers " data-toggle="tooltip " data-placement="bottom " title="Flashes red when machine has entered ALARM state, click Clear Alarm button ">
+                  <i class="far fa-bell "></i>
+                  <i id="navbell " class="fas fa-bell text-danger "></i>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="cell-3 ">
+            <div>
+              <span class="badge inline bg-gray fg-white " id="connectStatus " style="width: 100%; ">Not Connected</span>
+            </div>
+          </div>
+          <div class="cell-3 ">
+            <div>
+              <span class="badge inline bg-gray fg-white " id="runStatus " style="width: 100%; ">Not Connected</span>
+            </div>
+          </div>
+          <div class="cell-3 ">
+            <div>
+              <span class="badge inline bg-gray fg-white " id="gcodesent " style="width: 100%; ">Queue: 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div style="display: none; " id="grblconfig "></div>
+  <div id="grbl-placeholder ">
+  You need to connect to a compatible controller first!
+  </div>
+  <button type="button " id="grblSaveBtn " onclick="grblSaveSettings(); " disabled>Save</button> -->
+</body>
+
+<script type="text/javascript " src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js "></script>
+<script type="text/javascript " src="lib/jquery/jquery.min.js "></script>
+<script type="text/javascript " src="lib/metro4/js/metro.min.js "></script>
+
+<script type="text/javascript " src="/lib/lodash.core.js "></script>
+<script type="text/javascript " src="/socket.io/socket.io.js "></script>
+<script type="text/javascript " src="js/main.js "></script>
+<script type="text/javascript " src="js/websocket.js "></script>
+<script type="text/javascript " src="js/grblsettings.js "></script>
+<script type="text/javascript " src="js/metroactions.js "></script>
+<script type="text/javascript " src="js/jog.js "></script>
+
 </html>

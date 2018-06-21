@@ -305,6 +305,10 @@ io.on("connection", function(socket) {
 
   iosocket = socket;
 
+  if (status.machine.firmware.type == 'grbl') {
+    socket.emit('grbl')
+  }
+
   var interval = setInterval(function() {
     io.sockets.emit("status", status);
   }, 200);
@@ -416,6 +420,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.version = data.substr(5, 4); // get version
           status.machine.firmware.date = "";
           console.log("GRBL detected");
+          socket.emit('grbl')
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "Driver has established a Connection",
@@ -1172,7 +1177,7 @@ io.on("connection", function(socket) {
         case 'grbl':
           machineSend('!'); // hold
           console.log('Sent: !');
-          if (fVersion === '1.1d') {
+          if (status.machine.firmware.version === '1.1d') {
             machineSend(String.fromCharCode(0x9E)); // Stop Spindle/Laser
             console.log('Sent: Code(0x9E)');
           }
