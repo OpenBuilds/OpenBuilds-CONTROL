@@ -1300,7 +1300,7 @@ http.listen(config.webPort, '0.0.0.0', function() {
 
 
 function machineSend(gcode) {
-  // console.log("SENDING: " + gcode)
+  console.log("SENDING: " + gcode)
   if (port.isOpen) {
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length

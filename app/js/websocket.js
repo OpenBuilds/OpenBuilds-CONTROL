@@ -8,6 +8,7 @@ var nostatusyet = true;
 var safeToUpdateSliders = false;
 var laststatus
 var simstopped = false;
+var bellstate = false;
 
 $(document).ready(function() {
   initSocket();
@@ -302,19 +303,21 @@ function initSocket() {
     sendGcode("M20");
   })
 
-  var bellstate = false;
+
   var bellflash = setInterval(function() {
     if (!nostatusyet) {
       if (laststatus.comms.connectionStatus == 5) {
-        if (!bellstate) {
+        if (bellstate == false) {
           // $('#navbell').addClass("text-dark");
           // $('#navbell').removeClass("text-danger");
           $('#navbell').hide();
+          $('#navbellBtn').hide();
           bellstate = true
         } else {
           // $('#navbell').removeClass("text-dark");
           // $('#navbell').addClass("text-danger");
           $('#navbell').show();
+          $('#navbellBtn').show();
           bellstate = false
         }
       } else {

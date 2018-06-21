@@ -28,14 +28,18 @@ function confirmQuit() {
 function connectionPanel() {
   $('#connectionPanel').show()
   $('#manualControlPanel').hide()
+  $('#jobPanel').hide()
+
 }
 
 function manualcontrolPanel() {
   $('#connectionPanel').hide()
   $('#manualControlPanel').show()
+  $('#jobPanel').hide()
 }
 
 function jobcontrolPanel() {
   $('#connectionPanel').hide()
   $('#manualControlPanel').hide()
+  $('#jobPanel').show()
 }

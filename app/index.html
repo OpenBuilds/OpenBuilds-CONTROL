@@ -52,12 +52,6 @@
             <div class="group" style="width: 140px;">
               <div id="grblButtons" style="display: none;">
                 <div class="ribbon-group">
-                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
-                    <span class="icon">
-                      <span class="mif-unlock"></span>
-                    </span>
-                    <span class="caption">Unlock</span>
-                  </button>
                   <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
                     <span class="icon">
                       <span class="mif-loop"></span>
@@ -82,6 +76,52 @@
           </div>
           <div class="section" id="section-two">
             <div class="group" style="width: calc(100vw - 40px);">
+              <label href="#" class="ribbon-button btn-file m-2" title="Open a GCODE file">
+                <span class="icon">
+                  <i class="far fa-folder-open fg-amber"></i>
+                </span>
+                <input id="file" type="file" accept=".gcode, .gc, .tap, .nc" />
+                <span class="caption">Open<br>GCODE</span>
+              </label>
+              <!-- <button class="ribbon-button">
+                <span class="icon">
+                  <i class="far fa-folder-opene"></i>
+                </span>
+                <span class="caption">Home<br>All</span>
+              </button> -->
+
+              <button class="ribbon-button" onclick="sendGcode('$H')">
+                <span class="icon">
+                  <i class="fas fa-home"></i>
+                </span>
+                <span class="caption">Home<br>All</span>
+              </button>
+              <button class="ribbon-button" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
+                <span class="icon">
+                  <i class="fas fa-crosshairs"></i>
+                </span>
+                <span class="caption">Set<br>Zero</span>
+              </button>
+              <button class="ribbon-button" onclick="socket.emit('runJob', gcode)">
+                <span class="icon">
+                  <i class="fas fa-play fg-green"></i>
+                </span>
+                <span class="caption fg-green">Run<br>Job</span>
+              </button>
+
+              <button class="ribbon-button" onclick="socket.emit('pause', true)">
+                <span class="icon">
+                  <i class="fas fa-pause"></i>
+                </span>
+                <span class="caption">Pause</span>
+              </button>
+
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <i class="fas fa-stop fg-red"></i>
+                </span>
+                <span class="caption fg-red">Abort<br>Job</span>
+              </button>
               <button class="ribbon-button" onclick="sendGcode('M3 S1000')">
                 <span class="icon">
                   <span class="fa-layers fa-fw">
@@ -101,23 +141,14 @@
                 </span>
                 <span class="caption">Tool<br>Off</span>
               </button>
-              <button class="ribbon-button" onclick="sendGcode('$H')">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
-                  <i class="fas fa-home"></i>
+                  <span class="fa-layers " data-toggle="tooltip " data-placement="bottom " title="Flashes red when machine has entered ALARM state, click Clear Alarm button ">
+                    <i id="navbellBtn" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell "></i>
+                  </span>
                 </span>
-                <span class="caption">Home<br>All</span>
-              </button>
-              <button class="ribbon-button" onclick="sendGcode('$X')">
-                <span class="icon">
-                  <i class="fas fa-unlock-alt"></i>
-                </span>
-                <span class="caption">Unlock</span>
-              </button>
-              <button class="ribbon-button" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
-                <span class="icon">
-                  <i class="fas fa-crosshairs"></i>
-                </span>
-                <span class="caption">Set<br>Zero</span>
+                <span class="caption">Clear<br>Alarm</span>
               </button>
               <span class="title">Control</span>
             </div>
@@ -135,59 +166,7 @@
           </div>
           <div class="section" id="section-three">
             <div class="group" style="width: 300px;">
-              <button class="ribbon-button" onclick="sendGcode('$H')">
-                <span class="icon">
-                  <i class="fas fa-home"></i>
-                </span>
-                <span class="caption">Home<br>All</span>
-              </button>
-
-              <button class="ribbon-button">
-                <span class="icon">
-                  <i class="fas fa-play"></i>
-                </span>
-                <span class="caption">Run<br>Job</span>
-              </button>
-
-              <button class="ribbon-button">
-                <span class="icon">
-                  <i class="fas fa-pause"></i>
-                </span>
-                <span class="caption">Pause</span>
-              </button>
-
-              <button class="ribbon-button">
-                <span class="icon">
-                  <i class="fas fa-stop"></i>
-                </span>
-                <span class="caption">Abort<br>Job</span>
-              </button>
-
-              <button class="ribbon-button" onclick="socket.emit('clearAlarm', true)">
-                <span class="icon">
-                  <i class="fas fa-bell-slash"></i>
-                </span>
-                <span class="caption">Clear<br>Alarm</span>
-              </button>
-
-              <button class="ribbon-button" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
-                <span class="icon">
-                  <i class="fas fa-crosshairs"></i>
-                </span>
-                <span class="caption">Set<br>Zero</span>
-              </button>
-
-
-              <!-- <button class="ribbon-button">
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="far fa-square"></i>
-                    <i class="fas fa-arrows-alt" data-fa-transform="shrink-6 left-0.3"></i>
-                  </span>
-                </span>
-                <span class="caption">Check<br>Size</span>
-              </button> -->
-
+              <!--  -->
               <span class="title">Job Control</span>
             </div>
             <div class="group" style="width: calc(100vw - 350px);">
@@ -377,76 +356,9 @@
             </tr>
           </table>
         </center>
-
-        <!-- <div class="grid ">
-          <div class="row ">
-            <div class="cell-4 ">
-              <input style="text-align: right; " class="m-1 alert " data-prepend="X " data-role="input " data-clear-button="false " data-role="input " id="xPos " type="text " autocomplete="on " readonly value="0.00 " />
-              <input style="text-align: right; " class="m-1 success " data-prepend="Y " data-role="input " data-clear-button="false " data-role="input " id="yPos " type="text " autocomplete="on " readonly value="0.00 " />
-              <input style="text-align: right; " class="m-1 primary " data-prepend="Z " data-role="input " data-clear-button="false " data-role="input " id="zPos " type="text " autocomplete="on " readonly value="0.00 " />
-            </div>
-            <div class="cell-7 ">
-              <div data-role="buttongroup " data-cls-active="bg-red fg-white ">
-                <button class="button ">0.1mm</button>
-                <button class="button ">1mm</button>
-                <button class="button ">10mm</button>
-                <button class="button ">100mm</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-
-
-
-
-        <!-- <button class="button large ">
-          <span class="fa-layers fa-fw fa-2x ">
-            <i class="fas fa-arrow-right " data-fa-transform=" grow-4.5 left-2.5 down-1.5 "></i>
-            <span class="fa-layers-text " data-fa-transform="grow-4.5 shrink-11.5 rotate-90 down-1.5 right-10.5 " style="font-weight:900 ">X+</span>
-          </span>
-        </button> -->
-        <!-- <div class="tiles-grid ">
-
-          <div data-role="tile " data-size="small " class="bg-red tile-small " style="grid-column-start: 2; grid-row: 1 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-up " data-fa-transform="shrink-6 up-2.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 down-5 left-1.5 " style="font-weight:900 ">Y+</span>
-            </span>
-          </div>
-          <div data-role="tile " data-size="small " class="bg-red tile-small " style="grid-column-start: 2; grid-row: 2 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-down " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">Y-</span>
-            </span>
-          </div>
-
-          <div data-role="tile " data-size="small " class="bg-green tile-small " style="grid-column-start: 1; grid-row: 2 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-left " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">X-</span>
-            </span>
-          </div>
-          <div data-role="tile " data-size="small " class="bg-green tile-small " style="grid-column-start: 3; grid-row: 2 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-right " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">X+</span>
-            </span>
-          </div>
-
-          <div data-role="tile " data-size="small " class="bg-blue tile-small " style="grid-column-start: 4; grid-row: 1 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-up " data-fa-transform="shrink-6 up-2.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 down-5 left-1.5 " style="font-weight:900 ">Z+</span>
-            </span>
-          </div>
-          <div data-role="tile " data-size="small " class="bg-blue tile-small " style="grid-column-start: 4; grid-row: 2 ">
-            <span class="fa-layers fa-fw fa-4x ">
-              <i class="fas fa-arrow-down " data-fa-transform="shrink-6 down-3.5 left-1.5 "></i>
-              <span class="fa-layers-text fa-inverse " data-fa-transform="shrink-10 up-4.5 left-1.5 " style="font-weight:900 ">Z-</span>
-            </span>
-          </div>
-        </div>-->
+      </div>
+      <div id="jobPanel" style="display: none;">
+        <!--  -->
       </div>
       <!-- Bottom StatusBar -->
       <div class="fixed-bottom ">
@@ -455,25 +367,25 @@
             <div>
               <span class="badge inline bg-gray fg-white " style="width: 100%; ">
                 <span class="fa-layers " data-toggle="tooltip " data-placement="bottom " title="Flashes red when machine has entered ALARM state, click Clear Alarm button ">
+                  <i id="navbell" class="fas fa-bell fg-red" style="display: none;"></i>
                   <i class="far fa-bell "></i>
-                  <i id="navbell " class="fas fa-bell text-danger "></i>
                 </span>
               </span>
             </div>
           </div>
           <div class="cell-3 ">
             <div>
-              <span class="badge inline bg-gray fg-white " id="connectStatus " style="width: 100%; ">Not Connected</span>
+              <span class="badge inline bg-gray fg-white " id="connectStatus" style="width: 100%; ">Not Connected</span>
             </div>
           </div>
           <div class="cell-3 ">
             <div>
-              <span class="badge inline bg-gray fg-white " id="runStatus " style="width: 100%; ">Not Connected</span>
+              <span class="badge inline bg-gray fg-white " id="runStatus" style="width: 100%; ">Not Connected</span>
             </div>
           </div>
           <div class="cell-3 ">
             <div>
-              <span class="badge inline bg-gray fg-white " id="gcodesent " style="width: 100%; ">Queue: 0</span>
+              <span class="badge inline bg-gray fg-white " id="gcodesent" style="width: 100%; ">Queue: 0</span>
             </div>
           </div>
         </div>
