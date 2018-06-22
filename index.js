@@ -248,33 +248,34 @@ SerialPort.list(function(err, ports) {
 });
 
 var PortCheckinterval = setInterval(function() {
-  SerialPort.list(function(err, ports) {
-    status.comms.interfaces.ports = ports;
-    // If we found a new port?
-    if (!_.isEqual(ports, oldportslist)) {
-      var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
-      if (newPorts.length > 0) {
-        console.log("Plugged " + newPorts[0].comName);
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver Detected a new Port",
-          content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
-        })
+  if (status.comms.connectionStatus == 0) {
+    SerialPort.list(function(err, ports) {
+      status.comms.interfaces.ports = ports;
+      if (!_.isEqual(ports, oldportslist)) {
+        var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
+        if (newPorts.length > 0) {
+          console.log("Plugged " + newPorts[0].comName);
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver Detected a new Port",
+            content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
+          })
+        }
+        var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
+        if (removedPorts.length > 0) {
+          console.log("Unplugged " + removedPorts[0].comName);
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver Detected a disconnected Port",
+            content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
+          })
+        }
       }
-      var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
-      if (removedPorts.length > 0) {
-        console.log("Unplugged " + removedPorts[0].comName);
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver Detected a disconnected Port",
-          content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
-        })
-      }
-    }
 
 
-    oldportslist = ports;
-  });
+      oldportslist = ports;
+    });
+  }
 }, 500);
 
 app.use(express.static(path.join(__dirname, "app")));
@@ -714,6 +715,11 @@ io.on("connection", function(socket) {
         }
 
       }
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Job Started",
+        content: "OpenBuilds Machine Driver started a job: Job Size: " + data.length + " lines of GCODE"
+      })
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -840,6 +846,11 @@ io.on("connection", function(socket) {
           break;
       }
       send1Q();
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Work Coordinate System Reset",
+        content: "OpenBuilds Machine Driver has reset the WCS on the " + data + " axes."
+      })
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1125,7 +1136,7 @@ io.on("connection", function(socket) {
         case 'grbl':
           machineSend('!'); // Send hold command
           console.log('Sent: !');
-          if (fVersion === '1.1d') {
+          if (status.machine.firmware.version === '1.1d') {
             machineSend(String.fromCharCode(0x9E)); // Stop Spindle/Laser
             console.log('Sent: Code(0x9E)');
           }
@@ -1138,6 +1149,11 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Paused';
       status.comms.connectionStatus = 4;
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Job Paused",
+        content: "OpenBuilds Machine Driver paused the job"
+      })
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1164,6 +1180,11 @@ io.on("connection", function(socket) {
       }, 200);
       status.comms.runStatus = 'Resuming';
       status.comms.connectionStatus = 3;
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Job Resumed",
+        content: "OpenBuilds Machine Driver resumed the job"
+      })
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1206,6 +1227,11 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped';
       status.comms.connectionStatus = 5;
       isAlarmed = true;
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Job Aborted",
+        content: "OpenBuilds Machine Driver was asked to abort the running job.  We placed the Machine into the Alarm state, to avoid accidental moves, as after an Abort, you may need to manually intervene and raise the bit from inside a cut, or otherwise prevent a crash before continuing."
+      })
       // status.comms.connectionStatus = 2;
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1260,6 +1286,11 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
       isAlarmed = false;
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver: Alarm Cleared",
+        content: "OpenBuilds Machine Driver has cleared the Alarm Condition, you may continue"
+      })
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1406,6 +1437,11 @@ function send1Q() {
         console.log("Job finished at " + finishTime.toString());
         console.log("Elapsed time: " + elapsedTime + " seconds.");
         console.log('Ave. Speed: ' + speed + ' lines/s');
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Job Completed!",
+          content: "OpenBuilds Machine Driver completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
+        })
       }
       gcodeQueue.length = 0; // Dump the Queye
       grblBufferSize.length = 0; // Dump bufferSizes

@@ -17,7 +17,7 @@
   padding-left: 6px;
   line-height: 40px;
   border-radius: 6px;
-  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  box-shadow: 1px 1px 2px #aaa, inset 0px 2px 3px #fff;
   border: solid 1px transparent;
   font-weight:900;
   font-size: 18px;
@@ -40,7 +40,7 @@
   text-align: center;
   line-height: 50px;
   border-radius: 6px;
-  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  box-shadow: 1px 1px 4px #aaa, inset 0px 2px 3px #fff;
   border: solid 1px transparent;
 }
 

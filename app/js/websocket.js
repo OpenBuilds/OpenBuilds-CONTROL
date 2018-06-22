@@ -112,8 +112,11 @@ function initSocket() {
   }
 
   socket.on("queueCount", function(data) {
-    // if(laststatus.comms.connectionStatus > 2) {
-    // editor.gotoLine(parseInt(data[1]) - parseInt(data[0]) )
+    if (laststatus) {
+      if (laststatus.comms.connectionStatus == 3) {
+        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]))
+      }
+    }
     $('#gcodesent').html("Queue: " + parseInt(data[0]));
     // }
     sduploading = data[2];
@@ -142,12 +145,14 @@ function initSocket() {
       // $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Not Connected");
       $("#disconnectBtn").hide();
+      $("#connectBtn").attr('disabled', false);
+      $(".grblmode").attr('disabled', true);
+      $("#playpauseresumelabel").html("Run<br>Job")
+      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
+      $("#jogcontrols").slideUp("fast");
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      editor.resize()
       $("#connectBtn").show();
-      $("#playbtn").prop('disabled', true);
-      $("#pausebtn").prop('disabled', true);
-      $("#stopbtn").prop('disabled', true);
-      $("#clralarmbtn").prop('disabled', true);
-      $("#sdtogglemodal").prop('disabled', true);
       if (!$('#command').attr('disabled')) {
         $('#command').attr('disabled', true);
       }
@@ -164,12 +169,19 @@ function initSocket() {
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
       $("#connectBtn").hide();
+      $("#connectBtn").attr('disabled', false);
       $("#disconnectBtn").show();
-      $("#playbtn").prop('disabled', false);
-      $("#pausebtn").prop('disabled', true);
-      $("#stopbtn").prop('disabled', true);
-      $("#clralarmbtn").prop('disabled', true);
-      $("#sdtogglemodal").prop('disabled', false);
+      $(".grblmode").attr('disabled', false);
+      $("#playpauseresumelabel").html("Run<br>Job")
+      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
+      $("#jogcontrols").slideDown("fast");
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 400 + 'px)');
+      editor.resize()
+      if (editor.session.getLength() < 2) {
+        $("#runBtn").attr('disabled', true);
+      } else {
+        $("#runBtn").attr('disabled', false);
+      }
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
       $('#portUSB').parent(".select").addClass('disabled')
@@ -179,12 +191,14 @@ function initSocket() {
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
       $("#connectBtn").hide();
+      $("#connectBtn").attr('disabled', false);
       $("#disconnectBtn").show();
-      $("#playbtn").prop('disabled', true);
-      $("#pausebtn").prop('disabled', false);
-      $("#stopbtn").prop('disabled', false);
-      $("#clralarmbtn").prop('disabled', true);
-      $("#sdtogglemodal").prop('disabled', true);
+      $(".grblmode").attr('disabled', false);
+      $("#playpauseresumelabel").html("Pause<br>Job")
+      $("#playpauseresumeicon").html("<i class='fas fa-pause'></i>")
+      $("#jogcontrols").slideUp("fast");
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      editor.resize()
       $("#command").attr('disabled', true);
       $("#sendCommand").prop('disabled', true);
       $('#portUSB').parent(".select").addClass('disabled')
@@ -194,12 +208,14 @@ function initSocket() {
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
       $("#connectBtn").hide();
+      $("#connectBtn").attr('disabled', false);
       $("#disconnectBtn").show();
-      $("#playbtn").prop('disabled', false);
-      $("#pausebtn").prop('disabled', false);
-      $("#stopbtn").prop('disabled', false);
-      $("#clralarmbtn").prop('disabled', true);
-      $("#sdtogglemodal").prop('disabled', true);
+      $(".grblmode").attr('disabled', false);
+      $("#playpauseresumelabel").html("Resume<br>Job")
+      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
+      $("#jogcontrols").slideDown("fast")
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 400 + 'px)');
+      editor.resize()
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
       $('#portUSB').parent(".select").addClass('disabled')
@@ -209,12 +225,12 @@ function initSocket() {
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
       $("#connectBtn").hide();
+      $("#connectBtn").attr('disabled', false);
       $("#disconnectBtn").show();
-      $("#playbtn").prop('disabled', true);
-      $("#pausebtn").prop('disabled', true);
-      $("#stopbtn").prop('disabled', true);
-      $("#clralarmbtn").prop('disabled', false);
-      $("#sdtogglemodal").prop('disabled', true);
+      $(".grblmode").attr('disabled', true);
+      $("#jogcontrols").hide();
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      editor.resize()
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
       $('#portUSB').parent(".select").addClass('disabled')
@@ -356,10 +372,10 @@ function sendGcode(gcode) {
   }
 }
 
-function ContextLineRun() { //Rightclick Contextmenu in Ace editor: Send single line of gcode
-  sendGcode(editor.session.getLine(editor.getSelectionRange().start.row));
-  $('#editorContextMenu').hide();
-}
+// function ContextLineRun() { //Rightclick Contextmenu in Ace editor: Send single line of gcode
+//   sendGcode(editor.session.getLine(editor.getSelectionRange().start.row));
+//   $('#editorContextMenu').hide();
+// }
 
 function sdListPopulate() {
   $('#sdfilelist').empty();
@@ -418,28 +434,6 @@ function sdUpload() {
   data.push(filename)
   data.push(gcode)
   socket.emit("saveToSd", data)
-}
-
-function runJob() {
-  var gcode = editor.getValue()
-  socket.emit("runJob", gcode)
-}
-
-function stopJob() {
-  socket.emit("stop", 1)
-  // socket.emit("clearAlarm", 2)
-}
-
-function pauseJob() {
-  if (laststatus.comms.connectionStatus == 3) {
-    socket.emit("pause", 1)
-  } else if (laststatus.comms.connectionStatus == 4) {
-    socket.emit("resume", 1)
-  }
-}
-
-function clearAlarm() {
-  socket.emit("clearAlarm", 2)
 }
 
 function friendlyPort(i) {
