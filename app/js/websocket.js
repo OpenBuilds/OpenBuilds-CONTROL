@@ -165,6 +165,7 @@ function initSocket() {
       $('#portUSB').parent(".select").addClass('success')
       $('#portUSB').parent(".select").removeClass('alert')
       showGrbl(false)
+      bellstate = false
     } else if (status.comms.connectionStatus == 1 || status.comms.connectionStatus == 2) { // Connected, but not Playing yet
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
@@ -187,6 +188,7 @@ function initSocket() {
       $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
+      bellstate = false
     } else if (status.comms.connectionStatus == 3) { // Busy Streaming GCODE
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
@@ -204,6 +206,7 @@ function initSocket() {
       $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
+      bellstate = false
     } else if (status.comms.connectionStatus == 4) { // Paused
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
@@ -221,6 +224,7 @@ function initSocket() {
       $('#portUSB').parent(".select").addClass('disabled')
       $('#portUSB').parent(".select").removeClass('success')
       $('#portUSB').parent(".select").addClass('alert')
+      bellstate = false
     } else if (status.comms.connectionStatus == 5) { // Alarm State
       $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Connected");
@@ -322,22 +326,24 @@ function initSocket() {
 
   var bellflash = setInterval(function() {
     if (!nostatusyet) {
-      if (laststatus.comms.connectionStatus == 5) {
-        if (bellstate == false) {
-          // $('#navbell').addClass("text-dark");
-          // $('#navbell').removeClass("text-danger");
-          $('#navbell').hide();
-          $('#navbellBtn').hide();
-          bellstate = true
+      if (laststatus) {
+        if (laststatus.comms.connectionStatus == 5) {
+          if (bellstate == false) {
+            // $('#navbell').addClass("text-dark");
+            // $('#navbell').removeClass("text-danger");
+            $('#navbell').hide();
+            $('#navbellBtn').hide();
+            bellstate = true
+          } else {
+            // $('#navbell').removeClass("text-dark");
+            // $('#navbell').addClass("text-danger");
+            $('#navbell').show();
+            $('#navbellBtn').show();
+            bellstate = false
+          }
         } else {
-          // $('#navbell').removeClass("text-dark");
-          // $('#navbell').addClass("text-danger");
-          $('#navbell').show();
-          $('#navbellBtn').show();
-          bellstate = false
+          $('#navbell').hide();
         }
-      } else {
-        $('#navbell').hide();
       }
     }
   }, 200);

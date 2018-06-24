@@ -86,7 +86,7 @@
                 <span class="icon">
                   <i class="far fa-folder-open fg-amber"></i>
                 </span>
-                <input id="file" type="file" accept=".gcode, .gc, .tap, .nc" />
+                <input id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />
                 <span class="caption">Open<br>GCODE</span>
               </label>
               <button class="ribbon-button grblmode" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
@@ -213,11 +213,11 @@
 
                 <td>
                   <a href="#" class="glossybtn grblmode" id="yP">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-up fg-green" data-fa-transform="grow-4 down-18.5"></i>
-                  <span class="fa-layers-text fg-green" data-fa-transform="up-14" style="font-weight:900">Y+</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-up fg-green" data-fa-transform="grow-4 down-8.5"></i>
+                      <span class="fa-layers-text fg-green" data-fa-transform="up-14" style="font-weight:900">Y+</span>
+                    </span>
+                  </a>
                 </td>
 
                 <td>
@@ -228,39 +228,39 @@
 
                 <td>
                   <a href="#" class="glossybtn grblmode" id="zP">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-up fg-blue" data-fa-transform="grow-4 down-18.5"></i>
-                  <span class="fa-layers-text fg-blue" data-fa-transform="up-14" style="font-weight:900">Z+</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-up fg-blue" data-fa-transform="grow-2 down-8.5"></i>
+                      <span class="fa-layers-text fg-blue" data-fa-transform="up-14" style="font-weight:900">Z+</span>
+                    </span>
+                  </a>
                 </td>
               </tr>
               <tr>
                 <td>
                   <a href="#" class="glossybtn grblmode" id="xM">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-left fg-red" data-fa-transform="grow-4 up-10.5"></i>
-                  <span class="fa-layers-text fg-red" data-fa-transform="down-22" style="font-weight:900">X-</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-left fg-red" data-fa-transform="grow-2 up-10.5"></i>
+                      <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X-</span>
+                    </span>
+                  </a>
                 </td>
 
                 <td>
                   <a href="#" class="glossybtn grblmode" id="yM">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-down fg-green" data-fa-transform="grow-4 up-10.5"></i>
-                  <span class="fa-layers-text fg-green" data-fa-transform="down-22" style="font-weight:900">Y-</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-down fg-green" data-fa-transform="grow-2 up-10.5"></i>
+                      <span class="fa-layers-text fg-green" data-fa-transform="down-10" style="font-weight:900">Y-</span>
+                    </span>
+                  </a>
                 </td>
 
                 <td>
                   <a href="#" class="glossybtn grblmode" id="xP">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-right fg-red" data-fa-transform="grow-4 up-10.5"></i>
-                  <span class="fa-layers-text fg-red" data-fa-transform="down-22" style="font-weight:900">X+</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-right fg-red" data-fa-transform="grow-2 up-10.5"></i>
+                      <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X+</span>
+                    </span>
+                  </a>
                 </td>
 
                 <td>
@@ -268,63 +268,59 @@
 
                 <td>
                   <a href="#" class="glossybtn grblmode" id="zM">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-10.5"></i>
-                  <span class="fa-layers-text fg-blue" data-fa-transform="down-22" style="font-weight:900">Z-</span>
-                </span>
-              </a>
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-2 up-10.5"></i>
+                      <span class="fa-layers-text fg-blue" data-fa-transform="down-10" style="font-weight:900">Z-</span>
+                    </span>
+                  </a>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; width: 150px; line-height: 25px;" id="gotozero">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span class="fa-layers-text fg-amber" data-fa-transform="down-1" style="font-weight:900">GOTOZERO</span>
-                </span>
-              </a>
+                  <a href="#" class="glossybtn grblmode" style="height: 30px; width: 140px; line-height: 27px;" id="gotozero">
+                    <span class=" fa-layers fa-fw">
+                      <span class="fa-layers-text fg-amber" data-fa-transform="down-1" style="font-weight:900; font-family: Arial; font-size: 12px;">GOTOZERO</span>
+                    </span>
+                  </a>
                 </td>
                 <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 25px;" id="dist01">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-weight:900">0.1mm</span>
-                </span>
-              </a>
+                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist01">
+                    <span class=" fa-layers fa-fw">
+                      <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">0.1mm</span>
+                    </span>
+                  </a>
                 </td>
                 <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 25px;" id="dist1">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-weight:900">1mm</span>
-                </span>
-              </a>
+                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist1">
+                    <span class=" fa-layers fa-fw">
+                      <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">1mm</span>
+                    </span>
+                  </a>
                 </td>
                 <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 25px;" id="dist10">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1" style="font-weight:900">10mm</span>
-                </span>
-              </a>
+                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist10">
+                    <span class=" fa-layers fa-fw">
+                      <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">10mm</span>
+                    </span>
+                  </a>
                 </td>
                 <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 25px;" id="dist100">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-weight:900">100mm</span>
-                </span>
-              </a>
-                </td>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 25px;" id="dist500">
-                <span class=" fa-layers fa-fw">
-                  <!-- <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-4 up-5.5"></i> -->
-                  <span id="dist500label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-weight:900">500mm</span>
-                </span>
-              </a>
-                </td>
 
+                </td>
+                <td>
+                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist100">
+                    <span class=" fa-layers fa-fw">
+                      <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">100mm</span>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                </td>
+                <td colspan="5">
+                  <input data-role="slider" data-accuracy="5" data-hint-always="true" data-hint-position="right" data-hint-mask="Feed: $1%">
+                </td>
               </tr>
             </table>
           </div>

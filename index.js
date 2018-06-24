@@ -280,6 +280,7 @@ var PortCheckinterval = setInterval(function() {
 
 app.use(express.static(path.join(__dirname, "app")));
 
+
 app.on('certificate-error', function(event, webContents, url, error,
   certificate, callback) {
   event.preventDefault();
@@ -1465,6 +1466,23 @@ function parseFeedback(data) {
   // console.log(data)
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
+  if (state == "Alarm") {
+    console.log("ALARM:  " + data)
+    status.comms.connectionStatus = 5;
+    isAlarmed = true;
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        grblBufferSize.shift();
+        var alarmCode = parseInt(data.split(':')[1]);
+        console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+        break;
+      case 'smoothie':
+        status.comms.alarm = data;
+        break;
+    }
+    status.comms.connectionStatus = 5;
+  }
   if (status.machine.firmware.type == "grbl") {
     // Extract wPos (for Grbl > 1.1 only!)
     var startWPos = data.search(/wpos:/i) + 5;
