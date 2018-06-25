@@ -1,5 +1,8 @@
 #laserweb
 
+#electron dist
+dist
+
 # Compiled source #
 ###################
 *.com
