@@ -174,16 +174,19 @@ function grblSaveSettings() {
       }
     }
   }
+  grblParams = {};
   refreshGrblSettings();
 }
 
 function refreshGrblSettings() {
+  grblParams = {};
   $('#grblconfig').empty();
-  $('#grblconfig').append("Please Wait...");
+  $('#grblconfig').append("<center>Please Wait... </center><br><div data-role='countdown' data-seconds='3'></div>");
   setTimeout(function() {
+    sendGcode('$$');
     setTimeout(function() {
-      sendGcode('$$');
-    }, 200);
-    grblPopulate();
-  }, 2200);
+      grblPopulate();
+    }, 3000);
+  }, 200);
+
 }
