@@ -51,8 +51,6 @@ function grblSettings(data) {
 }
 
 function grblPopulate() {
-  console.log('called already')
-  $('#grblPlaceholder').hide();
   $('#grblconfig').show();
   $('#grblconfig').empty();
   var template = `
@@ -168,12 +166,14 @@ function grblSaveSettings() {
   for (var key in grblParams) {
     if (grblParams.hasOwnProperty(key)) {
       var j = key.substring(1)
-      var newVal = parseFloat($("#val-" + j + "-input").val());
-      console.log(key + '=' + newVal);
-      sendGcode(key + '=' + newVal);
+      var newVal = $("#val-" + j + "-input").val();
+      // Only send values that changed
+      if (parseFloat(newVal) != parseFloat(grblParams[key])) {
+        console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
+        sendGcode(key + '=' + newVal);
+      }
     }
   }
-  $('#grblPlaceholder').show();
   $('#grblconfig').empty();
   $('#grblconfig').append("Please Wait...");
   sendGcode('$$');
