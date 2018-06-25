@@ -121,12 +121,12 @@ function initSocket() {
 
   socket.on('toastError', function(data) {
     // console.log("toast", data)
-    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 5000, "bg-red fg-white");
+    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
     //
   });
   socket.on('toastSuccess', function(data) {
     console.log("toast", data)
-    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 5000, "bg-green fg-white");
+    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-green fg-white");
     //
   });
 
@@ -342,20 +342,23 @@ function initSocket() {
       if (laststatus) {
         if (laststatus.comms.connectionStatus == 5) {
           if (bellstate == false) {
-            // $('#navbell').addClass("text-dark");
-            // $('#navbell').removeClass("text-danger");
             $('#navbell').hide();
-            $('#navbellBtn').hide();
+            $('#navbellBtn1').hide();
+            $('#navbellBtn2').hide();
+            $('#navbellBtn3').hide();
             bellstate = true
           } else {
-            // $('#navbell').removeClass("text-dark");
-            // $('#navbell').addClass("text-danger");
             $('#navbell').show();
-            $('#navbellBtn').show();
+            $('#navbellBtn1').show();
+            $('#navbellBtn2').show();
+            $('#navbellBtn3').show();
             bellstate = false
           }
         } else {
           $('#navbell').hide();
+          $('#navbellBtn1').hide();
+          $('#navbellBtn2').hide();
+          $('#navbellBtn3').hide();
         }
       }
     }

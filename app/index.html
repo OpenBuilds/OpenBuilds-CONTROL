@@ -31,6 +31,7 @@
       <nav data-role="ribbonmenu" class="mt-1">
         <ul class="tabs-holder">
           <li><a href="#section-one" onclick="connectionPanel();">Connection</a></li>
+          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();">Grbl Settings</a></li>
           <li><a href="#section-two" onclick="manualcontrolPanel();">Control</a></li>
         </ul>
         <div class="content-holder">
@@ -48,7 +49,7 @@
               </div>
               <span class="title">Machine Interface</span>
             </div>
-            <div class="group" style="width: 140px;">
+            <div class="group" style="width: 190px;">
               <div id="grblButtons" style="display: none;">
                 <div class="ribbon-group">
                   <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
@@ -57,17 +58,72 @@
                     </span>
                     <span class="caption">Reset</span>
                   </button>
-                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                  <!-- <button class="ribbon-icon-button" onclick="sendGcode('$X')">
                     <span class="icon">
                       <span class="mif-unlock"></span>
                     </span>
                     <span class="caption">Unlock</span>
+                  </button> -->
+                  <button class="ribbon-icon-button" onclick="sendGcode('$$')">
+                    <span class="icon">
+                      <span class="mif-cogs"></span>
+                    </span>
+                    <span class="caption">Settings</span>
                   </button>
                 </div>
               </div>
               <span class="title" id="firmwarename"></span>
             </div>
-            <div class="group" style="width: 50px;">
+            <div class="group" style="width: 100px;">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                <span class="icon">
+                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                    <i id="navbellBtn1" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell"></i>
+                  </span>
+                </span>
+                <span class="caption">Unlock<br>Alarm</span>
+              </button>
+              <button class="ribbon-button" onclick="socket.emit('stop', true);">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+                <span class="caption">Stop<br>Job</span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+          </div>
+          <div class="section" id="section-grbl">
+            <div class="group" style="width: calc(100vw - 40px);">
+              <button class="ribbon-button" onclick="grblSaveSettings();">
+                <span class="icon">
+                    <i class="fas fa-save fg-grayBlue" data-fa-transform="grow-8"></i>
+                  </span>
+                </span>
+                <span class="caption">Save<br> to Firmware</span>
+              </button>
+              <button class="ribbon-button" onclick="$('#grblPlaceholder').show(); $('#grblconfig').hide();sendGcode('$$');">
+                <span class="icon">
+                    <i class="fas fa-sync-alt"></i>
+                  </span>
+                </span>
+                <span class="caption">Refresh<br>from Firmware</span>
+              </button>
+              <span class="title">Grbl Settings</span>
+            </div>
+            <div class="group" style="width: 100px;">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                <span class="icon">
+                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                    <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell"></i>
+                  </span>
+                </span>
+                <span class="caption">Unlock<br>Alarm</span>
+              </button>
               <button class="ribbon-button" onclick="socket.emit('stop', true)">
                 <span class="icon">
                   <span class="fa-layers fa-fw">
@@ -81,7 +137,7 @@
             </div>
           </div>
           <div class="section" id="section-two">
-            <div class="group" style="width: calc(100vw - 40px);">
+            <div class="group" style="width: calc(100vw - 90px);">
               <label href="#" class="ribbon-button btn-file m-2" title="Open a GCODE file">
                 <span class="icon">
                   <i class="far fa-folder-open fg-amber"></i>
@@ -95,7 +151,6 @@
                 </span>
                 <span id="playpauseresumelabel" class="caption">Run<br>Job</span>
               </button>
-
               <div>
                 <button class="ribbon-button dropdown-toggle grblmode">
                     <span class="icon">
@@ -127,18 +182,18 @@
                 </span>
                 <span class="caption grblmode">Home<br>All</span>
               </button>
+              <span class="title">Control</span>
+            </div>
+            <div class="group" style="width: 100px;">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                    <i id="navbellBtn" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i id="navbellBtn2" class="fas fa-bell fg-red" style="display: none;"></i>
                     <i class="far fa-bell"></i>
                   </span>
                 </span>
-                <span class="caption">Clear<br>Alarm</span>
+                <span class="caption">Unlock<br>Alarm</span>
               </button>
-              <span class="title">Control</span>
-            </div>
-            <div class="group" style="width: 50px;">
               <button class="ribbon-button" onclick="socket.emit('stop', true)">
                 <span class="icon">
                   <span class="fa-layers fa-fw">
@@ -328,12 +383,12 @@
                 </table>
               </div>
               <div class="cell" id="frocell">
-                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="5" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%"
+                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="10" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%"
                   data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-grayBlue">
               </div>
               <div class="cell" id="trocell">
-                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="5" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="10" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
                   data-hint-mask="Tool: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-grayBlue">
               </div>
@@ -341,6 +396,9 @@
           </div>
           <div id="editor"></div>
         </center>
+      </div>
+      <div id="grblPanel">
+        <div id="grblconfig"></div>
       </div>
 
       <!-- Bottom StatusBar -->

@@ -687,9 +687,9 @@ io.on("connection", function(socket) {
             case 'grbl':
               grblBufferSize.shift();
               var errorCode = parseInt(data.split(':')[1]);
-              console.log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode));
-              io.sockets.emit('data', 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode));
-              socket.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode))
+              console.log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
+              io.sockets.emit('data', 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
+              socket.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
               break;
             case 'smoothie':
               io.sockets.emit('data', data);
@@ -1353,6 +1353,7 @@ function machineSend(gcode) {
   if (port.isOpen) {
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length
+    // console.log("Q: " + queueLeft)
     var data = []
     data.push(queueLeft);
     data.push(queueTotal);
@@ -1484,20 +1485,20 @@ function parseFeedback(data) {
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
-    console.log("ALARM:  " + data)
+    // console.log("ALARM:  " + data)
     status.comms.connectionStatus = 5;
     isAlarmed = true;
     switch (status.machine.firmware.type) {
       case 'grbl':
         grblBufferSize.shift();
         var alarmCode = parseInt(data.split(':')[1]);
-        console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        // console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
         status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
-        if (alarmCode == 10) {
-          io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - Locked. Please Unlock or Clear Alarm');
-        } else {
-          io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
-        }
+        // if (alarmCode == 10) {
+        //   io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - Locked. Please Unlock or Clear Alarm');
+        // } else {
+        //   io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        // }
         break;
       case 'smoothie':
         status.comms.alarm = data;

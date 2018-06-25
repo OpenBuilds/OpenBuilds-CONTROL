@@ -28,18 +28,19 @@ function confirmQuit() {
 function connectionPanel() {
   $('#connectionPanel').show()
   $('#manualControlPanel').hide()
-  $('#jobPanel').hide()
+  $('#grblPanel').hide()
 
 }
 
 function manualcontrolPanel() {
   $('#connectionPanel').hide()
   $('#manualControlPanel').show()
-  $('#jobPanel').hide()
+  $('#grblPanel').hide()
 }
 
-function jobcontrolPanel() {
+function grblPanel() {
+  grblPopulate();
   $('#connectionPanel').hide()
   $('#manualControlPanel').hide()
-  $('#jobPanel').show()
+  $('#grblPanel').show()
 }
