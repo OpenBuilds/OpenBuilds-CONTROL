@@ -11,10 +11,12 @@ body {
 }
 
 #editor {
-    min-height: calc(100vh - 385px);
-    height: calc(100vh - 385px);
+    /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
+    min-height: calc(100vh - 415px);
+    height: calc(100vh - 415px);
     width: 100%;
     border-top: 1px solid #ccc;
+    margin-top: 5px;
 }
 
 #console {

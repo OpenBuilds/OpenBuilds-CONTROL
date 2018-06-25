@@ -1,11 +1,90 @@
 var jogdist = 10;
+var safeToUpdateSliders = true;
 
 $(document).ready(function() {
 
-  // $('#homeX').on('click', function(ev) {
-  //   var homecommand = document.getElementById('homingseq').value;
-  //   sendGcode(homecommand + "X");
-  // });
+  $("#frocell").hover(function() {
+    safeToUpdateSliders = false;
+    console.log(safeToUpdateSliders)
+  }, function() {
+    safeToUpdateSliders = true;
+    console.log(safeToUpdateSliders)
+  });
+
+  $("#trocell").hover(function() {
+    safeToUpdateSliders = false;
+    console.log(safeToUpdateSliders)
+  }, function() {
+    safeToUpdateSliders = true;
+    console.log(safeToUpdateSliders)
+  });
+
+  $("#xPos").click(function() {
+    $("#xPos").hide()
+    $("#xPosInput").show().focus().val(laststatus.machine.position.work.x)
+  });
+
+  $("#xPosInput").blur(function() {
+    $("#xPos").show()
+    $("#xPosInput").hide()
+  });
+
+  $('#xPosInput').on('keypress', function(e) {
+    if (e.which === 13) {
+      //Disable textbox to prevent multiple submit
+      $(this).attr("disabled", "disabled");
+      $("#xPos").show()
+      $("#xPosInput").hide()
+      //Enable the textbox again if needed.
+      $(this).removeAttr("disabled");
+      sendGcode("G0 X" + $("#xPosInput").val())
+    }
+  });
+
+  $("#yPos").click(function() {
+    $("#yPos").hide()
+    $("#yPosInput").show().focus().val(laststatus.machine.position.work.y)
+  });
+
+  $("#yPosInput").blur(function() {
+    $("#yPos").show()
+    $("#yPosInput").hide()
+  });
+
+  $('#yPosInput').on('keypress', function(e) {
+    if (e.which === 13) {
+      //Disable textbox to prevent multiple submit
+      $(this).attr("disabled", "disabled");
+      $("#yPos").show()
+      $("#yPosInput").hide()
+      //Enable the textbox again if needed.
+      $(this).removeAttr("disabled");
+      sendGcode("G0 Y" + $("#yPosInput").val())
+    }
+  });
+
+  $("#zPos").click(function() {
+    $("#zPos").hide()
+    $("#zPosInput").show().focus().val(laststatus.machine.position.work.z)
+  });
+
+  $("#zPosInput").blur(function() {
+    $("#zPos").show()
+    $("#zPosInput").hide()
+  });
+
+  $('#zPosInput').on('keypress', function(e) {
+    if (e.which === 13) {
+      //Disable textbox to prevent multiple submit
+      $(this).attr("disabled", "disabled");
+      $("#zPos").show()
+      $("#zPosInput").hide()
+      //Enable the textbox again if needed.
+      $(this).removeAttr("disabled");
+      sendGcode("G0 Z" + $("#zPosInput").val())
+    }
+  });
+
 
   $('#dist01').on('click', function(ev) {
     jogdist = 0.1;
@@ -55,37 +134,37 @@ $(document).ready(function() {
 
   $('#xM').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('X', '-' + jogdist, feedrate);
   })
 
   $('#xP').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('X', jogdist, feedrate);
   })
 
   $('#yM').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('Y', '-' + jogdist, feedrate);
   })
 
   $('#yP').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('Y', jogdist, feedrate);
   })
 
   $('#zM').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('Z', '-' + jogdist, feedrate);
   })
 
   $('#zP').on('click', function(ev) {
     var dir = 'X-';
-    var feedrate = 1000;
+    var feedrate = $('#jograte').val();
     jog('Z', jogdist, feedrate);
   })
 

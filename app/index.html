@@ -22,8 +22,8 @@
       <span class="icon mif-cog"></span>
       <span class="title">OpenBuids Machine Driver</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
-        <span data-role="hint" data-hint-position="bottom" data-hint-text="Minimize to Tray" data-cls-hint="bg-light fg-dark drop-shadow" class="btn-min" onclick="socket.emit('minimise')"></span>
-        <span data-role="hint" data-hint-position="bottom" data-hint-text="Quit" data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
+        <span class="btn-min" onclick="socket.emit('minimise')"></span>
+        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
       </div>
     </div>
     <div class="window-content" style="height: 100%; overflow: hidden  !important;">
@@ -38,7 +38,7 @@
             <div class="group">
               <div class="form-group" style="width: calc(100vw - 200px);">
                 <form class="inline-form">
-                  <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" id="portUSB">
+                  <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" id="portUSB" disabled>
                     <option value="">Waiting for USB</option>
                   </select>
                   <button class="button success" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
@@ -89,12 +89,6 @@
                 <input id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />
                 <span class="caption">Open<br>GCODE</span>
               </label>
-              <button class="ribbon-button grblmode" onclick="sendGcode('G10 P1 L20 X0 Y0 Z0')">
-                <span class="icon">
-                  <i class="fas fa-crosshairs"></i>
-                </span>
-                <span class="caption">Set<br>Zero</span>
-              </button>
               <button id="runBtn" class="ribbon-button grblmode" onclick="if (laststatus.comms.connectionStatus == 4) {socket.emit('resume', true)} else if (laststatus.comms.connectionStatus == 3) {socket.emit('pause', true)} else { socket.emit('runJob', editor.getValue())};">
                 <span class="icon" id="playpauseresumeicon">
                   <i class="fas fa-play"></i>
@@ -178,151 +172,172 @@
       <div id="manualControlPanel" style="display: none;">
         <center>
           <div id="jogcontrols">
-            <table>
-              <tr>
-                <td rowspan="2">
-                  <table>
-                    <tr>
-                      <td>
-                        <div class="glossydro">
-                          <div class="float-left fg-red">X</div>
-                          <div class="float-right fg-red" id="xPos">0.000</div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="glossydro">
-                          <div class="float-left fg-green">Y</div>
-                          <div class="float-right fg-green" id="yPos">0.000</div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="glossydro">
-                          <div class="float-left fg-blue">Z</div>
-                          <div class="float-right fg-blue" id="zPos">0.000</div>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-                <td>
-                </td>
+            <div class="row flex-justify-center flex-align-center" style="width: 100%;">
+              <div class="cell">
+                <table>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-red">X</div>
+                        <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
+                        <input id="xPosInput" class="m-0 p-0 glossydroInput float-right fg-red" />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-green">Y</div>
+                        <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
+                        <input id="yPosInput" class="m-0 p-0 glossydroInput float-right fg-green" />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="glossydro">
+                        <div class="float-left fg-blue">Z</div>
+                        <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
+                        <input id="zPosInput" class="m-0 p-0 glossydroInput float-right fg-blue" />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 34px; width: 140px; line-height: 30px;" id="setZero" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-amber" data-fa-transform="left-40"></i>
+                          <span class="fa-layers-text fg-amber" data-fa-transform="down-1 right-10" style="font-weight:900; font-family: Arial; font-size: 12px;">SETZERO</span>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 36px; width: 140px; line-height: 30px;" id="gotozero">
+                        <span class=" fa-layers fa-fw">
+                          <i class="fas fa-chart-line fg-amber" data-fa-transform="left-45"></i>
+                          <span class="fa-layers-text fg-amber" data-fa-transform="down-1 right-15" style="font-weight:900; font-family: Arial; font-size: 12px;">GOTOZERO</span>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="cell">
+                <table>
+                  <tr>
+                    <td>
+                    </td>
 
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="yP">
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="yP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-up fg-green" data-fa-transform="grow-4 down-8.5"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="up-14" style="font-weight:900">Y+</span>
                     </span>
                   </a>
-                </td>
+                    </td>
 
-                <td>
-                </td>
+                    <td>
+                    </td>
 
-                <td>
-                </td>
 
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="zP">
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="zP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-up fg-blue" data-fa-transform="grow-2 down-8.5"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="up-14" style="font-weight:900">Z+</span>
                     </span>
                   </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="xM">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="xM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-left fg-red" data-fa-transform="grow-2 up-10.5"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X-</span>
                     </span>
                   </a>
-                </td>
+                    </td>
 
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="yM">
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="yM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-down fg-green" data-fa-transform="grow-2 up-10.5"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="down-10" style="font-weight:900">Y-</span>
                     </span>
                   </a>
-                </td>
+                    </td>
 
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="xP">
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="xP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-right fg-red" data-fa-transform="grow-2 up-10.5"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X+</span>
                     </span>
                   </a>
-                </td>
-
-                <td>
-                </td>
-
-                <td>
-                  <a href="#" class="glossybtn grblmode" id="zM">
+                    </td>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" id="zM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-2 up-10.5"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="down-10" style="font-weight:900">Z-</span>
                     </span>
                   </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; width: 140px; line-height: 27px;" id="gotozero">
-                    <span class=" fa-layers fa-fw">
-                      <span class="fa-layers-text fg-amber" data-fa-transform="down-1" style="font-weight:900; font-family: Arial; font-size: 12px;">GOTOZERO</span>
-                    </span>
-                  </a>
-                </td>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist01">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist01">
                     <span class=" fa-layers fa-fw">
                       <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">0.1mm</span>
                     </span>
                   </a>
-                </td>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist1">
-                    <span class=" fa-layers fa-fw">
-                      <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">1mm</span>
-                    </span>
-                  </a>
-                </td>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist10">
-                    <span class=" fa-layers fa-fw">
-                      <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">10mm</span>
-                    </span>
-                  </a>
-                </td>
-                <td>
-
-                </td>
-                <td>
-                  <a href="#" class="glossybtn grblmode" style="height: 30px; line-height: 27px;" id="dist100">
-                    <span class=" fa-layers fa-fw">
-                      <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">100mm</span>
-                    </span>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                </td>
-                <td colspan="5">
-                  <input data-role="slider" data-accuracy="5" data-hint-always="true" data-hint-position="right" data-hint-mask="Feed: $1%">
-                </td>
-              </tr>
-            </table>
+                    </td>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist1">
+                        <span class=" fa-layers fa-fw">
+                          <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">1mm</span>
+                        </span>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist10">
+                        <span class=" fa-layers fa-fw">
+                          <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">10mm</span>
+                        </span>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist100">
+                        <span class=" fa-layers fa-fw">
+                          <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">100mm</span>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      <div style="margin: 2px;">
+                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="1000" data-role="input" data-prepend="Feedrate:" data-clear-button="false" value="1000" style="text-align: right;" />
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="cell" id="frocell">
+                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="5" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%"
+                  data-cls-hint="bg-light
+                        fg-dark shadow-1" data-cls-complete="bg-grayBlue">
+              </div>
+              <div class="cell" id="trocell">
+                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="160" data-accuracy="5" data-min="-50" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                  data-hint-mask="Tool: $1%" data-cls-hint="bg-light
+                        fg-dark shadow-1" data-cls-complete="bg-grayBlue">
+              </div>
+            </div>
           </div>
           <div id="editor"></div>
         </center>
@@ -369,9 +384,8 @@
 
 <script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
-
 <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
+<script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
 
 <script type="text/javascript" src="/lib/lodash.core.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -380,5 +394,6 @@
 <script type="text/javascript" src="js/grblsettings.js"></script>
 <script type="text/javascript" src="js/metroactions.js"></script>
 <script type="text/javascript" src="js/jog.js"></script>
+
 
 </html>

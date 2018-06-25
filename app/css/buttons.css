@@ -5,7 +5,7 @@
   color: #a7a7a7;
   margin: 2px;
   width: 140px;
-  height: 32px;
+  height: 34px;
   position: relative;
   text-align: right;
   padding-right: 6px;
@@ -18,19 +18,43 @@
   cursor: default;
 }
 
+.glossydroInput {
+  display: block;
+  text-decoration: none;
+  background-color: #f5f6f7;
+  color: #a7a7a7;
+  margin: 2px;
+  width: 100px;
+  height: 32px;
+  position: relative;
+  text-align: right;
+  padding-right: 6px;
+  padding-left: 6px;
+  line-height: 30px;
+  border-radius: 2px;
+  border: 1px solid #ddd;
+  font-weight:700;
+  font-size: 18px;
+  cursor: default;
+  text-align: right;
+  border: none;
+  outline: none;
+  display:none;
+}
+
 .glossybtn:link, .glossybtn:visited {
   display: block;
   text-decoration: none;
   background-color: #f5f6f7;
   color: #a7a7a7;
   margin: 2px;
-  width: 50px;
-  height: 50px;
+  width: 53px;
+  height: 53.5px;
   position: relative;
   text-align: center;
   line-height: 50px;
   border-radius: 2px;
-  border: 1px solid #f5f6f7;
+  border: 1px solid #ddd;
 }
 
 .glossybtn:active {

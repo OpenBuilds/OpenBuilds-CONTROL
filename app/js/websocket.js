@@ -9,6 +9,7 @@ var safeToUpdateSliders = false;
 var laststatus
 var simstopped = false;
 var bellstate = false;
+var toast = Metro.toast.create;
 
 $(document).ready(function() {
   initSocket();
@@ -59,6 +60,7 @@ function initSocket() {
   });
 
   socket.on('data', function(data) {
+    // console.log(data.length, data)
     var toPrint = data;
     if (data.indexOf("Done saving file.") != -1) {
       $('#sdupload_modal').modal('hide');
@@ -83,15 +85,6 @@ function initSocket() {
       var descr = grblSettingCodes[key];
       toPrint = data + "  ;" + descr
     };
-    //
-    // if (data.indexOf('Grbl') != -1) {
-    //   console.log(data)
-    //   // socket.emit('runCommand', '$$');
-    //   sendGcode('$$')
-    //   $("#grblButtons").show()
-    //   $("#firmwarename").html('Grbl')
-    // }
-
     printLog(toPrint)
 
   });
@@ -126,6 +119,17 @@ function initSocket() {
     }
   })
 
+  socket.on('toastError', function(data) {
+    // console.log("toast", data)
+    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 5000, "bg-red fg-white");
+    //
+  });
+  socket.on('toastSuccess', function(data) {
+    console.log("toast", data)
+    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 5000, "bg-green fg-white");
+    //
+  });
+
   socket.on('status', function(status) {
     nostatusyet = false;
     // if (!_.isEqual(status, laststatus)) {
@@ -150,7 +154,7 @@ function initSocket() {
       $("#playpauseresumelabel").html("Run<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
       $("#jogcontrols").slideUp("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
       editor.resize()
       $("#connectBtn").show();
       if (!$('#command').attr('disabled')) {
@@ -176,7 +180,7 @@ function initSocket() {
       $("#playpauseresumelabel").html("Run<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
       $("#jogcontrols").slideDown("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 400 + 'px)');
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
       editor.resize()
       if (editor.session.getLength() < 2) {
         $("#runBtn").attr('disabled', true);
@@ -199,7 +203,7 @@ function initSocket() {
       $("#playpauseresumelabel").html("Pause<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-pause'></i>")
       $("#jogcontrols").slideUp("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
       editor.resize()
       $("#command").attr('disabled', true);
       $("#sendCommand").prop('disabled', true);
@@ -217,7 +221,7 @@ function initSocket() {
       $("#playpauseresumelabel").html("Resume<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
       $("#jogcontrols").slideDown("fast")
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 400 + 'px)');
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
       editor.resize()
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
@@ -233,7 +237,7 @@ function initSocket() {
       $("#disconnectBtn").show();
       $(".grblmode").attr('disabled', true);
       $("#jogcontrols").hide();
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 205 + 'px)');
+      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
       editor.resize()
       $("#command").attr('disabled', false);
       $("#sendCommand").prop('disabled', false);
@@ -244,26 +248,35 @@ function initSocket() {
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-    $('#xPos').html(status.machine.position.work.x + " mm");
-    $('#yPos').html(status.machine.position.work.y + " mm");
-    $('#zPos').html(status.machine.position.work.z + " mm");
+    if ($('#xPos').html() != status.machine.position.work.x + " mm") {
+      $('#xPos').html(status.machine.position.work.x + " mm");
+    }
+    if ($('#yPos').html() != status.machine.position.work.y + " mm") {
+      $('#yPos').html(status.machine.position.work.y + " mm");
+    }
+    if ($('#zPos').html() != status.machine.position.work.z + " mm") {
+      $('#zPos').html(status.machine.position.work.z + " mm");
+    }
 
-    $('#ModernXPos').html(parseFloat(status.machine.position.work.x).toFixed(3));
-    $('#ModernYPos').html(parseFloat(status.machine.position.work.y).toFixed(3));
-    $('#ModernZPos').html(parseFloat(status.machine.position.work.z).toFixed(3));
-    $('#ModernAPos').html(parseFloat(status.machine.position.work.a).toFixed(3));
-    $('#oF').html(status.machine.overrides.feedOverride);
-    $('#oS').html(status.machine.overrides.spindleOverride);
-    $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));
-    $('#T1CurTemp').html(status.machine.temperature.actual.t1.toFixed(1) + " / " + status.machine.temperature.setpoint.t1.toFixed(1));
-    $('#B0CurTemp').html(status.machine.temperature.actual.b.toFixed(1) + " / " + status.machine.temperature.setpoint.b.toFixed(1));
+    // $('#ModernXPos').html(parseFloat(status.machine.position.work.x).toFixed(3));
+    // $('#ModernYPos').html(parseFloat(status.machine.position.work.y).toFixed(3));
+    // $('#ModernZPos').html(parseFloat(status.machine.position.work.z).toFixed(3));
+    // $('#ModernAPos').html(parseFloat(status.machine.position.work.a).toFixed(3));
+    // $('#oF').html(status.machine.overrides.feedOverride);
+    // $('#oS').html(status.machine.overrides.spindleOverride);
+    // $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));
+    // $('#T1CurTemp').html(status.machine.temperature.actual.t1.toFixed(1) + " / " + status.machine.temperature.setpoint.t1.toFixed(1));
+    // $('#B0CurTemp').html(status.machine.temperature.actual.b.toFixed(1) + " / " + status.machine.temperature.setpoint.b.toFixed(1));
 
     if (safeToUpdateSliders) {
-      $("#FROslider").slider('option', 'value', status.machine.overrides.feedOverride);
-      $("#handle").text(status.machine.overrides.feedOverride + "%");
+      $('#fro').data('slider').val(status.machine.overrides.feedOverride)
+      $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
 
-      $("#SROslider").slider('option', 'value', status.machine.overrides.spindleOverride);
-      $("#handle2").text(status.machine.overrides.spindleOverride + "%");
+      // $("#FROslider").slider('option', 'value', status.machine.overrides.feedOverride);
+      // $("#handle").text(status.machine.overrides.feedOverride + "%");
+      //
+      // $("#SROslider").slider('option', 'value', status.machine.overrides.spindleOverride);
+      // $("#handle2").text(status.machine.overrides.spindleOverride + "%");
     }
 
     // setTemp(status.machine.temperature.actual.t0, status.machine.temperature.actual.t1, status.machine.temperature.actual.b)
@@ -421,11 +434,15 @@ function sdListPopulate() {
 }
 
 function feedOverride(step) {
-  socket.emit('feedOverride', step);
+  if (socket) {
+    socket.emit('feedOverride', step);
+  }
 }
 
 function spindleOverride(step) {
-  socket.emit('spindleOverride', step);
+  if (socket) {
+    socket.emit('spindleOverride', step);
+  }
 }
 
 function sdUpload() {

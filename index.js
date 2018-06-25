@@ -11,6 +11,11 @@ var ip = require("ip");
 var _ = require('lodash');
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
+const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
+const iconPlay = path.join(__dirname, 'app/icon-play.png');
+const iconStop = path.join(__dirname, 'app/icon-stop.png');
+const iconPause = path.join(__dirname, 'app/icon-pause.png');
+const iconAlarm = path.join(__dirname, 'app/icon-bell.png');
 
 
 var iosocket;
@@ -313,7 +318,22 @@ io.on("connection", function(socket) {
 
   var interval = setInterval(function() {
     io.sockets.emit("status", status);
-  }, 200);
+    if (jogWindow) {
+      if (status.comms.connectionStatus == 0) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconNoComm), 'Not Connected');
+      } else if (status.comms.connectionStatus == 1) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconStop), 'Port Connected');
+      } else if (status.comms.connectionStatus == 2) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconStop), 'Connected, and Firmware');
+      } else if (status.comms.connectionStatus == 3) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPlay), 'Playing');
+      } else if (status.comms.connectionStatus == 4) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPause), 'Paused');
+      } else if (status.comms.connectionStatus == 5) {
+        jogWindow.setOverlayIcon(nativeImage.createFromPath(iconAlarm), 'Alarm');
+      }
+    }
+  }, 400);
 
   socket.on("minimise", function(data) {
     jogWindow.hide();
@@ -409,11 +429,7 @@ io.on("connection", function(socket) {
           }
           string += data //+ "  [ " + command + " ]"
           io.sockets.emit('data', string);
-          // console.log("DATA RECV: Command: " + command + " || " + data.replace(/(\r\n|\n|\r)/gm,""));
         }
-        // console.log(lastGcode.toString());
-        // console.log("DATA RECV: Command: " + command + " || " + data.replace(/(\r\n|\n|\r)/gm,""));
-
 
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
@@ -673,6 +689,7 @@ io.on("connection", function(socket) {
               var errorCode = parseInt(data.split(':')[1]);
               console.log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode));
               io.sockets.emit('data', 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode));
+              socket.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode))
               break;
             case 'smoothie':
               io.sockets.emit('data', data);
@@ -1226,12 +1243,12 @@ io.on("connection", function(socket) {
       status.comms.blocked = false;
       status.comms.paused = false;
       status.comms.runStatus = 'Stopped';
-      status.comms.connectionStatus = 5;
-      isAlarmed = true;
+      status.comms.connectionStatus = 2;
+      isAlarmed = false;
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
         title: "Driver: Job Aborted",
-        content: "OpenBuilds Machine Driver was asked to abort the running job.  We placed the Machine into the Alarm state, to avoid accidental moves, as after an Abort, you may need to manually intervene and raise the bit from inside a cut, or otherwise prevent a crash before continuing."
+        content: "OpenBuilds Machine Driver was asked to abort the running job."
       })
       // status.comms.connectionStatus = 2;
     } else {
@@ -1332,7 +1349,7 @@ http.listen(config.webPort, '0.0.0.0', function() {
 
 
 function machineSend(gcode) {
-  console.log("SENDING: " + gcode)
+  // console.log("SENDING: " + gcode)
   if (port.isOpen) {
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length
@@ -1476,6 +1493,11 @@ function parseFeedback(data) {
         var alarmCode = parseInt(data.split(':')[1]);
         console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
         status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+        if (alarmCode == 10) {
+          io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - Locked. Please Unlock or Clear Alarm');
+        } else {
+          io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        }
         break;
       case 'smoothie':
         status.comms.alarm = data;
@@ -1810,12 +1832,13 @@ if (electronApp) {
     appIcon = new Tray(
       nativeImage.createFromPath(iconPath)
     )
-    const contextMenu = Menu.buildFromTemplate([{
-        label: 'Launch Full Application',
-        click() {
-          createWindow();
-        }
-      },
+    const contextMenu = Menu.buildFromTemplate([
+      // {
+      //   label: 'Launch Full Application',
+      //   click() {
+      //     createWindow();
+      //   }
+      // },
       {
         label: 'Quit Machine Driver',
         click() {
@@ -1833,6 +1856,17 @@ if (electronApp) {
         jogWindow.show()
       }
     })
+
+    appIcon.on('balloon-click', function() {
+      // console.log("Clicked Systray")
+      if (jogWindow === null) {
+        createJogWindow();
+        jogWindow.show()
+      } else {
+        jogWindow.show()
+      }
+    })
+
     // Call this again for Linux because we modified the context menu
     appIcon.setContextMenu(contextMenu)
 
