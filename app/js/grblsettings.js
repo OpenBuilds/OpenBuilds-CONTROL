@@ -174,14 +174,16 @@ function grblSaveSettings() {
       }
     }
   }
+  refreshGrblSettings();
+}
+
+function refreshGrblSettings() {
   $('#grblconfig').empty();
   $('#grblconfig').append("Please Wait...");
-  sendGcode('$$');
   setTimeout(function() {
     setTimeout(function() {
       sendGcode('$$');
     }, 200);
     grblPopulate();
   }, 2200);
-
 }
