@@ -149,11 +149,7 @@ function initSocket() {
       // $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Not Connected");
       $("#disconnectBtn").hide();
-      if ($('#portUSB option').length > 0 && $('#portUSB').val() != "") {
-        $("#connectBtn").attr('disabled', false);
-      } else {
-        $("#connectBtn").attr('disabled', true);
-      }
+
       $(".grblmode").attr('disabled', true);
       $("#playpauseresumelabel").html("Run<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
@@ -167,8 +163,10 @@ function initSocket() {
       $("#sendCommand").prop('disabled', true);
       if ($('#portUSB').val() != "") {
         $('#portUSB').parent(".select").removeClass('disabled')
+        $("#connectBtn").attr('disabled', false);
       } else {
         $('#portUSB').parent(".select").addClass('disabled')
+        $("#connectBtn").attr('disabled', true);
       }
       $('#portUSB').parent(".select").addClass('success')
       $('#portUSB').parent(".select").removeClass('alert')
