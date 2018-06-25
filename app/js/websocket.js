@@ -149,7 +149,11 @@ function initSocket() {
       // $("#portUSB").val(status.comms.interfaces.activePort);
       $('#connectStatus').html("Port: Not Connected");
       $("#disconnectBtn").hide();
-      $("#connectBtn").attr('disabled', false);
+      if ($('#portUSB option').length > 0 && $('#portUSB').val() != "") {
+        $("#connectBtn").attr('disabled', false);
+      } else {
+        $("#connectBtn").attr('disabled', true);
+      }
       $(".grblmode").attr('disabled', true);
       $("#playpauseresumelabel").html("Run<br>Job")
       $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")

@@ -181,7 +181,7 @@ function grblSaveSettings() {
 function refreshGrblSettings() {
   grblParams = {};
   $('#grblconfig').empty();
-  $('#grblconfig').append("<center>Please Wait... </center><br><div data-role='countdown' data-seconds='3'></div>");
+  $('#grblconfig').append("<center>Please Wait... </center><br><div data-role='countdown' data-seconds='3'></div><br> Requesting updated parameters from the controller firmware...");
   setTimeout(function() {
     sendGcode('$$');
     setTimeout(function() {
