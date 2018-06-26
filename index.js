@@ -1,3 +1,5 @@
+console.log("Starting OpenBuilds Machine Driver v" + require('./package').version)
+
 const grblStrings = require("./grblStrings.js");
 var path = require("path");
 var express = require("express");
@@ -64,6 +66,9 @@ var feedOverride = 100,
 var re = new RegExp("^[a-f0-9]{32}");
 
 var status = {
+  driver: {
+    version: require('./package').version
+  },
   machine: {
     tools: {
       hotend1: false,
@@ -1886,7 +1891,7 @@ if (electronApp) {
       fullscreen: false,
       center: true,
       resizable: true,
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds Machine Driver ",
       frame: false,
       autoHideMenuBar: true,
       icon: '/app/favicon.png'
@@ -1930,7 +1935,7 @@ if (electronApp) {
       fullscreen: false,
       center: true,
       resizable: true,
-      title: "ProjectMakr",
+      title: "OpenBuilds Machine Driver ",
       frame: true,
       autoHideMenuBar: true,
       icon: '/app/favicon.png'

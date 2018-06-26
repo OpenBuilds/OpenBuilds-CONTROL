@@ -131,7 +131,12 @@ function initSocket() {
   });
 
   socket.on('status', function(status) {
+
+    if (nostatusyet) {
+      $('#windowtitle').html("OpenBuids Machine Driver v" + status.driver.version)
+    }
     nostatusyet = false;
+
     // if (!_.isEqual(status, laststatus)) {
     if (laststatus !== undefined) {
       if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
