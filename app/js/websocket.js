@@ -50,13 +50,14 @@ function printLog(string) {
 
 function initSocket() {
   socket = io.connect(server); // socket.io init
-  printLog("Connected to backend ")
+  printLog("Bidirectional Websocket Interface Started ")
   setTimeout(function() {
     populatePortsMenu();
   }, 2000);
 
   socket.on('disconnect', function() {
     console.log("WEBSOCKET DISCONNECTED")
+    printLog("Websocket Disconnected.  Driver probably quit or crashed")
   });
 
   socket.on('data', function(data) {
@@ -131,7 +132,6 @@ function initSocket() {
   });
 
   socket.on('status', function(status) {
-
     if (nostatusyet) {
       $('#windowtitle').html("OpenBuids Machine Driver v" + status.driver.version)
     }

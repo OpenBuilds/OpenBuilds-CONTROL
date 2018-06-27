@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "express": "^4.16.2",
+    "formidable": "^1.2.1",
     "ip": "^1.1.5",
     "lodash": "^4.17.10",
     "md5": "^2.2.1",
+    "rimraf": "^2.6.2",
     "serialport": "^4.0.7",
     "socket.io": "^2.0.4"
   },
@@ -37,6 +39,14 @@
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuilds Machine Driver",
     "asar": true,
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "license": "build/licence.txt",
+      "installerIcon": "build/icon.ico",
+      "installerSidebar": "build/installerSidebar.bmp"
+    },
     "files": [
       "**/*"
     ],

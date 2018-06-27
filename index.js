@@ -11,6 +11,12 @@ var SerialPort = serialport;
 var md5 = require('md5');
 var ip = require("ip");
 var _ = require('lodash');
+var fs = require("fs");
+var rimraf = require("rimraf")
+var formidable = require('formidable')
+var util = require('util');
+var lastsentuploadprogress = 0;
+
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
@@ -288,7 +294,103 @@ var PortCheckinterval = setInterval(function() {
   }
 }, 500);
 
+// Static Webserver
 app.use(express.static(path.join(__dirname, "app")));
+
+// JSON API
+app.get('/api/version', (req, res) => {
+  data = {
+    "application": "OpenBuilds Machine Driver",
+    "version": require('./package').version,
+    "ipaddress": ip.address() + ":" + config.webPort
+  }
+  res.send(JSON.stringify(data), null, 2);
+})
+
+app.get('/upload', (req, res) => {
+  res.sendFile(__dirname + '/app/upload.html');
+})
+
+// File Post
+app.post('/upload', function(req, res) {
+  // console.log(req)
+  uploadprogress = 0
+  var form = new formidable.IncomingForm();
+
+  var uploadsDir = __dirname + '/uploads';
+
+  fs.readdir(uploadsDir, function(err, files) {
+    files.forEach(function(file, index) {
+      fs.stat(path.join(uploadsDir, file), function(err, stat) {
+        var endTime, now;
+        if (err) {
+          return console.error(err);
+        }
+        now = new Date().getTime();
+        // older than an hour
+        endTime = new Date(stat.ctime).getTime() + 3600000;
+        if (now > endTime) {
+          return rimraf(path.join(uploadsDir, file), function(err) {
+            if (err) {
+              return console.error(err);
+            }
+            console.log('successfully deleted' + file);
+          });
+        }
+      });
+    });
+  });
+
+  // form.parse(req);
+  form.parse(req, function(err, fields, files) {
+    console.log(util.inspect({
+      fields: fields,
+      files: files
+    }));
+    // runpycam(files.file.path)
+    console.log("Done, now lets work with " + files.file.path)
+    fs.readFile(files.file.path, 'utf8',
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          process.exit(1);
+        }
+        // GCODE FILE CONTENT
+        console.log(data);
+      });
+  });
+
+  // form.on('fileBegin', function(name, file) {
+  //   // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
+  //   console.log('Uploading ' + file.name);
+  //   file.path = __dirname + '/uploads/' + file.name;
+  //   // io.sockets.in('sessionId').emit('startupload', 'STARTING');
+  // });
+
+  form.on('progress', function(bytesReceived, bytesExpected) {
+    uploadprogress = parseInt(((bytesReceived * 100) / bytesExpected).toFixed(0));
+    if (uploadprogress != lastsentuploadprogress) {
+      // io.sockets.in('sessionId').emit('uploadprogress', uploadprogress);
+      lastsentuploadprogress = uploadprogress;
+    }
+  });
+
+  form.on('file', function(name, file) {
+    // Emitted whenever a field / file pair has been received. file is an instance of File.
+    console.log('Uploaded ' + file.path);
+    // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
+  });
+
+  form.on('aborted', function() {
+    // Emitted when the request was aborted by the user. Right now this can be due to a 'timeout' or 'close' event on the socket. After this event is emitted, an error event will follow. In the future there will be a separate 'timeout' event (needs a change in the node core).
+  });
+
+  form.on('end', function() {
+    //Emitted when the entire request has been received, and all contained files have finished flushing to disk. This is a great place for you to send your response.
+  });
+
+  res.sendFile(__dirname + '/app/upload.html');
+});
 
 
 app.on('certificate-error', function(event, webContents, url, error,
@@ -1593,14 +1695,14 @@ function parseFeedback(data) {
         }
       }
       if (has4thAxis) {
-        status.machine.position.work.x = xPos
-        status.machine.position.work.y = yPos
-        status.machine.position.work.z = zPos
-        status.machine.position.work.a = aPos
+        status.machine.position.work.x = parseFloat(xPos).toFixed(config.posDecimals)
+        status.machine.position.work.y = parseFloat(yPos).toFixed(config.posDecimals)
+        status.machine.position.work.z = parseFloat(zPos).toFixed(config.posDecimals)
+        status.machine.position.work.a = parseFloat(aPos).toFixed(config.posDecimals)
       } else {
-        status.machine.position.work.x = xPos
-        status.machine.position.work.y = yPos
-        status.machine.position.work.z = zPos
+        status.machine.position.work.x = parseFloat(xPos).toFixed(config.posDecimals)
+        status.machine.position.work.y = parseFloat(yPos).toFixed(config.posDecimals)
+        status.machine.position.work.z = parseFloat(zPos).toFixed(config.posDecimals)
       }
     }
     // Extract mPos (for Smoothieware only!)
@@ -1823,10 +1925,24 @@ var appIcon = null,
   jogWindow = null,
   mainWindow = null
 
+const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (jogWindow === null) {
+    createJogWindow();
+    jogWindow.show()
+  } else {
+    jogWindow.show()
+  }
+});
+
+if (shouldQuit) {
+  console.log("Already running! Check the System Tray")
+  electronApp.exit(0);
+  electronApp.quit();
+}
+
 if (electronApp) {
   // Module to create native browser window.
-
-
 
   function createApp() {
     createTrayIcon();
