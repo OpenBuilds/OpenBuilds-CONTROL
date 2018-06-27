@@ -1,18 +1,27 @@
+.jogtable td {
+  padding: 2px;
+}
+
+.jogbtn:disabled {
+  pointer-events:none;
+}
+
 .glossydro {
   display: block;
   text-decoration: none;
-  background-color: #f5f6f7;
+  background-color: #f8f8f8;
   color: #a7a7a7;
   margin: 2px;
-  width: 140px;
+  margin-left: 0px;
+  width: 141px;
   height: 34px;
   position: relative;
   text-align: right;
   padding-right: 6px;
   padding-left: 6px;
   line-height: 30px;
-  border-radius: 2px;
-  border: 1px solid #ddd;
+  /* border-radius: 2px; */
+  /* border: 1px solid #ddd; */
   font-weight:900;
   font-size: 18px;
   cursor: default;

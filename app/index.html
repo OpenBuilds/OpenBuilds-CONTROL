@@ -100,7 +100,10 @@
             <div class="group" style="width: calc(100vw - 40px);">
               <button class="ribbon-button" onclick="grblSaveSettings();">
                 <span class="icon">
+                  <span class="fa-layers fa-fw">
                     <i class="fas fa-save fg-grayBlue" data-fa-transform="grow-8"></i>
+                    <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
+                    <!-- <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span> -->
                   </span>
                 </span>
                 <span class="caption">Save<br> to Firmware</span>
@@ -145,14 +148,32 @@
                 <input id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />
                 <span class="caption">Open<br>GCODE</span>
               </label>
-              <button id="runBtn" class="ribbon-button grblmode" onclick="if (laststatus.comms.connectionStatus == 4) {socket.emit('resume', true)} else if (laststatus.comms.connectionStatus == 3) {socket.emit('pause', true)} else { socket.emit('runJob', editor.getValue())};">
-                <span class="icon" id="playpauseresumeicon">
+              <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', editor.getValue());">
+                <span class="icon">
                   <i class="fas fa-play"></i>
                 </span>
-                <span id="playpauseresumelabel" class="caption">Run<br>Job</span>
+                <span class="caption">Run<br>Job</span>
+              </button>
+              <button id="resumeBtn" class="ribbon-button" onclick="socket.emit('resume', true)">
+                <span class="icon">
+                  <i class="fas fa-play"></i>
+                </span>
+                <span class="caption">Resume<br>Job</span>
+              </button>
+              <button id="pauseBtn" class="ribbon-button" onclick="socket.emit('pause', true)">
+                <span class="icon">
+                  <i class="fas fa-pause"></i>
+                </span>
+                <span class="caption">Pause<br>Job</span>
+              </button>
+              <button id="stopBtn" class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <i class="fas fa-stop"></i>
+                </span>
+                <span class="caption">Stop<br>Job</span>
               </button>
               <div>
-                <button class="ribbon-button dropdown-toggle grblmode">
+                <button id="toolBtn" class="ribbon-button dropdown-toggle">
                     <span class="icon">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-bookmark" data-fa-transform="rotate-180"></i>
@@ -162,21 +183,16 @@
                     <span class="caption">Tool<br>Options</span>
                 </button>
                 <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                  <!-- <li class="checked"><a href="#">Modification</a></li>
-                  <li class="checked"><a href="#">Type</a></li>
-                  <li class="checked"><a href="#">Size</a></li>
-                  <li class="checked-one"><a href="#">Tags</a></li>
-                  <li class="divider"></li> -->
                   <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Tool On (M3 S1000)</a></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Tool Off (M5)</a></li>
+                  <li class="divider"></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Coolant On (M8)</a></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li>
-                  <!-- <li class="divider"></li>
-                  <li><a href="#">Grbl Settings...</a></li> -->
+
                 </ul>
               </div>
 
-              <button class="ribbon-button grblmode" onclick="sendGcode('$H')">
+              <button id="homeBtn" class="ribbon-button" onclick="sendGcode('$H')">
                 <span class="icon">
                   <i class="fas fa-home"></i>
                 </span>
@@ -258,40 +274,53 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 34px; width: 140px; line-height: 30px;" id="setZero" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')">
+                    <td style="padding-top: 2px;">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0')" style="width: 69px;">
                         <span class="fa-layers fa-fw">
-                          <i class="fas fa-crosshairs fg-amber" data-fa-transform="left-40"></i>
-                          <span class="fa-layers-text fg-amber" data-fa-transform="down-1 right-10" style="font-weight:900; font-family: Arial; font-size: 12px;">SETZERO</span>
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                         </span>
-                      </a>
+                      </button>
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 68px;">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-8"></i>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                        </span>
+                      </button>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 36px; width: 140px; line-height: 30px;" id="gotozero">
-                        <span class=" fa-layers fa-fw">
-                          <i class="fas fa-chart-line fg-amber" data-fa-transform="left-45"></i>
-                          <span class="fa-layers-text fg-amber" data-fa-transform="down-1 right-15" style="font-weight:900; font-family: Arial; font-size: 12px;">GOTOZERO</span>
+                    <td style="padding-top: 3px;">
+                      <button class="button light jogbtn" style="width: 140px;" id="gotozero">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
                         </span>
-                      </a>
+
+                      </button>
                     </td>
                   </tr>
                 </table>
               </div>
               <div class="cell">
-                <table>
+                <table class="jogtable">
                   <tr>
                     <td>
                     </td>
 
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="yP">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-up fg-green" data-fa-transform="grow-4 down-8.5"></i>
-                      <span class="fa-layers-text fg-green" data-fa-transform="up-14" style="font-weight:900">Y+</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="yP">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
+                        </span>
+                      </button>
                     </td>
 
                     <td>
@@ -299,78 +328,78 @@
 
 
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="zP">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-up fg-blue" data-fa-transform="grow-2 down-8.5"></i>
-                      <span class="fa-layers-text fg-blue" data-fa-transform="up-14" style="font-weight:900">Z+</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="zP">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
+                        </span>
+                      </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="xM">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-left fg-red" data-fa-transform="grow-2 up-10.5"></i>
-                      <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X-</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="xM">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
+                        </span>
+                      </button>
                     </td>
 
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="yM">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-down fg-green" data-fa-transform="grow-2 up-10.5"></i>
-                      <span class="fa-layers-text fg-green" data-fa-transform="down-10" style="font-weight:900">Y-</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="yM">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
+                        </span>
+                      </button>
                     </td>
 
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="xP">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-right fg-red" data-fa-transform="grow-2 up-10.5"></i>
-                      <span class="fa-layers-text fg-red" data-fa-transform="down-10" style="font-weight:900">X+</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="xP">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
+                        </span>
+                      </button>
                     </td>
                     <td>
-                      <a href="#" class="glossybtn grblmode" id="zM">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-arrow-down fg-blue" data-fa-transform="grow-2 up-10.5"></i>
-                      <span class="fa-layers-text fg-blue" data-fa-transform="down-10" style="font-weight:900">Z-</span>
-                    </span>
-                  </a>
+                      <button class="button light square large jogbtn" id="zM">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
+                        </span>
+                      </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist01">
-                    <span class=" fa-layers fa-fw">
-                      <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">0.1mm</span>
-                    </span>
-                  </a>
+                      <button class="button light jogbtn" id="dist01" style="width: 100%;">
+                        <span class=" fa-layers fa-fw">
+                          <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
+                        </span>
+                      </button>
                     </td>
                     <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist1">
+                      <button class="button light jogbtn" id="dist1" style="width: 100%;">
                         <span class=" fa-layers fa-fw">
-                          <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">1mm</span>
+                          <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
                         </span>
-                      </a>
+                      </button>
                     </td>
                     <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist10">
+                      <button class="button light jogbtn" id="dist10" style="width: 100%;">
                         <span class=" fa-layers fa-fw">
-                          <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">10mm</span>
+                          <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
                         </span>
-                      </a>
+                      </button>
                     </td>
                     <td>
-                      <a href="#" class="glossybtn grblmode" style="height: 34px; line-height: 30px;" id="dist100">
+                      <button class="button light jogbtn" id="dist100" style="width: 100%;">
                         <span class=" fa-layers fa-fw">
-                          <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="down-1" style="font-family: Arial; font-size: 12px;">100mm</span>
+                          <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
                         </span>
-                      </a>
+                      </button>
                     </td>
                   </tr>
                   <tr>
@@ -397,7 +426,7 @@
           <div id="editor"></div>
         </center>
       </div>
-      <div id="grblPanel">
+      <div id="grblPanel" style="display: none;">
         <div id="grblconfig"></div>
       </div>
 
@@ -448,6 +477,7 @@
 <script type="text/javascript" src="/lib/lodash.core.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/ui.js"></script>
 <script type="text/javascript" src="js/websocket.js"></script>
 <script type="text/javascript" src="js/grblsettings.js"></script>
 <script type="text/javascript" src="js/metroactions.js"></script>

@@ -5,18 +5,18 @@ $(document).ready(function() {
 
   $("#frocell").hover(function() {
     safeToUpdateSliders = false;
-    console.log(safeToUpdateSliders)
+    // console.log(safeToUpdateSliders)
   }, function() {
     safeToUpdateSliders = true;
-    console.log(safeToUpdateSliders)
+    // console.log(safeToUpdateSliders)
   });
 
   $("#trocell").hover(function() {
     safeToUpdateSliders = false;
-    console.log(safeToUpdateSliders)
+    // console.log(safeToUpdateSliders)
   }, function() {
     safeToUpdateSliders = true;
-    console.log(safeToUpdateSliders)
+    // console.log(safeToUpdateSliders)
   });
 
   $("#xPos").click(function() {

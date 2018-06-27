@@ -149,108 +149,17 @@ function initSocket() {
         populatePortsMenu();
       }
     }
-    // console.log(status.comms.connectionStatus);
-    if (status.comms.connectionStatus == 0) { // Not Connected Yet
-      // $("#portUSB").val(status.comms.interfaces.activePort);
-      $('#connectStatus').html("Port: Not Connected");
-      $("#disconnectBtn").hide();
 
-      $(".grblmode").attr('disabled', true);
-      $("#playpauseresumelabel").html("Run<br>Job")
-      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
-      $("#jogcontrols").slideUp("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
-      editor.resize()
-      $("#connectBtn").show();
-      if (!$('#command').attr('disabled')) {
-        $('#command').attr('disabled', true);
-      }
-      $("#sendCommand").prop('disabled', true);
-      if ($('#portUSB').val() != "") {
-        $('#portUSB').parent(".select").removeClass('disabled')
-        $("#connectBtn").attr('disabled', false);
-      } else {
-        $('#portUSB').parent(".select").addClass('disabled')
-        $("#connectBtn").attr('disabled', true);
-      }
-      $('#portUSB').parent(".select").addClass('success')
-      $('#portUSB').parent(".select").removeClass('alert')
+    // Set the Connection Toolbar option
+    setConnectBar(status.comms.connectionStatus, status);
+    setControlBar(status.comms.connectionStatus, status)
+    setJogPanel(status.comms.connectionStatus, status)
+    setConsole(status.comms.connectionStatus, status)
+    if (status.comms.connectionStatus != 5) {
+      bellstate = false
+    };
+    if (status.comms.connectionStatus == 0) {
       showGrbl(false)
-      bellstate = false
-    } else if (status.comms.connectionStatus == 1 || status.comms.connectionStatus == 2) { // Connected, but not Playing yet
-      $("#portUSB").val(status.comms.interfaces.activePort);
-      $('#connectStatus').html("Port: Connected");
-      $("#connectBtn").hide();
-      $("#connectBtn").attr('disabled', false);
-      $("#disconnectBtn").show();
-      $(".grblmode").attr('disabled', false);
-      $("#playpauseresumelabel").html("Run<br>Job")
-      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
-      $("#jogcontrols").slideDown("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
-      editor.resize()
-      if (editor.session.getLength() < 2) {
-        $("#runBtn").attr('disabled', true);
-      } else {
-        $("#runBtn").attr('disabled', false);
-      }
-      $("#command").attr('disabled', false);
-      $("#sendCommand").prop('disabled', false);
-      $('#portUSB').parent(".select").addClass('disabled')
-      $('#portUSB').parent(".select").removeClass('success')
-      $('#portUSB').parent(".select").addClass('alert')
-      bellstate = false
-    } else if (status.comms.connectionStatus == 3) { // Busy Streaming GCODE
-      $("#portUSB").val(status.comms.interfaces.activePort);
-      $('#connectStatus').html("Port: Connected");
-      $("#connectBtn").hide();
-      $("#connectBtn").attr('disabled', false);
-      $("#disconnectBtn").show();
-      $(".grblmode").attr('disabled', false);
-      $("#playpauseresumelabel").html("Pause<br>Job")
-      $("#playpauseresumeicon").html("<i class='fas fa-pause'></i>")
-      $("#jogcontrols").slideUp("fast");
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
-      editor.resize()
-      $("#command").attr('disabled', true);
-      $("#sendCommand").prop('disabled', true);
-      $('#portUSB').parent(".select").addClass('disabled')
-      $('#portUSB').parent(".select").removeClass('success')
-      $('#portUSB').parent(".select").addClass('alert')
-      bellstate = false
-    } else if (status.comms.connectionStatus == 4) { // Paused
-      $("#portUSB").val(status.comms.interfaces.activePort);
-      $('#connectStatus').html("Port: Connected");
-      $("#connectBtn").hide();
-      $("#connectBtn").attr('disabled', false);
-      $("#disconnectBtn").show();
-      $(".grblmode").attr('disabled', false);
-      $("#playpauseresumelabel").html("Resume<br>Job")
-      $("#playpauseresumeicon").html("<i class='fas fa-play'></i>")
-      $("#jogcontrols").slideDown("fast")
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
-      editor.resize()
-      $("#command").attr('disabled', false);
-      $("#sendCommand").prop('disabled', false);
-      $('#portUSB').parent(".select").addClass('disabled')
-      $('#portUSB').parent(".select").removeClass('success')
-      $('#portUSB').parent(".select").addClass('alert')
-      bellstate = false
-    } else if (status.comms.connectionStatus == 5) { // Alarm State
-      $("#portUSB").val(status.comms.interfaces.activePort);
-      $('#connectStatus').html("Port: Connected");
-      $("#connectBtn").hide();
-      $("#connectBtn").attr('disabled', false);
-      $("#disconnectBtn").show();
-      $(".grblmode").attr('disabled', true);
-      $("#jogcontrols").hide();
-      $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
-      editor.resize()
-      $("#command").attr('disabled', false);
-      $("#sendCommand").prop('disabled', false);
-      $('#portUSB').parent(".select").addClass('disabled')
-      $('#portUSB').parent(".select").removeClass('success')
-      $('#portUSB').parent(".select").addClass('alert')
     }
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
@@ -265,51 +174,17 @@ function initSocket() {
       $('#zPos').html(status.machine.position.work.z + " mm");
     }
 
-    // $('#ModernXPos').html(parseFloat(status.machine.position.work.x).toFixed(3));
-    // $('#ModernYPos').html(parseFloat(status.machine.position.work.y).toFixed(3));
-    // $('#ModernZPos').html(parseFloat(status.machine.position.work.z).toFixed(3));
-    // $('#ModernAPos').html(parseFloat(status.machine.position.work.a).toFixed(3));
-    // $('#oF').html(status.machine.overrides.feedOverride);
-    // $('#oS').html(status.machine.overrides.spindleOverride);
     // $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));
     // $('#T1CurTemp').html(status.machine.temperature.actual.t1.toFixed(1) + " / " + status.machine.temperature.setpoint.t1.toFixed(1));
     // $('#B0CurTemp').html(status.machine.temperature.actual.b.toFixed(1) + " / " + status.machine.temperature.setpoint.b.toFixed(1));
+    // setTemp(status.machine.temperature.actual.t0, status.machine.temperature.actual.t1, status.machine.temperature.actual.b)
 
     if (safeToUpdateSliders) {
       $('#fro').data('slider').val(status.machine.overrides.feedOverride)
       $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
-
-      // $("#FROslider").slider('option', 'value', status.machine.overrides.feedOverride);
-      // $("#handle").text(status.machine.overrides.feedOverride + "%");
-      //
-      // $("#SROslider").slider('option', 'value', status.machine.overrides.spindleOverride);
-      // $("#handle2").text(status.machine.overrides.spindleOverride + "%");
     }
-
-    // setTemp(status.machine.temperature.actual.t0, status.machine.temperature.actual.t1, status.machine.temperature.actual.b)
-
-    if (simstopped) {
-      cone.position.x = status.machine.position.work.x;
-      cone.position.y = status.machine.position.work.y;
-      cone.position.z = (parseFloat(status.machine.position.work.z) + 20);
-    }
-
-    // console.log(status.machine.drivers.x.stallGuard)
-    var amplitude = (status.machine.drivers.x.stallGuard.stallGuardReading) / 10.24;
-    $("#xMotorVU").attr("style", "-webkit-clip-path: inset(0 " + (amplitude) + "% 0 0);")
-
-    var amplitude = (status.machine.drivers.y.stallGuard.stallGuardReading) / 10.24;
-    $("#yMotorVU").attr("style", "-webkit-clip-path: inset(0 " + (amplitude) + "% 0 0);")
-
-    var amplitude = (status.machine.drivers.z.stallGuard.stallGuardReading) / 10.24;
-    $("#zMotorVU").attr("style", "-webkit-clip-path: inset(0 " + (amplitude) + "% 0 0);")
-
-    var amplitude = (status.machine.drivers.a.stallGuard.stallGuardReading) / 10.24;
-    $("#aMotorVU").attr("style", "-webkit-clip-path: inset(0 " + (amplitude) + "% 0 0);")
 
     laststatus = status;
-    // }
-
   });
 
   $('#sendCommand').on('click', function() {
@@ -393,6 +268,7 @@ function populatePortsMenu() {
   var select = $("#portUSB").data("select");
   select.data(response);
   $('#portUSB').parent(".select").removeClass('disabled')
+  $("#connectBtn").attr('disabled', false);
 }
 
 function sendGcode(gcode) {
