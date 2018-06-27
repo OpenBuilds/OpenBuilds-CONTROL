@@ -62,8 +62,8 @@ function initSocket() {
 
   socket.on('data', function(data) {
     // console.log(data.length, data)
-    var toPrint = data;
-    if (data.indexOf("Done saving file.") != -1) {
+    var toPrint = data.response;
+    if (data.response.indexOf("Done saving file.") != -1) {
       $('#sdupload_modal').modal('hide');
       $("#sduploadform").show()
       $("#sduploadprogress").hide()
@@ -72,7 +72,7 @@ function initSocket() {
       $("#sdmodalclosebtn").prop('disabled', false);
       $('#sdprogressup').css('width', '0%').attr('aria-valuenow', 0);
     }
-    if (data.indexOf("End file list") != -1) {
+    if (data.response.indexOf("End file list") != -1) {
       // We just got an M20 sd listing back... lets update UI
       setTimeout(function() {
         sdListPopulate();
@@ -80,13 +80,13 @@ function initSocket() {
     }
 
     // Parse Grbl Settings Feedback
-    if (data.indexOf('$') === 0) {
-      grblSettings(data)
-      var key = data.split('=')[0].substr(1);
+    if (data.response.indexOf('$') === 0) {
+      grblSettings(data.response)
+      var key = data.response.split('=')[0].substr(1);
       var descr = grblSettingCodes[key];
-      toPrint = data + "  ;" + descr
+      toPrint = data.response + "  ;" + descr
     };
-    printLog(toPrint)
+    printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
 
   });
 

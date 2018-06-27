@@ -511,7 +511,8 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       port.on("data", function(data) {
-        // console.log("DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm,""));
+        // console.log("DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
+        // console.log()
 
         // Command Tracking
         if (lastGcode.length == 0) {
@@ -529,13 +530,17 @@ io.on("connection", function(socket) {
         command = command.replace(/(\r\n|\n|\r)/gm, "");
 
         if (command != "?" && command != "M105" && data.length > 0) {
-          // if (command != "?" && command != "M105" && command.indexOf("M911") == -1 ) {
           var string = "";
           if (status.comms.sduploading) {
             string += "SD: "
           }
           string += data //+ "  [ " + command + " ]"
-          io.sockets.emit('data', string);
+          var output = {
+            'command': command,
+            'response': string
+          }
+
+          io.sockets.emit('data', output);
         }
 
         // Machine Identification
@@ -554,11 +559,11 @@ io.on("connection", function(socket) {
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading) {
+              if (!status.comms.sduploading && !status.comms.blocked) {
                 machineSend("?");
               }
             }
-          }, 200);
+          }, 1000);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
@@ -1342,6 +1347,7 @@ io.on("connection", function(socket) {
       queuePointer = 0;
       gcodeQueue.length = 0; // Dump the queue
       grblBufferSize.length = 0; // Dump bufferSizes
+      lastGcode.length = 0 // Dump Last Command Queue
       queueLen = 0;
       queuePos = 0;
       laserTestOn = false;
@@ -1386,6 +1392,7 @@ io.on("connection", function(socket) {
           console.log('Emptying Queue');
           gcodeQueue.length = 0; // Dump the queue
           grblBufferSize.length = 0; // Dump bufferSizes
+          lastGcode.length = 0 // Dump Last Command Queue
           queueLen = 0;
           queuePointer = 0;
           queuePos = 0;

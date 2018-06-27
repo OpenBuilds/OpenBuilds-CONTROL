@@ -199,7 +199,29 @@ function grblSaveSettings() {
     }
   }
   grblParams = {};
-  refreshGrblSettings();
+
+  Metro.dialog.create({
+    title: "Configuration Updated. Reset Grbl?",
+    content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+    actions: [{
+        caption: "Yes",
+        cls: "js-dialog-close secondary",
+        onclick: function() {
+          setTimeout(function() {
+            sendGcode(String.fromCharCode(0x18));
+          }, 3000);
+        }
+      },
+      {
+        caption: "Later",
+        cls: "js-dialog-close",
+        onclick: function() {
+          console.log("Do nothing")
+          refreshGrblSettings();
+        }
+      }
+    ]
+  });
   $('#grblSettingsBadge').hide();
 }
 
@@ -212,6 +234,6 @@ function refreshGrblSettings() {
     setTimeout(function() {
       grblPopulate();
     }, 3000);
-  }, 200);
+  }, 50);
 
 }

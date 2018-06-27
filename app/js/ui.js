@@ -128,30 +128,45 @@ function setJogPanel(val, status) {
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
     editor.resize()
     $('.jogbtn').attr('disabled', true);
+    if ($('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', false);
+    }
   } else if (val == 0 || val == 2) { // Connected, but not Playing yet
     // Show panel and resize editor
     $("#jogcontrols").slideDown("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
     editor.resize()
     $('.jogbtn').attr('disabled', false);
+    if ($('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', false);
+    }
   } else if (val == 3) { // Busy Streaming GCODE
     // Show panel and resize editor
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
     editor.resize()
     $("#jogcontrols").slideDown("fast");
     $('.jogbtn').attr('disabled', true);
+    if (!$('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', true);
+    }
   } else if (val == 4) { // Paused
     // Show panel and resize editor
     $("#jogcontrols").slideDown("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
     editor.resize()
     $('.jogbtn').attr('disabled', true);
+    if (!$('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', true);
+    }
   } else if (val == 5) { // Alarm State
     // Show panel and resize editor
     $("#jogcontrols").slideUp("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
     editor.resize()
     $('.jogbtn').attr('disabled', true);
+    if (!$('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', true);
+    }
   }
 }
 
