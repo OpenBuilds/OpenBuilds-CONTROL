@@ -74,51 +74,51 @@ function grblPopulate() {
         <td>Step pulse invert</td>
         <td>
         <select id="val-` + 2 + `-input" value="` + grblParams['$2'] + `">
-        <option value="0">X:&#xf10c Y:&#xf10c Z:&#xf10c</option>
-        <option value="1">X:&#xf111 Y:&#xf10c Z:&#xf10c</option>
-        <option value="2">X:&#xf10c Y:&#xf111 Z:&#xf10c</option>
-        <option value="4">X:&#xf10c Y:&#xf10c Z:&#xf111</option>
-        <option value="3">X:&#xf111 Y:&#xf111 Z:&#xf10c</option>
-        <option value="5">X:&#xf111 Y:&#xf10c Z:&#xf111</option>
-        <option value="6">X:&#xf10c Y:&#xf111 Z:&#xf111</option>
-        <option value="7">X:&#xf111 Y:&#xf111 Z:&#xf111</option>
+        <option value="0">X:&#9898; Y:&#9898; Z:&#9898;</option>
+        <option value="1">X:&#9899; Y:&#9898; Z:&#9898;</option>
+        <option value="2">X:&#9898; Y:&#9899; Z:&#9898;</option>
+        <option value="4">X:&#9898; Y:&#9898; Z:&#9899;</option>
+        <option value="3">X:&#9899; Y:&#9899; Z:&#9898;</option>
+        <option value="5">X:&#9899; Y:&#9898; Z:&#9899;</option>
+        <option value="6">X:&#9898; Y:&#9899; Z:&#9899;</option>
+        <option value="7">X:&#9899; Y:&#9899; Z:&#9899;</option>
         </select>
         </td>
         </tr>
         <tr><td>$</td><td>3</td><td>Step direction invert</td><td><select id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
-        <option value="0">X:&#xf10c Y:&#xf10c Z:&#xf10c</option>
-        <option value="1">X:&#xf111 Y:&#xf10c Z:&#xf10c</option>
-        <option value="2">X:&#xf10c Y:&#xf111 Z:&#xf10c</option>
-        <option value="4">X:&#xf10c Y:&#xf10c Z:&#xf111</option>
-        <option value="3">X:&#xf111 Y:&#xf111 Z:&#xf10c</option>
-        <option value="5">X:&#xf111 Y:&#xf10c Z:&#xf111</option>
-        <option value="6">X:&#xf10c Y:&#xf111 Z:&#xf111</option>
-        <option value="7">X:&#xf111 Y:&#xf111 Z:&#xf111</option>
+        <option value="0">X:&#9898; Y:&#9898; Z:&#9898;</option>
+        <option value="1">X:&#9899; Y:&#9898; Z:&#9898;</option>
+        <option value="2">X:&#9898; Y:&#9899; Z:&#9898;</option>
+        <option value="4">X:&#9898; Y:&#9898; Z:&#9899;</option>
+        <option value="3">X:&#9899; Y:&#9899; Z:&#9898;</option>
+        <option value="5">X:&#9899; Y:&#9898; Z:&#9899;</option>
+        <option value="6">X:&#9898; Y:&#9899; Z:&#9899;</option>
+        <option value="7">X:&#9899; Y:&#9899; Z:&#9899;</option>
         </select></td></tr>
-        <tr><td>$</td><td>4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
-        <tr><td>$</td><td>5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
-        <tr><td>$</td><td>6</td><td>Invert probe pin</td><td><select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
+        <tr><td>$</td><td>4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>6</td><td>Invert probe pin</td><td><select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
         <tr><td>$</td><td>10</td><td>Status report options</td><td><select id="val-` + 10 + `-input" value="` + grblParams['$10'] + `">
-          <option value="0">WPos:&#xf111 MPos:&#xf10c Buf:&#xf10c</option>
-          <option value="1">WPos:&#xf10c MPos:&#xf111 Buf:&#xf10c</option>
-          <option value="2">WPos:&#xf111 MPos:&#xf10c Buf:&#xf111</option>
+          <option value="0">WPos:&#9899; MPos:&#9898; Buf:&#9898;</option>
+          <option value="1">WPos:&#9898; MPos:&#9899; Buf:&#9898;</option>
+          <option value="2">WPos:&#9899; MPos:&#9898; Buf:&#9899;</option>
         </select></td></tr>
         <tr><td>$</td><td>11</td><td>Junction deviation, millimeters</td><td><input type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td></tr>
         <tr><td>$</td><td>12</td><td>Arc tolerance, millimeters</td><td><input type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td></tr>
-        <tr><td>$</td><td>13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#xf10c Disable</option><option value="1">&#xf111 Enable</option></select></td></tr>
+        <tr><td>$</td><td>13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td></tr>
 
-        <tr><td>$</td><td>20</td><td>Soft limits enable <small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
-        <tr><td>$</td><td>21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
-        <tr><td>$</td><td>22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
+        <tr><td>$</td><td>20</td><td>Soft limits enable <small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
         <tr><td>$</td><td>23</td><td>Homing direction invert</td><td><select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
-          <option value="0">X:&#xf10c Y:&#xf10c Z:&#xf10c</option>
-          <option value="1">X:&#xf111 Y:&#xf10c Z:&#xf10c</option>
-          <option value="2">X:&#xf10c Y:&#xf111 Z:&#xf10c</option>
-          <option value="4">X:&#xf10c Y:&#xf10c Z:&#xf111</option>
-          <option value="3">X:&#xf111 Y:&#xf111 Z:&#xf10c</option>
-          <option value="5">X:&#xf111 Y:&#xf10c Z:&#xf111</option>
-          <option value="6">X:&#xf10c Y:&#xf111 Z:&#xf111</option>
-          <option value="7">X:&#xf111 Y:&#xf111 Z:&#xf111</option>
+          <option value="0">X:&#9898; Y:&#9898; Z:&#9898;</option>
+          <option value="1">X:&#9899; Y:&#9898; Z:&#9898;</option>
+          <option value="2">X:&#9898; Y:&#9899; Z:&#9898;</option>
+          <option value="4">X:&#9898; Y:&#9898; Z:&#9899;</option>
+          <option value="3">X:&#9899; Y:&#9899; Z:&#9898;</option>
+          <option value="5">X:&#9899; Y:&#9898; Z:&#9899;</option>
+          <option value="6">X:&#9898; Y:&#9899; Z:&#9899;</option>
+          <option value="7">X:&#9899; Y:&#9899; Z:&#9899;</option>
         </select></td></tr>
         <tr><td>$</td><td>24</td><td>Homing locate feed rate, mm/min</td><td><input type="text" value="` + grblParams['$24'] + `" id="val-` + 24 + `-input"></td></tr>
         <tr><td>$</td><td>25</td><td>Homing search seek rate, mm/min</td><td><input type="text" value="` + grblParams['$25'] + `" id="val-` + 25 + `-input"></td></tr>
@@ -127,7 +127,7 @@ function grblPopulate() {
 
         <tr><td>$</td><td>30</td><td>Maximum spindle speed, RPM</td><td><input type="text" value="` + grblParams['$30'] + `" id="val-` + 30 + `-input"></td></tr>
         <tr><td>$</td><td>31</td><td>Minimum spindle speed, RPM</td><td><input type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td></tr>
-        <tr><td>$</td><td>32</td><td>Laser-mode enable</td><td><select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `"><option value="0">&#xf00d Disable</option><option value="1">&#xf00c Enable</option></select></td></tr>
+        <tr><td>$</td><td>32</td><td>Laser-mode enable</td><td><select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
 
         <tr><td>$</td><td>100</td><td>X-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td></tr>
         <tr><td>$</td><td>101</td><td>Y-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$101'] + `" id="val-` + 101 + `-input"></td></tr>
@@ -138,7 +138,7 @@ function grblPopulate() {
         <tr><td>$</td><td>112</td><td>Z-axis maximum rate, mm/min</td><td><input type="text" value="` + grblParams['$112'] + `" id="val-` + 112 + `-input"></td></tr>
 
         <tr><td>$</td><td>120</td><td>X-axis acceleration, mm/sec<sup>2</sup></td><td><input type="text" value="` + grblParams['$120'] + `" id="val-` + 120 + `-input"></td></tr>
-        <tr><td>$</td><td>121</td><td>Y-axis acceleration, mm/sec<sup>2</sup>]</td><td><input type="text" value="` + grblParams['$121'] + `" id="val-` + 121 + `-input"></td></tr>
+        <tr><td>$</td><td>121</td><td>Y-axis acceleration, mm/sec<sup>2</sup></td><td><input type="text" value="` + grblParams['$121'] + `" id="val-` + 121 + `-input"></td></tr>
         <tr><td>$</td><td>122</td><td>Z-axis acceleration, mm/sec<sup>2</sup></td><td><input type="text" value="` + grblParams['$122'] + `" id="val-` + 122 + `-input"></td></td></tr>
 
         <tr><td>$</td><td>130</td><td>X-axis maximum travel, millimeters</td><td><input type="text" value="` + grblParams['$130'] + `" id="val-` + 130 + `-input"></td></tr>

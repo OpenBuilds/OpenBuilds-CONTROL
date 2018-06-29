@@ -41,7 +41,7 @@ function printLog(string) {
   var template = '<p class="pf">';
   var time = new Date();
 
-  template += '<span class="fg-brandColor1">[' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds() + ']</span> ';
+  template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
   template += string;
   $('#console').append(template);
   $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
@@ -59,6 +59,15 @@ function initSocket() {
     console.log("WEBSOCKET DISCONNECTED")
     printLog("Websocket Disconnected.  Driver probably quit or crashed")
   });
+
+
+  socket.on('gcodeupload', function(data) {
+
+    printLog("Received new GCODE from API")
+    editor.session.setValue(data);
+  });
+
+
 
   socket.on('data', function(data) {
     // console.log(data.length, data)

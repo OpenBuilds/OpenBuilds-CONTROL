@@ -299,8 +299,10 @@ app.use(express.static(path.join(__dirname, "app")));
 
 // JSON API
 app.get('/api/version', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   data = {
-    "application": "OpenBuilds Machine Driver",
+    "application": "OMD",
     "version": require('./package').version,
     "ipaddress": ip.address() + ":" + config.webPort
   }
@@ -308,11 +310,15 @@ app.get('/api/version', (req, res) => {
 })
 
 app.get('/upload', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.sendFile(__dirname + '/app/upload.html');
 })
 
 // File Post
 app.post('/upload', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   // console.log(req)
   uploadprogress = 0
   var form = new formidable.IncomingForm();
@@ -343,21 +349,10 @@ app.post('/upload', function(req, res) {
 
   // form.parse(req);
   form.parse(req, function(err, fields, files) {
-    console.log(util.inspect({
-      fields: fields,
-      files: files
-    }));
-    // runpycam(files.file.path)
-    console.log("Done, now lets work with " + files.file.path)
-    fs.readFile(files.file.path, 'utf8',
-      function(err, data) {
-        if (err) {
-          console.log(err);
-          process.exit(1);
-        }
-        // GCODE FILE CONTENT
-        console.log(data);
-      });
+    // console.log(util.inspect({
+    //   fields: fields,
+    //   files: files
+    // }));
   });
 
   // form.on('fileBegin', function(name, file) {
@@ -377,8 +372,40 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     // Emitted whenever a field / file pair has been received. file is an instance of File.
-    console.log('Uploaded ' + file.path);
+    // console.log('Uploaded ' + file.path);
     // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
+
+    if (jogWindow === null) {
+      createJogWindow();
+      jogWindow.show()
+      jogWindow.focus();
+      jogWindow.once('did-finish-load', () => {
+        // Send Message
+      })
+    } else {
+      jogWindow.show()
+      jogWindow.focus();
+    }
+    // console.log("Done, now lets work with " + file.path)
+    setTimeout(function() {
+      fs.readFile(file.path, 'utf8',
+        function(err, data) {
+          if (err) {
+            console.log(err);
+            process.exit(1);
+          }
+          // GCODE FILE CONTENT
+          // console.log(data);
+          io.sockets.emit('gcodeupload', data);
+        });
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "GCODE Received",
+        content: "OpenBuilds Machine Driver received new GCODE"
+      })
+    }, 1000);
+
+
   });
 
   form.on('aborted', function() {
