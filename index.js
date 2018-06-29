@@ -2009,8 +2009,8 @@ if (electronApp) {
   function createJogWindow() {
     // Create the browser window.
     jogWindow = new BrowserWindow({
-      width: 600,
-      height: 600,
+      width: 660,
+      height: 710,
       fullscreen: false,
       center: true,
       resizable: true,
@@ -2128,3 +2128,7 @@ if (electronApp) {
     args: []
   })
 }
+
+process.on('uncaughtException', function(error) {
+  console.log("Uncaught Error " + error)
+});

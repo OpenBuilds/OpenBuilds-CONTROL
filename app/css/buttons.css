@@ -1,45 +1,50 @@
-.jogtable td {
+.drotable td, .jogtable td {
   padding: 2px;
+  vertical-align: bottom;
+}
+
+.drotable button, .dro {
+  border: 1px solid lightgray;
+}
+
+.jogtable button {
+  border: 1px solid lightgray;
 }
 
 .jogbtn:disabled {
   pointer-events:none;
 }
 
-.glossydro {
+.dro {
   display: block;
   text-decoration: none;
   background-color: #f8f8f8;
   color: #a7a7a7;
-  margin: 2px;
-  margin-left: 0px;
   width: 141px;
-  height: 34px;
+  height: 36px;
   position: relative;
   text-align: right;
   padding-right: 6px;
   padding-left: 6px;
-  line-height: 30px;
-  /* border-radius: 2px; */
-  /* border: 1px solid #ddd; */
+  line-height: 32px;
   font-weight:900;
   font-size: 18px;
-  cursor: default;
+  cursor: pointer;
 }
 
-.glossydroInput {
+.droInput {
   display: block;
   text-decoration: none;
   background-color: #f5f6f7;
   color: #a7a7a7;
   margin: 2px;
   width: 100px;
-  height: 32px;
+  height: 34px;
   position: relative;
   text-align: right;
   padding-right: 6px;
   padding-left: 6px;
-  line-height: 30px;
+  line-height: 34px;
   border-radius: 2px;
   border: 1px solid #ddd;
   font-weight:700;

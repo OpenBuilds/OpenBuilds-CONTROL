@@ -20,8 +20,8 @@ body {
 }
 
 #grblPanel {
-    max-height: calc(100vh - 190px);
-    height: calc(100vh - 190px);
+    max-height: calc(100vh - 205px);
+    height: calc(100vh - 205px);
     width: 100%;
     overflow-y: auto;
     overflow-x: none;

@@ -88,42 +88,42 @@ $(document).ready(function() {
 
   $('#dist01').on('click', function(ev) {
     jogdist = 0.1;
-    $('.jogdist').removeClass('fg-dark')
+    $('.jogdist').removeClass('fg-grayBlue')
     $('.jogdist').addClass('fg-gray')
     $('#dist01label').removeClass('fg-gray')
-    $('#dist01label').addClass('fg-dark')
+    $('#dist01label').addClass('fg-grayBlue')
   })
 
   $('#dist1').on('click', function(ev) {
     jogdist = 1;
-    $('.jogdist').removeClass('fg-dark')
+    $('.jogdist').removeClass('fg-grayBlue')
     $('.jogdist').addClass('fg-gray')
     $('#dist1label').removeClass('fg-gray')
-    $('#dist1label').addClass('fg-dark')
+    $('#dist1label').addClass('fg-grayBlue')
   })
 
   $('#dist10').on('click', function(ev) {
     jogdist = 10;
-    $('.jogdist').removeClass('fg-dark')
+    $('.jogdist').removeClass('fg-grayBlue')
     $('.jogdist').addClass('fg-gray')
     $('#dist10label').removeClass('fg-gray')
-    $('#dist10label').addClass('fg-dark')
+    $('#dist10label').addClass('fg-grayBlue')
   })
 
   $('#dist100').on('click', function(ev) {
     jogdist = 100;
-    $('.jogdist').removeClass('fg-dark')
+    $('.jogdist').removeClass('fg-grayBlue')
     $('.jogdist').addClass('fg-gray')
     $('#dist100label').removeClass('fg-gray')
-    $('#dist100label').addClass('fg-dark')
+    $('#dist100label').addClass('fg-grayBlue')
   })
 
   $('#dist500').on('click', function(ev) {
     jogdist = 500;
-    $('.jogdist').removeClass('fg-dark')
+    $('.jogdist').removeClass('fg-grayBlue')
     $('.jogdist').addClass('fg-gray')
     $('#dist500label').removeClass('fg-gray')
-    $('#dist500label').addClass('fg-dark')
+    $('#dist500label').addClass('fg-grayBlue')
   })
 
   $('#gotozero').on('click', function(ev) {

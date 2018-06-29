@@ -180,10 +180,14 @@ function setConsole(val, status) {
     $("#command").attr('disabled', false);
     $("#sendCommand").prop('disabled', false);
   } else if (val == 3) { // Busy Streaming GCODE
-    $("#command").attr('disabled', true);
+    if (!$('#command').attr('disabled')) {
+      $('#command').attr('disabled', true);
+    }
     $("#sendCommand").prop('disabled', true);
   } else if (val == 4) { // Paused
-    $("#command").attr('disabled', true);
+    if (!$('#command').attr('disabled')) {
+      $('#command').attr('disabled', true);
+    }
     $("#sendCommand").prop('disabled', false);
   } else if (val == 5) { // Alarm State
     $("#command").attr('disabled', false);

@@ -9,7 +9,7 @@ $(document).ready(function() {
   editor.setTheme('ace/theme/sqlserver')
   // editor.setOption('printMarginColumn', 0)
   editor.setAutoScrollEditorIntoView(true);
-  editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE'); // from samplefile.js
+  editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
   editor.setShowPrintMargin(false);
   // editor.container.addEventListener("contextmenu", function(e) {
   //   console.log("context")

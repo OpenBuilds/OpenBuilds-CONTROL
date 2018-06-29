@@ -58,12 +58,6 @@
                     </span>
                     <span class="caption">Reset</span>
                   </button>
-                  <!-- <button class="ribbon-icon-button" onclick="sendGcode('$X')">
-                    <span class="icon">
-                      <span class="mif-unlock"></span>
-                    </span>
-                    <span class="caption">Unlock</span>
-                  </button> -->
                   <button class="ribbon-icon-button" onclick="sendGcode('$$')">
                     <span class="icon">
                       <span class="mif-cogs"></span>
@@ -98,23 +92,35 @@
           </div>
           <div class="section" id="section-grbl">
             <div class="group" style="width: calc(100vw - 40px);">
-              <button class="ribbon-button" onclick="grblSaveSettings();">
+              <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
                 <span class="icon">
                   <span class="fa-layers fa-fw">
-                    <i class="fas fa-save fg-grayBlue" data-fa-transform="grow-8"></i>
+                    <i id="saveBtnIcon" class="fas fa-save fg-gray" data-fa-transform="grow-8"></i>
                     <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
-                    <!-- <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span> -->
                   </span>
                 </span>
                 <span class="caption">Save<br> to Firmware</span>
               </button>
-              <button class="ribbon-button" onclick="refreshGrblSettings();">
-                <span class="icon">
+              <div class="ribbon-group" style="width: 90px;">
+                <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                  <span class="icon">
+                    <span class="mif-loop"></span>
+                  </span>
+                  <span class="caption">Reset</span>
+                </button>
+                <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                  <span class="icon">
+                    <span class="mif-unlock"></span>
+                  </span>
+                  <span class="caption">Unlock</span>
+                </button>
+                <button class="ribbon-icon-button" onclick="refreshGrblSettings();">
+                  <span class="icon">
                     <i class="fas fa-sync-alt"></i>
                   </span>
-                </span>
-                <span class="caption">Refresh<br>from Firmware</span>
-              </button>
+                  <span class="caption">Refresh</span>
+                </button>
+              </div>
               <span class="title">Grbl Settings</span>
             </div>
             <div class="group" style="width: 100px;">
@@ -245,34 +251,88 @@
           <div id="jogcontrols">
             <div class="row flex-justify-center flex-align-center" style="width: 100%;">
               <div class="cell">
-                <table>
+                <table class="drotable">
                   <tr>
                     <td>
-                      <div class="glossydro">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                        </span>
+                      </button>
+                    </td>
+                    <td>
+                      <div class="dro">
                         <div class="float-left fg-red">X</div>
                         <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
-                        <input id="xPosInput" class="m-0 p-0 glossydroInput float-right fg-red" />
+                        <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <div class="glossydro">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Y0')" style="width: 60px;">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                        </span>
+                      </button>
+                    </td>
+                    <td>
+                      <div class="dro">
                         <div class="float-left fg-green">Y</div>
                         <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
-                        <input id="yPosInput" class="m-0 p-0 glossydroInput float-right fg-green" />
+                        <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <div class="glossydro">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-8"></i>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                        </span>
+                      </button>
+                    </td>
+                    <td>
+                      <div class="dro">
                         <div class="float-left fg-blue">Z</div>
                         <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
-                        <input id="zPosInput" class="m-0 p-0 glossydroInput float-right fg-blue" />
+                        <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
                       </div>
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-18"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-2" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-12" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-22" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                        </span>
+                      </button>
+                    </td>
+                    <td>
+                      <button class="button light jogbtn" style="width: 141px;" id="gotozero">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
+                        </span>
+
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+                <!-- <table>
                   <tr>
                     <td style="padding-top: 2px;">
                       <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0')" style="width: 69px;">
@@ -294,7 +354,7 @@
                   </tr>
                   <tr>
                     <td style="padding-top: 3px;">
-                      <button class="button light jogbtn" style="width: 140px;" id="gotozero">
+                      <button class="button light jogbtn" style="width: 141px;" id="gotozero">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -306,7 +366,7 @@
                       </button>
                     </td>
                   </tr>
-                </table>
+                </table> -->
               </div>
               <div class="cell">
                 <table class="jogtable">
@@ -374,28 +434,28 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="button light jogbtn" id="dist01" style="width: 100%;">
+                      <button class="button light jogbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
                           <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
                         </span>
                       </button>
                     </td>
                     <td>
-                      <button class="button light jogbtn" id="dist1" style="width: 100%;">
+                      <button class="button light jogbtn" id="dist1" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
                           <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
                         </span>
                       </button>
                     </td>
                     <td>
-                      <button class="button light jogbtn" id="dist10" style="width: 100%;">
+                      <button class="button light jogbtn" id="dist10" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
-                          <span id="dist10label" class="fa-layers-text fg-dark jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
+                          <span id="dist10label" class="fa-layers-text fg-grayBlue jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
                         </span>
                       </button>
                     </td>
                     <td>
-                      <button class="button light jogbtn" id="dist100" style="width: 100%;">
+                      <button class="button light jogbtn" id="dist100" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
                           <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
                         </span>
@@ -435,7 +495,7 @@
         <div class="row">
           <div class="cell-3">
             <div>
-              <span class="badge inline bg-gray fg-white" style="width: 100%;">
+              <span class="badge inline bg-grayBlue fg-white" style="width: 100%;">
                 <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
                   <i id="navbell" class="fas fa-bell fg-red" style="display: none;"></i>
                   <i class="far fa-bell"></i>
@@ -445,17 +505,17 @@
           </div>
           <div class="cell-3">
             <div>
-              <span class="badge inline bg-gray fg-white" id="connectStatus" style="width: 100%;">Not Connected</span>
+              <span class="badge inline bg-grayBlue fg-white" id="connectStatus" style="width: 100%;">Not Connected</span>
             </div>
           </div>
           <div class="cell-3">
             <div>
-              <span class="badge inline bg-gray fg-white" id="runStatus" style="width: 100%;">Not Connected</span>
+              <span class="badge inline bg-grayBlue fg-white" id="runStatus" style="width: 100%;">Not Connected</span>
             </div>
           </div>
           <div class="cell-3">
             <div>
-              <span class="badge inline bg-gray fg-white" id="gcodesent" style="width: 100%;">Queue: 0</span>
+              <span class="badge inline bg-grayBlue fg-white" id="gcodesent" style="width: 100%;">Queue: 0</span>
             </div>
           </div>
         </div>
