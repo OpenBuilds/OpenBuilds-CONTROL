@@ -26,6 +26,8 @@ var colors = {
 var width = 250;
 var height = 200;
 
+var uploadsDir = __dirname + '/upload';
+
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
@@ -267,6 +269,10 @@ var status = {
   }
 };
 
+// if (!fs.existsSync(uploadsDir)) {
+//   fs.mkdirSync(uploadsDir);
+// }
+
 function refreshGcodeLibrary() {
   const dirTree = require('directory-tree');
 
@@ -362,7 +368,7 @@ app.post('/upload', function(req, res) {
   uploadprogress = 0
   var form = new formidable.IncomingForm();
 
-  var uploadsDir = __dirname + '/upload';
+
 
   // Cleanup old files - later
   // fs.readdir(uploadsDir, function(err, files) {
@@ -395,12 +401,12 @@ app.post('/upload', function(req, res) {
     // }));
   });
 
-  form.on('fileBegin', function(name, file) {
-    // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
-    console.log('Uploading ' + file.name);
-    file.path = __dirname + '/upload/' + file.name;
-    // io.sockets.in('sessionId').emit('startupload', 'STARTING');
-  });
+  // form.on('fileBegin', function(name, file) {
+  //   // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
+  //   console.log('Uploading ' + file.name);
+  //   file.path = __dirname + '/upload/' + file.name;
+  //   // io.sockets.in('sessionId').emit('startupload', 'STARTING');
+  // });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
     uploadprogress = parseInt(((bytesReceived * 100) / bytesExpected).toFixed(0));
@@ -415,7 +421,7 @@ app.post('/upload', function(req, res) {
     console.log('Uploaded ' + file.path);
     // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
 
-    refreshGcodeLibrary();
+    // refreshGcodeLibrary();
 
     if (jogWindow === null) {
       createJogWindow();
@@ -1530,7 +1536,7 @@ io.on("connection", function(socket) {
 http.listen(config.webPort, '0.0.0.0', function() {
   console.log('listening on:' + ip.address() + ":" + config.webPort);
   // Now refresh library
-  refreshGcodeLibrary();
+  // refreshGcodeLibrary();
 });
 
 function machineSend(gcode) {
