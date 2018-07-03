@@ -2,6 +2,7 @@ console.log("Starting OpenBuilds Machine Driver v" + require('./package').versio
 
 const grblStrings = require("./grblStrings.js");
 var path = require("path");
+const join = require('path').join;
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
@@ -16,6 +17,14 @@ var rimraf = require("rimraf")
 var formidable = require('formidable')
 var util = require('util');
 var lastsentuploadprogress = 0;
+var gcodethumbnail = require("gcodethumbnail");
+var colors = {
+  G0: '#00CC00',
+  G1: '#CC0000',
+  G2G3: "#0000CC"
+};
+var width = 250;
+var height = 200;
 
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
@@ -258,6 +267,37 @@ var status = {
   }
 };
 
+function refreshGcodeLibrary() {
+  const dirTree = require('directory-tree');
+
+  var tree = dirTree('./upload', {
+    extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
+  }, (item, PATH) => {
+    // if a gcode is found, then
+    // console.log(item);
+    ConvertGCODEtoPNG(item.path, item.path + ".png")
+  });
+  // console.log("---------------")
+  var tree = dirTree('./upload', {
+    extensions: /\.gcode|\.png/
+  });
+  var treeData = JSON.stringify(tree, null, 2)
+  // console.log(treeData);
+  fs.writeFileSync(join(__dirname, 'upload/data.json'), treeData, 'utf-8')
+}
+
+function ConvertGCODEtoPNG(file, out) {
+  var path = out;
+  fs.readFile(file, 'utf8',
+    function(err, data) {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+      gcodethumbnail.generatePNG(path, data, colors, width, height);
+    });
+}
+
 SerialPort.list(function(err, ports) {
   oldportslist = ports;
   status.comms.interfaces.ports = ports;
@@ -287,8 +327,6 @@ var PortCheckinterval = setInterval(function() {
           })
         }
       }
-
-
       oldportslist = ports;
     });
   }
@@ -309,6 +347,7 @@ app.get('/api/version', (req, res) => {
   res.send(JSON.stringify(data), null, 2);
 })
 
+// Upload
 app.get('/upload', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -323,29 +362,30 @@ app.post('/upload', function(req, res) {
   uploadprogress = 0
   var form = new formidable.IncomingForm();
 
-  var uploadsDir = __dirname + '/uploads';
+  var uploadsDir = __dirname + '/upload';
 
-  fs.readdir(uploadsDir, function(err, files) {
-    files.forEach(function(file, index) {
-      fs.stat(path.join(uploadsDir, file), function(err, stat) {
-        var endTime, now;
-        if (err) {
-          return console.error(err);
-        }
-        now = new Date().getTime();
-        // older than an hour
-        endTime = new Date(stat.ctime).getTime() + 3600000;
-        if (now > endTime) {
-          return rimraf(path.join(uploadsDir, file), function(err) {
-            if (err) {
-              return console.error(err);
-            }
-            console.log('successfully deleted' + file);
-          });
-        }
-      });
-    });
-  });
+  // Cleanup old files - later
+  // fs.readdir(uploadsDir, function(err, files) {
+  //   files.forEach(function(file, index) {
+  //     fs.stat(path.join(uploadsDir, file), function(err, stat) {
+  //       var endTime, now;
+  //       if (err) {
+  //         return console.error(err);
+  //       }
+  //       now = new Date().getTime();
+  //       // older than an hour
+  //       endTime = new Date(stat.ctime).getTime() + 3600000;
+  //       if (now > endTime) {
+  //         return rimraf(path.join(uploadsDir, file), function(err) {
+  //           if (err) {
+  //             return console.error(err);
+  //           }
+  //           console.log('successfully deleted' + file);
+  //         });
+  //       }
+  //     });
+  //   });
+  // });
 
   // form.parse(req);
   form.parse(req, function(err, fields, files) {
@@ -355,12 +395,12 @@ app.post('/upload', function(req, res) {
     // }));
   });
 
-  // form.on('fileBegin', function(name, file) {
-  //   // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
-  //   console.log('Uploading ' + file.name);
-  //   file.path = __dirname + '/uploads/' + file.name;
-  //   // io.sockets.in('sessionId').emit('startupload', 'STARTING');
-  // });
+  form.on('fileBegin', function(name, file) {
+    // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
+    console.log('Uploading ' + file.name);
+    file.path = __dirname + '/upload/' + file.name;
+    // io.sockets.in('sessionId').emit('startupload', 'STARTING');
+  });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
     uploadprogress = parseInt(((bytesReceived * 100) / bytesExpected).toFixed(0));
@@ -372,21 +412,24 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     // Emitted whenever a field / file pair has been received. file is an instance of File.
-    // console.log('Uploaded ' + file.path);
+    console.log('Uploaded ' + file.path);
     // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
+
+    refreshGcodeLibrary();
 
     if (jogWindow === null) {
       createJogWindow();
       jogWindow.show()
+      // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
+      jogWindow.setAlwaysOnTop(true);
       jogWindow.focus();
-      jogWindow.once('did-finish-load', () => {
-        // Send Message
-      })
+      jogWindow.setAlwaysOnTop(false);
     } else {
       jogWindow.show()
+      jogWindow.setAlwaysOnTop(true);
       jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
     }
-    // console.log("Done, now lets work with " + file.path)
     setTimeout(function() {
       fs.readFile(file.path, 'utf8',
         function(err, data) {
@@ -394,8 +437,7 @@ app.post('/upload', function(req, res) {
             console.log(err);
             process.exit(1);
           }
-          // GCODE FILE CONTENT
-          // console.log(data);
+          // console.log(data)
           io.sockets.emit('gcodeupload', data);
         });
       appIcon.displayBalloon({
@@ -403,9 +445,8 @@ app.post('/upload', function(req, res) {
         title: "GCODE Received",
         content: "OpenBuilds Machine Driver received new GCODE"
       })
-    }, 1000);
-
-
+    }, 1500);
+    // console.log("Done, now lets work with " + file.path)
   });
 
   form.on('aborted', function() {
@@ -1484,10 +1525,13 @@ io.on("connection", function(socket) {
 
 });
 
+
+
 http.listen(config.webPort, '0.0.0.0', function() {
   console.log('listening on:' + ip.address() + ":" + config.webPort);
+  // Now refresh library
+  refreshGcodeLibrary();
 });
-
 
 function machineSend(gcode) {
   // console.log("SENDING: " + gcode)
@@ -1964,8 +2008,14 @@ const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory
   if (jogWindow === null) {
     createJogWindow();
     jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
   } else {
     jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
   }
 });
 
@@ -2008,8 +2058,14 @@ if (electronApp) {
       if (jogWindow === null) {
         createJogWindow();
         jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
       } else {
         jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
       }
     })
 
@@ -2018,8 +2074,14 @@ if (electronApp) {
       if (jogWindow === null) {
         createJogWindow();
         jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
       } else {
         jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
       }
     })
 
@@ -2072,6 +2134,9 @@ if (electronApp) {
     });
     jogWindow.once('ready-to-show', () => {
       jogWindow.show()
+      jogWindow.setAlwaysOnTop(true);
+      jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
     })
     // jogWindow.maximize()
     // jogWindow.webContents.openDevTools()

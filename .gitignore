@@ -2,6 +2,7 @@
 
 #electron dist
 dist
+upload
 
 # Compiled source #
 ###################

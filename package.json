@@ -8,12 +8,13 @@
     "copyfiles": "^1.2.0",
     "electron": "^1.6.x",
     "electron-builder": "^14.1.1",
-    "electron-rebuild": "^1.5.7",
     "ncp": "^2.0.0"
   },
   "dependencies": {
+    "directory-tree": "^2.1.0",
     "express": "^4.16.2",
     "formidable": "^1.2.1",
+    "gcodethumbnail": "^1.0.1",
     "ip": "^1.1.5",
     "lodash": "^4.17.10",
     "md5": "^2.2.1",
