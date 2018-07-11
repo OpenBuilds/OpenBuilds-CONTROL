@@ -3,6 +3,7 @@
 #electron dist
 dist
 upload
+ssl
 
 # Compiled source #
 ###################

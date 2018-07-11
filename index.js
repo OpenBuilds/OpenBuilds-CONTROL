@@ -1,12 +1,48 @@
 console.log("Starting OpenBuilds Machine Driver v" + require('./package').version)
 
-const grblStrings = require("./grblStrings.js");
-var path = require("path");
-const join = require('path').join;
+var config = {};
+config.webPort = process.env.WEB_PORT || 3000;
+config.posDecimals = process.env.DRO_DECIMALS || 2;
+config.grblWaitTime = 1;
+config.firmwareWaitTime = 4;
+
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
-var io = require("socket.io")(http);
+var https = require('https');
+
+// var io = require("socket.io")(https);
+
+var ioServer = require('socket.io');
+var io = new ioServer();
+// var oneIo = io.listen(https);
+// var anotherIo = io.listen(https);
+
+var fs = require('fs');
+var httpsOptions = {
+  key: fs.readFileSync('ssl/localhost.key'),
+  cert: fs.readFileSync('ssl/localhost.cer')
+};
+
+const httpsserver = https.createServer(httpsOptions, app).listen(3001, function() {
+  console.log('https: listening on:' + ip.address() + ":3001");
+});
+
+
+const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
+  console.log('http:  listening on:' + ip.address() + ":" + config.webPort);
+  // Now refresh library
+  refreshGcodeLibrary();
+});
+
+io.attach(httpserver);
+io.attach(httpsserver);
+
+
+
+const grblStrings = require("./grblStrings.js");
+var path = require("path");
+const join = require('path').join;
 const serialport = require('serialport');
 var SerialPort = serialport;
 var md5 = require('md5');
@@ -26,7 +62,32 @@ var colors = {
 var width = 250;
 var height = 200;
 
-var uploadsDir = __dirname + '/upload';
+// Electron app
+const electron = require('electron');
+// Module to control application life.
+const electronApp = electron.app;
+
+console.log("Local User Data: " + electronApp.getPath('userData'))
+
+const BrowserWindow = electron.BrowserWindow;
+const Tray = electron.Tray;
+const nativeImage = require('electron').nativeImage
+const Menu = require('electron').Menu
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+var appIcon = null,
+  jogWindow = null,
+  mainWindow = null
+
+var uploadsDir = electronApp.getPath('userData') + '/upload/';
+
+fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
+// fs.mkdir(uploadsDir, err => {
+//   if (err && err.code != 'EEXIST') throw 'up'
+//   // already exists
+// })
+
+
 
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
@@ -38,15 +99,6 @@ const iconAlarm = path.join(__dirname, 'app/icon-bell.png');
 
 
 var iosocket;
-
-var config = {};
-config.webPort = process.env.WEB_PORT || 3000;
-config.serverVersion = "0.0.1";
-config.apiVersion = "0.0.1";
-config.posDecimals = process.env.DRO_DECIMALS || 2;
-config.grblWaitTime = 1;
-config.firmwareWaitTime = 4;
-
 var isAlarmed = false;
 var lastmd5sum = '00000000000000000000000000000000'
 var lastGcode = []
@@ -269,27 +321,25 @@ var status = {
   }
 };
 
-// if (!fs.existsSync(uploadsDir)) {
-//   fs.mkdirSync(uploadsDir);
-// }
-
 function refreshGcodeLibrary() {
-  const dirTree = require('directory-tree');
+  if (fs.existsSync(uploadsDir)) {
+    const dirTree = require('directory-tree');
 
-  var tree = dirTree('./upload', {
-    extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
-  }, (item, PATH) => {
-    // if a gcode is found, then
-    // console.log(item);
-    ConvertGCODEtoPNG(item.path, item.path + ".png")
-  });
-  // console.log("---------------")
-  var tree = dirTree('./upload', {
-    extensions: /\.gcode|\.png/
-  });
-  var treeData = JSON.stringify(tree, null, 2)
-  // console.log(treeData);
-  fs.writeFileSync(join(__dirname, 'upload/data.json'), treeData, 'utf-8')
+    var tree = dirTree(uploadsDir, {
+      extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
+    }, (item, PATH) => {
+      // if a gcode is found, then
+      // console.log(item);
+      ConvertGCODEtoPNG(item.path, item.path + ".png")
+    });
+    // console.log("---------------")
+    var tree = dirTree(uploadsDir, {
+      extensions: /\.gcode|\.png/
+    });
+    var treeData = JSON.stringify(tree, null, 2)
+    // console.log(treeData);
+    fs.writeFileSync(join(uploadsDir + '/data.json'), treeData, 'utf-8')
+  }
 }
 
 function ConvertGCODEtoPNG(file, out) {
@@ -401,12 +451,12 @@ app.post('/upload', function(req, res) {
     // }));
   });
 
-  // form.on('fileBegin', function(name, file) {
-  //   // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
-  //   console.log('Uploading ' + file.name);
-  //   file.path = __dirname + '/upload/' + file.name;
-  //   // io.sockets.in('sessionId').emit('startupload', 'STARTING');
-  // });
+  form.on('fileBegin', function(name, file) {
+    // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
+    console.log('Uploading ' + file.name);
+    file.path = uploadsDir + file.name;
+    // io.sockets.in('sessionId').emit('startupload', 'STARTING');
+  });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
     uploadprogress = parseInt(((bytesReceived * 100) / bytesExpected).toFixed(0));
@@ -421,7 +471,7 @@ app.post('/upload', function(req, res) {
     console.log('Uploaded ' + file.path);
     // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
 
-    // refreshGcodeLibrary();
+    refreshGcodeLibrary();
 
     if (jogWindow === null) {
       createJogWindow();
@@ -437,20 +487,31 @@ app.post('/upload', function(req, res) {
       jogWindow.setAlwaysOnTop(false);
     }
     setTimeout(function() {
+
       fs.readFile(file.path, 'utf8',
         function(err, data) {
           if (err) {
             console.log(err);
-            process.exit(1);
+            io.sockets.emit('data', "ERROR: File Upload Failed");
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "ERROR: File Upload Failed",
+              content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
+            })
+            // process.exit(1);
           }
           // console.log(data)
-          io.sockets.emit('gcodeupload', data);
+          if (data) {
+            io.sockets.emit('gcodeupload', data);
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "GCODE Received",
+              content: "OpenBuilds Machine Driver received new GCODE"
+            })
+          }
         });
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "GCODE Received",
-        content: "OpenBuilds Machine Driver received new GCODE"
-      })
+
+
     }, 1500);
     // console.log("Done, now lets work with " + file.path)
   });
@@ -1531,14 +1592,6 @@ io.on("connection", function(socket) {
 
 });
 
-
-
-http.listen(config.webPort, '0.0.0.0', function() {
-  console.log('listening on:' + ip.address() + ":" + config.webPort);
-  // Now refresh library
-  // refreshGcodeLibrary();
-});
-
 function machineSend(gcode) {
   // console.log("SENDING: " + gcode)
   if (port.isOpen) {
@@ -1994,21 +2047,6 @@ function isElectron() {
   return false;
 }
 
-
-// Electron app
-const electron = require('electron');
-// Module to control application life.
-const electronApp = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const Tray = electron.Tray;
-const nativeImage = require('electron').nativeImage
-const Menu = require('electron').Menu
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-var appIcon = null,
-  jogWindow = null,
-  mainWindow = null
-
 const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
   if (jogWindow === null) {
@@ -2228,5 +2266,5 @@ if (electronApp) {
 }
 
 process.on('uncaughtException', function(error) {
-  console.log("Uncaught Error " + error)
+  // console.log("Uncaught Error " + error)
 });
