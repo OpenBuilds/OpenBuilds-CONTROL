@@ -53,7 +53,7 @@ var rimraf = require("rimraf")
 var formidable = require('formidable')
 var util = require('util');
 var lastsentuploadprogress = 0;
-var gcodethumbnail = require("gcodethumbnail");
+// var gcodethumbnail = require("gcodethumbnail");
 var colors = {
   G0: '#00CC00',
   G1: '#CC0000',
@@ -387,36 +387,36 @@ var status = {
 };
 
 function refreshGcodeLibrary() {
-  if (fs.existsSync(uploadsDir)) {
-    const dirTree = require('directory-tree');
-
-    var tree = dirTree(uploadsDir, {
-      extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
-    }, (item, PATH) => {
-      // if a gcode is found, then
-      // console.log(item);
-      ConvertGCODEtoPNG(item.path, item.path + ".png")
-    });
-    // console.log("---------------")
-    var tree = dirTree(uploadsDir, {
-      extensions: /\.gcode|\.png/
-    });
-    var treeData = JSON.stringify(tree, null, 2)
-    // console.log(treeData);
-    fs.writeFileSync(join(uploadsDir + '/data.json'), treeData, 'utf-8')
-  }
+  // if (fs.existsSync(uploadsDir)) {
+  //   const dirTree = require('directory-tree');
+  //
+  //   var tree = dirTree(uploadsDir, {
+  //     extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
+  //   }, (item, PATH) => {
+  //     // if a gcode is found, then
+  //     // console.log(item);
+  //     ConvertGCODEtoPNG(item.path, item.path + ".png")
+  //   });
+  //   // console.log("---------------")
+  //   var tree = dirTree(uploadsDir, {
+  //     extensions: /\.gcode|\.png/
+  //   });
+  //   var treeData = JSON.stringify(tree, null, 2)
+  //   // console.log(treeData);
+  //   fs.writeFileSync(join(uploadsDir + '/data.json'), treeData, 'utf-8')
+  // }
 }
 
 function ConvertGCODEtoPNG(file, out) {
-  var path = out;
-  fs.readFile(file, 'utf8',
-    function(err, data) {
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
-      gcodethumbnail.generatePNG(path, data, colors, width, height);
-    });
+  // var path = out;
+  // fs.readFile(file, 'utf8',
+  //   function(err, data) {
+  //     if (err) {
+  //       console.log(err);
+  //       process.exit(1);
+  //     }
+  //     gcodethumbnail.generatePNG(path, data, colors, width, height);
+  //   });
 }
 
 SerialPort.list(function(err, ports) {
