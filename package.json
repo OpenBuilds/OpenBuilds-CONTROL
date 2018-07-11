@@ -1,13 +1,13 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.1.0",
+  "version": "1.0.16",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds",
   "devDependencies": {
     "copyfiles": "^1.2.0",
     "electron": "^1.6.x",
-    "electron-builder": "^14.1.1",
+    "electron-builder": "^14.5.3",
     "ncp": "^2.0.0"
   },
   "dependencies": {

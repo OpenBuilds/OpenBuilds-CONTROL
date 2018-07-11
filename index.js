@@ -78,10 +78,12 @@ const Menu = require('electron').Menu
 var appIcon = null,
   jogWindow = null,
   mainWindow = null
+//
+// const {
+//   autoUpdater
+// } = require("electron-updater");
 
-const {
-  autoUpdater
-} = require("electron-updater");
+const autoUpdater = require("electron-updater").autoUpdater
 
 electronApp.on('ready', function() {
   autoUpdater.checkForUpdates();
@@ -89,7 +91,11 @@ electronApp.on('ready', function() {
 
 autoUpdater.on('checking-for-update', () => {
   var string = 'Checking for update...';
-  io.sockets.emit('data', string);
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -97,8 +103,12 @@ autoUpdater.on('checking-for-update', () => {
   })
 })
 autoUpdater.on('update-available', (ev, info) => {
-  var string = 'Update available.';
-  io.sockets.emit('data', string);
+  var string = 'Update available.\n'
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -107,7 +117,11 @@ autoUpdater.on('update-available', (ev, info) => {
 })
 autoUpdater.on('update-not-available', (ev, info) => {
   var string = 'Update not available.';
-  io.sockets.emit('data', string);
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -116,7 +130,11 @@ autoUpdater.on('update-not-available', (ev, info) => {
 })
 autoUpdater.on('error', (ev, err) => {
   var string = 'Error in auto-updater.';
-  io.sockets.emit('data', string);
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -124,8 +142,13 @@ autoUpdater.on('error', (ev, err) => {
   })
 })
 autoUpdater.on('download-progress', (ev, progressObj) => {
-  var string = 'Download progress...';
-  io.sockets.emit('data', string);
+  var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
+  console.log(string)
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -135,7 +158,11 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
 
 autoUpdater.on('update-downloaded', (info) => {
   var string = "New update ready";
-  io.sockets.emit('data', string);
+  var output = {
+    'command': 'autoupdate',
+    'response': string
+  }
+  io.sockets.emit('data', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -557,7 +584,11 @@ app.post('/upload', function(req, res) {
         function(err, data) {
           if (err) {
             console.log(err);
-            io.sockets.emit('data', "ERROR: File Upload Failed");
+            var output = {
+              'command': '',
+              'response': "ERROR: File Upload Failed"
+            }
+            io.sockets.emit('data', output);
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
               title: "ERROR: File Upload Failed",
@@ -677,7 +708,11 @@ io.on("connection", function(socket) {
         // status.comms.connectionStatus = 0;
       });
       port.on("open", function() {
-        io.sockets.emit('data', "PORT INFO: Opening USB Port");
+        var output = {
+          'command': '',
+          'response': "PORT INFO: Opening USB Port"
+        }
+        io.sockets.emit('data', output);
         status.comms.connectionStatus = 1;
         if (config.resetOnConnect == 1) {
           machineSend(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
@@ -703,7 +738,11 @@ io.on("connection", function(socket) {
         }
 
         console.log("PORT INFO: Connected to " + port.path + " at " + port.options.baudRate);
-        io.sockets.emit('data', "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware");
+        var output = {
+          'command': '',
+          'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware"
+        }
+        io.sockets.emit('data', output);
         status.comms.connectionStatus = 2;
         status.comms.interfaces.activePort = port.path;
         status.comms.interfaces.activeBaud = port.options.baudRate;
@@ -711,7 +750,11 @@ io.on("connection", function(socket) {
 
       port.on("close", function() { // open errors will be emitted as an error event
         console.log("PORT INFO: Port closed");
-        io.sockets.emit('data', "PORT INFO: Port closed");
+        var output = {
+          'command': '',
+          'response': "PORT INFO: Port closed"
+        }
+        io.sockets.emit('data', output);
       }); // end port.onclose
 
       port.on("data", function(data) {
@@ -827,7 +870,11 @@ io.on("connection", function(socket) {
           var md5sum = data.split(/[ ,]+/)[0]
           if (lastmd5sum === md5sum) {
             console.log("SD UPLOAD VERIFIED! OK")
-            io.sockets.emit('data', "SD UPLOAD COMPLETED, AND MD5 VERIFIED! OK!");
+            var output = {
+              'command': '',
+              'response': 'SD UPLOAD COMPLETED, AND MD5 VERIFIED! OK'
+            }
+            io.sockets.emit('data', output);
           } else {
             // console.log("SD UPLOAD VERIFIED! FAILED:   Original file: " + lastmd5sum +", SD file: " + md5sum )
             // Due to firmware changing the content of the file, sometimes a valid upload still fails.   A pass is definately a pass.  But a fail could just be cosmetic.
@@ -1004,11 +1051,20 @@ io.on("connection", function(socket) {
               grblBufferSize.shift();
               var errorCode = parseInt(data.split(':')[1]);
               console.log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
-              io.sockets.emit('data', 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
+              var output = {
+                'command': '',
+                'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]"
+              }
+              io.sockets.emit('data', output);
               socket.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
               break;
             case 'smoothie':
-              io.sockets.emit('data', data);
+              var output = {
+                'command': '',
+                'response': data
+              }
+              io.sockets.emit('data', output);
+              // io.sockets.emit('data', data);
               break;
           }
         } else if (data === ' ') {
