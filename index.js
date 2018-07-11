@@ -19,15 +19,17 @@ var io = new ioServer();
 // var anotherIo = io.listen(https);
 
 var fs = require('fs');
+var path = require("path");
+const join = require('path').join;
+
 var httpsOptions = {
-  key: fs.readFileSync('ssl/localhost.key'),
-  cert: fs.readFileSync('ssl/localhost.cer')
+  key: fs.readFileSync(path.join(__dirname, 'ssl/localhost.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'ssl/localhost.cer'))
 };
 
 const httpsserver = https.createServer(httpsOptions, app).listen(3001, function() {
   console.log('https: listening on:' + ip.address() + ":3001");
 });
-
 
 const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
   console.log('http:  listening on:' + ip.address() + ":" + config.webPort);
@@ -41,8 +43,6 @@ io.attach(httpsserver);
 
 
 const grblStrings = require("./grblStrings.js");
-var path = require("path");
-const join = require('path').join;
 const serialport = require('serialport');
 var SerialPort = serialport;
 var md5 = require('md5');
@@ -78,6 +78,71 @@ const Menu = require('electron').Menu
 var appIcon = null,
   jogWindow = null,
   mainWindow = null
+
+const {
+  autoUpdater
+} = require("electron-updater");
+
+electronApp.on('ready', function() {
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.on('checking-for-update', () => {
+  var string = 'Checking for update...';
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+})
+autoUpdater.on('update-available', (ev, info) => {
+  var string = 'Update available.';
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+  var string = 'Update not available.';
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+})
+autoUpdater.on('error', (ev, err) => {
+  var string = 'Error in auto-updater.';
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+  var string = 'Download progress...';
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+  var string = "New update ready";
+  io.sockets.emit('data', string);
+  appIcon.displayBalloon({
+    icon: nativeImage.createFromPath(iconPath),
+    title: "OpenBuilds Machine Driver",
+    content: string
+  })
+  // autoUpdater.quitAndInstall();
+});
 
 var uploadsDir = electronApp.getPath('userData') + '/upload/';
 
@@ -585,6 +650,10 @@ io.on("connection", function(socket) {
     appIcon.destroy();
     electronApp.exit(0);
   });
+
+  socket.on("applyUpdate", function(data) {
+    autoUpdater.quitAndInstall();
+  })
 
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 

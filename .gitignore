@@ -3,7 +3,7 @@
 #electron dist
 dist
 upload
-ssl
+electron-builder.yml
 
 # Compiled source #
 ###################

@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "directory-tree": "^2.1.0",
+    "electron-updater": "^2.23.3",
     "express": "^4.16.2",
     "formidable": "^1.2.1",
     "gcodethumbnail": "^1.0.1",
@@ -28,14 +29,12 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "dist": "build",
     "distmac": "build --mac ",
-    "distwinx86": "build --win --ia32 ",
-    "distwinx64": "build --win --x64",
-    "distlinx86": "build --linux --ia32 ",
-    "distlinx64": "build --linux --x64"
+    "ship": "build --win -p always"
   },
   "keywords": [
     "usb"
   ],
+  "repository": "https://github.com/OpenBuilds/SW-Machine-Drivers",
   "build": {
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuilds Machine Driver",
@@ -50,6 +49,9 @@
     },
     "files": [
       "**/*"
+    ],
+    "extraFiles": [
+      "ssl"
     ],
     "linux": {
       "icon": "build/"
