@@ -8,7 +8,7 @@ before_install:
   - npm run shipall
 branches:
   only:
-    - electron_bundler
+    - master
 after_success:
   - rm -rf node_modules
   - rm -rf dist/*-unpacked
