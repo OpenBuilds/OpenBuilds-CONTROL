@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds",
@@ -42,7 +42,7 @@
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
+      "allowToChangeInstallationDirectory": false,
       "license": "build/licence.txt",
       "installerIcon": "build/icon.ico",
       "installerSidebar": "build/installerSidebar.bmp"
