@@ -48,7 +48,8 @@
       "installerSidebar": "build/installerSidebar.bmp"
     },
     "files": [
-      "**/*"
+      "**/*",
+      "ssl/**/*"
     ],
     "extraFiles": [
       "ssl"
