@@ -15,7 +15,6 @@
     "electron-updater": "^2.23.3",
     "express": "^4.16.2",
     "formidable": "^1.2.1",
-    "gcodethumbnail": "^1.0.1",
     "ip": "^1.1.5",
     "lodash": "^4.17.10",
     "md5": "^2.2.1",
