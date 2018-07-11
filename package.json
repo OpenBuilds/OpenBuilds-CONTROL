@@ -41,7 +41,7 @@
     "asar": true,
     "nsis": {
       "oneClick": false,
-      "perMachine": true,
+      "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "license": "build/licence.txt",
       "installerIcon": "build/icon.ico",
