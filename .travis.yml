@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "7"
 sudo: required
-dist: trusty
+os: osx
 before_install:
   - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
   - npm run distall
