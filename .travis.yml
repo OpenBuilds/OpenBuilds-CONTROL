@@ -4,7 +4,6 @@ node_js:
 sudo: required
 os: osx
 before_install:
-  - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
   - npm install
   - npm run distall
 branches:
