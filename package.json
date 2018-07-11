@@ -29,7 +29,8 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "dist": "build",
     "distmac": "build --mac ",
-    "ship": "build --win -p always"
+    "ship": "build --win -p always",
+    "distall": "build -mlw -p always"
   },
   "keywords": [
     "usb"
