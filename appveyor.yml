@@ -1,0 +1,32 @@
+version: appveyor-preflight-{build}-{branch}
+branches:
+  only:
+  - master
+image: Visual Studio 2017
+init:
+- ps: >-
+    git config --global core.autocrlf input
+
+    git config --global credential.helper store
+install:
+- ps: >-
+    Install-Product node 7 x64
+
+    $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
+
+    Update-AppveyorBuild -Version "$env:package_version-$env:APPVEYOR_BUILD_NUMBER"
+build_script:
+- cmd: >-
+    npm install
+
+    npm run dist
+test: off
+artifacts:
+- path: dist\*.*
+  name: dist
+  type: WebDeployPackage
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: qR6cJCEAjzYYgJKkpa9aJmpTgX11HlSZTrDWRg38icikDeE7hOPCp+K3VqxgZ9ex
+  force_update: true
