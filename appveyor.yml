@@ -28,21 +28,3 @@ artifacts:
     name: LocalDist
 
 test: off
-
-version: preflight-appveyor-build-{build}
-environment:
-  GH_TOKEN: 6ad148a82828774bc0653da2f4c05f8f7cd864dc
-build:
-  verbosity: detailed
-
-deploy:
-- provider: GitHub
-  release: v$(appveyor_build_version)
-  description: "'OpenBuilds Machine Driver (`$(TARGET_UI_BRANCH)`).\\n\\n>$(GIT_LOGS)'"
-  auth_token:
-    secure: 2yecHyxwoe1CH9Fo5PF1bZpkhN6QeJKnUK3DoFQrxgQmV9HgmkyzcvsC5d0kHZNO
-  repository: OpenBuilds/SW-Machine-Drivers
-  artifact: LocalDist
-  force_update: true
-  on:
-    branch: master
