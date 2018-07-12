@@ -34,7 +34,7 @@
   "repository": "https://github.com/OpenBuilds/SW-Machine-Drivers",
   "build": {
     "appId": "openbuilds.projectmakr",
-    "productName": "OpenBuilds Machine Driver",
+    "productName": "OpenBuildsMachineDriver",
     "asar": true,
     "nsis": {
       "oneClick": false,
@@ -43,7 +43,8 @@
       "allowElevation": true,
       "license": "build/licence.txt",
       "installerIcon": "build/icon.ico",
-      "installerSidebar": "build/installerSidebar.bmp"
+      "installerSidebar": "build/installerSidebar.bmp",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "files": [
       "**/*",
