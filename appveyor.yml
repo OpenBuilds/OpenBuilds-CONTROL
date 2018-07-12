@@ -32,7 +32,6 @@ test: off
 version: preflight-appveyor-build-{build}
 environment:
   GH_TOKEN: 6ad148a82828774bc0653da2f4c05f8f7cd864dc
-  DEBUG: electron-builder
 build:
   verbosity: detailed
 
