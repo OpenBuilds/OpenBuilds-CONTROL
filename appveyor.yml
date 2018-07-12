@@ -33,8 +33,11 @@ deploy:
   release: v$(appveyor_build_version)
   description: 'OpenBuilds Machine Driver (`$(TARGET_UI_BRANCH)`).\n\n>$(GIT_LOGS)'
   provider: GitHub
+   auth_token:
+    secure: u7r4C9tOAshz73twuK2XsVAy4UxWygNxP8MX8cnDIXT6/vK7jg6dprwhbYtaV+3 # your encrypted token from GitHub
   artifact: LocalDist
   draft: false
   prerelease: false
   on:
     branch: master                 # release from master branch only
+  force_update: true
