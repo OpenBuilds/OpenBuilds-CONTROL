@@ -39,7 +39,8 @@
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
       "license": "build/licence.txt",
       "installerIcon": "build/icon.ico",
       "installerSidebar": "build/installerSidebar.bmp"
