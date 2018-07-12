@@ -10,9 +10,6 @@ cache:
 init:
   - git config --global core.autocrlf input
   - git config --global credential.helper store
-  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GH_TOKEN):x-oauth-basic@github.com`n"
-  - git config --global user.email "%GitHubUserEmail%"
-  - git config --global user.name "%GitHubUserName%"
 
 install:
   - ps: Install-Product node 7 x64
