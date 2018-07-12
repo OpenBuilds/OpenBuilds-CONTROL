@@ -34,7 +34,7 @@ deploy:
   description: 'OpenBuilds Machine Driver (`$(TARGET_UI_BRANCH)`).\n\n>$(GIT_LOGS)'
   provider: GitHub
   auth_token:
-    secure: uCeDH/EzzSFnJL6cppbKDRETQtXhVw5Umzct8RZPCHV1wuk2WvKkKzHLeIv1L5T # your encrypted token from GitHub
+    secure: 0xjWAjKwEzdoIZfezOlm3SAismkgn0MiB3U8dIlHyYUU2iKGzMrHjdQK4j51JYX3
   artifact: LocalDist
   draft: false
   prerelease: false
