@@ -26,7 +26,7 @@
   "scripts": {
     "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "dist": "build"
+    "dist": "ncp ssl dist/win-unpacked/ssl --limit=6 && build"
   },
   "keywords": [
     "usb"
