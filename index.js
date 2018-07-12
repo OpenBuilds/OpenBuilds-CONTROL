@@ -86,7 +86,7 @@ var appIcon = null,
 const autoUpdater = require("electron-updater").autoUpdater
 
 electronApp.on('ready', function() {
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 });
 
 autoUpdater.on('checking-for-update', () => {
@@ -95,7 +95,7 @@ autoUpdater.on('checking-for-update', () => {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
+  io.sockets.emit('updatedata', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -103,12 +103,12 @@ autoUpdater.on('checking-for-update', () => {
   })
 })
 autoUpdater.on('update-available', (ev, info) => {
-  var string = 'Update available.\n'
+  var string = 'Update available.Installed version: ' + require('./package').version + " / Available version: " + ev.version
   var output = {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
+  io.sockets.emit('updatedata', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -116,12 +116,12 @@ autoUpdater.on('update-available', (ev, info) => {
   })
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  var string = 'Update not available.';
+  var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ". Starting Download...\n";
   var output = {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
+  io.sockets.emit('updatedata', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -129,12 +129,12 @@ autoUpdater.on('update-not-available', (ev, info) => {
   })
 })
 autoUpdater.on('error', (ev, err) => {
-  var string = 'Error in auto-updater.';
+  var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
   var output = {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
+  io.sockets.emit('updatedata', output);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -148,21 +148,25 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  io.sockets.emit('updatedata', output);
+  io.sockets.emit('updateprogress', ev.percent.toFixed(0));
+  if (ev.percent % 10 === 0) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 })
 
 autoUpdater.on('update-downloaded', (info) => {
-  var string = "New update ready";
+  var string = "New update ready.  Click INSTALL UPDATE once you are ready. NB Note that this closes the running instance of the OpenBuilds Machine Driver, and aborts any running jobs.  Only run the Update before beginning a job / once you are done working with your machine. ";
   var output = {
     'command': 'autoupdate',
     'response': string
   }
-  io.sockets.emit('data', output);
+  io.sockets.emit('updatedata', output);
+  io.sockets.emit('updateready', true);
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -685,6 +689,11 @@ io.on("connection", function(socket) {
   socket.on("applyUpdate", function(data) {
     autoUpdater.quitAndInstall();
   })
+
+  socket.on("checkUpdates", function(data) {
+    autoUpdater.checkForUpdates();
+  })
+
 
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 

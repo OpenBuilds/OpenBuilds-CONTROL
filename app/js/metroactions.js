@@ -29,13 +29,14 @@ function connectionPanel() {
   $('#connectionPanel').show()
   $('#manualControlPanel').hide()
   $('#grblPanel').hide()
-
+  $('#updatePanel').hide()
 }
 
 function manualcontrolPanel() {
   $('#connectionPanel').hide()
   $('#manualControlPanel').show()
   $('#grblPanel').hide()
+  $('#updatePanel').hide()
 }
 
 function grblPanel() {
@@ -43,4 +44,12 @@ function grblPanel() {
   $('#connectionPanel').hide()
   $('#manualControlPanel').hide()
   $('#grblPanel').show()
+  $('#updatePanel').hide()
+}
+
+function updatePanel() {
+  $('#connectionPanel').hide()
+  $('#manualControlPanel').hide()
+  $('#grblPanel').hide()
+  $('#updatePanel').show()
 }
