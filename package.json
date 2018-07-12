@@ -26,7 +26,7 @@
   "scripts": {
     "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "dist": "DEBUG=electron-builder build"
+    "dist": "build"
   },
   "keywords": [
     "usb"
