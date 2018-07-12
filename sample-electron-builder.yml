@@ -1,4 +1,0 @@
-appId: openbuilds.machine.driver
-publish:
-    provider: github
-    token: yourtokenhere
