@@ -103,7 +103,7 @@ autoUpdater.on('checking-for-update', () => {
   })
 })
 autoUpdater.on('update-available', (ev, info) => {
-  var string = 'Update available.Installed version: ' + require('./package').version + " / Available version: " + ev.version
+  var string = 'Update available.Installed version: ' + require('./package').version + " / Available version: " + ev.version + ". Starting Download...\n";
   var output = {
     'command': 'autoupdate',
     'response': string
@@ -116,7 +116,7 @@ autoUpdater.on('update-available', (ev, info) => {
   })
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ". Starting Download...\n";
+  var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
   var output = {
     'command': 'autoupdate',
     'response': string
