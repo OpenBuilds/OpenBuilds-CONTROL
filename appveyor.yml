@@ -9,7 +9,7 @@ init:
     git config --global credential.helper store
 install:
 - ps: >-
-    Install-Product node 7 x64
+    Install-Product node 8 x64
     $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
     Update-AppveyorBuild -Version "$env:package_version-$env:APPVEYOR_BUILD_NUMBER"
 build_script:

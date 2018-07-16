@@ -11,12 +11,8 @@ var app = express();
 var http = require("http").Server(app);
 var https = require('https');
 
-// var io = require("socket.io")(https);
-
 var ioServer = require('socket.io');
 var io = new ioServer();
-// var oneIo = io.listen(https);
-// var anotherIo = io.listen(https);
 
 var fs = require('fs');
 var path = require("path");
@@ -40,8 +36,6 @@ const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
 io.attach(httpserver);
 io.attach(httpsserver);
 
-
-
 const grblStrings = require("./grblStrings.js");
 const serialport = require('serialport');
 var SerialPort = serialport;
@@ -64,30 +58,18 @@ var height = 200;
 
 // Electron app
 const electron = require('electron');
-// Module to control application life.
 const electronApp = electron.app;
-
 console.log("Local User Data: " + electronApp.getPath('userData'))
-
 const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
 const nativeImage = require('electron').nativeImage
 const Menu = require('electron').Menu
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+
 var appIcon = null,
   jogWindow = null,
   mainWindow = null
-//
-// const {
-//   autoUpdater
-// } = require("electron-updater");
 
 const autoUpdater = require("electron-updater").autoUpdater
-
-electronApp.on('ready', function() {
-  // autoUpdater.checkForUpdates();
-});
 
 autoUpdater.on('checking-for-update', () => {
   var string = 'Checking for update...';
@@ -117,6 +99,9 @@ autoUpdater.on('update-available', (ev, info) => {
 })
 autoUpdater.on('update-not-available', (ev, info) => {
   var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
+  if (require('./package').version === ev.version) {
+    string += "You are already running the latest version!"
+  }
   var output = {
     'command': 'autoupdate',
     'response': string
@@ -172,18 +157,11 @@ autoUpdater.on('update-downloaded', (info) => {
     title: "OpenBuilds Machine Driver",
     content: string
   })
-  // autoUpdater.quitAndInstall();
 });
 
 var uploadsDir = electronApp.getPath('userData') + '/upload/';
 
 fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
-// fs.mkdir(uploadsDir, err => {
-//   if (err && err.code != 'EEXIST') throw 'up'
-//   // already exists
-// })
-
-
 
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
