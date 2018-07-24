@@ -784,7 +784,6 @@ io.on("connection", function(socket) {
             'command': command,
             'response': string
           }
-
           io.sockets.emit('data', output);
         }
 
@@ -793,9 +792,23 @@ io.on("connection", function(socket) {
           status.comms.blocked = false;
           status.machine.firmware.type = "grbl";
           status.machine.firmware.version = data.substr(5, 4); // get version
+          if (parseFloat(status.machine.firmware.version) < 1.1) { // If version is too old
+            if (status.comms.connectionStatus > 0) {
+              console.log('WARN: Closing Port ' + port.path);
+              stopPort();
+            } else {
+              console.log('ERROR: Machine connection not open!');
+            }
+            var output = {
+              'command': command,
+              'response': "Detected an unsupported version: Grbl " + status.machine.firmware.version + ". This is sadly outdated. Please upgrade to Grbl 1.1 or newer to use this software.  Go to http://github.com/gnea/grbl"
+            }
+            io.sockets.emit('data', output);
+          }
           status.machine.firmware.date = "";
           console.log("GRBL detected");
           socket.emit('grbl')
+          machineSend("$10=0\n"); // force Status Report to WPOS
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "Driver has established a Connection",
@@ -2363,6 +2376,18 @@ if (electronApp) {
   // Some APIs can only be used after this event occurs.
   electronApp.on('ready', createApp);
 
+  electronApp.on('will-quit', function(event) {
+    event.preventDefault()
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+      electronApp.quit();
+      appIcon.destroy();
+    }
+    electronApp.quit();
+    appIcon.destroy();
+  });
+
   // Quit when all windows are closed.
   electronApp.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
@@ -2371,6 +2396,8 @@ if (electronApp) {
       electronApp.quit();
       appIcon.destroy();
     }
+    electronApp.quit();
+    appIcon.destroy();
   });
 
   electronApp.on('activate', function() {
@@ -2388,6 +2415,4 @@ if (electronApp) {
   })
 }
 
-process.on('uncaughtException', function(error) {
-  // console.log("Uncaught Error " + error)
-});
+process.on('exit', () => console.log('exit'))
