@@ -822,7 +822,7 @@ io.on("connection", function(socket) {
                 machineSend("?");
               }
             }
-          }, 1000);
+          }, 250);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");

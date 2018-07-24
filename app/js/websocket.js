@@ -80,9 +80,9 @@ function initSocket() {
 
 
   socket.on('gcodeupload', function(data) {
-
     printLog("Received new GCODE from API")
     editor.session.setValue(data);
+    $('#controlTab').click()
   });
 
 
