@@ -72,7 +72,7 @@ function loadFile(f) {
       // cleanupThree();
       // gcode = this.result;
       editor.session.setValue(this.result);
-      printLog('GCODE Opened');
+      printLog('GCODE Opened: ');
     };
     // }
   }

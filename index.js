@@ -91,6 +91,7 @@ autoUpdater.on('update-available', (ev, info) => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
+  console.log(JSON.stringify(ev))
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -107,6 +108,7 @@ autoUpdater.on('update-not-available', (ev, info) => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
+  console.log(JSON.stringify(ev))
   appIcon.displayBalloon({
     icon: nativeImage.createFromPath(iconPath),
     title: "OpenBuilds Machine Driver",
@@ -686,13 +688,22 @@ io.on("connection", function(socket) {
 
       port.on("error", function(err) {
         console.log("Error: ", err.message);
+        var output = {
+          'command': '',
+          'response': "PORT ERROR: " + err.message
+        }
+        io.sockets.emit('data', output);
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver encountered a Port error",
           content: "OpenBuilds Machine Driver received the following error: " + err.message
         })
-        // stopPort();
-        // status.comms.connectionStatus = 0;
+        if (status.comms.connectionStatus > 0) {
+          console.log('WARN: Closing Port ' + port.path);
+          stopPort();
+        } else {
+          console.log('ERROR: Machine connection not open!');
+        }
       });
       port.on("open", function() {
         var output = {
@@ -1376,8 +1387,8 @@ io.on("connection", function(socket) {
           //         break;
           // }
           // console.log("Code:" + code)
-          // if (code) {
           //     //jumpQ(String.fromCharCode(parseInt(code)));
+          // if (code) {
           //     machineSend(String.fromCharCode(parseInt(code)));
           //     console.log('Sent: Code(' + code + ')');
           //     console.log('Feed Override ' + data + '%');
