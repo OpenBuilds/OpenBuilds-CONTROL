@@ -47,6 +47,7 @@ var rimraf = require("rimraf")
 var formidable = require('formidable')
 var util = require('util');
 var lastsentuploadprogress = 0;
+var queueLen = 0
 // var gcodethumbnail = require("gcodethumbnail");
 var colors = {
   G0: '#00CC00',
