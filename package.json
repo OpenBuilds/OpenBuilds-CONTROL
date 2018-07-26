@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -26,7 +26,7 @@
   "scripts": {
     "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "dist": "build",
+    "dist": "build --ia32",
     "distpi": "build --linux deb --armv7l"
   },
   "keywords": [

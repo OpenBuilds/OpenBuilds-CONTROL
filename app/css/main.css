@@ -95,10 +95,10 @@ select{
 .btn-file {
     position: relative;
     overflow: hidden;
-    margin-top: 2px !important;
-    margin-bottom: 2px !important;
-    margin-left: 2px !important;
-    margin-right: 2px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
 .btn-file input[type=file] {
     position: absolute;

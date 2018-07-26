@@ -2370,7 +2370,7 @@ if (electronApp) {
 
   };
 
-  electronApp.commandLine.appendSwitch("--ignore-gpu-blacklist");
+  // electronApp.commandLine.appendSwitch("--ignore-gpu-blacklist");
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
