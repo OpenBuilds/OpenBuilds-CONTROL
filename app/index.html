@@ -147,13 +147,18 @@
           </div>
           <div class="section" id="section-two">
             <div class="group" style="width: calc(100vw - 90px);">
-              <label href="#" class="ribbon-button btn-file m-2" title="Open a GCODE file">
-                <span class="icon">
-                  <i class="far fa-folder-open fg-amber"></i>
-                </span>
-                <input id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />
-                <span class="caption">Open<br>GCODE</span>
-              </label>
+              <div>
+                <button id="camBtn" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
+                  <span class="icon">
+                    <span class="far fa-folder-open fg-amber"></span>
+                  </span>
+                  <span class="caption">Open<br>G-CODE</span>
+                </button>
+                <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                  <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />Open GCODE from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a></li>
+                  <li class=""><a href="#" onclick="socket.emit('opencam', true);">Open browser to https://cam.openbuilds.com</a></li>
+                </ul>
+              </div>
               <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', editor.getValue());">
                 <span class="icon">
                   <i class="fas fa-play"></i>

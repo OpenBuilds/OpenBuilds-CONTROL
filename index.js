@@ -658,6 +658,13 @@ io.on("connection", function(socket) {
     }
   }, 400);
 
+  socket.on("opencam", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://cam.openbuilds.com')
+  });
+
   socket.on("minimise", function(data) {
     jogWindow.hide();
   });
@@ -2321,6 +2328,7 @@ if (electronApp) {
     })
     // jogWindow.maximize()
     // jogWindow.webContents.openDevTools()
+
   }
 
   function createWindow() {
