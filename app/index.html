@@ -18,7 +18,7 @@
 
 
   <div class="window" style="height: 100vh;">
-    <div class="window-caption" style="-webkit-app-region: drag;">
+    <div class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
       <span class="icon mif-cog"></span>
       <span class="title" id="windowtitle">OpenBuids Machine Driver</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
@@ -29,69 +29,13 @@
     <div class="window-content" style="height: 100%; overflow: hidden  !important;">
       <nav data-role="ribbonmenu" class="mt-1">
         <ul class="tabs-holder">
-          <li><a href="#section-one" onclick="connectionPanel();">Connection</a></li>
-          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();">Grbl Settings</a></li>
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();">Control</a></li>
+          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();">Grbl Settings</a></li>
           <li><a href="#section-update" onclick="updatePanel();">Update</a></li>
         </ul>
         <div class="content-holder">
-          <div class="section" id="section-one">
-            <div class="group">
-              <div class="form-group" style="width: calc(100vw - 200px);">
-                <form class="inline-form">
-                  <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" data-filter="false" id="portUSB" disabled>
-                    <option value="">Waiting for USB</option>
-                  </select>
-                  <button class="button success" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
-                  <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
-                </form>
-                <center><small class="text-muted">Establish connection to the machine</small></center>
-              </div>
-              <span class="title">Machine Interface</span>
-            </div>
-            <div class="group" style="width: 190px;">
-              <div id="grblButtons" style="display: none;">
-                <div class="ribbon-group">
-                  <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
-                    <span class="icon">
-                      <span class="mif-loop"></span>
-                    </span>
-                    <span class="caption">Reset</span>
-                  </button>
-                  <button class="ribbon-icon-button" onclick="sendGcode('$$')">
-                    <span class="icon">
-                      <span class="mif-cogs"></span>
-                    </span>
-                    <span class="caption">Settings</span>
-                  </button>
-                </div>
-              </div>
-              <span class="title" id="firmwarename"></span>
-            </div>
-            <div class="group" style="width: 100px;">
-              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
-                <span class="icon">
-                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                    <i id="navbellBtn1" class="fas fa-bell fg-red" style="display: none;"></i>
-                    <i class="far fa-bell"></i>
-                  </span>
-                </span>
-                <span class="caption">Unlock<br>Alarm</span>
-              </button>
-              <button class="ribbon-button" onclick="socket.emit('stop', true);">
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                  </span>
-                </span>
-                <span class="caption">Stop<br>Job</span>
-              </button>
-              <span class="title">E-Stop</span>
-            </div>
-          </div>
           <div class="section" id="section-grbl">
-            <div class="group" style="width: calc(100vw - 40px);">
+            <div class="group">
               <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
                 <span class="icon">
                   <span class="fa-layers fa-fw">
@@ -123,7 +67,7 @@
               </div>
               <span class="title">Grbl Settings</span>
             </div>
-            <div class="group" style="width: 100px;">
+            <div class="group">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -146,7 +90,38 @@
             </div>
           </div>
           <div class="section" id="section-two">
-            <div class="group" style="width: calc(100vw - 90px);">
+            <div class="group">
+              <div class="form-group">
+                <form class="inline-form">
+                  <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" data-filter="false" id="portUSB" disabled>
+                    <option value="">Waiting for USB</option>
+                  </select>
+                  <button class="button success" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
+                  <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
+                </form>
+
+              </div>
+              <span class="title">Machine Interface</span>
+            </div>
+            <div class="group" id="grblButtons" style="display: none;">
+              <div class="ribbon-group">
+                <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                    <span class="icon">
+                      <span class="mif-loop"></span>
+                    </span>
+                    <span class="caption">Reset</span>
+                  </button>
+                <br>
+                <button class="ribbon-icon-button" onclick="sendGcode('$$')">
+                    <span class="icon">
+                      <span class="mif-cogs"></span>
+                    </span>
+                    <span class="caption">Settings</span>
+                  </button>
+              </div>
+              <span class="title" id="firmwarename"></span>
+            </div>
+            <div class="group">
               <div>
                 <button id="camBtn" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
                   <span class="icon">
@@ -263,22 +238,7 @@
         </div>
       </nav>
 
-
-      <div id="connectionPanel">
-        <div id="console"></div>
-        <div class="fixed-bottom m-3 mb-8">
-          <form class="inline-form" style="width: 100%;">
-            <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
-            <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
-              <i class="fa fa-play" style="margin-right: 10px;"></i> Send
-            </button>
-            <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
-              <i class="fa fa-trash"></i>
-            </button>
-          </form>
-        </div>
-      </div>
-      <div id="manualControlPanel" style="display: none;">
+      <div id="manualControlPanel">
         <center>
           <div id="jogcontrols">
             <div class="row flex-justify-center flex-align-center" style="width: 100%;">
@@ -530,7 +490,42 @@
               </div>
             </div>
           </div>
-          <div id="editor"></div>
+          <div id="controlLogs">
+            <ul class="tabs-expand-sm" data-role="tabs">
+              <li><a href="#_target_1">GCODE Editor</a></li>
+              <li><a href="#_target_2">Serial Console</a></li>
+            </ul>
+
+            <div id="_target_1">
+              <div id="editor"></div>
+              <div class="fixed-bottom m-3 mb-8">
+                <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i></button>
+                <!-- <button data-toggle="tooltip" data-placement="bottom" title="Editor Settings" class="btn btn-xs btn-success btn-file" onclick="editor.execCommand('showSettingsMenu')"><i class="fa fa-cogs fa-fw"></i></span></button> -->
+              </div>
+            </div>
+            <div id="_target_2">
+              <div id="console"></div>
+              <div class="fixed-bottom m-3 mb-8">
+                <form class="inline-form">
+                  <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
+                  <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
+                      <i class="fa fa-play" style="margin-right: 10px;"></i> Send
+                    </button>
+                  <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+          <!-- End controlLogs -->
         </center>
       </div>
       <div id="grblPanel" style="display: none;">

@@ -12,34 +12,16 @@ body {
 
 #editor {
     /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-    min-height: calc(100vh - 415px);
-    height: calc(100vh - 415px);
+    height: calc(100% - 1px);
     width: 100%;
     border-top: 1px solid #ccc;
     margin-top: 5px;
 }
 
-#grblPanel {
-    max-height: calc(100vh - 205px);
-    height: calc(100vh - 205px);
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: none;
-    padding: 8px;
-    -webkit-touch-callout:  text; /* iOS Safari */
-       -webkit-user-select: text; /* Safari */
-        -khtml-user-select: text; /* Konqueror HTML */
-          -moz-user-select: text; /* Firefox */
-           -ms-user-select: text; /* Internet Explorer/Edge */
-               user-select: text; /* Non-prefixed version, currently
-                                     supported by Chrome and Opera */
-}
-
 #console {
     /*font-family: "Courier New", Courier, monospace;*/
     font-family: "Lucida Console", Monaco, monospace;
-    max-height: calc(100vh - 260px);
-    height: calc(100vh - 200px);
+    height: calc(100% - 1px);
     width: 100%;
     overflow-y: auto;
     overflow-x: none;
@@ -58,6 +40,24 @@ body {
                user-select: text; /* Non-prefixed version, currently
                                      supported by Chrome and Opera */
 }
+
+#grblPanel {
+    max-height: calc(100vh - 205px);
+    height: calc(100vh - 205px);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: none;
+    padding: 8px;
+    -webkit-touch-callout:  text; /* iOS Safari */
+       -webkit-user-select: text; /* Safari */
+        -khtml-user-select: text; /* Konqueror HTML */
+          -moz-user-select: text; /* Firefox */
+           -ms-user-select: text; /* Internet Explorer/Edge */
+               user-select: text; /* Non-prefixed version, currently
+                                     supported by Chrome and Opera */
+}
+
+
 
 #updateconsole {
     /*font-family: "Courier New", Courier, monospace;*/
@@ -114,4 +114,12 @@ select{
     background: white;
     cursor: inherit;
     display: block;
+}
+
+/* OpenBuilds Navbar for MetroWindows */
+.fg-openbuilds {
+  color: rgb(74, 78, 81) !important;
+}
+.bg-openbuilds {
+  background-color: rgb(74, 78, 81) !important;
 }

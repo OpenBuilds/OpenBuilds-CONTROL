@@ -5,6 +5,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Not Connected");
     // Connect/Disconnect Button
     $("#disconnectBtn").hide();
+    $('#portUSB').parent().show();
     $("#connectBtn").show();
     if ($('#portUSB').val() != "") {
       $("#connectBtn").attr('disabled', false);
@@ -27,6 +28,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
     // Port Dropdown
@@ -41,6 +43,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
     // Port Dropdown
@@ -55,6 +58,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
     // Port Dropdown
@@ -69,6 +73,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
     // Port Dropdown
@@ -126,6 +131,8 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#jogcontrols").slideUp("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if ($('#jograte').attr('disabled')) {
@@ -134,7 +141,9 @@ function setJogPanel(val, status) {
   } else if (val == 0 || val == 2) { // Connected, but not Playing yet
     // Show panel and resize editor
     $("#jogcontrols").slideDown("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 450 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 490 + 'px)');
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', false);
     if ($('#jograte').attr('disabled')) {
@@ -142,7 +151,9 @@ function setJogPanel(val, status) {
     }
   } else if (val == 3) { // Busy Streaming GCODE
     // Show panel and resize editor
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 450 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 490 + 'px)');
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $("#jogcontrols").slideDown("fast");
     $('.jogbtn').attr('disabled', true);
@@ -152,7 +163,9 @@ function setJogPanel(val, status) {
   } else if (val == 4) { // Paused
     // Show panel and resize editor
     $("#jogcontrols").slideDown("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 405 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 450 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 490 + 'px)');
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
@@ -162,6 +175,8 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#jogcontrols").slideUp("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 210 + 'px)');
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
