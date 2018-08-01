@@ -2287,7 +2287,7 @@ if (electronApp) {
     // Create the browser window.
     jogWindow = new BrowserWindow({
       width: 660,
-      height: 710,
+      height: 730,
       fullscreen: false,
       center: true,
       resizable: true,

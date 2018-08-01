@@ -498,7 +498,7 @@
 
             <div id="_target_1">
               <div id="editor"></div>
-              <div class="fixed-bottom m-3 mb-8">
+              <div class="fixed-bottom m-3 mb-9">
                 <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i></button>
                 <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i></button>
                 <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i></button>
@@ -511,7 +511,7 @@
             </div>
             <div id="_target_2">
               <div id="console"></div>
-              <div class="fixed-bottom m-3 mb-8">
+              <div class="fixed-bottom m-3 mb-9">
                 <form class="inline-form">
                   <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
                   <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
@@ -562,6 +562,11 @@
             <div>
               <span class="badge inline bg-grayBlue fg-white" id="gcodesent" style="width: 100%;">Queue: 0</span>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell-12">
+            <div data-role="progress" id="progressbar" data-value="0"></div>
           </div>
         </div>
       </div>

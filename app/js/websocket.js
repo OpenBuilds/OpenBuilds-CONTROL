@@ -154,6 +154,14 @@ function initSocket() {
       }
     }
     $('#gcodesent').html("Queue: " + parseInt(data[0]));
+
+    // calc percentage
+    var left = parseInt(data[0])
+    var total = parseInt(data[1])
+    var done = total - left;
+    var donepercent = parseInt(done / total * 100)
+    var progressbar = $("#progressbar").data("progress");
+    progressbar.val(donepercent);
     // }
     sduploading = data[2];
     if (sduploading) {
