@@ -182,6 +182,7 @@ function initSocket() {
   });
 
   socket.on('status', function(status) {
+    console.log(status.machine.position.work.x)
     if (nostatusyet) {
       $('#windowtitle').html("OpenBuids Machine Driver v" + status.driver.version)
     }

@@ -825,7 +825,7 @@ io.on("connection", function(socket) {
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading && !status.comms.blocked) {
+              if (!status.comms.sduploading) {
                 machineSend("?");
               }
             }
@@ -1030,6 +1030,7 @@ io.on("connection", function(socket) {
           // Got statusReport (Grbl & Smoothieware)
           // statusfeedback func
           parseFeedback(data)
+          // console.log(data)
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
           // console.log("OK FOUND")
           if (status.machine.firmware.type === "grbl") {
