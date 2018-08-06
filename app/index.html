@@ -22,8 +22,9 @@
       <span class="icon mif-cog"></span>
       <span class="title" id="windowtitle">OpenBuids Machine Driver</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
-        <span class="btn-min" onclick="socket.emit('minimise')"></span>
-        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span>
+        <!-- <span class="btn-min" onclick="socket.emit('minimise')"></span> -->
+        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimise')"></span>
+        <!-- <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span> -->
       </div>
     </div>
     <div class="window-content" style="height: 100%; overflow: hidden  !important;">

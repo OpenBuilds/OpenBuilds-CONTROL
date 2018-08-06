@@ -2275,21 +2275,13 @@ if (electronApp) {
     appIcon = new Tray(
       nativeImage.createFromPath(iconPath)
     )
-    const contextMenu = Menu.buildFromTemplate([
-      // {
-      //   label: 'Launch Full Application',
-      //   click() {
-      //     createWindow();
-      //   }
-      // },
-      {
-        label: 'Quit Machine Driver',
-        click() {
-          appIcon.destroy();
-          electronApp.exit(0);
-        }
+    const contextMenu = Menu.buildFromTemplate([{
+      label: 'Quit Machine Driver (Disables all integration until started again)',
+      click() {
+        appIcon.destroy();
+        electronApp.exit(0);
       }
-    ])
+    }])
     appIcon.on('click', function() {
       // console.log("Clicked Systray")
       if (jogWindow === null) {
