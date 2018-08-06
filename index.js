@@ -79,11 +79,13 @@ autoUpdater.on('checking-for-update', () => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  if (!jogWindow.isFocused()) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 })
 autoUpdater.on('update-available', (ev, info) => {
   var string = 'Update available.Installed version: ' + require('./package').version + " / Available version: " + ev.version + ". Starting Download...\n";
@@ -93,11 +95,13 @@ autoUpdater.on('update-available', (ev, info) => {
   }
   io.sockets.emit('updatedata', output);
   console.log(JSON.stringify(ev))
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  if (!jogWindow.isFocused()) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 })
 autoUpdater.on('update-not-available', (ev, info) => {
   var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
@@ -110,11 +114,13 @@ autoUpdater.on('update-not-available', (ev, info) => {
   }
   io.sockets.emit('updatedata', output);
   console.log(JSON.stringify(ev))
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  if (!jogWindow.isFocused()) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 })
 autoUpdater.on('error', (ev, err) => {
   var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
@@ -123,11 +129,13 @@ autoUpdater.on('error', (ev, err) => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  if (!jogWindow.isFocused()) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 })
 autoUpdater.on('download-progress', (ev, progressObj) => {
   var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
@@ -139,11 +147,13 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
   io.sockets.emit('updatedata', output);
   io.sockets.emit('updateprogress', ev.percent.toFixed(0));
   if (ev.percent % 10 === 0) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
+    if (!jogWindow.isFocused()) {
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "OpenBuilds Machine Driver",
+        content: string
+      })
+    }
   }
 })
 
@@ -155,11 +165,13 @@ autoUpdater.on('update-downloaded', (info) => {
   }
   io.sockets.emit('updatedata', output);
   io.sockets.emit('updateready', true);
-  appIcon.displayBalloon({
-    icon: nativeImage.createFromPath(iconPath),
-    title: "OpenBuilds Machine Driver",
-    content: string
-  })
+  if (!jogWindow.isFocused()) {
+    appIcon.displayBalloon({
+      icon: nativeImage.createFromPath(iconPath),
+      title: "OpenBuilds Machine Driver",
+      content: string
+    })
+  }
 });
 
 var uploadsDir = electronApp.getPath('userData') + '/upload/';
@@ -444,20 +456,24 @@ var PortCheckinterval = setInterval(function() {
         var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
         if (newPorts.length > 0) {
           console.log("Plugged " + newPorts[0].comName);
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "Driver Detected a new Port",
-            content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
-          })
+          if (!jogWindow.isFocused()) {
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "Driver Detected a new Port",
+              content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
+            })
+          }
         }
         var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
         if (removedPorts.length > 0) {
           console.log("Unplugged " + removedPorts[0].comName);
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "Driver Detected a disconnected Port",
-            content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
-          })
+          if (!jogWindow.isFocused()) {
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "Driver Detected a disconnected Port",
+              content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
+            })
+          }
         }
       }
       oldportslist = ports;
@@ -574,21 +590,25 @@ app.post('/upload', function(req, res) {
               'response': "ERROR: File Upload Failed"
             }
             io.sockets.emit('data', output);
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "ERROR: File Upload Failed",
-              content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
-            })
+            if (!jogWindow.isFocused()) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "ERROR: File Upload Failed",
+                content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
+              })
+            }
             // process.exit(1);
           }
           // console.log(data)
           if (data) {
             io.sockets.emit('gcodeupload', data);
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "GCODE Received",
-              content: "OpenBuilds Machine Driver received new GCODE"
-            })
+            if (!jogWindow.isFocused()) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "GCODE Received",
+                content: "OpenBuilds Machine Driver received new GCODE"
+              })
+            }
           }
         });
 
@@ -701,11 +721,13 @@ io.on("connection", function(socket) {
           'response': "PORT ERROR: " + err.message
         }
         io.sockets.emit('data', output);
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver encountered a Port error",
-          content: "OpenBuilds Machine Driver received the following error: " + err.message
-        })
+        if (!jogWindow.isFocused()) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver encountered a Port error",
+            content: "OpenBuilds Machine Driver received the following error: " + err.message
+          })
+        }
         if (status.comms.connectionStatus > 0) {
           console.log('WARN: Closing Port ' + port.path);
           stopPort();
@@ -823,11 +845,13 @@ io.on("connection", function(socket) {
           console.log("GRBL detected");
           socket.emit('grbl')
           machineSend("$10=0\n"); // force Status Report to WPOS
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "Driver has established a Connection",
-            content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-          })
+          if (!jogWindow.isFocused()) {
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "Driver has established a Connection",
+              content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+            })
+          }
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
@@ -839,11 +863,13 @@ io.on("connection", function(socket) {
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "Driver has established a Connection",
-            content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-          })
+          if (!jogWindow.isFocused()) {
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "Driver has established a Connection",
+              content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+            })
+          }
           status.machine.firmware.type = "smoothie";
           status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
           status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
@@ -1131,11 +1157,13 @@ io.on("connection", function(socket) {
         }
 
       }
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Job Started",
-        content: "OpenBuilds Machine Driver started a job: Job Size: " + data.length + " lines of GCODE"
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Job Started",
+          content: "OpenBuilds Machine Driver started a job: Job Size: " + data.length + " lines of GCODE"
+        })
+      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1262,11 +1290,13 @@ io.on("connection", function(socket) {
           break;
       }
       send1Q();
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Work Coordinate System Reset",
-        content: "OpenBuilds Machine Driver has reset the WCS on the " + data + " axes."
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Work Coordinate System Reset",
+          content: "OpenBuilds Machine Driver has reset the WCS on the " + data + " axes."
+        })
+      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1565,11 +1595,13 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Paused';
       status.comms.connectionStatus = 4;
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Job Paused",
-        content: "OpenBuilds Machine Driver paused the job"
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Job Paused",
+          content: "OpenBuilds Machine Driver paused the job"
+        })
+      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1596,11 +1628,13 @@ io.on("connection", function(socket) {
       }, 200);
       status.comms.runStatus = 'Resuming';
       status.comms.connectionStatus = 3;
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Job Resumed",
-        content: "OpenBuilds Machine Driver resumed the job"
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Job Resumed",
+          content: "OpenBuilds Machine Driver resumed the job"
+        })
+      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1644,11 +1678,13 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped';
       status.comms.connectionStatus = 2;
       isAlarmed = false;
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Job Aborted",
-        content: "OpenBuilds Machine Driver was asked to abort the running job."
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Job Aborted",
+          content: "OpenBuilds Machine Driver was asked to abort the running job."
+        })
+      }
       // status.comms.connectionStatus = 2;
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1704,11 +1740,13 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
       isAlarmed = false;
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver: Alarm Cleared",
-        content: "OpenBuilds Machine Driver has cleared the Alarm Condition, you may continue"
-      })
+      if (!jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver: Alarm Cleared",
+          content: "OpenBuilds Machine Driver has cleared the Alarm Condition, you may continue"
+        })
+      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1853,11 +1891,13 @@ function send1Q() {
         console.log("Job finished at " + finishTime.toString());
         console.log("Elapsed time: " + elapsedTime + " seconds.");
         console.log('Ave. Speed: ' + speed + ' lines/s');
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Completed!",
-          content: "OpenBuilds Machine Driver completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
-        })
+        if (!jogWindow.isFocused()) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver: Job Completed!",
+            content: "OpenBuilds Machine Driver completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
+          })
+        }
       }
       gcodeQueue.length = 0; // Dump the Queye
       grblBufferSize.length = 0; // Dump bufferSizes
@@ -2290,6 +2330,7 @@ if (electronApp) {
       title: "Driver Started",
       content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
     })
+
   }
 
   function createJogWindow() {
