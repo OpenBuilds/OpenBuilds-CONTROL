@@ -764,8 +764,7 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       port.on("data", function(data) {
-        // console.log("DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
-        // console.log()
+
 
         // Command Tracking
         if (lastGcode.length == 0) {
@@ -777,10 +776,16 @@ io.on("connection", function(socket) {
           }
         }
 
+        if (data.indexOf("<") === 0) {
+          command = "?";
+        }
+
         if (!command) {
           command = ""
         };
         command = command.replace(/(\r\n|\n|\r)/gm, "");
+
+        console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
         if (command != "?" && command != "M105" && data.length > 0) {
           var string = "";
@@ -792,6 +797,7 @@ io.on("connection", function(socket) {
             'command': command,
             'response': string
           }
+          // console.log(output.response)
           io.sockets.emit('data', output);
         }
 
@@ -1749,7 +1755,9 @@ function machineSend(gcode) {
     data.push(status.comms.sduploading)
     io.sockets.emit("queueCount", data);
     port.write(gcode);
-    lastGcode.push(gcode);
+    if (gcode != "?") {
+      lastGcode.push(gcode);
+    }
     if (gcode == "cat /sd/config\n" || gcode == "cat /sd/config.txt\n") {
       // console.log("DUMPING CONFIG ARRAY")
       status.machine.firmware.config.length = 0;

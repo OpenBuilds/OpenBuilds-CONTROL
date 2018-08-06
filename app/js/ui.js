@@ -132,7 +132,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideUp("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if ($('#jograte').attr('disabled')) {
@@ -143,7 +143,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideDown("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', false);
     if ($('#jograte').attr('disabled')) {
@@ -153,7 +153,7 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $("#jogcontrols").slideDown("fast");
     $('.jogbtn').attr('disabled', true);
@@ -165,7 +165,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideDown("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
@@ -176,7 +176,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideUp("fast");
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
