@@ -16,6 +16,7 @@ body {
     width: 100%;
     border-top: 1px solid #ccc;
     margin-top: 5px;
+    box-shadow: 0 0 5px 10px #fff;
 }
 
 #console {
@@ -26,7 +27,8 @@ body {
     overflow-y: auto;
     overflow-x: none;
     text-align: left;
-    /* background-color: #444; */
+    background-color: #fff;
+    box-shadow: 0 0 5px 10px #fff;
     padding: 0px;
     font-size: 12px;
     padding-left: 20px;
@@ -42,8 +44,8 @@ body {
 }
 
 #grblPanel {
-    max-height: calc(100vh - 205px);
-    height: calc(100vh - 205px);
+    max-height: calc(100vh - 215px);
+    height: calc(100vh - 215px);
     width: 100%;
     overflow-y: auto;
     overflow-x: none;

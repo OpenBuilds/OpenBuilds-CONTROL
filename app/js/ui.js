@@ -129,9 +129,9 @@ function setControlBar(val, status) {
 function setJogPanel(val, status) {
   if (val == 0) { // Not Connected Yet
     // Show panel and resize editor
-    $("#jogcontrols").slideUp("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
+    $("#jogcontrols").slideUp(20);
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 250 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
@@ -140,9 +140,9 @@ function setJogPanel(val, status) {
     }
   } else if (val == 0 || val == 2) { // Connected, but not Playing yet
     // Show panel and resize editor
-    $("#jogcontrols").slideDown("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
+    $("#jogcontrols").slideDown(20);
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', false);
@@ -151,20 +151,20 @@ function setJogPanel(val, status) {
     }
   } else if (val == 3) { // Busy Streaming GCODE
     // Show panel and resize editor
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
-    $("#jogcontrols").slideDown("fast");
+    $("#jogcontrols").slideDown(20);
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
     }
   } else if (val == 4) { // Paused
     // Show panel and resize editor
-    $("#jogcontrols").slideDown("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 460 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 500 + 'px)');
+    $("#jogcontrols").slideDown(20);
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);
@@ -173,9 +173,9 @@ function setJogPanel(val, status) {
     }
   } else if (val == 5) { // Alarm State
     // Show panel and resize editor
-    $("#jogcontrols").slideUp("fast");
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 270 + 'px)');
+    $("#jogcontrols").slideUp(20);
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 295 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
     $('.jogbtn').attr('disabled', true);

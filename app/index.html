@@ -30,10 +30,10 @@
     <div class="window-content" style="height: 100%; overflow: hidden  !important;">
       <nav data-role="ribbonmenu" class="mt-1">
         <ul class="tabs-holder">
-          <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();">Control</a></li>
-          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();">Grbl Settings</a></li>
-          <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();">Troubleshooting</a></li>
-          <li><a href="#section-update" onclick="updatePanel();">Update</a></li>
+          <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
+          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+          <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
+          <li><a href="#section-update" onclick="updatePanel();"><i class="fas fa-fw fa-cloud-download-alt"></i> Update</a></li>
         </ul>
         <div class="content-holder">
           <div class="section" id="section-grbl">
@@ -506,41 +506,43 @@
 
 
           <div id="controlLogs">
-            <ul class="tabs-expand-sm" data-role="tabs">
-              <li><a href="#_target_1" id="serialconsoletab"><i class="fas fa-fw fa-terminal"></i>Serial Console</a></li>
-              <li><a href="#_target_2" id="gcodeeditortab"><i class="far fa-fw fa-edit"></i>GCODE Editor</a></li>
-            </ul>
 
-            <div id="_target_1">
-              <div id="console"></div>
-              <div class="fixed-bottom m-3 mb-9">
-                <form class="inline-form" id="commandform">
-                  <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
-                  <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
-                      <i class="fa fa-play" style="margin-right: 10px;"></i> Send
-                    </button>
-                  <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                </form>
+            <nav data-role="ribbonmenu">
+              <ul class="tabs-holder">
+                <li><a href="#tab-one"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
+                <li><a href="#tab-two"><i class="far fa-fw fa-edit"></i> GCODE Editor</a></li>
+
+              </ul>
+
+              <div class="content-holder">
+                <div class="section" id="tab-one">
+                  <div id="console"></div>
+                  <div class="fixed-bottom m-3 mb-9">
+                    <form class="inline-form" id="commandform">
+                      <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
+                      <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
+                          <i class="fa fa-play" style="margin-right: 10px;"></i> Send
+                        </button>
+                      <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+                  </div>
+                </div>
+                <div class="section" id="tab-two">
+                  <div id="editor"></div>
+                  <div class="fixed-bottom m-3 mb-9">
+                    <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i></button>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div id="_target_2">
-              <div id="editor"></div>
-              <div class="fixed-bottom m-3 mb-9">
-                <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i></button>
-                <!-- <button data-toggle="tooltip" data-placement="bottom" title="Editor Settings" class="btn btn-xs btn-success btn-file" onclick="editor.execCommand('showSettingsMenu')"><i class="fa fa-cogs fa-fw"></i></span></button> -->
-              </div>
-            </div>
-
-
+            </nav>
           </div>
           <!-- End controlLogs -->
         </center>

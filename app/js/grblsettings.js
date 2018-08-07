@@ -130,7 +130,7 @@ function grblPopulate() {
         <tr><td>$</td><td>31</td><td>Minimum spindle speed, RPM</td><td><input type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td><td></td></tr>
         <tr><td>$</td><td>32</td><td>Laser-mode enable</td><td><select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
 
-        <tr><td>$</td><td>100</td><td>X-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td><td><button class="button" type="button" onclick="xstepspermm()"><i class="fas fa-calculator"></i></button></td></tr>
+        <tr><td>$</td><td>100</td><td>X-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td><td><button class="button " type="button" onclick="xstepspermm()"><i class="fas fa-calculator"></i></button></td></tr>
         <tr><td>$</td><td>101</td><td>Y-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$101'] + `" id="val-` + 101 + `-input"></td><td><button class="button" type="button" onclick="ystepspermm()"><i class="fas fa-calculator"></i></button></td></tr>
         <tr><td>$</td><td>102</td><td>Z-axis steps per millimeter</td><td><input type="text" value="` + grblParams['$102'] + `" id="val-` + 102 + `-input"></td><td><button class="button" type="button" onclick="zstepspermm()"><i class="fas fa-calculator"></i></button></td></tr>
 
