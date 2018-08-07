@@ -828,6 +828,12 @@ io.on("connection", function(socket) {
 
         if (data.indexOf("<") === 0) {
           command = "?";
+          var ignore = true;
+        }
+
+        if (data.indexOf("[GC:") === 0) {
+          command = "$G";
+          var ignore = true;
         }
 
         if (!command) {
