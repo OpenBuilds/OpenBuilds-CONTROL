@@ -201,7 +201,7 @@ function initSocket() {
   socket.on('status', function(status) {
 
     if (nostatusyet) {
-      $('#windowtitle').html("OpenBuids Machine Driver v" + status.driver.version)
+      $('#windowtitle').html("OpenBuilds Machine Driver v" + status.driver.version)
     }
     nostatusyet = false;
 
