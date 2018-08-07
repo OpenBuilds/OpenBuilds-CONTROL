@@ -1836,7 +1836,7 @@ function machineSend(gcode) {
     data.push(status.comms.sduploading)
     io.sockets.emit("queueCount", data);
     port.write(gcode);
-    if (gcode != "?" && gcode |= "$G\n") {
+    if (gcode != "?") {
       lastGcode.push(gcode);
     }
     if (gcode == "cat /sd/config\n" || gcode == "cat /sd/config.txt\n") {
