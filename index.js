@@ -649,7 +649,7 @@ app.on('certificate-error', function(event, webContents, url, error,
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
-  clearInterval(stateLoop);
+  // clearInterval(stateLoop);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -831,10 +831,10 @@ io.on("connection", function(socket) {
           var ignore = true;
         }
 
-        if (data.indexOf("[GC:") === 0) {
-          command = "$G";
-          var ignore = true;
-        }
+        // if (data.indexOf("[GC:") === 0) {
+        //   command = "$G";
+        //   var ignore = true;
+        // }
 
         if (!command) {
           command = ""
@@ -843,7 +843,7 @@ io.on("connection", function(socket) {
 
         // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
-        if (command != "$G" && command != "?" && command != "M105" && data.length > 0) {
+        if (command != "?" && command != "M105" && data.length > 0) {
           var string = "";
           if (status.comms.sduploading) {
             string += "SD: "
@@ -894,13 +894,13 @@ io.on("connection", function(socket) {
               }
             }
           }, 250);
-          stateLoop = setInterval(function() {
-            if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading && status.comms.connectionStatus < 3) {
-                machineSend("$G\n");
-              }
-            }
-          }, 500);
+          // stateLoop = setInterval(function() {
+          //   if (status.comms.connectionStatus > 0) {
+          //     if (!status.comms.sduploading && status.comms.connectionStatus < 3) {
+          //       machineSend("$G\n");
+          //     }
+          //   }
+          // }, 500);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");

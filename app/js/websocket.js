@@ -233,11 +233,13 @@ function initSocket() {
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
 
-    if (status.machine.firmware.state.units == "G20") {
-      var unit = " in"
-    } else if (status.machine.firmware.state.units == "G21") {
-      var unit = " mm"
-    }
+    // if (status.machine.firmware.state.units == "G20") {
+    //   var unit = " in"
+    // } else if (status.machine.firmware.state.units == "G21") {
+    //   var unit = " mm"
+    // } else {
+    var unit = " mm"
+    // }
 
     if (unit == " mm") {
       var xpos = status.machine.position.work.x + unit;
@@ -342,51 +344,51 @@ function initSocket() {
       $('#buffstatus').html("NOCOMM");
     }
 
-    if (status.machine.firmware.state) {
-      if (status.machine.firmware.state.workoffset.length) {
-        $('#wcostatus').html(status.machine.firmware.state.workoffset);
-      } else {
-        $('#wcostatus').html("NOCOMM");
-      }
-      if (status.machine.firmware.state.plane.length) {
-        $('#planestatus').html(status.machine.firmware.state.plane);
-      } else {
-        $('#planestatus').html("NOCOMM");
-      }
-      if (status.machine.firmware.state.absrel.length) {
-        if (status.machine.firmware.state.absrel == "G90") {
-          $('#absrel').html(status.machine.firmware.state.absrel + " (absolute)");
-        } else if (status.machine.firmware.state.absrel == "G91") {
-          $('#absrel').html(status.machine.firmware.state.absrel + " (relative)");
-        }
-      } else {
-        $('#absrel').html("NOCOMM");
-      }
-      if (status.machine.firmware.state.units.length) {
-        if (status.machine.firmware.state.units == "G20") {
-          $('#units').html(status.machine.firmware.state.units + " (inches)");
-          $('#dist01label').html("0.1in");
-          $('#dist1label').html("1in");
-          $('#dist10label').html("10in");
-          $('#dist100label').html("100in");
-        } else if (status.machine.firmware.state.units == "G21") {
-          $('#units').html(status.machine.firmware.state.units + " (mm)");
-          $('#dist01label').html("0.1mm");
-          $('#dist1label').html("1mm");
-          $('#dist10label').html("10mm");
-          $('#dist100label').html("100mm");
-        }
-      } else {
-        $('#units').html("NOCOMM");
-      }
-
-      if (status.comms.interfaces.activePort) {
-        $('#activeportstatus').html(status.comms.interfaces.activePort)
-      } else {
-        $('#activeportstatus').html("none")
-      }
-
-    }
+    // if (status.machine.firmware.state) {
+    //   if (status.machine.firmware.state.workoffset.length) {
+    //     $('#wcostatus').html(status.machine.firmware.state.workoffset);
+    //   } else {
+    //     $('#wcostatus').html("NOCOMM");
+    //   }
+    //   if (status.machine.firmware.state.plane.length) {
+    //     $('#planestatus').html(status.machine.firmware.state.plane);
+    //   } else {
+    //     $('#planestatus').html("NOCOMM");
+    //   }
+    //   if (status.machine.firmware.state.absrel.length) {
+    //     if (status.machine.firmware.state.absrel == "G90") {
+    //       $('#absrel').html(status.machine.firmware.state.absrel + " (absolute)");
+    //     } else if (status.machine.firmware.state.absrel == "G91") {
+    //       $('#absrel').html(status.machine.firmware.state.absrel + " (relative)");
+    //     }
+    //   } else {
+    //     $('#absrel').html("NOCOMM");
+    //   }
+    //   if (status.machine.firmware.state.units.length) {
+    //     if (status.machine.firmware.state.units == "G20") {
+    //       $('#units').html(status.machine.firmware.state.units + " (inches)");
+    //       $('#dist01label').html("0.1in");
+    //       $('#dist1label').html("1in");
+    //       $('#dist10label').html("10in");
+    //       $('#dist100label').html("100in");
+    //     } else if (status.machine.firmware.state.units == "G21") {
+    //       $('#units').html(status.machine.firmware.state.units + " (mm)");
+    //       $('#dist01label').html("0.1mm");
+    //       $('#dist1label').html("1mm");
+    //       $('#dist10label').html("10mm");
+    //       $('#dist100label').html("100mm");
+    //     }
+    //   } else {
+    //     $('#units').html("NOCOMM");
+    //   }
+    //
+    //   if (status.comms.interfaces.activePort) {
+    //     $('#activeportstatus').html(status.comms.interfaces.activePort)
+    //   } else {
+    //     $('#activeportstatus').html("none")
+    //   }
+    //
+    // }
 
     laststatus = status;
   });
