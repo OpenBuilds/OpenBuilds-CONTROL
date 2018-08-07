@@ -14,13 +14,25 @@ var toast = Metro.toast.create;
 $(document).ready(function() {
   initSocket();
 
-  $("#command").keyup(function(event) {
-    event.preventDefault()
-    if (event.keyCode === 13) {
+  $("#command").inputHistory({
+    enter: function() {
       $("#sendCommand").click();
     }
-    return false;
   });
+
+  // $("#command").keyup(function(event) {
+  //   event.preventDefault()
+  //   if (event.keyCode === 13) {
+  //     $("#sendCommand").click();
+  //   }
+  //   return false;
+  // });
+  //
+  // $("#command").inputhistory({
+  //   history: [],
+  //   preventSubmit: false
+  // });
+
 
   $("form").submit(function() {
     return false;
@@ -76,8 +88,12 @@ function initSocket() {
   socket.on('disconnect', function() {
     console.log("WEBSOCKET DISCONNECTED")
     printLog("Websocket Disconnected.  Driver probably quit or crashed")
+    $("#websocketstatus").html("Disconnected")
   });
 
+  socket.on('connect', function() {
+    $("#websocketstatus").html("Connected")
+  });
 
   socket.on('gcodeupload', function(data) {
     printLog("Received new GCODE from API")
@@ -182,7 +198,7 @@ function initSocket() {
   });
 
   socket.on('status', function(status) {
-    console.log(status.machine.position.work.x)
+
     if (nostatusyet) {
       $('#windowtitle').html("OpenBuids Machine Driver v" + status.driver.version)
     }
@@ -215,14 +231,31 @@ function initSocket() {
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-    if ($('#xPos').html() != status.machine.position.work.x + " mm") {
-      $('#xPos').html(status.machine.position.work.x + " mm");
+
+    if (status.machine.firmware.state.units == "G20") {
+      var unit = " in"
+    } else if (status.machine.firmware.state.units == "G21") {
+      var unit = " mm"
     }
-    if ($('#yPos').html() != status.machine.position.work.y + " mm") {
-      $('#yPos').html(status.machine.position.work.y + " mm");
+
+    if (unit == " mm") {
+      var xpos = status.machine.position.work.x + unit;
+      var ypos = status.machine.position.work.y + unit;
+      var zpos = status.machine.position.work.z + unit;
+    } else if (unit == " in") {
+      var xpos = (status.machine.position.work.x / 25.4).toFixed(2) + unit;
+      var ypos = (status.machine.position.work.y / 25.4).toFixed(2) + unit;
+      var zpos = (status.machine.position.work.z / 25.4).toFixed(2) + unit;
     }
-    if ($('#zPos').html() != status.machine.position.work.z + " mm") {
-      $('#zPos').html(status.machine.position.work.z + " mm");
+
+    if ($('#xPos').html() != xpos) {
+      $('#xPos').html(xpos);
+    }
+    if ($('#yPos').html() != ypos) {
+      $('#yPos').html(ypos);
+    }
+    if ($('#zPos').html() != zpos) {
+      $('#zPos').html(zpos);
     }
 
     // $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));
@@ -235,13 +268,132 @@ function initSocket() {
       $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
     }
 
+    // Grbl Pins Input Status
+    $('.pinstatus').removeClass('alert').addClass('success').html('OFF')
+    if (status.machine.inputs.length > 0) {
+      for (i = 0; i < status.machine.inputs.length; i++) {
+        switch (status.machine.inputs[i]) {
+          case 'X':
+            // console.log('PIN: X-LIMIT');
+            $('#xpin').removeClass('success').addClass('alert').html('ON')
+            break;
+          case 'Y':
+            // console.log('PIN: Y-LIMIT');
+            $('#ypin').removeClass('success').addClass('alert').html('ON')
+            break;
+          case 'Z':
+            // console.log('PIN: Z-LIMIT');
+            $('#zpin').removeClass('success').addClass('alert').html('ON')
+            break;
+          case 'P':
+            // console.log('PIN: PROBE');
+            $('#prbpin').removeClass('success').addClass('alert').html('ON')
+            break;
+            // case 'D':
+            //   console.log('PIN: DOOR');
+            //   $('#doorpin').removeClass('success').addClass('alert').html('ON')
+            //   break;
+            // case 'H':
+            //   console.log('PIN: HOLD');
+            //   break;
+            // case 'R':
+            //   console.log('PIN: SOFTRESET');
+            //   break;
+            // case 'S':
+            //   console.log('PIN: CYCLESTART');
+            //   break;
+        }
+      }
+    }
+
+    $('#driverver').html("v" + status.driver.version);
+    if (!status.machine.firmware.type) {
+      $('#firmwarever').html("NOCOMM");
+    } else {
+      $('#firmwarever').html(status.machine.firmware.type + " v" + status.machine.firmware.version);
+    }
+    $('#commblocked').html(status.comms.blocked ? "BLOCKED" : "Ready");
+    var string = '';
+    switch (status.comms.connectionStatus) {
+      case 0:
+        string += "Not Connected"
+        break;
+      case 2:
+        string += "Connected"
+        break;
+      case 3:
+        string += "Streaming"
+        break;
+      case 4:
+        string += "Paused"
+        break;
+      case 5:
+        string += "Alarmed"
+        break;
+
+    }
+    $('#commstatus').html(string);
+    $('#runstatus').html(status.comms.runStatus);
+    $('#drvqueue').html(status.comms.queue);
+    if (status.machine.firmware.buffer.length > 0) {
+      $('#buffstatus').html(status.machine.firmware.buffer[0] + " blocks / " + status.machine.firmware.buffer[1] + " bytes");
+    } else {
+      $('#buffstatus').html("NOCOMM");
+    }
+
+    if (status.machine.firmware.state) {
+      if (status.machine.firmware.state.workoffset.length) {
+        $('#wcostatus').html(status.machine.firmware.state.workoffset);
+      } else {
+        $('#wcostatus').html("NOCOMM");
+      }
+      if (status.machine.firmware.state.plane.length) {
+        $('#planestatus').html(status.machine.firmware.state.plane);
+      } else {
+        $('#planestatus').html("NOCOMM");
+      }
+      if (status.machine.firmware.state.absrel.length) {
+        if (status.machine.firmware.state.absrel == "G90") {
+          $('#absrel').html(status.machine.firmware.state.absrel + " (absolute)");
+        } else if (status.machine.firmware.state.absrel == "G91") {
+          $('#absrel').html(status.machine.firmware.state.absrel + " (relative)");
+        }
+      } else {
+        $('#absrel').html("NOCOMM");
+      }
+      if (status.machine.firmware.state.units.length) {
+        if (status.machine.firmware.state.units == "G20") {
+          $('#units').html(status.machine.firmware.state.units + " (inches)");
+          $('#dist01label').html("0.1in");
+          $('#dist1label').html("1in");
+          $('#dist10label').html("10in");
+          $('#dist100label').html("100in");
+        } else if (status.machine.firmware.state.units == "G21") {
+          $('#units').html(status.machine.firmware.state.units + " (mm)");
+          $('#dist01label').html("0.1mm");
+          $('#dist1label').html("1mm");
+          $('#dist10label').html("10mm");
+          $('#dist100label').html("100mm");
+        }
+      } else {
+        $('#units').html("NOCOMM");
+      }
+
+      if (status.comms.interfaces.activePort) {
+        $('#activeportstatus').html(status.comms.interfaces.activePort)
+      } else {
+        $('#activeportstatus').html("none")
+      }
+
+    }
+
     laststatus = status;
   });
 
   $('#sendCommand').on('click', function() {
     var commandValue = $('#command').val();
     sendGcode(commandValue);
-    $('#command').val('');
+    // $('#command').val('');
   });
 
   $('#command').on('keypress', function(e) {

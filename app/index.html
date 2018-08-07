@@ -22,8 +22,8 @@
       <span class="icon mif-cog"></span>
       <span class="title" id="windowtitle">OpenBuids Machine Driver</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
-        <!-- <span class="btn-min" onclick="socket.emit('minimise')"></span> -->
-        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimise')"></span>
+        <span class="btn-min" onclick="socket.emit('minimize')"></span>
+        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimisetotray')"></span>
         <!-- <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span> -->
       </div>
     </div>
@@ -32,6 +32,7 @@
         <ul class="tabs-holder">
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();">Control</a></li>
           <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();">Grbl Settings</a></li>
+          <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();">Troubleshooting</a></li>
           <li><a href="#section-update" onclick="updatePanel();">Update</a></li>
         </ul>
         <div class="content-holder">
@@ -65,6 +66,7 @@
                   </span>
                   <span class="caption">Refresh</span>
                 </button>
+
               </div>
               <span class="title">Grbl Settings</span>
             </div>
@@ -211,7 +213,7 @@
           </div>
           <div class="section" id="section-update">
 
-            <div class="group" style="width: calc(100vw - 90px);">
+            <div class="group">
               <button id="checkforupdatesbtn" class="ribbon-button" onclick="$('#updateconsole').empty(); socket.emit('checkUpdates', true)">
                 <span class="icon">
                   <span class="fa-layers fa-fw">
@@ -234,6 +236,75 @@
               </button>
               <span class="title">Online Updates</span>
             </div>
+            <div class="group">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                <span class="icon">
+                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                    <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell"></i>
+                  </span>
+                </span>
+                <span class="caption">Unlock<br>Alarm</span>
+              </button>
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+                <span class="caption">Stop<br>Job</span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+
+          </div>
+
+          <div class="section" id="section-troubleshooting">
+            <div class="group" style="width: 100px;">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                <span class="icon">
+                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                    <i id="navbellBtn2" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell"></i>
+                  </span>
+                </span>
+                <span class="caption">Unlock<br>Alarm</span>
+              </button>
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+                <span class="caption">Stop<br>Job</span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+            <!-- <div class="group" style="width: calc(100vw - 90px);">
+              <button id="checkforupdatesbtn" class="ribbon-button" onclick="$('#updateconsole').empty(); socket.emit('checkUpdates', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-sync-alt fg-green" data-fa-transform="grow-8"></i>
+                    <i class="fas fa-download" data-fa-transform="grow-1 left-0.5"></i>
+                    <div id="downloadprogress" style="display: none; color: #fff ; background-color: rgba(0, 0, 0, 0.6); font-weight:900; font-family: Arial; font-size: 12px; border: 1px solid ##607d8b; border-radius: 2px;">99%</div>
+                  </span>
+                </span>
+                <span class="caption">Check for<br>Updates</span>
+              </button>
+              <button id="applyupdatesbtn" class="ribbon-button" onclick="socket.emit('applyUpdate', true)" disabled>
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-cog fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fas fa-download" data-fa-transform="grow-1 left-0.5"></i>
+                    <i class="fa-inverse far fa-check-square" data-fa-transform="shrink-8 down-5"></i>
+                  </span>
+                </span>
+                <span class="caption">Install<br>Update</span>
+              </button>
+              <span class="title">Online Updates</span>
+            </div> -->
 
           </div>
         </div>
@@ -340,41 +411,6 @@
                     </td>
                   </tr>
                 </table>
-                <!-- <table>
-                  <tr>
-                    <td style="padding-top: 2px;">
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0')" style="width: 69px;">
-                        <span class="fa-layers fa-fw">
-                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
-                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
-                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
-                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
-                        </span>
-                      </button>
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 68px;">
-                        <span class="fa-layers fa-fw">
-                          <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-8"></i>
-                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
-                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 3px;">
-                      <button class="button light jogbtn" style="width: 141px;" id="gotozero">
-                        <span class="fa-layers fa-fw">
-                          <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
-                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
-                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
-                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
-                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
-                        </span>
-
-                      </button>
-                    </td>
-                  </tr>
-                </table> -->
               </div>
               <div class="cell">
                 <table class="jogtable">
@@ -473,7 +509,7 @@
                   <tr>
                     <td colspan="4">
                       <div style="margin: 2px;">
-                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="1000" data-role="input" data-prepend="Feedrate:" data-clear-button="false" value="1000" style="text-align: right;" />
+                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="1000" data-role="input" data-prepend="Jog Feedrate:" data-clear-button="false" value="1000" style="text-align: right;" />
                       </div>
                     </td>
                   </tr>
@@ -491,6 +527,8 @@
               </div>
             </div>
           </div>
+
+
           <div id="controlLogs">
             <ul class="tabs-expand-sm" data-role="tabs">
               <li><a href="#_target_1"><i class="far fa-fw fa-edit"></i>GCODE Editor</a></li>
@@ -513,7 +551,7 @@
             <div id="_target_2">
               <div id="console"></div>
               <div class="fixed-bottom m-3 mb-9">
-                <form class="inline-form">
+                <form class="inline-form" id="commandform">
                   <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
                   <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
                       <i class="fa fa-play" style="margin-right: 10px;"></i> Send
@@ -534,6 +572,154 @@
       </div>
       <div id="updatePanel" style="display: none;">
         <div id="updateconsole">Click "Check for Updates" above</div>
+      </div>
+      <div id="troubleshootingPanel" style="display: none;">
+        <div class="grid p-0 m-0">
+          <div class="row  p-0 m-0">
+            <div class="cell p-0 m-0">
+              <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-fw fa-bolt"></i>Endstops
+                </div>
+                <div class="card-content">
+                  <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">PIN</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>X-Limit</td>
+                        <td><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Y-Limit</td>
+                        <td><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Z-Limit</td>
+                        <td><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Probe</td>
+                        <td><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-fw fa-tasks"></i>State
+                </div>
+                <div class="card-content">
+                  <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">Value</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Abs/Rel</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="absrel">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Units</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="units">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Coordinate System</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="wcostatus">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Plane</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="planestatus">NOCOMM</span></td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cell p-0 m-0">
+              <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-fw fa-tty"></i>Communications
+                </div>
+                <div class="card-content">
+                  <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">Value</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Driver</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Blocked</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Conn Status</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Connected To</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Driver Queue</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Websocket Status</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-fw fa-microchip"></i>Firmware
+                </div>
+                <div class="card-content">
+                  <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">Value</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Version</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="firmwarever">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Buffer</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="buffstatus">NOCOMM</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
       </div>
 
       <!-- Bottom StatusBar -->
@@ -582,6 +768,9 @@
 
 <script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
+
 <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
 <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
 

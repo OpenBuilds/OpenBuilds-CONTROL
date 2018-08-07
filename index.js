@@ -79,7 +79,7 @@ autoUpdater.on('checking-for-update', () => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
-  if (!jogWindow.isFocused()) {
+  if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
       title: "OpenBuilds Machine Driver",
@@ -95,7 +95,7 @@ autoUpdater.on('update-available', (ev, info) => {
   }
   io.sockets.emit('updatedata', output);
   console.log(JSON.stringify(ev))
-  if (!jogWindow.isFocused()) {
+  if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
       title: "OpenBuilds Machine Driver",
@@ -114,7 +114,7 @@ autoUpdater.on('update-not-available', (ev, info) => {
   }
   io.sockets.emit('updatedata', output);
   console.log(JSON.stringify(ev))
-  if (!jogWindow.isFocused()) {
+  if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
       title: "OpenBuilds Machine Driver",
@@ -129,7 +129,7 @@ autoUpdater.on('error', (ev, err) => {
     'response': string
   }
   io.sockets.emit('updatedata', output);
-  if (!jogWindow.isFocused()) {
+  if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
       title: "OpenBuilds Machine Driver",
@@ -147,7 +147,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
   io.sockets.emit('updatedata', output);
   io.sockets.emit('updateprogress', ev.percent.toFixed(0));
   if (ev.percent % 10 === 0) {
-    if (!jogWindow.isFocused()) {
+    if (jogWindow && !jogWindow.isFocused()) {
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
         title: "OpenBuilds Machine Driver",
@@ -165,7 +165,7 @@ autoUpdater.on('update-downloaded', (info) => {
   }
   io.sockets.emit('updatedata', output);
   io.sockets.emit('updateready', true);
-  if (!jogWindow.isFocused()) {
+  if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
       title: "OpenBuilds Machine Driver",
@@ -195,7 +195,7 @@ var lastCommand = false
 var gcodeQueue = [];
 var queuePointer = 0;
 var startTime;
-var statusLoop;
+var statusLoop, stateLoop;
 var queueCounter;
 var listPortsLoop;
 
@@ -228,6 +228,7 @@ var status = {
     version: require('./package').version
   },
   machine: {
+    inputs: [],
     tools: {
       hotend1: false,
       hotend2: false,
@@ -274,7 +275,17 @@ var status = {
       type: "",
       version: "",
       date: "",
-      config: []
+      config: [],
+      buffer: [],
+      state: {
+        absrel: false,
+        frmode: false,
+        units: false,
+        workoffset: false,
+        spindle: false,
+        coolant: false,
+        plane: false
+      },
     },
     sdcard: {
       list: []
@@ -456,7 +467,7 @@ var PortCheckinterval = setInterval(function() {
         var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
         if (newPorts.length > 0) {
           console.log("Plugged " + newPorts[0].comName);
-          if (!jogWindow.isFocused()) {
+          if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
               title: "Driver Detected a new Port",
@@ -467,7 +478,7 @@ var PortCheckinterval = setInterval(function() {
         var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
         if (removedPorts.length > 0) {
           console.log("Unplugged " + removedPorts[0].comName);
-          if (!jogWindow.isFocused()) {
+          if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
               title: "Driver Detected a disconnected Port",
@@ -590,7 +601,7 @@ app.post('/upload', function(req, res) {
               'response': "ERROR: File Upload Failed"
             }
             io.sockets.emit('data', output);
-            if (!jogWindow.isFocused()) {
+            if (jogWindow && !jogWindow.isFocused()) {
               appIcon.displayBalloon({
                 icon: nativeImage.createFromPath(iconPath),
                 title: "ERROR: File Upload Failed",
@@ -602,7 +613,7 @@ app.post('/upload', function(req, res) {
           // console.log(data)
           if (data) {
             io.sockets.emit('gcodeupload', data);
-            if (!jogWindow.isFocused()) {
+            if (jogWindow && !jogWindow.isFocused()) {
               appIcon.displayBalloon({
                 icon: nativeImage.createFromPath(iconPath),
                 title: "GCODE Received",
@@ -638,15 +649,26 @@ app.on('certificate-error', function(event, webContents, url, error,
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
+  clearInterval(stateLoop);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
   status.machine.firmware.type = "";
   status.machine.firmware.version = ""; // get version
   status.machine.firmware.date = "";
+  status.machine.firmware.buffer = "";
   gcodeQueue.length = 0;
   lastGcode.length = 0;
   grblBufferSize.length = 0; // dump bufferSizes
+  status.machine.firmware.state = {
+    absrel: false,
+    frmode: false,
+    units: false,
+    workoffset: false,
+    spindle: false,
+    coolant: false,
+    plane: false
+  };
   port.drain(port.close());
 
 }
@@ -685,10 +707,16 @@ io.on("connection", function(socket) {
     shell.openExternal('https://cam.openbuilds.com')
   });
 
-  socket.on("minimise", function(data) {
+  socket.on("minimisetotray", function(data) {
     jogWindow.hide();
   });
+
+  socket.on("minimize", function(data) {
+    jogWindow.minimize();
+  });
+
   socket.on("maximise", function(data) {});
+
   socket.on("quit", function(data) {
     appIcon.destroy();
     electronApp.exit(0);
@@ -721,7 +749,7 @@ io.on("connection", function(socket) {
           'response': "PORT ERROR: " + err.message
         }
         io.sockets.emit('data', output);
-        if (!jogWindow.isFocused()) {
+        if (jogWindow && !jogWindow.isFocused()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "Driver encountered a Port error",
@@ -807,9 +835,9 @@ io.on("connection", function(socket) {
         };
         command = command.replace(/(\r\n|\n|\r)/gm, "");
 
-        console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
+        // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
-        if (command != "?" && command != "M105" && data.length > 0) {
+        if (command != "$G" && command != "?" && command != "M105" && data.length > 0) {
           var string = "";
           if (status.comms.sduploading) {
             string += "SD: "
@@ -844,8 +872,8 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           console.log("GRBL detected");
           socket.emit('grbl')
-          machineSend("$10=0\n"); // force Status Report to WPOS
-          if (!jogWindow.isFocused()) {
+          machineSend("$10=2\n"); // force Status Report to WPOS
+          if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
               title: "Driver has established a Connection",
@@ -860,10 +888,17 @@ io.on("connection", function(socket) {
               }
             }
           }, 250);
+          stateLoop = setInterval(function() {
+            if (status.comms.connectionStatus > 0) {
+              if (!status.comms.sduploading) {
+                machineSend("$G\n");
+              }
+            }
+          }, 500);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
-          if (!jogWindow.isFocused()) {
+          if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
               title: "Driver has established a Connection",
@@ -1058,6 +1093,8 @@ io.on("connection", function(socket) {
         if (data.indexOf("ok T:") == 0) {
           // Got an Temperature Feedback (Smoothie)
           parseTemp(data)
+        } else if (data.indexOf("[GC:") === 0) {
+          parseGrblState(data);
         } else if (data.indexOf("<") === 0) {
           // Got statusReport (Grbl & Smoothieware)
           // statusfeedback func
@@ -1157,7 +1194,7 @@ io.on("connection", function(socket) {
         }
 
       }
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Job Started",
@@ -1290,7 +1327,7 @@ io.on("connection", function(socket) {
           break;
       }
       send1Q();
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Work Coordinate System Reset",
@@ -1595,7 +1632,7 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Paused';
       status.comms.connectionStatus = 4;
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Job Paused",
@@ -1628,7 +1665,7 @@ io.on("connection", function(socket) {
       }, 200);
       status.comms.runStatus = 'Resuming';
       status.comms.connectionStatus = 3;
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Job Resumed",
@@ -1678,7 +1715,7 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped';
       status.comms.connectionStatus = 2;
       isAlarmed = false;
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Job Aborted",
@@ -1740,7 +1777,7 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
       isAlarmed = false;
-      if (!jogWindow.isFocused()) {
+      if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
           title: "Driver: Alarm Cleared",
@@ -1891,7 +1928,7 @@ function send1Q() {
         console.log("Job finished at " + finishTime.toString());
         console.log("Elapsed time: " + elapsedTime + " seconds.");
         console.log('Ave. Speed: ' + speed + ' lines/s');
-        if (!jogWindow.isFocused()) {
+        if (jogWindow && !jogWindow.isFocused()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "Driver: Job Completed!",
@@ -1915,6 +1952,64 @@ function send1Q() {
 function addQ(gcode) {
   gcodeQueue.push(gcode);
   queueLen = gcodeQueue.length;
+}
+
+function parseGrblState(data) {
+  // console.log("STATE: " + data)
+  var startState = data.search(/\GC:/i) + 3;
+  if (startState > 3) {
+    var state = data.replace("]", "").replace("[", "").split(":")[1]
+    // console.log("STATE: " + state);
+    if (state.indexOf("G17") != -1) {
+      status.machine.firmware.state.plane = "XY"
+    } else if (state.indexOf("G18") != -1) {
+      status.machine.firmware.state.plane = "XZ"
+    } else if (state.indexOf("G19") != -1) {
+      status.machine.firmware.state.plane = "YZ"
+    }
+    if (state.indexOf("G54") != 1) {
+      status.machine.firmware.state.workoffset = "G54"
+    } else if (state.indexOf("G55") != 1) {
+      status.machine.firmware.state.workoffset = "G55"
+    } else if (state.indexOf("G56") != 1) {
+      status.machine.firmware.state.workoffset = "G56"
+    } else if (state.indexOf("G57") != 1) {
+      status.machine.firmware.state.workoffset = "G57"
+    } else if (state.indexOf("G58") != 1) {
+      status.machine.firmware.state.workoffset = "G58"
+    } else if (state.indexOf("G59") != 1) {
+      status.machine.firmware.state.workoffset = "G59"
+    } else if (state.indexOf("G59.1") != 1) {
+      status.machine.firmware.state.workoffset = "G59.1"
+    } else if (state.indexOf("G59.2") != 1) {
+      status.machine.firmware.state.workoffset = "G59.2"
+    } else if (state.indexOf("G59.3") != 1) {
+      status.machine.firmware.state.workoffset = "G59.3"
+    }
+
+    if (state.indexOf("G20") != -1) {
+      status.machine.firmware.state.units = "G20"
+    } else if (state.indexOf("G21") != -1) {
+      status.machine.firmware.state.units = "G21"
+    }
+
+    if (state.indexOf("G90") != -1) {
+      status.machine.firmware.state.absrel = "G90"
+    } else if (state.indexOf("G91") != -1) {
+      status.machine.firmware.state.absrel = "G91"
+    }
+
+  } else {
+    status.machine.firmware.state = {
+      absrel: false,
+      frmode: false,
+      units: false,
+      workoffset: false,
+      spindle: false,
+      coolant: false,
+      plane: false
+    };
+  }
 }
 
 function parseFeedback(data) {
@@ -2096,6 +2191,26 @@ function parseFeedback(data) {
         status.machine.overrides.realSpindle = fs[1];
       }
     }
+  }
+  // Extract Pin Data
+  var startPin = data.search(/Pn:/i) + 3;
+  if (startPin > 3) {
+    var pinsdata = data.replace(">", "").replace("\r", "").substr(startPin).split(/,|\|/, 1);
+    var pins = pinsdata[0].split('')
+    // console.log("PINS: " + JSON.stringify(pins, null, 2));
+    status.machine.inputs = pins;
+  } else {
+    status.machine.inputs = [];
+  }
+
+  // Extract Buffer Data
+  var startBuf = data.search(/Bf:/i) + 3;
+  if (startBuf > 3) {
+    var buffer = data.replace(">", "").replace("\r", "").substr(startBuf).split(/,|\|/, 2);
+    // console.log("BUF: " + JSON.stringify(buffer, null, 2));
+    status.machine.firmware.buffer = buffer;
+  } else {
+    status.machine.firmware.buffer = [];
   }
   // end statusreport
 }
@@ -2344,11 +2459,6 @@ if (electronApp) {
     // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
     jogWindow.loadURL("http://localhost:3000/");
 
-    jogWindow.on('minimize', function(event) {
-      event.preventDefault();
-      jogWindow.hide();
-    });
-
     jogWindow.on('close', function(event) {
       event.preventDefault();
       jogWindow.hide();
@@ -2393,11 +2503,6 @@ if (electronApp) {
     var ipaddr = ip.address();
     // mainWindow.loadURL(`//` + ipaddr + `:3000/`)
     mainWindow.loadURL("http://localhost:3000");
-
-    mainWindow.on('minimize', function(event) {
-      event.preventDefault();
-      mainWindow.hide();
-    });
 
     mainWindow.on('close', function(event) {
       event.preventDefault();
