@@ -220,7 +220,10 @@ function grblSaveSettings() {
         onclick: function() {
           setTimeout(function() {
             sendGcode(String.fromCharCode(0x18));
-          }, 3000);
+            setTimeout(function() {
+              refreshGrblSettings()
+            }, 1000);
+          }, 400);
         }
       },
       {
