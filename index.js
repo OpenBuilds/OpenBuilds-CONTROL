@@ -896,7 +896,7 @@ io.on("connection", function(socket) {
           }, 250);
           stateLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading) {
+              if (!status.comms.sduploading && status.comms.connectionStatus < 3) {
                 machineSend("$G\n");
               }
             }
@@ -1183,9 +1183,9 @@ io.on("connection", function(socket) {
         runningJob = data;
         data = data.split('\n');
         for (var i = 0; i < data.length; i++) {
-          var line = data[i].split(';'); // Remove everything after ; = comment
-          var line = line[0].split('('); // Remove everything after ( = comment in Sketchucam
-          var tosend = line[0].trim().replace("%", ""); // % is in Sketchucam GCODE
+
+          var line = data[i].replace("%", "").split(';'); // Remove everything after ; = comment
+          var tosend = line[0].trim();
           if (tosend.length > 0) {
             addQ(tosend);
           }
