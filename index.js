@@ -195,7 +195,7 @@ var lastCommand = false
 var gcodeQueue = [];
 var queuePointer = 0;
 var startTime;
-var statusLoop, stateLoop;
+var statusLoop;
 var queueCounter;
 var listPortsLoop;
 
@@ -277,15 +277,6 @@ var status = {
       date: "",
       config: [],
       buffer: [],
-      state: {
-        absrel: false,
-        frmode: false,
-        units: false,
-        workoffset: false,
-        spindle: false,
-        coolant: false,
-        plane: false
-      },
     },
     sdcard: {
       list: []
@@ -521,60 +512,22 @@ app.post('/upload', function(req, res) {
   // console.log(req)
   uploadprogress = 0
   var form = new formidable.IncomingForm();
-
-
-
-  // Cleanup old files - later
-  // fs.readdir(uploadsDir, function(err, files) {
-  //   files.forEach(function(file, index) {
-  //     fs.stat(path.join(uploadsDir, file), function(err, stat) {
-  //       var endTime, now;
-  //       if (err) {
-  //         return console.error(err);
-  //       }
-  //       now = new Date().getTime();
-  //       // older than an hour
-  //       endTime = new Date(stat.ctime).getTime() + 3600000;
-  //       if (now > endTime) {
-  //         return rimraf(path.join(uploadsDir, file), function(err) {
-  //           if (err) {
-  //             return console.error(err);
-  //           }
-  //           console.log('successfully deleted' + file);
-  //         });
-  //       }
-  //     });
-  //   });
-  // });
-
-  // form.parse(req);
-  form.parse(req, function(err, fields, files) {
-    // console.log(util.inspect({
-    //   fields: fields,
-    //   files: files
-    // }));
-  });
+  form.parse(req, function(err, fields, files) {});
 
   form.on('fileBegin', function(name, file) {
-    // Emitted whenever a new file is detected in the upload stream. Use this event if you want to stream the file to somewhere else while buffering the upload on the file system.
     console.log('Uploading ' + file.name);
     file.path = uploadsDir + file.name;
-    // io.sockets.in('sessionId').emit('startupload', 'STARTING');
   });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
     uploadprogress = parseInt(((bytesReceived * 100) / bytesExpected).toFixed(0));
     if (uploadprogress != lastsentuploadprogress) {
-      // io.sockets.in('sessionId').emit('uploadprogress', uploadprogress);
       lastsentuploadprogress = uploadprogress;
     }
   });
 
   form.on('file', function(name, file) {
-    // Emitted whenever a field / file pair has been received. file is an instance of File.
     console.log('Uploaded ' + file.path);
-    // io.sockets.in('sessionId').emit('doneupload', 'COMPLETE');
-
     refreshGcodeLibrary();
 
     if (jogWindow === null) {
@@ -608,9 +561,7 @@ app.post('/upload', function(req, res) {
                 content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
               })
             }
-            // process.exit(1);
           }
-          // console.log(data)
           if (data) {
             io.sockets.emit('gcodeupload', data);
             if (jogWindow && !jogWindow.isFocused()) {
@@ -622,10 +573,7 @@ app.post('/upload', function(req, res) {
             }
           }
         });
-
-
     }, 1500);
-    // console.log("Done, now lets work with " + file.path)
   });
 
   form.on('aborted', function() {
@@ -639,39 +587,11 @@ app.post('/upload', function(req, res) {
   res.sendFile(__dirname + '/app/upload.html');
 });
 
-
 app.on('certificate-error', function(event, webContents, url, error,
   certificate, callback) {
   event.preventDefault();
   callback(true);
 });
-
-function stopPort() {
-  clearInterval(queueCounter);
-  clearInterval(statusLoop);
-  // clearInterval(stateLoop);
-  status.comms.interfaces.activePort = false;
-  status.comms.interfaces.activeBaud = false;
-  status.comms.connectionStatus = 0;
-  status.machine.firmware.type = "";
-  status.machine.firmware.version = ""; // get version
-  status.machine.firmware.date = "";
-  status.machine.firmware.buffer = "";
-  gcodeQueue.length = 0;
-  lastGcode.length = 0;
-  grblBufferSize.length = 0; // dump bufferSizes
-  status.machine.firmware.state = {
-    absrel: false,
-    frmode: false,
-    units: false,
-    workoffset: false,
-    spindle: false,
-    coolant: false,
-    plane: false
-  };
-  port.drain(port.close());
-
-}
 
 io.on("connection", function(socket) {
 
@@ -828,13 +748,7 @@ io.on("connection", function(socket) {
 
         if (data.indexOf("<") === 0) {
           command = "?";
-          var ignore = true;
         }
-
-        // if (data.indexOf("[GC:") === 0) {
-        //   command = "$G";
-        //   var ignore = true;
-        // }
 
         if (!command) {
           command = ""
@@ -894,13 +808,6 @@ io.on("connection", function(socket) {
               }
             }
           }, 250);
-          // stateLoop = setInterval(function() {
-          //   if (status.comms.connectionStatus > 0) {
-          //     if (!status.comms.sduploading && status.comms.connectionStatus < 3) {
-          //       machineSend("$G\n");
-          //     }
-          //   }
-          // }, 500);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
@@ -1099,8 +1006,6 @@ io.on("connection", function(socket) {
         if (data.indexOf("ok T:") == 0) {
           // Got an Temperature Feedback (Smoothie)
           parseTemp(data)
-        } else if (data.indexOf("[GC:") === 0) {
-          parseGrblState(data);
         } else if (data.indexOf("<") === 0) {
           // Got statusReport (Grbl & Smoothieware)
           // statusfeedback func
@@ -1138,9 +1043,9 @@ io.on("connection", function(socket) {
         } else if (data.indexOf('wait') === 0) { // Got wait from Repetier -> ignore
           // do nothing
         } else if (data.indexOf('error') === 0) { // Error received -> stay blocked stops queue
-          if (data.indexOf('error:Alarm lock') === 0) {
-            isAlarmed = true;
-          }
+          // if (data.indexOf('error:Alarm lock') === 0) {
+          //   isAlarmed = true;
+          // }
           switch (status.machine.firmware.type) {
             case 'grbl':
               grblBufferSize.shift();
@@ -1162,6 +1067,8 @@ io.on("connection", function(socket) {
               // io.sockets.emit('data', data);
               break;
           }
+          status.comms.connectionStatus = 5;
+          isAlarmed = true;
         } else if (data === ' ') {
           // nothing
         } else {
@@ -1458,43 +1365,13 @@ io.on("connection", function(socket) {
             for (i = 0; i < tens; i++) {
               machineSend(String.fromCharCode(146));
             }
-
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s decrease")
             for (i = 0; i < tens; i++) {
               machineSend(String.fromCharCode(148));
             }
           }
-
           status.machine.overrides.feedOverride = reqfro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
-          // var code;
-          // switch (data) {
-          //     case 0:
-          //         code = 144; // set to 100%
-          //         data = '100';
-          //         break;
-          //     case 10:
-          //         code = 145; // +10%
-          //         data = '+' + data;
-          //         break;
-          //     case -10:
-          //         code = 146; // -10%
-          //         break;
-          //     case 1:
-          //         code = 147; // +1%
-          //         data = '+' + data;
-          //         break;
-          //     case -1:
-          //         code = 148; // -1%
-          //         break;
-          // }
-          // console.log("Code:" + code)
-          //     //jumpQ(String.fromCharCode(parseInt(code)));
-          // if (code) {
-          //     machineSend(String.fromCharCode(parseInt(code)));
-          //     console.log('Sent: Code(' + code + ')');
-          //     console.log('Feed Override ' + data + '%');
-          // }
           break;
         case 'smoothie':
           if (data === 0) {
@@ -1505,12 +1382,8 @@ io.on("connection", function(socket) {
               feedOverride += data;
             }
           }
-          //jumpQ('M220S' + feedOverride);
           machineSend('M220S' + feedOverride + '\n');
-          // console.log('Sent: M220S' + feedOverride);
           status.machine.overrides.feedOverride = feedOverride
-          // console.log('Feed Override ' + feedOverride.toString() + '%');
-          //send1Q();
           break;
       }
     } else {
@@ -1564,33 +1437,6 @@ io.on("connection", function(socket) {
             }
           }
           status.machine.overrides.spindleOverride = reqsro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
-          // var code;
-          // switch (data) {
-          //     case 0:
-          //         code = 153; // set to 100%
-          //         data = '100';
-          //         break;
-          //     case 10:
-          //         code = 154; // +10%
-          //         data = '+' + data;
-          //         break;
-          //     case -10:
-          //         code = 155; // -10%
-          //         break;
-          //     case 1:
-          //         code = 156; // +1%
-          //         data = '+' + data;
-          //         break;
-          //     case -1:
-          //         code = 157; // -1%
-          //         break;
-          // }
-          // if (code) {
-          //     //jumpQ(String.fromCharCode(parseInt(code)));
-          //     machineSend(String.fromCharCode(parseInt(code)));
-          //     console.log('Sent: Code(' + code + ')');
-          //     console.log('Spindle (Laser) Override ' + data + '%');
-          // }
           break;
         case 'smoothie':
           if (data === 0) {
@@ -1601,12 +1447,8 @@ io.on("connection", function(socket) {
               spindleOverride += data;
             }
           }
-          //jumpQ('M221S' + spindleOverride);
           machineSend('M221S' + spindleOverride + '\n');
-          // console.log('Sent: M221S' + spindleOverride);
           status.machine.overrides.spindleOverride = spindleOverride;
-          // console.log('Spindle (Laser) Override ' + spindleOverride.toString() + '%');
-          //send1Q();
           break;
       }
     } else {
@@ -1847,10 +1689,25 @@ function machineSend(gcode) {
     if (gcode.indexOf("M20") != -1) {
       status.machine.sdcard.list.length = 0;
     }
-    // console.log("SENT: " + gcode)
   } else {
     console.log("PORT NOT OPEN")
   }
+}
+
+function stopPort() {
+  clearInterval(queueCounter);
+  clearInterval(statusLoop);
+  status.comms.interfaces.activePort = false;
+  status.comms.interfaces.activeBaud = false;
+  status.comms.connectionStatus = 0;
+  status.machine.firmware.type = "";
+  status.machine.firmware.version = ""; // get version
+  status.machine.firmware.date = "";
+  status.machine.firmware.buffer = "";
+  gcodeQueue.length = 0;
+  lastGcode.length = 0;
+  grblBufferSize.length = 0; // dump bufferSizes
+  port.drain(port.close());
 }
 
 function grblBufferSpace() {
@@ -1959,64 +1816,6 @@ function send1Q() {
 function addQ(gcode) {
   gcodeQueue.push(gcode);
   queueLen = gcodeQueue.length;
-}
-
-function parseGrblState(data) {
-  // console.log("STATE: " + data)
-  var startState = data.search(/\GC:/i) + 3;
-  if (startState > 3) {
-    var state = data.replace("]", "").replace("[", "").split(":")[1]
-    // console.log("STATE: " + state);
-    if (state.indexOf("G17") != -1) {
-      status.machine.firmware.state.plane = "XY"
-    } else if (state.indexOf("G18") != -1) {
-      status.machine.firmware.state.plane = "XZ"
-    } else if (state.indexOf("G19") != -1) {
-      status.machine.firmware.state.plane = "YZ"
-    }
-    if (state.indexOf("G54") != 1) {
-      status.machine.firmware.state.workoffset = "G54"
-    } else if (state.indexOf("G55") != 1) {
-      status.machine.firmware.state.workoffset = "G55"
-    } else if (state.indexOf("G56") != 1) {
-      status.machine.firmware.state.workoffset = "G56"
-    } else if (state.indexOf("G57") != 1) {
-      status.machine.firmware.state.workoffset = "G57"
-    } else if (state.indexOf("G58") != 1) {
-      status.machine.firmware.state.workoffset = "G58"
-    } else if (state.indexOf("G59") != 1) {
-      status.machine.firmware.state.workoffset = "G59"
-    } else if (state.indexOf("G59.1") != 1) {
-      status.machine.firmware.state.workoffset = "G59.1"
-    } else if (state.indexOf("G59.2") != 1) {
-      status.machine.firmware.state.workoffset = "G59.2"
-    } else if (state.indexOf("G59.3") != 1) {
-      status.machine.firmware.state.workoffset = "G59.3"
-    }
-
-    if (state.indexOf("G20") != -1) {
-      status.machine.firmware.state.units = "G20"
-    } else if (state.indexOf("G21") != -1) {
-      status.machine.firmware.state.units = "G21"
-    }
-
-    if (state.indexOf("G90") != -1) {
-      status.machine.firmware.state.absrel = "G90"
-    } else if (state.indexOf("G91") != -1) {
-      status.machine.firmware.state.absrel = "G91"
-    }
-
-  } else {
-    status.machine.firmware.state = {
-      absrel: false,
-      frmode: false,
-      units: false,
-      workoffset: false,
-      spindle: false,
-      coolant: false,
-      plane: false
-    };
-  }
 }
 
 function parseFeedback(data) {

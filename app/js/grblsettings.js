@@ -63,13 +63,13 @@ function grblPopulate() {
               <th class="sortable-column" data-format="number"></th>
               <th class="sortable-column">Parameter</th>
               <th>Value</th>
-              <td>calc</th>
+              <th></th>
           </tr>
         </thead>
 
         <tbody>
-        <tr><td>$</td><td>0</td><td>Step pulse time, microseconds</td><td><input type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td></tr>
-        <tr><td>$</td><td>1</td><td>Step idle delay, milliseconds</td><td><input type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td></tr>
+        <tr><td>$</td><td>0</td><td>Step pulse time, microseconds</td><td><input type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td><td></td></tr>
+        <tr><td>$</td><td>1</td><td>Step idle delay, milliseconds</td><td><input type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td><td></td></tr>
         <tr><td>$</td><td>2</td>
         <td>Step pulse invert</td>
         <td>
@@ -96,9 +96,9 @@ function grblPopulate() {
         <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
         <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
         </select></td><td></td></tr>
-        <tr><td>$</td><td>4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
-        <tr><td>$</td><td>5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
-        <tr><td>$</td><td>6</td><td>Invert probe pin</td><td><select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
+        <tr><td>$</td><td>5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
+        <tr><td>$</td><td>6</td><td>Invert probe pin</td><td><select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
         <tr><td>$</td><td>10</td><td>Status report options</td><td><select id="val-` + 10 + `-input" value="` + grblParams['$10'] + `">
           <option value="0">[0] WPos:&#9899; MPos:&#9898; Buf:&#9898;</option>
           <option value="1">[1] WPos:&#9898; MPos:&#9899; Buf:&#9898;</option>
@@ -106,11 +106,11 @@ function grblPopulate() {
         </select></td><td></td></tr>
         <tr><td>$</td><td>11</td><td>Junction deviation, millimeters</td><td><input type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td><td></td></tr>
         <tr><td>$</td><td>12</td><td>Arc tolerance, millimeters</td><td><input type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td><td></td></tr>
-        <tr><td>$</td><td>13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td></tr>
+        <tr><td>$</td><td>13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td><td></td></tr>
 
-        <tr><td>$</td><td>20</td><td>Soft limits enable <small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
-        <tr><td>$</td><td>21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
-        <tr><td>$</td><td>22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td></tr>
+        <tr><td>$</td><td>20</td><td>Soft limits enable <small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
+        <tr><td>$</td><td>21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
+        <tr><td>$</td><td>22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
         <tr><td>$</td><td>23</td><td>Homing direction invert</td><td><select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
           <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
           <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
