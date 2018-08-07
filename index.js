@@ -1184,7 +1184,8 @@ io.on("connection", function(socket) {
         data = data.split('\n');
         for (var i = 0; i < data.length; i++) {
           var line = data[i].split(';'); // Remove everything after ; = comment
-          var tosend = line[0].trim();
+          var line = line[0].split('('); // Remove everything after ( = comment in Sketchucam
+          var tosend = line[0].trim().replace("%", ""); // % is in Sketchucam GCODE
           if (tosend.length > 0) {
             addQ(tosend);
           }
