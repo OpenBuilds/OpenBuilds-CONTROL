@@ -1731,7 +1731,7 @@ function send1Q() {
         while ((queueLen - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
           spaceLeft = grblBufferSpace();
           gcodeLen = gcodeQueue[queuePointer].length;
-          console.log(gcodeLen, spaceLeft)
+          // console.log(gcodeLen, spaceLeft)
           if (gcodeLen < spaceLeft) {
             gcode = gcodeQueue[queuePointer];
             queuePointer++;

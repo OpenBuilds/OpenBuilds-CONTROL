@@ -72,6 +72,29 @@
               <span class="title">Grbl Settings</span>
             </div>
             <div class="group">
+              <div class="ribbon-group">
+                <button class="ribbon-icon-button" onclick="sendGcode('$RST=$'); refreshGrblSettings()">
+                  <span class="icon">
+                    <i class="fas fa-sliders-h"></i>
+                  </span>
+                  <span class="caption">Reset&nbsp;Settings</span>
+                </button><br>
+                <button class="ribbon-icon-button" onclick="sendGcode('$RST=#'); refreshGrblSettings()">
+                  <span class="icon">
+                    <i class="fas fa-layer-group"></i>
+                  </span>
+                  <span class="caption">Reset&nbsp;WCOs</span>
+                </button><br>
+                <button class="ribbon-icon-button" onclick="sendGcode('$RST=*'); refreshGrblSettings()">
+                  <span class="icon">
+                    <i class="fas fa-microchip"></i>
+                  </span>
+                  <span class="caption">Reset&nbsp;EEPROM</span>
+                </button>
+              </div>
+              <span class="title">Firmware Reset Defaults</span>
+            </div>
+            <div class="group">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -705,7 +728,7 @@
   </div>
 </body>
 
-<script type="text/javascript" src="lib/fontawesome5/svg-with-js/js/fontawesome-all.min.js"></script>
+<script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
