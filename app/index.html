@@ -520,7 +520,7 @@
                   <div id="console"></div>
                   <div class="fixed-bottom m-3 mb-9">
                     <form class="inline-form" id="commandform">
-                      <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class="needs-connection" style="width: calc(100vw - 170px);" />
+                      <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" />
                       <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
                           <i class="fa fa-play" style="margin-right: 10px;"></i> Send
                         </button>
@@ -533,13 +533,15 @@
                 <div class="section" id="tab-two">
                   <div id="editor"></div>
                   <div class="fixed-bottom m-3 mb-9">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i></button>
+                    <!-- <form class="inline-form"> -->
+                    <button title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i> Find/Replace</button>&nbsp;
+                    <button title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i> Select All</button>&nbsp;
+                    <button title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i> Undo</button>&nbsp;
+                    <button title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i> Redo</button>&nbsp;
+                    <button title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>&nbsp;
+                    <button title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>&nbsp;
+                    <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i> Clear</button>&nbsp;
+                    <!-- </form> -->
                   </div>
                 </div>
               </div>

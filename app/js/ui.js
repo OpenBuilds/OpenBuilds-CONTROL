@@ -130,7 +130,7 @@ function setJogPanel(val, status) {
   if (val == 0) { // Not Connected Yet
     // Show panel and resize editor
     $("#jogcontrols").slideUp(20);
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 250 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
@@ -141,7 +141,7 @@ function setJogPanel(val, status) {
   } else if (val == 0 || val == 2) { // Connected, but not Playing yet
     // Show panel and resize editor
     $("#jogcontrols").slideDown(20);
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
@@ -151,7 +151,7 @@ function setJogPanel(val, status) {
     }
   } else if (val == 3) { // Busy Streaming GCODE
     // Show panel and resize editor
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
@@ -163,7 +163,7 @@ function setJogPanel(val, status) {
   } else if (val == 4) { // Paused
     // Show panel and resize editor
     $("#jogcontrols").slideDown(20);
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 445 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()
@@ -174,7 +174,7 @@ function setJogPanel(val, status) {
   } else if (val == 5) { // Alarm State
     // Show panel and resize editor
     $("#jogcontrols").slideUp(20);
-    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 295 + 'px)');
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     editor.resize()

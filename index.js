@@ -199,9 +199,8 @@ var statusLoop;
 var queueCounter;
 var listPortsLoop;
 
-var GRBL_RX_BUFFER_SIZE = 128; // 128 characters
+var GRBL_RX_BUFFER_SIZE = 32; // 128 characters
 var grblBufferSize = [];
-var new_grbl_buffer = false;
 
 var SMOOTHIE_RX_BUFFER_SIZE = 64; // max. length of one command line
 var smoothie_buffer = false;
@@ -804,7 +803,7 @@ io.on("connection", function(socket) {
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
               if (!status.comms.sduploading) {
-                machineSend("?");
+                // machineSend("?");
               }
             }
           }, 250);
@@ -1084,6 +1083,7 @@ io.on("connection", function(socket) {
 
 
   socket.on('runJob', function(data) {
+    // console.log(data)
     console.log('Run Job (' + data.length + ')');
     if (status.comms.connectionStatus > 0) {
       if (data) {
@@ -1678,6 +1678,7 @@ function machineSend(gcode) {
     data.push(queueTotal);
     data.push(status.comms.sduploading)
     io.sockets.emit("queueCount", data);
+    // console.log(gcode)
     port.write(gcode);
     if (gcode != "?") {
       lastGcode.push(gcode);
@@ -1719,6 +1720,7 @@ function grblBufferSpace() {
   return GRBL_RX_BUFFER_SIZE - total;
 }
 
+
 function send1Q() {
   var gcode;
   var gcodeLen = 0;
@@ -1726,43 +1728,18 @@ function send1Q() {
   if (status.comms.connectionStatus > 0) {
     switch (status.machine.firmware.type) {
       case 'grbl':
-        if (new_grbl_buffer) {
-          if (grblBufferSize.length === 0) {
-            spaceLeft = GRBL_RX_BUFFER_SIZE;
-            while ((queueLen - queuePointer) > 0 && spaceLeft > 0 && !status.comms.blocked && !status.comms.paused) {
-              gcodeLen = gcodeQueue[queuePointer].length;
-              if (gcodeLen < spaceLeft) {
-                // Add gcode to send buffer
-                gcode = gcodeQueue[queuePointer];
-                queuePointer++;
-                grblBufferSize.push(gcodeLen + 1);
-                gcodeLine += gcode + '\n';
-                spaceLeft = GRBL_RX_BUFFER_SIZE - gcodeLine.length;
-              } else {
-                // Not enough space left in send buffer
-                status.comms.blocked = true;
-              }
-            }
-            if (gcodeLine.length > 0) {
-              // Send the buffer
-              status.comms.blocked = true;
-              machineSend(gcodeLine);
-              // console.log('Sent: ' + gcodeLine + ' Q: ' + (queueLen - queuePointer));
-            }
-          }
-        } else {
-          while ((queueLen - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
-            spaceLeft = grblBufferSpace();
-            gcodeLen = gcodeQueue[queuePointer].length;
-            if (gcodeLen < spaceLeft) {
-              gcode = gcodeQueue[queuePointer];
-              queuePointer++;
-              grblBufferSize.push(gcodeLen + 1);
-              machineSend(gcode + '\n');
-              // console.log('Sent: ' + gcode + ' Q: ' + (queueLen - queuePointer) + ' Bspace: ' + (spaceLeft - gcodeLen - 1));
-            } else {
-              status.comms.blocked = true;
-            }
+        while ((queueLen - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
+          spaceLeft = grblBufferSpace();
+          gcodeLen = gcodeQueue[queuePointer].length;
+          console.log(gcodeLen, spaceLeft)
+          if (gcodeLen < spaceLeft) {
+            gcode = gcodeQueue[queuePointer];
+            queuePointer++;
+            grblBufferSize.push(gcodeLen + 1);
+            machineSend(gcode + '\n');
+            // console.log('Sent: ' + gcode + ' Q: ' + (queueLen - queuePointer) + ' Bspace: ' + (spaceLeft - gcodeLen - 1));
+          } else {
+            status.comms.blocked = true;
           }
         }
         break;
@@ -1772,7 +1749,7 @@ function send1Q() {
           queuePointer++;
           status.comms.blocked = true;
           machineSend(gcode + '\n');
-          // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length  - queuePointer));
+          // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer));
         }
         break;
     }

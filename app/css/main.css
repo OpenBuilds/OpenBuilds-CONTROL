@@ -15,8 +15,8 @@ body {
     height: calc(100% - 1px);
     width: 100%;
     border-top: 1px solid #ccc;
-    margin-top: 5px;
-    box-shadow: 0 0 5px 10px #fff;
+    /* margin-top: 5px; */
+    box-shadow: 0 0 2px 2px #ddd;
 }
 
 #console {
@@ -28,7 +28,7 @@ body {
     overflow-x: none;
     text-align: left;
     background-color: #fff;
-    box-shadow: 0 0 5px 10px #fff;
+    box-shadow: 0 0 2px 2px #ddd;
     padding: 0px;
     font-size: 12px;
     padding-left: 20px;

@@ -198,17 +198,21 @@ function checkifchanged() {
 
 
 function grblSaveSettings() {
+  var commands = ""
   for (var key in grblParams) {
     if (grblParams.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
       // Only send values that changed
       if (parseFloat(newVal) != parseFloat(grblParams[key])) {
-        console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
-        sendGcode(key + '=' + newVal);
+        // console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
+        commands += key + '=' + newVal + "\n"
+        // sendGcode(key + '=' + newVal);
       }
     }
   }
+  console.log("commands", commands)
+  socket.emit('runJob', commands);
   grblParams = {};
 
   Metro.dialog.create({
