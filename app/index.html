@@ -34,7 +34,7 @@
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
           <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
           <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
-          <li><a href="#section-update" onclick="updatePanel();"><i class="fas fa-fw fa-cloud-download-alt"></i> Update</a></li>
+          <li><a href="#section-update" onclick="updatePanel();"><i id="updateIcon" class="fas fa-fw fa-cloud-download-alt"></i> Update <span id="updateAvailable" style="display: none;text-decoration: none !important;">new!</span></a></li>
         </ul>
         <div class="content-holder">
           <div class="section" id="section-grbl">
@@ -246,7 +246,7 @@
                     <div id="downloadprogress" style="display: none; color: #fff ; background-color: rgba(0, 0, 0, 0.6); font-weight:900; font-family: Arial; font-size: 12px; border: 1px solid ##607d8b; border-radius: 2px;">99%</div>
                   </span>
                 </span>
-                <span class="caption">Check for<br>Updates</span>
+                <span class="caption">Download<br>Updates</span>
               </button>
               <button id="applyupdatesbtn" class="ribbon-button" onclick="socket.emit('applyUpdate', true)" disabled>
                 <span class="icon">
@@ -577,7 +577,7 @@
         <div id="grblconfig"></div>
       </div>
       <div id="updatePanel" style="display: none;">
-        <div id="updateconsole">Click "Check for Updates" above</div>
+        <div id="updateconsole">Click "Download Updates" above</div>
       </div>
       <div id="troubleshootingPanel" style="display: none;">
         <div class="grid p-0 m-0">

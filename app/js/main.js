@@ -44,6 +44,31 @@ $(document).ready(function() {
   var fileOpen = document.getElementById('file');
   fileOpen.addEventListener('change', readFile, false);
 
+  setTimeout(function() {
+    console.log('checking for update')
+    printLog("<span class='fg-green'>Checking for Updates</span>")
+    $.getJSON("https://api.github.com/repos/OpenBuilds/SW-Machine-Drivers/releases/latest?client_id=fbbb80debc1197222169&client_secret=7dc6e463422e933448f9a3a4150c8d2bbdd0f87c").done(function(release) {
+      var availVersion = release.name.substr(1)
+      var currentVersion = laststatus.driver.version
+      console.log(versionCompare(availVersion, currentVersion), availVersion, currentVersion);
+      if (versionCompare(availVersion, currentVersion) == 1) {
+        console.log('outdated')
+        printLog("<span class='fg-green'>Update Available! You are running OpenBuilds Machine Driver " + currentVersion + ", and can now update to OpenBuilds Machine Driver " + availVersion + ". Click <kbd>Update</kbd> -> <kbd>Download Updates</kbd>  to start the Download</span>")
+        printUpdateLog("<span class='fg-green'>Update Available! You are running OpenBuilds Machine Driver " + currentVersion + ", and can now update to OpenBuilds Machine Driver " + availVersion + ". Click <kbd>Download Updates</kbd>  to start the Download</span>")
+        $('#updateAvailable').show()
+        $('#updateAvailable').html('to v' + availVersion)
+        $('#updateIcon').addClass('ani-shake')
+      } else {
+        printLog("<span class='fg-green'>Update Available! You are already running OpenBuilds Machine Driver " + availVersion + "</span>")
+        printUpdateLog("<span class='fg-green'>Update Available! You are already running OpenBuilds Machine Driver " + availVersion + "</span>")
+        $('#updateAvailable').show()
+        $('#updateAvailable').html('')
+        $('#updateIcon').removeClass('ani-shake')
+      }
+    });
+  }, 5000)
+
+
 });
 
 function readFile(evt) {
@@ -76,4 +101,49 @@ function loadFile(f) {
     };
     // }
   }
+}
+
+function versionCompare(v1, v2, options) {
+  var lexicographical = options && options.lexicographical,
+    zeroExtend = options && options.zeroExtend,
+    v1parts = v1.split('.'),
+    v2parts = v2.split('.');
+
+  function isValidPart(x) {
+    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  }
+
+  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+    return NaN;
+  }
+
+  if (zeroExtend) {
+    while (v1parts.length < v2parts.length) v1parts.push("0");
+    while (v2parts.length < v1parts.length) v2parts.push("0");
+  }
+
+  if (!lexicographical) {
+    v1parts = v1parts.map(Number);
+    v2parts = v2parts.map(Number);
+  }
+
+  for (var i = 0; i < v1parts.length; ++i) {
+    if (v2parts.length == i) {
+      return 1;
+    }
+
+    if (v1parts[i] == v2parts[i]) {
+      continue;
+    } else if (v1parts[i] > v2parts[i]) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  if (v1parts.length != v2parts.length) {
+    return -1;
+  }
+
+  return 0;
 }
