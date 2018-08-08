@@ -98,10 +98,18 @@ function initSocket() {
   socket.on('gcodeupload', function(data) {
     printLog("Received new GCODE from API")
     editor.session.setValue(data);
+    $('#controlTab').click()
     $('#gcodeeditortab').click()
     // gcodeeditortab
   });
 
+  socket.on('integrationpopup', function(data) {
+    printLog("Integration called from " + data)
+    // editor.session.setValue(data);
+    $('#controlTab').click()
+    $('#consoletab').click()
+    // gcodeeditortab
+  });
 
   socket.on('updatedata', function(data) {
     // console.log(data.length, data)

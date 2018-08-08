@@ -497,6 +497,29 @@ app.get('/api/version', (req, res) => {
   res.send(JSON.stringify(data), null, 2);
 })
 
+app.get('/activate', (req, res) => {
+  console.log(req.hostname)
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.send('Host: ' + req.hostname + ' asked to activate OpenBuildsMachineDriver v' + require('./package').version);
+  if (jogWindow === null) {
+    createJogWindow();
+    jogWindow.show()
+    // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  } else {
+    jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  }
+  setTimeout(function() {
+    io.sockets.emit('gcodeupload', req.hostname);
+  }, 1500);
+})
+
 // Upload
 app.get('/upload', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
