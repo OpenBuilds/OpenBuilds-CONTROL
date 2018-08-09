@@ -103,6 +103,10 @@ function initSocket() {
     // gcodeeditortab
   });
 
+  socket.on('gcodeupload', function(data) {
+    printLog("Activated window");
+  });
+
   socket.on('integrationpopup', function(data) {
     printLog("Integration called from " + data)
     // editor.session.setValue(data);

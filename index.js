@@ -516,7 +516,7 @@ app.get('/activate', (req, res) => {
     jogWindow.setAlwaysOnTop(false);
   }
   setTimeout(function() {
-    io.sockets.emit('gcodeupload', req.hostname);
+    io.sockets.emit('activate', req.hostname);
   }, 1500);
 })
 
