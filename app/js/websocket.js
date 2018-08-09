@@ -3,7 +3,6 @@ var server = ''; //192.168.14.100';
 var programBoard = {};
 var grblParams = {}
 var smoothieParams = {}
-var sduploading;
 var nostatusyet = true;
 var safeToUpdateSliders = false;
 var laststatus
@@ -134,21 +133,6 @@ function initSocket() {
   socket.on('data', function(data) {
     // console.log(data.length, data)
     var toPrint = data.response;
-    if (data.response.indexOf("Done saving file.") != -1) {
-      $('#sdupload_modal').modal('hide');
-      $("#sduploadform").show()
-      $("#sduploadprogress").hide()
-      $("#sduploadbtn").prop('disabled', false);
-      $("#sduploadcancelbtn").prop('disabled', false);
-      $("#sdmodalclosebtn").prop('disabled', false);
-      $('#sdprogressup').css('width', '0%').attr('aria-valuenow', 0);
-    }
-    if (data.response.indexOf("End file list") != -1) {
-      // We just got an M20 sd listing back... lets update UI
-      setTimeout(function() {
-        sdListPopulate();
-      }, 600);
-    }
 
     // Parse Grbl Settings Feedback
     if (data.response.indexOf('$') === 0) {
@@ -192,11 +176,6 @@ function initSocket() {
     var progressbar = $("#progressbar").data("progress");
     progressbar.val(donepercent);
     // }
-    sduploading = data[2];
-    if (sduploading) {
-      var percent = 100 - (parseInt(data[0]) / parseInt(data[1]) * 100)
-      $('#sdprogressup').css('width', percent + '%').attr('aria-valuenow', percent);
-    }
   })
 
   socket.on('toastError', function(data) {
@@ -421,22 +400,6 @@ function initSocket() {
     }
   });
 
-  $("#sdtogglemodal").on("click", function() {
-    $('#sdupload_modal').modal('show');
-    if (sduploading) {
-      $("#sduploadform").hide()
-      $("#sduploadprogress").show()
-    } else {
-      $("#sduploadform").show()
-      $("#sduploadprogress").hide()
-    }
-  })
-
-  $("#sdlist").on("click", function() {
-    sendGcode("M20");
-  })
-
-
   var bellflash = setInterval(function() {
     if (!nostatusyet) {
       if (laststatus) {
@@ -500,42 +463,6 @@ function sendGcode(gcode) {
 //   $('#editorContextMenu').hide();
 // }
 
-function sdListPopulate() {
-  $('#sdfilelist').empty();
-  if (laststatus.machine.sdcard.list.length > 0) {
-    for (i = laststatus.machine.sdcard.list.length - 1; i >= 0; i--) {
-      var name = laststatus.machine.sdcard.list[i]
-      console.log(name);
-      if (name.length > 25) {
-        var newname = ""
-        newname += name.substring(0, 10)
-        newname += "..."
-        newname += name.substring(name.length - 10)
-        name = newname;
-      }
-
-      if (name.indexOf("config") != -1 || name.indexOf("CONFIG") != -1) {
-        $("#sdfilelist").append(`<tr><td><i class="far fa-file"></i> ` + name + `</td><td></td></tr>`);
-      } else if (name.indexOf("FIRMWARE.CUR") != -1 || name.indexOf("firmware.cur") != -1) {
-        $("#sdfilelist").append(`<tr><td><i class="far fa-file"></i> ` + name + `</td><td></td></tr>`);
-      } else {
-        $("#sdfilelist").append(`<tr>
-          <td>
-            <i class="far fa-file"></i> ` + name + `
-          </td>
-          <td>
-            <div class="btn-group btn-group-xs" role="group">
-              <button type="button" class="btn btn-xs btn-outline-secondary" onclick="sendGcode('rm /sd/` + laststatus.machine.sdcard.list[i].replace(/(\r\n|\n|\r)/gm, "") + `'); sendGcode('M20'); ">Delete</button>
-              <button type="button" class="btn btn-xs btn-outline-secondary" onclick="sendGcode('M32 ` + laststatus.machine.sdcard.list[i].replace(/(\r\n|\n|\r)/gm, "") + `'); sendGcode('M20'); ">Print</button>
-            </div>
-          </td>
-        </tr>`);
-      }
-    }
-    $("#sdlist_modal").modal("show")
-  }
-
-}
 
 function feedOverride(step) {
   if (socket) {
@@ -547,20 +474,6 @@ function spindleOverride(step) {
   if (socket) {
     socket.emit('spindleOverride', step);
   }
-}
-
-function sdUpload() {
-  $("#sduploadbtn").prop('disabled', true);
-  $("#sduploadcancelbtn").prop('disabled', true);
-  $("#sdmodalclosebtn").prop('disabled', true);
-  $("#sduploadform").hide()
-  $("#sduploadprogress").show()
-  var filename = $("#sdfilename").val();
-  var gcode = editor.getValue()
-  var data = []
-  data.push(filename)
-  data.push(gcode)
-  socket.emit("saveToSd", data)
 }
 
 function friendlyPort(i) {

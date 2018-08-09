@@ -735,9 +735,7 @@ io.on("connection", function(socket) {
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading) {
-                addQRealtime("?");
-              }
+              addQRealtime("?");
             }
           }, 250);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
@@ -756,12 +754,7 @@ io.on("connection", function(socket) {
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
-              if (!status.comms.sduploading) {
-                addQRealtime("?");
-                if (status.machine.tools.hotend1 || status.machine.tools.hotend2 || status.machine.tools.heatbed) {
-                  addQToStart("M105\n");
-                }
-              }
+              addQRealtime("?");
             }
           }, 200);
         } // end of machine identification
@@ -775,6 +768,11 @@ io.on("connection", function(socket) {
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
           // console.log("OK FOUND")
           if (status.machine.firmware.type === "grbl") {
+            // console.log('got OK from ' + command)
+            command = sentBuffer.shift();
+          }
+
+          if (status.machine.firmware.type === "smoothie") {
             // console.log('got OK from ' + command)
             command = sentBuffer.shift();
           }
@@ -797,7 +795,7 @@ io.on("connection", function(socket) {
           status.comms.connectionStatus = 5;
         } else if (data.indexOf('WARNING: After HALT you should HOME as position is currently unknown') != -1) { //} || data.indexOf('HALTED') === 0) {
           status.comms.connectionStatus = 2;
-        } else if (data.indexOf('Emergency Stop Requested ') != -1) { //} || data.indexOf('HALTED') === 0) {
+        } else if (data.indexOf('Emergency Stop Requested') != -1) { //} || data.indexOf('HALTED') === 0) {
           console.log("Emergency Stop Requested")
           status.comms.connectionStatus = 5;
         } else if (data.indexOf('wait') === 0) { // Got wait from Repetier -> ignore
@@ -1321,10 +1319,16 @@ io.on("connection", function(socket) {
           console.log('Cleaning Queue');
           addQRealtime(String.fromCharCode(0x18)); // ctrl-x
           console.log('Sent: Code(0x18)');
+          status.comms.connectionStatus = 2;
           break;
         case 'smoothie':
           status.comms.paused = true;
           addQRealtime('M112'); // ctrl-x
+          setTimeout(function() {
+            addQToEnd("?");
+            send1Q();
+          }, 1000);
+          status.comms.connectionStatus = 5;
           console.log('Sent: M112');
           break;
       }
@@ -1332,12 +1336,12 @@ io.on("connection", function(socket) {
       status.comms.queue = 0
       queuePointer = 0;
       gcodeQueue.length = 0; // Dump the queue
+      sentBuffer.length = 0; // Dump the queue
       // sentBuffer.length = 0; // Dump bufferSizes
       laserTestOn = false;
       status.comms.blocked = false;
       status.comms.paused = false;
       status.comms.runStatus = 'Stopped';
-      status.comms.connectionStatus = 2;
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
@@ -1445,7 +1449,6 @@ function machineSend(gcode) {
     var data = []
     data.push(queueLeft);
     data.push(queueTotal);
-    data.push(status.comms.sduploading)
     io.sockets.emit("queueCount", data);
     // console.log(gcode)
     port.write(gcode);
@@ -1774,6 +1777,7 @@ function send1Q() {
           gcode = gcodeQueue[queuePointer];
           queuePointer++;
           status.comms.blocked = true;
+          sentBuffer.push(gcode);
           machineSend(gcode + '\n');
           // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer));
         }
