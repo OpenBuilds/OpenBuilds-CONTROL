@@ -59,7 +59,7 @@ $(document).ready(function() {
         $('#updateAvailable').html('to v' + availVersion)
         $('#updateIcon').addClass('ani-shake')
       } else {
-        printLog("<span class='fg-green'>Update Available! You are already running OpenBuilds Machine Driver " + availVersion + "</span>")
+        printLog("<span class='fg-green'>You are already running OpenBuilds Machine Driver " + currentVersion + "</span>")
         printUpdateLog("<span class='fg-green'>Update Available! You are already running OpenBuilds Machine Driver " + availVersion + "</span>")
         $('#updateAvailable').show()
         $('#updateAvailable').html('')

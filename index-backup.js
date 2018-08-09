@@ -29,6 +29,8 @@ const httpsserver = https.createServer(httpsOptions, app).listen(3001, function(
 
 const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
   console.log('http:  listening on:' + ip.address() + ":" + config.webPort);
+  // Now refresh library
+  refreshGcodeLibrary();
 });
 
 io.attach(httpserver);
@@ -41,8 +43,18 @@ var md5 = require('md5');
 var ip = require("ip");
 var _ = require('lodash');
 var fs = require("fs");
+var rimraf = require("rimraf")
 var formidable = require('formidable')
+var util = require('util');
 var lastsentuploadprogress = 0;
+var queueLen = 0
+var colors = {
+  G0: '#00CC00',
+  G1: '#CC0000',
+  G2G3: "#0000CC"
+};
+var width = 250;
+var height = 200;
 
 // Electron app
 const electron = require('electron');
@@ -175,15 +187,19 @@ const iconAlarm = path.join(__dirname, 'app/icon-bell.png');
 
 
 var iosocket;
+var isAlarmed = false;
+var lastmd5sum = '00000000000000000000000000000000'
+var lastGcode = []
 var lastCommand = false
 var gcodeQueue = [];
 var queuePointer = 0;
+var startTime;
 var statusLoop;
 var queueCounter;
 var listPortsLoop;
 
 var GRBL_RX_BUFFER_SIZE = 127; // 128 characters
-var sentBuffer = [];
+var grblBufferSize = [];
 
 var SMOOTHIE_RX_BUFFER_SIZE = 64; // max. length of one command line
 var smoothie_buffer = false;
@@ -257,7 +273,11 @@ var status = {
       type: "",
       version: "",
       date: "",
+      config: [],
       buffer: [],
+    },
+    sdcard: {
+      list: []
     },
     drivers: {
       x: {
@@ -390,6 +410,39 @@ var status = {
   }
 };
 
+function refreshGcodeLibrary() {
+  // if (fs.existsSync(uploadsDir)) {
+  //   const dirTree = require('directory-tree');
+  //
+  //   var tree = dirTree(uploadsDir, {
+  //     extensions: /\.gcode|\.nc|\.tap|\.cnc|\.gc|\.g-code$/
+  //   }, (item, PATH) => {
+  //     // if a gcode is found, then
+  //     // console.log(item);
+  //     ConvertGCODEtoPNG(item.path, item.path + ".png")
+  //   });
+  //   // console.log("---------------")
+  //   var tree = dirTree(uploadsDir, {
+  //     extensions: /\.gcode|\.png/
+  //   });
+  //   var treeData = JSON.stringify(tree, null, 2)
+  //   // console.log(treeData);
+  //   fs.writeFileSync(join(uploadsDir + '/data.json'), treeData, 'utf-8')
+  // }
+}
+
+function ConvertGCODEtoPNG(file, out) {
+  // var path = out;
+  // fs.readFile(file, 'utf8',
+  //   function(err, data) {
+  //     if (err) {
+  //       console.log(err);
+  //       process.exit(1);
+  //     }
+  //     gcodethumbnail.generatePNG(path, data, colors, width, height);
+  //   });
+}
+
 SerialPort.list(function(err, ports) {
   oldportslist = ports;
   status.comms.interfaces.ports = ports;
@@ -496,6 +549,7 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     console.log('Uploaded ' + file.path);
+    refreshGcodeLibrary();
 
     if (jogWindow === null) {
       createJogWindow();
@@ -658,15 +712,15 @@ io.on("connection", function(socket) {
         io.sockets.emit('data', output);
         status.comms.connectionStatus = 1;
         if (config.resetOnConnect == 1) {
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+          machineSend(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
           console.log("Sent: ctrl-x");
         } else {
-          addQRealtime("\n"); // this causes smoothie to send the welcome string
+          machineSend("\n"); // this causes smoothie to send the welcome string
         }
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
             console.log("No GRBL, lets see if we have Smoothie?");
-            addQRealtime("version\n"); // Check if it's Smoothieware?
+            machineSend("version\n"); // Check if it's Smoothieware?
             console.log("Sent: version");
           }
         }, config.grblWaitTime * 1000);
@@ -701,7 +755,42 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       port.on("data", function(data) {
-        var command = sentBuffer[0];
+
+
+        // Command Tracking
+        if (lastGcode.length == 0) {
+          command = lastCommand;
+        } else {
+          command = lastGcode.shift();
+          if (lastGcode.length == 0) {
+            lastCommand = command;
+          }
+        }
+
+        if (data.indexOf("<") === 0) {
+          command = "?";
+        }
+
+        if (!command) {
+          command = ""
+        };
+        command = command.replace(/(\r\n|\n|\r)/gm, "");
+
+        // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
+
+        if (command != "?" && command != "M105" && data.length > 0) {
+          var string = "";
+          if (status.comms.sduploading) {
+            string += "SD: "
+          }
+          string += data //+ "  [ " + command + " ]"
+          var output = {
+            'command': command,
+            'response': string
+          }
+          // console.log(output.response)
+          io.sockets.emit('data', output);
+        }
 
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
@@ -724,7 +813,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           console.log("GRBL detected");
           socket.emit('grbl')
-          addQRealtime("$10=2\n"); // force Status Report to WPOS
+          machineSend("$10=2\n"); // force Status Report to WPOS
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
@@ -736,7 +825,7 @@ io.on("connection", function(socket) {
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
               if (!status.comms.sduploading) {
-                addQRealtime("?");
+                // machineSend("?");
               }
             }
           }, 250);
@@ -757,35 +846,206 @@ io.on("connection", function(socket) {
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
               if (!status.comms.sduploading) {
-                addQRealtime("?");
+                machineSend("?");
                 if (status.machine.tools.hotend1 || status.machine.tools.hotend2 || status.machine.tools.heatbed) {
-                  addQToStart("M105\n");
+                  machineSend("M105\n");
                 }
+                // machineSend("M911 J0\n");
               }
             }
           }, 200);
+          // Lets see what we have to deal with
+          // setTimeout(function() {
+          //     machineSend("config-get extruder.hotend.enable\n"); //cached: extruder.hotend.enable is set to true
+          // }, 100);
+          // setTimeout(function() {
+          //     machineSend("config-get extruder.hotend2.enable\n"); //cached: extruder.hotend2.enable is not in config
+          // }, 200);
+          // setTimeout(function() {
+          //     machineSend("config-get temperature_control.bed.enable\n"); //cached: temperature_control.bed.enable is set to true
+          // }, 300);
+          // setTimeout(function() {
+          //     machineSend("config-get laser_module_enable\n"); //cached: laser_module_enable is set to false
+          // }, 400);
+          // setTimeout(function() {
+          //     machineSend("config-get spindle.enable\n"); //cached: spindle.enable is not in config
+          // }, 500);
         } // end of machine identification
 
+
+        // sdcard listing and upload verification
+        if (command == "M20") {
+          if (data.indexOf("Begin file list") === 0) {
+            status.machine.sdcard.list.length = 0;
+          } else if (data.indexOf("End file list") === 0) {
+            // ignore
+          } else if (data.indexOf("ok") === 0) {
+            // ignore
+          } else if (data.indexOf("Done saving file") != -1) {
+            status.comms.sduploading = false;
+          } else {
+            status.machine.sdcard.list.push(data)
+          }
+        } else if (re.test(data)) {
+          var md5sum = data.split(/[ ,]+/)[0]
+          if (lastmd5sum === md5sum) {
+            console.log("SD UPLOAD VERIFIED! OK")
+            var output = {
+              'command': '',
+              'response': 'SD UPLOAD COMPLETED, AND MD5 VERIFIED! OK'
+            }
+            io.sockets.emit('data', output);
+          } else {
+            // console.log("SD UPLOAD VERIFIED! FAILED:   Original file: " + lastmd5sum +", SD file: " + md5sum )
+            // Due to firmware changing the content of the file, sometimes a valid upload still fails.   A pass is definately a pass.  But a fail could just be cosmetic.
+          }
+        } // end sdcard
+
+        // config identification: generate Array of Config Entries for Smoothie
+        if (command == "cat /sd/config" || command == "cat /sd/config.txt") {
+          // console.log("CONF: " + data)
+          status.machine.firmware.config.push(data)
+        }
+
+        if (data.indexOf('\"type\": \"TMC26x\"') != -1) {
+          try {
+            var object = JSON.parse(data)
+          } catch (e) {
+            console.log(e); // error in the above string (in this case, yes)!
+          }
+          if (object) {
+            if (object.axis == "X") {
+              status.machine.drivers.x = object;
+            }
+            if (object.axis == "Y") {
+              status.machine.drivers.y = object;
+            }
+            if (object.axis == "Z") {
+              status.machine.drivers.z = object;
+            }
+            if (object.axis == "A") {
+              status.machine.drivers.a = object;
+            }
+          }
+        }
+
+        // config identification: trinamic driver status
+        if (command.indexOf("M911.1 PX") != -1) {
+          if (data.indexOf("Chip type") != -1) {
+            status.machine.drivers.x.type = data.split(" ")[4];
+          }
+          if (data.indexOf("Stall Guard value") === 0) {
+            status.machine.drivers.x.stallGuard = data.split(" ")[3];
+          }
+          if (data.indexOf("Current setting") === 0) {
+            status.machine.drivers.x.current = data.split(" ")[2];
+          }
+          if (data.indexOf("Microsteps") === 0) {
+            status.machine.drivers.x.microstep = data.split(" ")[1];
+          }
+        }
+
+        if (command.indexOf("M911.1 PY") != -1) {
+          if (data.indexOf("Chip type") != -1) {
+            status.machine.drivers.y.type = data.split(" ")[4];
+          }
+          if (data.indexOf("Stall Guard value") === 0) {
+            status.machine.drivers.y.stallGuard = data.split(" ")[3];
+          }
+          if (data.indexOf("Current setting") === 0) {
+            status.machine.drivers.y.current = data.split(" ")[2];
+          }
+          if (data.indexOf("Microsteps") === 0) {
+            status.machine.drivers.y.microstep = data.split(" ")[1];
+          }
+        }
+
+        if (command.indexOf("M911.1 PZ") != -1) {
+          if (data.indexOf("Chip type") != -1) {
+            status.machine.drivers.z.type = data.split(" ")[4];
+          }
+          if (data.indexOf("Stall Guard value") === 0) {
+            status.machine.drivers.z.stallGuard = data.split(" ")[3];
+          }
+          if (data.indexOf("Current setting") === 0) {
+            status.machine.drivers.z.current = data.split(" ")[2];
+          }
+          if (data.indexOf("Microsteps") === 0) {
+            status.machine.drivers.z.microstep = data.split(" ")[1];
+          }
+        }
+
+        if (command.indexOf("M911.1 PA") != -1) {
+          if (data.indexOf("Chip type") != -1) {
+            status.machine.drivers.a.type = data.split(" ")[4];
+          }
+          if (data.indexOf("Stall Guard value") === 0) {
+            status.machine.drivers.a.stallGuard = data.split(" ")[3];
+          }
+          if (data.indexOf("Current setting") === 0) {
+            status.machine.drivers.a.current = data.split(" ")[2];
+          }
+          if (data.indexOf("Microsteps") === 0) {
+            status.machine.drivers.a.microstep = data.split(" ")[1];
+          }
+        }
+
+        // config identification:  Tools availability
+        if (data.indexOf("extruder.hotend.enable") != -1) {
+          if (data.indexOf("set to true") != -1) {
+            console.log("Adding 1st Extruder to Tools table");
+            status.machine.tools.hotend1 = true;
+            status.comms.blocked = false;
+          }
+        } else if (data.indexOf("extruder.hotend2.enabl") != -1) {
+          if (data.indexOf("set to true") != -1) {
+            console.log("Adding 2nd Extruder to Tools table");
+            status.machine.tools.hotend2 = true;
+            status.comms.blocked = false;
+          }
+        } else if (data.indexOf("temperature_control.bed.enable") != -1) {
+          if (data.indexOf("set to true") != -1) {
+            console.log("Adding Heatbed to Tools table");
+            status.machine.tools.heatbed = true;
+            status.comms.blocked = false;
+          }
+        } else if (data.indexOf("laser_module_enable") != -1) {
+          if (data.indexOf("set to true") != -1) {
+            console.log("Adding Laser to Tools table");
+            status.machine.tools.laser = true;
+            status.comms.blocked = false;
+          }
+        } else if (data.indexOf("spindle.enable") != -1) {
+          if (data.indexOf("set to true") != -1) {
+            console.log("Adding Spindle to Tools table");
+            status.machine.tools.spindle = true;
+            status.comms.blocked = false;
+          }
+        }
+
         // Machine Feedback: Temperature and Position
-        if (data.indexOf("<") === 0) {
-          // console.log(' Got statusReport (Grbl & Smoothieware)')
+        if (data.indexOf("ok T:") == 0) {
+          // Got an Temperature Feedback (Smoothie)
+          parseTemp(data)
+        } else if (data.indexOf("<") === 0) {
+          // Got statusReport (Grbl & Smoothieware)
           // statusfeedback func
           parseFeedback(data)
           // console.log(data)
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
           // console.log("OK FOUND")
           if (status.machine.firmware.type === "grbl") {
-            // console.log('got OK from ' + command)
-            command = sentBuffer.shift();
+            grblBufferSize.shift();
           }
           status.comms.blocked = false;
           send1Q();
         } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
           console.log("ALARM:  " + data)
           status.comms.connectionStatus = 5;
+          isAlarmed = true;
           switch (status.machine.firmware.type) {
             case 'grbl':
-              // sentBuffer.shift();
+              grblBufferSize.shift();
               var alarmCode = parseInt(data.split(':')[1]);
               console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
@@ -797,15 +1057,19 @@ io.on("connection", function(socket) {
           status.comms.connectionStatus = 5;
         } else if (data.indexOf('WARNING: After HALT you should HOME as position is currently unknown') != -1) { //} || data.indexOf('HALTED') === 0) {
           status.comms.connectionStatus = 2;
+          isAlarmed = false;
         } else if (data.indexOf('Emergency Stop Requested ') != -1) { //} || data.indexOf('HALTED') === 0) {
-          console.log("Emergency Stop Requested")
           status.comms.connectionStatus = 5;
+          isAlarmed = true;
         } else if (data.indexOf('wait') === 0) { // Got wait from Repetier -> ignore
           // do nothing
         } else if (data.indexOf('error') === 0) { // Error received -> stay blocked stops queue
+          // if (data.indexOf('error:Alarm lock') === 0) {
+          //   isAlarmed = true;
+          // }
           switch (status.machine.firmware.type) {
             case 'grbl':
-              // sentBuffer.shift();
+              grblBufferSize.shift();
               var errorCode = parseInt(data.split(':')[1]);
               console.log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
               var output = {
@@ -824,33 +1088,13 @@ io.on("connection", function(socket) {
               // io.sockets.emit('data', data);
               break;
           }
-          console.log("error;")
           status.comms.connectionStatus = 5;
+          isAlarmed = true;
         } else if (data === ' ') {
           // nothing
         } else {
           // do nothing with +data
         }
-
-        if (command) {
-          command = command.replace(/(\r\n|\n|\r)/gm, "");
-          // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
-
-          if (command != "?" && command != "M105" && data.length > 0) {
-            var string = "";
-            if (status.comms.sduploading) {
-              string += "SD: "
-            }
-            string += data //+ "  [ " + command + " ]"
-            var output = {
-              'command': command,
-              'response': string
-            }
-            // console.log(output.response)
-            io.sockets.emit('data', output);
-          }
-        }
-
       }); // end of parser.on(data)
     }
   });
@@ -865,21 +1109,23 @@ io.on("connection", function(socket) {
     console.log('Run Job (' + data.length + ')');
     if (status.comms.connectionStatus > 0) {
       if (data) {
+        runningJob = data;
         data = data.split('\n');
         for (var i = 0; i < data.length; i++) {
 
           var line = data[i].replace("%", "").split(';'); // Remove everything after ; = comment
           var tosend = line[0].trim();
           if (tosend.length > 0) {
-            addQToEnd(tosend);
+            addQ(tosend);
           }
         }
         if (i > 0) {
+          startTime = new Date(Date.now());
           // Start interval for qCount messages to socket clients
           queueCounter = setInterval(function() {
             status.comms.queue = gcodeQueue.length - queuePointer
           }, 500);
-          send1Q(); // send first line
+          send1Q();
           status.comms.connectionStatus = 3;
         }
 
@@ -909,12 +1155,11 @@ io.on("connection", function(socket) {
           var line = data[i].split(';'); // Remove everything after ; = comment
           var tosend = line[0].trim();
           if (tosend.length > 0) {
-            addQToEnd(tosend);
+            addQ(tosend);
           }
         }
         if (i > 0) {
           status.comms.runStatus = 'Running'
-          // console.log('sending ' + JSON.stringify(gcodeQueue))
           send1Q();
         }
       }
@@ -940,13 +1185,13 @@ io.on("connection", function(socket) {
         console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91' + dir + dist + feed);
+            addQ('$J=G91' + dir + dist + feed);
             send1Q();
             break;
           case 'smoothie':
-            addQToEnd('G91');
-            addQToEnd('G0' + feed + dir + dist);
-            addQToEnd('G90');
+            addQ('G91');
+            addQ('G0' + feed + dir + dist);
+            addQ('G90');
             send1Q();
             break;
           default:
@@ -973,12 +1218,13 @@ io.on("connection", function(socket) {
         console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91' + mode + xVal + yVal + zVal + feed);
+            addQ('$J=G91' + mode + xVal + yVal + zVal + feed);
+            send1Q();
             break;
           case 'smoothie':
-            addQToEnd('G91' + mode);
-            addQToEnd('G0' + feed + xVal + yVal + zVal);
-            addQToEnd('G90');
+            addQ('G91' + mode);
+            addQ('G0' + feed + xVal + yVal + zVal);
+            addQ('G90');
             send1Q();
             break;
           default:
@@ -998,22 +1244,22 @@ io.on("connection", function(socket) {
     if (status.comms.connectionStatus > 0) {
       switch (data) {
         case 'x':
-          addQToEnd('G10 L20 P0 X0');
+          addQ('G10 L20 P0 X0');
           break;
         case 'y':
-          addQToEnd('G10 L20 P0 Y0');
+          addQ('G10 L20 P0 Y0');
           break;
         case 'z':
-          addQToEnd('G10 L20 P0 Z0');
+          addQ('G10 L20 P0 Z0');
           break;
         case 'a':
-          addQToEnd('G10 L20 P0 A0');
+          addQ('G10 L20 P0 A0');
           break;
         case 'all':
-          addQToEnd('G10 L20 P0 X0 Y0 Z0');
+          addQ('G10 L20 P0 X0 Y0 Z0');
           break;
         case 'xyza':
-          addQToEnd('G10 L20 P0 X0 Y0 Z0 A0');
+          addQ('G10 L20 P0 X0 Y0 Z0 A0');
           break;
       }
       send1Q();
@@ -1034,22 +1280,22 @@ io.on("connection", function(socket) {
     if (status.comms.connectionStatus > 0) {
       switch (data) {
         case 'x':
-          addQToEnd('G0 X0');
+          addQ('G0 X0');
           break;
         case 'y':
-          addQToEnd('G0 Y0');
+          addQ('G0 Y0');
           break;
         case 'z':
-          addQToEnd('G0 Z0');
+          addQ('G0 Z0');
           break;
         case 'a':
-          addQToEnd('G0 A0');
+          addQ('G0 A0');
           break;
         case 'all':
-          addQToEnd('G0 X0 Y0 Z0');
+          addQ('G0 X0 Y0 Z0');
           break;
         case 'xyza':
-          addQToEnd('G0 X0 Y0 Z0 A0');
+          addQ('G0 X0 Y0 Z0 A0');
           break;
       }
       send1Q();
@@ -1066,7 +1312,7 @@ io.on("connection", function(socket) {
         var yVal = (data.y !== undefined ? 'Y' + parseFloat(data.y) + ' ' : '');
         var zVal = (data.z !== undefined ? 'Z' + parseFloat(data.z) + ' ' : '');
         var aVal = (data.a !== undefined ? 'A' + parseFloat(data.a) + ' ' : '');
-        addQToEnd('G10 L20 P0 ' + xVal + yVal + zVal + aVal);
+        addQ('G10 L20 P0 ' + xVal + yVal + zVal + aVal);
         send1Q();
       }
     } else {
@@ -1081,24 +1327,22 @@ io.on("connection", function(socket) {
         case 'smoothie':
           switch (data.direction) {
             case 'z':
-              addQToEnd('G30 Z' + data.probeOffset);
+              addQ('G30 Z' + data.probeOffset);
               break;
             default:
-              addQToEnd('G38.2 ' + data.direction);
+              addQ('G38.2 ' + data.direction);
               break;
           }
-          send1Q();
-          break;
         case 'grbl':
-          addQToEnd('G38.2 ' + data.direction + '-5 F1');
-          addQToEnd('G92 ' + data.direction + ' ' + data.probeOffset);
-          send1Q();
+          addQ('G38.2 ' + data.direction + '-5 F1');
+          addQ('G92 ' + data.direction + ' ' + data.probeOffset);
           break;
         default:
           //not supported
           console.log('Command not supported by firmware!');
           break;
       }
+      send1Q();
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1116,7 +1360,7 @@ io.on("connection", function(socket) {
           var delta;
 
           if (reqfro == 100) {
-            addQRealtime(String.fromCharCode(144));
+            machineSend(String.fromCharCode(144));
           } else if (curfro < reqfro) {
             // FRO Increase
             delta = reqfro - curfro
@@ -1125,13 +1369,13 @@ io.on("connection", function(socket) {
 
             console.log("need to send " + tens + " x10s increase")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(145));
+              machineSend(String.fromCharCode(145));
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s increase")
             for (i = 0; i < ones; i++) {
-              addQRealtime(String.fromCharCode(147));
+              machineSend(String.fromCharCode(147));
             }
           } else if (curfro > reqfro) {
             // FRO Decrease
@@ -1141,12 +1385,12 @@ io.on("connection", function(socket) {
             var tens = Math.floor(delta / 10)
             console.log("need to send " + tens + " x10s decrease")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(146));
+              machineSend(String.fromCharCode(146));
             }
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s decrease")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(148));
+              machineSend(String.fromCharCode(148));
             }
           }
           status.machine.overrides.feedOverride = reqfro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
@@ -1160,8 +1404,7 @@ io.on("connection", function(socket) {
               feedOverride += data;
             }
           }
-          addQToStart('M220S' + feedOverride + '\n');
-          send1Q();
+          machineSend('M220S' + feedOverride + '\n');
           status.machine.overrides.feedOverride = feedOverride
           break;
       }
@@ -1181,7 +1424,7 @@ io.on("connection", function(socket) {
           var delta;
 
           if (reqsro == 100) {
-            addQRealtime(String.fromCharCode(153));
+            machineSend(String.fromCharCode(153));
           } else if (cursro < reqsro) {
             // FRO Increase
             delta = reqsro - cursro
@@ -1190,13 +1433,13 @@ io.on("connection", function(socket) {
 
             console.log("need to send " + tens + " x10s increase")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(154));
+              machineSend(String.fromCharCode(154));
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s increase")
             for (i = 0; i < ones; i++) {
-              addQRealtime(String.fromCharCode(156));
+              machineSend(String.fromCharCode(156));
             }
           } else if (cursro > reqsro) {
             // FRO Decrease
@@ -1206,13 +1449,13 @@ io.on("connection", function(socket) {
             var tens = Math.floor(delta / 10)
             console.log("need to send " + tens + " x10s decrease")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(155));
+              machineSend(String.fromCharCode(155));
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s decrease")
             for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(157));
+              machineSend(String.fromCharCode(157));
             }
           }
           status.machine.overrides.spindleOverride = reqsro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
@@ -1226,8 +1469,7 @@ io.on("connection", function(socket) {
               spindleOverride += data;
             }
           }
-          addQToStart('M221S' + spindleOverride + '\n');
-          send1Q();
+          machineSend('M221S' + spindleOverride + '\n');
           status.machine.overrides.spindleOverride = spindleOverride;
           break;
       }
@@ -1246,16 +1488,16 @@ io.on("connection", function(socket) {
       console.log('PAUSE');
       switch (status.machine.firmware.type) {
         case 'grbl':
-          addQRealtime('!'); // Send hold command
+          machineSend('!'); // Send hold command
           console.log('Sent: !');
           if (status.machine.firmware.version === '1.1d') {
-            addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
+            machineSend(String.fromCharCode(0x9E)); // Stop Spindle/Laser
             console.log('Sent: Code(0x9E)');
           }
           break;
         case 'smoothie':
-          addQToStart('M600'); // Laser will be turned off by smoothie (in default config!)
-          send1Q();
+          machineSend('M600'); // Laser will be turned off by smoothie (in default config!)
+          //machineSend('M600\n'); // Laser will be turned off by smoothie (in default config!)
           console.log('Sent: M600');
           break;
       }
@@ -1278,12 +1520,12 @@ io.on("connection", function(socket) {
       console.log('UNPAUSE');
       switch (status.machine.firmware.type) {
         case 'grbl':
-          addQRealtime('~'); // Send resume command
+          machineSend('~'); // Send resume command
           console.log('Sent: ~');
           break;
         case 'smoothie':
-          addQToStart('M601'); // Send resume command
-          send1Q();
+          machineSend('M601'); // Send resume command
+          //machineSend('M601\n');
           console.log('Sent: M601');
           break;
       }
@@ -1312,19 +1554,19 @@ io.on("connection", function(socket) {
       console.log('STOP');
       switch (status.machine.firmware.type) {
         case 'grbl':
-          addQRealtime('!'); // hold
+          machineSend('!'); // hold
           console.log('Sent: !');
           if (status.machine.firmware.version === '1.1d') {
-            addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
+            machineSend(String.fromCharCode(0x9E)); // Stop Spindle/Laser
             console.log('Sent: Code(0x9E)');
           }
           console.log('Cleaning Queue');
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+          machineSend(String.fromCharCode(0x18)); // ctrl-x
           console.log('Sent: Code(0x18)');
           break;
         case 'smoothie':
           status.comms.paused = true;
-          addQRealtime('M112'); // ctrl-x
+          machineSend('M112'); // ctrl-x
           console.log('Sent: M112');
           break;
       }
@@ -1332,12 +1574,18 @@ io.on("connection", function(socket) {
       status.comms.queue = 0
       queuePointer = 0;
       gcodeQueue.length = 0; // Dump the queue
-      // sentBuffer.length = 0; // Dump bufferSizes
+      grblBufferSize.length = 0; // Dump bufferSizes
+      lastGcode.length = 0 // Dump Last Command Queue
+      queueLen = 0;
+      queuePos = 0;
       laserTestOn = false;
+      startTime = null;
+      runningJob = null;
       status.comms.blocked = false;
       status.comms.paused = false;
       status.comms.runStatus = 'Stopped';
       status.comms.connectionStatus = 2;
+      isAlarmed = false;
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
@@ -1360,11 +1608,11 @@ io.on("connection", function(socket) {
           console.log('Clearing Lockout');
           switch (status.machine.firmware.type) {
             case 'grbl':
-              addQRealtime('$X\n');
+              machineSend('$X\n');
               console.log('Sent: $X');
               break;
             case 'smoothie':
-              addQRealtime('$X\n');
+              machineSend('$X\n');
               console.log('Sent: $X');
               break;
           }
@@ -1373,20 +1621,24 @@ io.on("connection", function(socket) {
         case 2:
           console.log('Emptying Queue');
           gcodeQueue.length = 0; // Dump the queue
-          sentBuffer.length = 0; // Dump bufferSizes
+          grblBufferSize.length = 0; // Dump bufferSizes
+          lastGcode.length = 0 // Dump Last Command Queue
+          queueLen = 0;
           queuePointer = 0;
+          queuePos = 0;
+          startTime = null;
           console.log('Clearing Lockout');
           switch (status.machine.firmware.type) {
             case 'grbl':
-              addQRealtime('$X\n');
+              machineSend('$X\n');
               console.log('Sent: $X');
               status.comms.blocked = false;
               status.comms.paused = false;
               break;
             case 'smoothie':
-              addQToStart('M999'); //M999
-              send1Q();
+              machineSend('M999'); //M999
               console.log('Sent: M999');
+              send1Q();
               status.comms.blocked = false;
               status.comms.paused = false;
               break;
@@ -1395,6 +1647,7 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
+      isAlarmed = false;
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
@@ -1412,11 +1665,11 @@ io.on("connection", function(socket) {
       console.log('Reset Machine');
       switch (status.machine.firmware.type) {
         case 'grbl':
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+          machineSend(String.fromCharCode(0x18)); // ctrl-x
           console.log('Sent: Code(0x18)');
           break;
         case 'smoothie':
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+          machineSend(String.fromCharCode(0x18)); // ctrl-x
           console.log('Sent: Code(0x18)');
           break;
       }
@@ -1449,6 +1702,16 @@ function machineSend(gcode) {
     io.sockets.emit("queueCount", data);
     // console.log(gcode)
     port.write(gcode);
+    if (gcode != "?") {
+      lastGcode.push(gcode);
+    }
+    if (gcode == "cat /sd/config\n" || gcode == "cat /sd/config.txt\n") {
+      // console.log("DUMPING CONFIG ARRAY")
+      status.machine.firmware.config.length = 0;
+    }
+    if (gcode.indexOf("M20") != -1) {
+      status.machine.sdcard.list.length = 0;
+    }
   } else {
     console.log("PORT NOT OPEN")
   }
@@ -1465,8 +1728,93 @@ function stopPort() {
   status.machine.firmware.date = "";
   status.machine.firmware.buffer = "";
   gcodeQueue.length = 0;
-  sentBuffer.length = 0; // dump bufferSizes
+  lastGcode.length = 0;
+  grblBufferSize.length = 0; // dump bufferSizes
   port.drain(port.close());
+}
+
+function grblBufferSpace() {
+  var total = 0;
+  var len = grblBufferSize.length;
+  for (var i = 0; i < len; i++) {
+    total += grblBufferSize[i];
+  }
+  return GRBL_RX_BUFFER_SIZE - total;
+}
+
+
+function send1Q() {
+  var gcode;
+  var gcodeLen = 0;
+  var spaceLeft = 0;
+  if (status.comms.connectionStatus > 0) {
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        while ((queueLen - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
+          spaceLeft = grblBufferSpace();
+          gcodeLen = gcodeQueue[queuePointer].length;
+          // console.log(gcodeLen, spaceLeft)
+          if (gcodeLen < spaceLeft) {
+            gcode = gcodeQueue[queuePointer];
+            queuePointer++;
+            grblBufferSize.push(gcodeLen + 1);
+            machineSend(gcode + '\n');
+            console.log('Sent: ' + gcode + ' Q: ' + (queueLen - queuePointer) + ' Bspace: ' + (spaceLeft - gcodeLen - 1));
+          } else {
+            status.comms.blocked = true;
+          }
+        }
+        break;
+      case 'smoothie':
+        if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
+          gcode = gcodeQueue[queuePointer];
+          queuePointer++;
+          status.comms.blocked = true;
+          machineSend(gcode + '\n');
+          // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer));
+        }
+        break;
+    }
+    if (queuePointer >= gcodeQueue.length) {
+      if (!isAlarmed) {
+        status.comms.connectionStatus = 2;
+      } else if (isAlarmed) {
+        status.comms.connectionStatus = 5;
+      }
+      clearInterval(queueCounter);
+      if (startTime) {
+        finishTime = new Date(Date.now());
+        elapsedTimeMS = finishTime.getTime() - startTime.getTime();
+        elapsedTime = Math.round(elapsedTimeMS / 1000);
+        speed = (queuePointer / elapsedTime).toFixed(0);
+        console.log("Job started at " + startTime.toString());
+        console.log("Job finished at " + finishTime.toString());
+        console.log("Elapsed time: " + elapsedTime + " seconds.");
+        console.log('Ave. Speed: ' + speed + ' lines/s');
+        if (jogWindow && !jogWindow.isFocused()) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "Driver: Job Completed!",
+            content: "OpenBuilds Machine Driver completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
+          })
+        }
+      }
+      gcodeQueue.length = 0; // Dump the Queye
+      grblBufferSize.length = 0; // Dump bufferSizes
+      queueLen = 0;
+      queuePointer = 0;
+      queuePos = 0;
+      startTime = null;
+      runningJob = null;
+      // status.comms.runStatus = "Finished"
+    }
+
+  }
+}
+
+function addQ(gcode) {
+  gcodeQueue.push(gcode);
+  queueLen = gcodeQueue.length;
 }
 
 function parseFeedback(data) {
@@ -1474,14 +1822,20 @@ function parseFeedback(data) {
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
-    console.log("ALARM:  " + data)
+    // console.log("ALARM:  " + data)
     status.comms.connectionStatus = 5;
+    isAlarmed = true;
     switch (status.machine.firmware.type) {
       case 'grbl':
-        // sentBuffer.shift();
+        grblBufferSize.shift();
         var alarmCode = parseInt(data.split(':')[1]);
         // console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
         status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+        // if (alarmCode == 10) {
+        //   io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - Locked. Please Unlock or Clear Alarm');
+        // } else {
+        //   io.sockets.emit("toastError", 'alarm: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        // }
         break;
       case 'smoothie':
         status.comms.alarm = data;
@@ -1666,6 +2020,68 @@ function parseFeedback(data) {
   // end statusreport
 }
 
+function parseTemp(data) {
+  var heaterT0ActualTemp, heaterT0DisplayTemp, heaterT1ActualTemp, heaterT1DisplayTemp, bedActualTemp, bedDisplayTemp;
+  // console.log(response);
+  for (var r, n = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi; null !== (r = n.exec(data));) {
+    var o = r[1],
+      a = r[3] + "°C";
+    a += "/" + r[5] + "°C", "T" == o ? (heaterT0ActualTemp = r[3], heaterT0DisplayTemp = r[5]) : "T1" == o && (heaterT1ActualTemp = r[3], heaterT1DisplayTemp = r[5]), "B" == o && (bedActualTemp = Number(r[3]), bedDisplayTemp = r[5]);
+  }
+
+  if (heaterT0ActualTemp) {
+    status.machine.temperature.setpoint.t0 = parseFloat(heaterT0DisplayTemp);
+    status.machine.temperature.actual.t0 = parseFloat(heaterT0ActualTemp);
+  }
+
+  if (heaterT1ActualTemp) {
+    status.machine.temperature.setpoint.t1 = parseFloat(heaterT1DisplayTemp);
+    status.machine.temperature.actual.t1 = parseFloat(heaterT1ActualTemp);
+  }
+
+  if (bedActualTemp) {
+    status.machine.temperature.setpoint.b = parseFloat(bedDisplayTemp);
+    status.machine.temperature.actual.b = parseFloat(bedActualTemp);
+  }
+}
+
+function saveToSd(datapack) {
+  var filename = datapack[0]
+  var data = datapack[1]
+  status.comms.sduploading = true
+  console.log('Saving Job (' + data.length + ' bytes) to SD as ' + filename);
+  switch (status.machine.firmware.type) {
+    case 'grbl':
+      console.log('SD not supported by Grbl');
+      break;
+    case 'smoothie':
+      if (status.comms.connectionStatus > 0) {
+        if (data) {
+          data = data.split('\n');
+          var string = "";
+          addQ('M28 ' + filename);
+          for (var i = 0; i < data.length; i++) {
+            var line = data[i].split(';'); // Remove everything after ; = comment
+            var tosend = line[0].trim();
+            if (tosend.length > 0) {
+              addQ(tosend);
+              string += tosend + "\n"
+            }
+          }
+          addQ('M29');
+          addQ('md5sum /sd/' + filename);
+          addQ('M20');
+          send1Q();
+          lastmd5sum = md5(string);
+          // console.log(string)
+        }
+      } else {
+        console.log('ERROR: Machine connection not open!');
+      }
+      break;
+  }
+}
+
 function laserTest(data) {
   if (status.comms.connectionStatus > 0) {
     data = data.split(',');
@@ -1679,20 +2095,20 @@ function laserTest(data) {
         if (duration >= 0) {
           switch (status.machine.firmware.type) {
             case 'grbl':
-              addQToEnd('G1F1');
-              addQToEnd('M3S' + parseInt(power * maxS / 100));
+              addQ('G1F1');
+              addQ('M3S' + parseInt(power * maxS / 100));
               laserTestOn = true;
               io.sockets.emit('laserTest', power);
               if (duration > 0) {
-                addQToEnd('G4 P' + duration / 1000);
-                addQToEnd('M5S0');
+                addQ('G4 P' + duration / 1000);
+                addQ('M5S0');
                 laserTestOn = false;
               }
               send1Q();
               break;
             case 'smoothie':
-              addQToEnd('M3\n');
-              addQToEnd('fire ' + power + '\n');
+              addQ('M3\n');
+              addQ('fire ' + power + '\n');
               laserTestOn = true;
               io.sockets.emit('laserTest', power);
               if (duration > 0) {
@@ -1700,9 +2116,9 @@ function laserTest(data) {
                 if (fDate >= new Date('2017-01-02')) {
                   divider = 1000;
                 }
-                addQToEnd('G4P' + duration / divider + '\n');
-                addQToEnd('fire off\n');
-                addQToEnd('M5');
+                addQ('G4P' + duration / divider + '\n');
+                addQ('fire off\n');
+                addQ('M5');
                 setTimeout(function() {
                   laserTestOn = false;
                   io.sockets.emit('laserTest', 0);
@@ -1716,12 +2132,12 @@ function laserTest(data) {
         // console.log('laserTest: ' + 'Power off');
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('M5S0');
+            addQ('M5S0');
             send1Q();
             break;
           case 'smoothie':
-            addQToEnd('fire off\n');
-            addQToEnd('M5\n');
+            addQ('fire off\n');
+            addQ('M5\n');
             send1Q();
             break;
         }
@@ -1734,88 +2150,6 @@ function laserTest(data) {
   }
 }
 
-// queue
-function BufferSpace(firmware) {
-  var total = 0;
-  var len = sentBuffer.length;
-  for (var i = 0; i < len; i++) {
-    total += sentBuffer[i].length;
-  }
-  if (firmware == "grbl") {
-    return GRBL_RX_BUFFER_SIZE - total;
-  } else {
-    return SMOOTHIE_RX_BUFFER_SIZE - total;
-  }
-}
-
-
-function send1Q() {
-  var gcode;
-  var gcodeLen = 0;
-  var spaceLeft = 0;
-  if (status.comms.connectionStatus > 0) {
-    switch (status.machine.firmware.type) {
-      case 'grbl':
-        if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
-          spaceLeft = BufferSpace('grbl');
-          if (gcodeQueue[queuePointer].length < spaceLeft) {
-            gcode = gcodeQueue[queuePointer];
-            queuePointer++;
-            sentBuffer.push(gcode);
-            machineSend(gcode + '\n');
-            // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
-          } else {
-            status.comms.blocked = true;
-          }
-        }
-        break;
-      case 'smoothie':
-        if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
-          gcode = gcodeQueue[queuePointer];
-          queuePointer++;
-          status.comms.blocked = true;
-          machineSend(gcode + '\n');
-          // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer));
-        }
-        break;
-    }
-    if (queuePointer >= gcodeQueue.length) {
-      if (!status.comms.connectionStatus == 5) {
-        status.comms.connectionStatus = 2; // finished
-      }
-      clearInterval(queueCounter);
-      if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Completed!",
-          content: "OpenBuilds Machine Driver completed a Job"
-        })
-      }
-      gcodeQueue.length = 0; // Dump the Queye
-      // sentBuffer.length = 0; // Dump bufferSizes
-      queuePointer = 0;
-      status.comms.connectionStatus = 2; // finished
-      // status.comms.runStatus = "Finished"
-    }
-
-  }
-}
-
-function addQToEnd(gcode) {
-  // console.log('added ' + gcode)
-  gcodeQueue.push(gcode);
-}
-
-function addQToStart(gcode) {
-  gcodeQueue.unshift(gcode);
-}
-
-function addQRealtime(gcode) {
-  // realtime command skip the send1Q as it doesnt respond with an ok
-  machineSend(gcode);
-}
-
-// Electron
 function isElectron() {
   if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
     return true;
