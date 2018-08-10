@@ -24,10 +24,9 @@ cache:
 before_install:
 
 install:
-  - snapcraft
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux --target=AppImage --target=rpm --target=deb ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install && build --mac ; fi
 
 before_cache:
