@@ -26,7 +26,7 @@ before_install:
 install:
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux deb rpm AppImage; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux deb AppImage; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install && build --mac ; fi
 
 before_cache:

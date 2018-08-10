@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",

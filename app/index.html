@@ -34,7 +34,7 @@
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
           <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
           <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
-          <li><a href="#section-update" onclick="updatePanel();"><i id="updateIcon" class="fas fa-fw fa-cloud-download-alt"></i> Update <span id="updateAvailable" style="display: none;text-decoration: none !important;">new!</span></a></li>
+          <!-- <li><a href="#section-update" onclick="updatePanel();"><i id="updateIcon" class="fas fa-fw fa-cloud-download-alt"></i> Update <span id="updateAvailable" style="display: none;text-decoration: none !important;">new!</span></a></li> -->
         </ul>
         <div class="content-holder">
           <div class="section" id="section-grbl">
@@ -235,7 +235,7 @@
               <span class="title">E-Stop</span>
             </div>
           </div>
-          <div class="section" id="section-update">
+          <!-- <div class="section" id="section-update">
 
             <div class="group">
               <button id="checkforupdatesbtn" class="ribbon-button" onclick="$('#updateconsole').empty(); socket.emit('checkUpdates', true)">
@@ -282,7 +282,7 @@
               <span class="title">E-Stop</span>
             </div>
 
-          </div>
+          </div> -->
 
           <div class="section" id="section-troubleshooting">
             <div class="group" style="width: 100px;">
@@ -726,6 +726,25 @@
       </div>
     </div>
   </div>
+
+  <div id="hiddendivs" style="display:none;">
+    <div class="dialog" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
+      <div class="dialog-title">Update Ready</div>
+      <div class="dialog-content">
+        Version <code><span id="availVersion">1.0.100</span></code> update ready to be installed!<br> Note that proceeding will:
+        <ul>
+          <li>Stops any running jobs</li>
+          <li>Shuts down this instance of the driver</li>
+          <li>Launches the installer for the new version</li>
+        </ul>
+        <small>You may want to wait until your machine is idle before continuing</small>
+      </div>
+      <div class="dialog-actions">
+        <button class="button js-dialog-close">Ask me again in 15min</button>
+        <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 <script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
@@ -740,6 +759,7 @@
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/updates.js"></script>
 <script type="text/javascript" src="js/ui.js"></script>
 <script type="text/javascript" src="js/websocket.js"></script>
 <script type="text/javascript" src="js/grblsettings.js"></script>

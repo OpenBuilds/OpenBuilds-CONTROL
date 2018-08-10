@@ -58,9 +58,10 @@ var appIcon = null,
   mainWindow = null
 
 const autoUpdater = require("electron-updater").autoUpdater
+var availversion = '0.0.0'
 
 autoUpdater.on('checking-for-update', () => {
-  var string = 'Checking for update...';
+  var string = 'Starting update... Please wait';
   var output = {
     'command': 'autoupdate',
     'response': string
@@ -75,7 +76,8 @@ autoUpdater.on('checking-for-update', () => {
   }
 })
 autoUpdater.on('update-available', (ev, info) => {
-  var string = 'Update available.Installed version: ' + require('./package').version + " / Available version: " + ev.version + ". Starting Download...\n";
+  var string = "Starting Download: v" + ev.version;
+  availversion = ev.version
   var output = {
     'command': 'autoupdate',
     'response': string
@@ -145,13 +147,17 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
 })
 
 autoUpdater.on('update-downloaded', (info) => {
-  var string = "New update ready.  Click INSTALL UPDATE once you are ready. NB Note that this closes the running instance of the OpenBuilds Machine Driver, and aborts any running jobs.  Only run the Update before beginning a job / once you are done working with your machine. ";
+  var string = "New update ready";
   var output = {
     'command': 'autoupdate',
     'response': string
   }
   io.sockets.emit('updatedata', output);
-  io.sockets.emit('updateready', true);
+  io.sockets.emit('updateready', availversion);
+  // repeat every minute
+  setTimeout(function() {
+    io.sockets.emit('updateready', availversion);
+  }, 15 * 60 * 1000) // 5 mins
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
@@ -613,7 +619,7 @@ io.on("connection", function(socket) {
     autoUpdater.quitAndInstall();
   })
 
-  socket.on("checkUpdates", function(data) {
+  socket.on("downloadUpdate", function(data) {
     autoUpdater.checkForUpdates();
   })
 

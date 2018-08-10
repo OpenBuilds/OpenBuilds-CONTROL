@@ -58,35 +58,35 @@ function printLog(string) {
   $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
 }
 
-function printUpdateLog(string) {
-  if (string.isString) {
-    // split(/\r\n|\n|\r/);
-    string = string.replace(/\r\n|\n|\r/, "<br />");
-  }
-  if ($('#console p').length > 100) {
-    // remove oldest if already at 300 lines
-    $('#console p').first().remove();
-  }
-  var template = '<p class="pf">';
-  var time = new Date();
-
-  template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-  template += string;
-  $('#updateconsole').append(template);
-  $('#updateconsole').scrollTop($("#updateconsole")[0].scrollHeight - $("#updateconsole").height());
-}
+// function printUpdateLog(string) {
+//   if (string.isString) {
+//     // split(/\r\n|\n|\r/);
+//     string = string.replace(/\r\n|\n|\r/, "<br />");
+//   }
+//   if ($('#console p').length > 100) {
+//     // remove oldest if already at 300 lines
+//     $('#console p').first().remove();
+//   }
+//   var template = '<p class="pf">';
+//   var time = new Date();
+//
+//   template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
+//   template += string;
+//   $('#updateconsole').append(template);
+//   $('#updateconsole').scrollTop($("#updateconsole")[0].scrollHeight - $("#updateconsole").height());
+// }
 
 
 function initSocket() {
   socket = io.connect(server); // socket.io init
-  printLog("Bidirectional Websocket Interface Started ")
+  printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-brown'>Bidirectional Websocket Interface Started</span>")
   setTimeout(function() {
     populatePortsMenu();
   }, 2000);
 
   socket.on('disconnect', function() {
     console.log("WEBSOCKET DISCONNECTED")
-    printLog("Websocket Disconnected.  Driver probably quit or crashed")
+    printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-brown'> Disconnected.  Driver probably quit or crashed</span>")
     $("#websocketstatus").html("Disconnected")
   });
 
@@ -117,16 +117,17 @@ function initSocket() {
   socket.on('updatedata', function(data) {
     // console.log(data.length, data)
     var toPrint = data.response;
-    printUpdateLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
+    printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
   });
 
   socket.on('updateready', function(data) {
-    $('#applyupdatesbtn').prop('disabled', false);
+    $('#availVersion').html(data)
+    Metro.dialog.open('#downloadUpdate')
+
+    // $('#applyupdatesbtn').prop('disabled', false);
   });
 
   socket.on('updateprogress', function(data) {
-    $('#checkforupdatesbtn').prop('disabled', true);
-    $('#downloadprogress').show();
     $('#downloadprogress').html(data + "%");
   });
 
