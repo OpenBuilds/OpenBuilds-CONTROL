@@ -35,3 +35,15 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GH_TOKEN
+  file_glob: true
+  file:
+    - "dist/*.AppImage"
+    - "dist/*.deb"
+    - "dist/*.dmg"
+  on:
+    tags: true
