@@ -47,4 +47,3 @@ deploy:
     - "dist/*.dmg"
   on:
     tags: true
-  draft: false
