@@ -27,6 +27,7 @@ install:
 
 
 script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; npm install && build --linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install && build --mac ; fi
 
 before_cache:
@@ -47,3 +48,4 @@ deploy:
     - "dist/*.dmg"
   on:
     tags: true
+  draft: false
