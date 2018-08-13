@@ -17,6 +17,7 @@ var io = new ioServer();
 var fs = require('fs');
 var path = require("path");
 const join = require('path').join;
+var mkdirp = require('mkdirp');
 
 var httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, 'domain-key.key')),
@@ -169,7 +170,11 @@ autoUpdater.on('update-downloaded', (info) => {
 
 var uploadsDir = electronApp.getPath('userData') + '/upload/';
 
-fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
+// fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
+mkdirp(uploadsDir, function(err) {
+  if (err) console.error(err)
+  else console.log('Created Uploads Temp Directory')
+});
 
 var oldportslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
@@ -2050,6 +2055,21 @@ if (electronApp) {
     openAtLogin: true,
     args: []
   })
+}
+
+if (process.platform == 'darwin') {
+  if (jogWindow === null) {
+    createJogWindow();
+    jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  } else {
+    jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  }
 }
 
 process.on('exit', () => console.log('exit'))
