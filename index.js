@@ -1868,6 +1868,20 @@ if (electronApp) {
 
   function createApp() {
     createTrayIcon();
+    if (process.platform == 'darwin') {
+      if (jogWindow === null) {
+        createJogWindow();
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      } else {
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      }
+    }
     // createWindow();
     // createJogWindow();
   }
@@ -2055,21 +2069,6 @@ if (electronApp) {
     openAtLogin: true,
     args: []
   })
-}
-
-if (process.platform == 'darwin') {
-  if (jogWindow === null) {
-    createJogWindow();
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  } else {
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  }
 }
 
 process.on('exit', () => console.log('exit'))
