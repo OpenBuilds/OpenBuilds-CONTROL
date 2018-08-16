@@ -1946,7 +1946,7 @@ if (electronApp) {
       const dockMenu = Menu.buildFromTemplate([{
         label: 'Quit Machine Driver (Disables all integration until started again)',
         click() {
-          appIcon.destroy();
+          // appIcon.destroy();
           electronApp.exit(0);
         }
       }])
