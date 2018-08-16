@@ -1950,7 +1950,7 @@ if (electronApp) {
           electronApp.exit(0);
         }
       }])
-      app.dock.setMenu(dockMenu)
+      electronApp.dock.setMenu(dockMenu)
     };
 
 
