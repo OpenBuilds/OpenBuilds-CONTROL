@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.70",
+  "version": "1.0.71",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -35,6 +35,7 @@
   ],
   "repository": "https://github.com/OpenBuilds/SW-Machine-Drivers",
   "build": {
+    "icon": "build/icon.icns",
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuildsMachineDriver",
     "asar": true,

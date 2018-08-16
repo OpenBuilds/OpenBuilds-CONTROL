@@ -1887,56 +1887,68 @@ if (electronApp) {
   }
 
   function createTrayIcon() {
-    appIcon = new Tray(
-      nativeImage.createFromPath(iconPath)
-    )
-    const contextMenu = Menu.buildFromTemplate([{
-      label: 'Quit Machine Driver (Disables all integration until started again)',
-      click() {
-        appIcon.destroy();
-        electronApp.exit(0);
-      }
-    }])
-    appIcon.on('click', function() {
-      // console.log("Clicked Systray")
-      if (jogWindow === null) {
-        createJogWindow();
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      } else {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      }
-    })
+    if (process.platform !== 'darwin') {
+      appIcon = new Tray(
+        nativeImage.createFromPath(iconPath)
+      )
+      const contextMenu = Menu.buildFromTemplate([{
+        label: 'Quit Machine Driver (Disables all integration until started again)',
+        click() {
+          appIcon.destroy();
+          electronApp.exit(0);
+        }
+      }])
+      appIcon.on('click', function() {
+        // console.log("Clicked Systray")
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      })
 
-    appIcon.on('balloon-click', function() {
-      // console.log("Clicked Systray")
-      if (jogWindow === null) {
-        createJogWindow();
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      } else {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      }
-    })
+      appIcon.on('balloon-click', function() {
+        // console.log("Clicked Systray")
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      })
 
-    // Call this again for Linux because we modified the context menu
-    appIcon.setContextMenu(contextMenu)
+      // Call this again for Linux because we modified the context menu
+      appIcon.setContextMenu(contextMenu)
 
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "Driver Started",
-      content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
-    })
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "Driver Started",
+        content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
+      })
+    } else {
+      const dockMenu = Menu.buildFromTemplate([{
+        label: 'Quit Machine Driver (Disables all integration until started again)',
+        click() {
+          appIcon.destroy();
+          electronApp.exit(0);
+        }
+      }])
+      app.dock.setMenu(dockMenu)
+    };
+
 
   }
 
