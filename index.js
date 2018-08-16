@@ -113,7 +113,11 @@ autoUpdater.on('update-not-available', (ev, info) => {
   }
 })
 autoUpdater.on('error', (ev, err) => {
-  var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
+  if (err) {
+    var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
+  } else {
+    var string = 'Error in auto-updater';
+  }
   var output = {
     'command': 'autoupdate',
     'response': string
