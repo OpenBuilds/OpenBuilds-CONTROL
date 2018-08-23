@@ -34,6 +34,7 @@
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
           <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
           <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
+          <li id="gamepadTab" style="display: none;"><a href="#section-gamepad" onclick="gamepadPanel();"><i class="fas fa-keyboard"></i> Keyboard <!-- i class="fas fa-gamepad"></i> Gamepad --></a></li>
           <!-- <li><a href="#section-update" onclick="updatePanel();"><i id="updateIcon" class="fas fa-fw fa-cloud-download-alt"></i> Update <span id="updateAvailable" style="display: none;text-decoration: none !important;">new!</span></a></li> -->
         </ul>
         <div class="content-holder">
@@ -307,6 +308,47 @@
               <span class="title">E-Stop</span>
             </div>
           </div>
+
+          <div class="section" id="section-gamepad">
+            <div class="group" style="width: 100px;">
+              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                <span class="icon">
+                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                    <i id="navbellBtn2" class="fas fa-bell fg-red" style="display: none;"></i>
+                    <i class="far fa-bell"></i>
+                  </span>
+                </span>
+                <span class="caption">Unlock<br>Alarm</span>
+              </button>
+              <button class="ribbon-button" onclick="socket.emit('stop', true)">
+                <span class="icon">
+                  <span class="fa-layers fa-fw">
+                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                  </span>
+                </span>
+                <span class="caption">Stop<br>Job</span>
+              </button>
+              <span class="title">E-Stop</span>
+            </div>
+
+            <div class="group flex-column" style="width: 320px">
+              <div>
+                <input name="c2" type="checkbox" data-role="switch" data-caption="<i class='fas fa-keyboard'></i> Use Keyboard Controls">
+              </div>
+              <div>
+                <input name="c2" type="checkbox" data-role="switch" data-caption="<i class='fas fa-gamepad'></i> Use Gamepad Controls">
+              </div>
+              <span class="title">Switches</span>
+            </div>
+
+            <!-- <div class="group" style="width: 100px;">
+              <input type="checkbox" data-role="switch" data-caption="Use&nbsp;Keyboard">
+
+              <span class="title">Enable/Disable</span>
+            </div> -->
+          </div>
+
         </div>
       </nav>
 
@@ -688,6 +730,86 @@
           </div>
         </div>
       </div>
+      <div id="gamepadPanel" style="display: none;">
+        <!-- <h2 class="text-center">Coming Soon</h2> -->
+        <table class="keyboardpanel">
+          <tr>
+            <th colspan="2">Key</th>
+            <!-- <th></th> -->
+            <th>Function</th>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <i class="fas fa-arrow-left" data-fa-transform="grow-4 down-12 right-10"></i>
+              </span>
+            </td>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <i class="fas fa-arrow-right" data-fa-transform="grow-4 down-12 right-10"></i>
+              </span>
+            </td>
+            <td>
+              <div class="remark alert m-0">Jog <span class="tally alert">X</span> Axis</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <i class="fas fa-arrow-up" data-fa-transform="grow-4 down-12 right-10"></i>
+              </span>
+            </td>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <i class="fas fa-arrow-down" data-fa-transform="grow-4 down-12 right-10"></i>
+              </span>
+            </td>
+            <td>
+              <div class="remark success m-0">Jog <span class="tally success">Y</span> Axis</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <span class="fa-layers-text" data-fa-transform="shrink-3 right-18 down-7" style="font-weight:900">Page</span>
+              <span class="fa-layers-text" data-fa-transform="shrink-3 right-18 down-22" style="font-weight:900">Up</span>
+            </td>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <span class="fa-layers-text" data-fa-transform="shrink-3 right-18 down-7" style="font-weight:900">Page</span>
+              <span class="fa-layers-text" data-fa-transform="shrink-3 right-17 down-22" style="font-weight:900">Down</span>
+              </span>
+            </td>
+            <td>
+              <div class="remark info m-0"> Jog <span class="tally info">Z</span> Axis</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+
+            </td>
+            <td>
+              <span class="fa-layers">
+                <img src="img/keyboard.svg" data-fa-transform="grow-8"/>
+                <span class="fa-layers-text" data-fa-transform="shrink-3 right-17 down-14" style="font-weight:900">Esc</span>
+            </td>
+
+            <td>
+              <div class="remark m-0">Abort / Stop</div>
+            </td>
+          </tr>
+          <!-- <div id="updateconsole">Click "Download Updates" above</div> -->
+      </div>
 
       <!-- Bottom StatusBar -->
       <div class="fixed-bottom">
@@ -766,6 +888,9 @@
 <script type="text/javascript" src="js/metroactions.js"></script>
 <script type="text/javascript" src="js/jog.js"></script>
 <script type="text/javascript" src="js/calibrate.js"></script>
+
+<script type="text/javascript" src="lib/gamepad/gamepad.min.js"></script>
+<script type="text/javascript" src="js/gamepad.js"></script>
 
 
 </html>

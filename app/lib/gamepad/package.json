@@ -1,0 +1,24 @@
+{
+	"name": "HTML5-JavaScript-Gamepad-Controller-Library",
+	"version": "0.0.1",
+	"description": "Library for accessing gamepads in modern browsers.",
+	"homepage": "https://github.com/kallaspriit/HTML5-JavaScript-Gamepad-Controller-Library",
+	"bugs": "https://github.com/kallaspriit/HTML5-JavaScript-Gamepad-Controller-Library/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kallaspriit/HTML5-JavaScript-Gamepad-Controller-Library.git"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"buster": "~0.6.12",
+		"grunt": "~0.4.1",
+		"grunt-buster": "git://github.com/busterjs/grunt-buster.git",
+		"grunt-contrib-jshint": "~0.4.3",
+		"grunt-contrib-yuidoc": "~0.4.0",
+		"grunt-jsbeautifier": "~0.1.9",
+		"grunt-contrib-uglify": "~0.2.2"
+	},
+	"scripts": {
+		"grunt": "node -e \"require('grunt').tasks();\""
+	}
+}

@@ -123,3 +123,13 @@ select{
 .bg-openbuilds {
   background-color: rgb(74, 78, 81) !important;
 }
+
+.keyboardpanel td:nth-child(1){
+  width: 60px;
+  height: 60px;
+}
+
+.keyboardpanel td:nth-child(2){
+  width: 60px;
+  height: 60px;
+}

@@ -20,7 +20,7 @@ $(document).ready(function() {
         printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds Machine Driver " + currentVersion + "</span>")
       }
     });
-  }, 400)
+  }, 1000)
 });
 
 function updateTime() {

@@ -32,8 +32,8 @@ var grblcalctemplate = `<div>
             <td style="width: 70%;">
               <select data-role="select" data-filter="false" id="microstepselect" data-on-change="processpreset();">
                 <option value="32">1/32 Step</option>
-                <option value="16" selected>1/16 Step</option>
-                <option value="8">1/8 Step</option>
+                <option value="16">1/16 Step</option>
+                <option value="8" selected>1/8 Step</option>
                 <option value="4">1/4 Step</option>
                 <option value="1">Full Step</option>
               </select>

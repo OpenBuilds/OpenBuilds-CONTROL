@@ -31,6 +31,7 @@ function manualcontrolPanel() {
   $('#grblPanel').hide()
   $('#updatePanel').hide()
   $('#troubleshootingPanel').hide()
+  $('#gamepadPanel').hide()
 }
 
 function grblPanel() {
@@ -39,6 +40,7 @@ function grblPanel() {
   $('#grblPanel').show()
   $('#updatePanel').hide()
   $('#troubleshootingPanel').hide()
+  $('#gamepadPanel').hide()
 }
 
 function updatePanel() {
@@ -46,6 +48,7 @@ function updatePanel() {
   $('#grblPanel').hide()
   $('#updatePanel').show()
   $('#troubleshootingPanel').hide()
+  $('#gamepadPanel').hide()
 }
 
 function troubleshootingPanel() {
@@ -53,4 +56,13 @@ function troubleshootingPanel() {
   $('#grblPanel').hide()
   $('#updatePanel').hide()
   $('#troubleshootingPanel').show()
+  $('#gamepadPanel').hide()
+}
+
+function gamepadPanel() {
+  $('#manualControlPanel').hide()
+  $('#grblPanel').hide()
+  $('#updatePanel').hide()
+  $('#troubleshootingPanel').hide()
+  $('#gamepadPanel').show()
 }
