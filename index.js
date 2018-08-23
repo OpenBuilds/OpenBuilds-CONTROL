@@ -48,7 +48,9 @@ var lastsentuploadprogress = 0;
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
-console.log("Local User Data: " + electronApp.getPath('userData'))
+if (isElectron()) {
+  console.log("Local User Data: " + electronApp.getPath('userData'))
+}
 const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
 const nativeImage = require('electron').nativeImage
@@ -58,89 +60,18 @@ var appIcon = null,
   jogWindow = null,
   mainWindow = null
 
-const autoUpdater = require("electron-updater").autoUpdater
-var availversion = '0.0.0'
 
-autoUpdater.on('checking-for-update', () => {
-  var string = 'Starting update... Please wait';
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  if (jogWindow && !jogWindow.isFocused()) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
-  }
-})
-autoUpdater.on('update-available', (ev, info) => {
-  var string = "Starting Download: v" + ev.version;
-  availversion = ev.version
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  console.log(JSON.stringify(ev))
-  if (jogWindow && !jogWindow.isFocused()) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
-  }
-})
-autoUpdater.on('update-not-available', (ev, info) => {
-  var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
-  if (require('./package').version === ev.version) {
-    string += "You are already running the latest version!"
-  }
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  console.log(JSON.stringify(ev))
-  if (jogWindow && !jogWindow.isFocused()) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
-  }
-})
-autoUpdater.on('error', (ev, err) => {
-  if (err) {
-    var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
-  } else {
-    var string = 'Error in auto-updater';
-  }
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  if (jogWindow && !jogWindow.isFocused()) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
-  }
-})
-autoUpdater.on('download-progress', (ev, progressObj) => {
-  var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
-  console.log(string)
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  io.sockets.emit('updateprogress', ev.percent.toFixed(0));
-  if (ev.percent % 10 === 0) {
+if (isElectron()) {
+  const autoUpdater = require("electron-updater").autoUpdater
+  var availversion = '0.0.0'
+
+  autoUpdater.on('checking-for-update', () => {
+    var string = 'Starting update... Please wait';
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
     if (jogWindow && !jogWindow.isFocused()) {
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
@@ -148,31 +79,109 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
         content: string
       })
     }
-  }
-})
+  })
+  autoUpdater.on('update-available', (ev, info) => {
+    var string = "Starting Download: v" + ev.version;
+    availversion = ev.version
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
+    console.log(JSON.stringify(ev))
+    if (jogWindow && !jogWindow.isFocused()) {
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "OpenBuilds Machine Driver",
+        content: string
+      })
+    }
+  })
+  autoUpdater.on('update-not-available', (ev, info) => {
+    var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
+    if (require('./package').version === ev.version) {
+      string += "You are already running the latest version!"
+    }
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
+    console.log(JSON.stringify(ev))
+    if (jogWindow && !jogWindow.isFocused()) {
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "OpenBuilds Machine Driver",
+        content: string
+      })
+    }
+  })
+  autoUpdater.on('error', (ev, err) => {
+    if (err) {
+      var string = 'Error in auto-updater: \n' + err.split('SyntaxError')[0];
+    } else {
+      var string = 'Error in auto-updater';
+    }
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
+    if (jogWindow && !jogWindow.isFocused()) {
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "OpenBuilds Machine Driver",
+        content: string
+      })
+    }
+  })
+  autoUpdater.on('download-progress', (ev, progressObj) => {
+    var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
+    console.log(string)
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
+    io.sockets.emit('updateprogress', ev.percent.toFixed(0));
+    if (ev.percent % 10 === 0) {
+      if (jogWindow && !jogWindow.isFocused()) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds Machine Driver",
+          content: string
+        })
+      }
+    }
+  })
 
-autoUpdater.on('update-downloaded', (info) => {
-  var string = "New update ready";
-  var output = {
-    'command': 'autoupdate',
-    'response': string
-  }
-  io.sockets.emit('updatedata', output);
-  io.sockets.emit('updateready', availversion);
-  // repeat every minute
-  setTimeout(function() {
+  autoUpdater.on('update-downloaded', (info) => {
+    var string = "New update ready";
+    var output = {
+      'command': 'autoupdate',
+      'response': string
+    }
+    io.sockets.emit('updatedata', output);
     io.sockets.emit('updateready', availversion);
-  }, 15 * 60 * 1000) // 5 mins
-  if (jogWindow && !jogWindow.isFocused()) {
-    appIcon.displayBalloon({
-      icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
-      content: string
-    })
-  }
-});
+    // repeat every minute
+    setTimeout(function() {
+      io.sockets.emit('updateready', availversion);
+    }, 15 * 60 * 1000) // 5 mins
+    if (jogWindow && !jogWindow.isFocused()) {
+      appIcon.displayBalloon({
+        icon: nativeImage.createFromPath(iconPath),
+        title: "OpenBuilds Machine Driver",
+        content: string
+      })
+    }
+  });
+}
 
-var uploadsDir = electronApp.getPath('userData') + '/upload/';
+if (isElectron()) {
+  var uploadsDir = electronApp.getPath('userData') + '/upload/';
+} else {
+  var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local')
+}
 
 // fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
 mkdirp(uploadsDir, function(err) {
@@ -1845,246 +1854,248 @@ function isElectron() {
   return false;
 }
 
-const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory) => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (jogWindow === null) {
-    createJogWindow();
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  } else {
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  }
-});
-
-if (shouldQuit) {
-  console.log("Already running! Check the System Tray")
-  electronApp.exit(0);
-  electronApp.quit();
-}
-
-if (electronApp) {
-  // Module to create native browser window.
-
-  function createApp() {
-    createTrayIcon();
-    if (process.platform == 'darwin') {
-      if (jogWindow === null) {
-        createJogWindow();
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      } else {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      }
-    }
-    // createWindow();
-    // createJogWindow();
-  }
-
-  function createTrayIcon() {
-    if (process.platform !== 'darwin') {
-      appIcon = new Tray(
-        nativeImage.createFromPath(iconPath)
-      )
-      const contextMenu = Menu.buildFromTemplate([{
-        label: 'Quit Machine Driver (Disables all integration until started again)',
-        click() {
-          appIcon.destroy();
-          electronApp.exit(0);
-        }
-      }])
-      appIcon.on('click', function() {
-        // console.log("Clicked Systray")
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
-      })
-
-      appIcon.on('balloon-click', function() {
-        // console.log("Clicked Systray")
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
-      })
-
-      // Call this again for Linux because we modified the context menu
-      appIcon.setContextMenu(contextMenu)
-
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "Driver Started",
-        content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
-      })
-    } else {
-      const dockMenu = Menu.buildFromTemplate([{
-        label: 'Quit Machine Driver (Disables all integration until started again)',
-        click() {
-          // appIcon.destroy();
-          electronApp.exit(0);
-        }
-      }])
-      electronApp.dock.setMenu(dockMenu)
-    };
-
-
-  }
-
-  function createJogWindow() {
-    // Create the browser window.
-    jogWindow = new BrowserWindow({
-      width: 660,
-      height: 730,
-      fullscreen: false,
-      center: true,
-      resizable: true,
-      title: "OpenBuilds Machine Driver ",
-      frame: false,
-      autoHideMenuBar: true,
-      icon: '/app/favicon.png'
-    });
-
-    jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
-    var ipaddr = ip.address();
-    // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
-    jogWindow.loadURL("http://localhost:3000/");
-
-    jogWindow.on('close', function(event) {
-      event.preventDefault();
-      jogWindow.hide();
-      return false;
-    });
-
-    // Emitted when the window is closed.
-    jogWindow.on('closed', function() {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      jogWindow = null;
-    });
-    jogWindow.once('ready-to-show', () => {
+if (isElectron()) {
+  const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (jogWindow === null) {
+      createJogWindow();
       jogWindow.show()
       jogWindow.setAlwaysOnTop(true);
       jogWindow.focus();
       jogWindow.setAlwaysOnTop(false);
-    })
-    // jogWindow.maximize()
-    // jogWindow.webContents.openDevTools()
+    } else {
+      jogWindow.show()
+      jogWindow.setAlwaysOnTop(true);
+      jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
+    }
+  });
 
+  if (shouldQuit) {
+    console.log("Already running! Check the System Tray")
+    electronApp.exit(0);
+    electronApp.quit();
   }
 
-  function createWindow() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-      width: 1200,
-      height: 900,
-      fullscreen: false,
-      center: true,
-      resizable: true,
-      title: "OpenBuilds Machine Driver ",
-      frame: true,
-      autoHideMenuBar: true,
-      icon: '/app/favicon.png'
+  if (electronApp) {
+    // Module to create native browser window.
+
+    function createApp() {
+      createTrayIcon();
+      if (process.platform == 'darwin') {
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      }
+      // createWindow();
+      // createJogWindow();
+    }
+
+    function createTrayIcon() {
+      if (process.platform !== 'darwin') {
+        appIcon = new Tray(
+          nativeImage.createFromPath(iconPath)
+        )
+        const contextMenu = Menu.buildFromTemplate([{
+          label: 'Quit Machine Driver (Disables all integration until started again)',
+          click() {
+            appIcon.destroy();
+            electronApp.exit(0);
+          }
+        }])
+        appIcon.on('click', function() {
+          // console.log("Clicked Systray")
+          if (jogWindow === null) {
+            createJogWindow();
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          } else {
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          }
+        })
+
+        appIcon.on('balloon-click', function() {
+          // console.log("Clicked Systray")
+          if (jogWindow === null) {
+            createJogWindow();
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          } else {
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          }
+        })
+
+        // Call this again for Linux because we modified the context menu
+        appIcon.setContextMenu(contextMenu)
+
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "Driver Started",
+          content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
+        })
+      } else {
+        const dockMenu = Menu.buildFromTemplate([{
+          label: 'Quit Machine Driver (Disables all integration until started again)',
+          click() {
+            // appIcon.destroy();
+            electronApp.exit(0);
+          }
+        }])
+        electronApp.dock.setMenu(dockMenu)
+      };
+
+
+    }
+
+    function createJogWindow() {
+      // Create the browser window.
+      jogWindow = new BrowserWindow({
+        width: 660,
+        height: 730,
+        fullscreen: false,
+        center: true,
+        resizable: true,
+        title: "OpenBuilds Machine Driver ",
+        frame: false,
+        autoHideMenuBar: true,
+        icon: '/app/favicon.png'
+      });
+
+      jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
+      var ipaddr = ip.address();
+      // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
+      jogWindow.loadURL("http://localhost:3000/");
+
+      jogWindow.on('close', function(event) {
+        event.preventDefault();
+        jogWindow.hide();
+        return false;
+      });
+
+      // Emitted when the window is closed.
+      jogWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        jogWindow = null;
+      });
+      jogWindow.once('ready-to-show', () => {
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      })
+      // jogWindow.maximize()
+      // jogWindow.webContents.openDevTools()
+
+    }
+
+    function createWindow() {
+      // Create the browser window.
+      mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 900,
+        fullscreen: false,
+        center: true,
+        resizable: true,
+        title: "OpenBuilds Machine Driver ",
+        frame: true,
+        autoHideMenuBar: true,
+        icon: '/app/favicon.png'
+      });
+
+      // and load the index.html of the app.
+      // mainWindow.loadURL('file://' + __dirname + '/app/index.html');
+      // mainWindow.loadURL(`file://${__dirname}/app/index.html`)
+      var ipaddr = ip.address();
+      // mainWindow.loadURL(`//` + ipaddr + `:3000/`)
+      mainWindow.loadURL("http://localhost:3000");
+
+      mainWindow.on('close', function(event) {
+        event.preventDefault();
+        mainWindow.hide();
+        return false;
+      });
+
+      // Emitted when the window is closed.
+      mainWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        mainWindow = null;
+      });
+      mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+      })
+      mainWindow.maximize()
+      // mainWindow.webContents.openDevTools()
+
+    };
+
+    // electronApp.commandLine.appendSwitch("--ignore-gpu-blacklist");
+
+    // This method will be called when Electron has finished
+    // initialization and is ready to create browser windows.
+    // Some APIs can only be used after this event occurs.
+    electronApp.on('ready', createApp);
+
+    electronApp.on('will-quit', function(event) {
+      event.preventDefault()
+      // On OS X it is common for applications and their menu bar
+      // to stay active until the user quits explicitly with Cmd + Q
+      if (process.platform !== 'darwin') {
+        electronApp.quit();
+        appIcon.destroy();
+      }
+      electronApp.quit();
+      appIcon.destroy();
     });
 
-    // and load the index.html of the app.
-    // mainWindow.loadURL('file://' + __dirname + '/app/index.html');
-    // mainWindow.loadURL(`file://${__dirname}/app/index.html`)
-    var ipaddr = ip.address();
-    // mainWindow.loadURL(`//` + ipaddr + `:3000/`)
-    mainWindow.loadURL("http://localhost:3000");
-
-    mainWindow.on('close', function(event) {
-      event.preventDefault();
-      mainWindow.hide();
-      return false;
+    // Quit when all windows are closed.
+    electronApp.on('window-all-closed', function() {
+      // On OS X it is common for applications and their menu bar
+      // to stay active until the user quits explicitly with Cmd + Q
+      if (process.platform !== 'darwin') {
+        electronApp.quit();
+        appIcon.destroy();
+      }
+      electronApp.quit();
+      appIcon.destroy();
     });
 
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      mainWindow = null;
+    electronApp.on('activate', function() {
+      // On OS X it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      if (mainWindow === null) {
+        createApp();
+      }
     });
-    mainWindow.once('ready-to-show', () => {
-      mainWindow.show()
+
+    // Autostart on Login
+    electronApp.setLoginItemSettings({
+      openAtLogin: true,
+      args: []
     })
-    mainWindow.maximize()
-    // mainWindow.webContents.openDevTools()
-
-  };
-
-  // electronApp.commandLine.appendSwitch("--ignore-gpu-blacklist");
-
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  electronApp.on('ready', createApp);
-
-  electronApp.on('will-quit', function(event) {
-    event.preventDefault()
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-      electronApp.quit();
-      appIcon.destroy();
-    }
-    electronApp.quit();
-    appIcon.destroy();
-  });
-
-  // Quit when all windows are closed.
-  electronApp.on('window-all-closed', function() {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-      electronApp.quit();
-      appIcon.destroy();
-    }
-    electronApp.quit();
-    appIcon.destroy();
-  });
-
-  electronApp.on('activate', function() {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
-      createApp();
-    }
-  });
-
-  // Autostart on Login
-  electronApp.setLoginItemSettings({
-    openAtLogin: true,
-    args: []
-  })
+  }
 }
 
 process.on('exit', () => console.log('exit'))
