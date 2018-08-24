@@ -41,21 +41,23 @@ $(document).ready(function() {
 });
 
 function printLog(string) {
-  if (string.isString) {
-    // split(/\r\n|\n|\r/);
-    string = string.replace(/\r\n|\n|\r/, "<br />");
-  }
-  if ($('#console p').length > 100) {
-    // remove oldest if already at 300 lines
-    $('#console p').first().remove();
-  }
-  var template = '<p class="pf">';
-  var time = new Date();
+  if (document.getElementById("console") !== null) {
+    if (string.isString) {
+      // split(/\r\n|\n|\r/);
+      string = string.replace(/\r\n|\n|\r/, "<br />");
+    }
+    if ($('#console p').length > 100) {
+      // remove oldest if already at 300 lines
+      $('#console p').first().remove();
+    }
+    var template = '<p class="pf">';
+    var time = new Date();
 
-  template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-  template += string;
-  $('#console').append(template);
-  $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
+    template += string;
+    $('#console').append(template);
+    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+  }
 }
 
 // function printUpdateLog(string) {
@@ -137,12 +139,14 @@ function initSocket() {
 
     // Parse Grbl Settings Feedback
     if (data.response.indexOf('$') === 0) {
-      grblSettings(data.response)
-      var key = data.response.split('=')[0].substr(1);
-      var descr = grblSettingCodes[key];
-      toPrint = data.response + "  ;" + descr
+      if (typeof grblSettings !== 'undefined') {
+        grblSettings(data.response)
+        var key = data.response.split('=')[0].substr(1);
+        var descr = grblSettingCodes[key];
+        toPrint = data.response + "  ;" + descr
+        printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
+      }
     };
-    printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
 
   });
 
@@ -175,7 +179,9 @@ function initSocket() {
     var done = total - left;
     var donepercent = parseInt(done / total * 100)
     var progressbar = $("#progressbar").data("progress");
-    progressbar.val(donepercent);
+    if (progressbar) {
+      progressbar.val(donepercent);
+    }
     // }
   })
 
@@ -259,8 +265,10 @@ function initSocket() {
     // setTemp(status.machine.temperature.actual.t0, status.machine.temperature.actual.t1, status.machine.temperature.actual.b)
 
     if (safeToUpdateSliders) {
-      $('#fro').data('slider').val(status.machine.overrides.feedOverride)
-      $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
+      if ($('#fro').data('slider') && $('#tro').data('slider')) {
+        $('#fro').data('slider').val(status.machine.overrides.feedOverride)
+        $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
+      }
     }
 
     // Grbl Pins Input Status

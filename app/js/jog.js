@@ -177,3 +177,12 @@ function jog(dir, dist, feed = null) {
     socket.emit('jog', dir + ',' + dist);
   }
 }
+
+function jogXY(xincrement, yincrement, feed = null) {
+  var data = {
+    x: xincrement,
+    y: yincrement,
+    feed: feed
+  }
+  socket.emit('jogXY', data);
+}

@@ -1,16 +1,20 @@
 var gcode;
-var editor = ace.edit("editor");
+var editor;
 
 
 $(document).ready(function() {
 
-  editor.$blockScrolling = Infinity;
-  editor.session.setMode("ace/mode/cncpro");
-  editor.setTheme('ace/theme/sqlserver')
-  // editor.setOption('printMarginColumn', 0)
-  editor.setAutoScrollEditorIntoView(true);
-  editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
-  editor.setShowPrintMargin(false);
+  if (typeof ace !== 'undefined') {
+    editor = ace.edit("editor");
+    editor.$blockScrolling = Infinity;
+    editor.session.setMode("ace/mode/cncpro");
+    editor.setTheme('ace/theme/sqlserver')
+    // editor.setOption('printMarginColumn', 0)
+    editor.setAutoScrollEditorIntoView(true);
+    editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
+    editor.setShowPrintMargin(false);
+  }
+
   // editor.container.addEventListener("contextmenu", function(e) {
   //   console.log("context")
   //   var template = `<h6 class="dropdown-header"><div class="float-left">Line <span id="linenumber"></span>: Options</div><div class="float-right"><button type="button" class="close" aria-label="Close" onclick="$('#editorContextMenu').hide()"><span aria-hidden="true">&times;</span></button></div></h6><a class="dropdown-item" href="#"><i class="fa fa-fw fa-list-ol" aria-hidden="true"></i>&nbsp;Run queue from here</a>
@@ -42,8 +46,9 @@ $(document).ready(function() {
   });
 
   var fileOpen = document.getElementById('file');
-  fileOpen.addEventListener('change', readFile, false);
-
+  if (fileOpen) {
+    fileOpen.addEventListener('change', readFile, false);
+  }
 
 });
 

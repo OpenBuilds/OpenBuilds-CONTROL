@@ -231,7 +231,8 @@ var re = new RegExp("^[a-f0-9]{32}");
 
 var status = {
   driver: {
-    version: require('./package').version
+    version: require('./package').version,
+    ipaddress: ip.address()
   },
   machine: {
     inputs: [],
@@ -968,6 +969,47 @@ io.on("connection", function(socket) {
           case 'smoothie':
             addQToEnd('G91');
             addQToEnd('G0' + feed + dir + dist);
+            addQToEnd('G90');
+            send1Q();
+            break;
+          default:
+            console.log('ERROR: Unknown firmware!');
+            break;
+        }
+      } else {
+        console.log('ERROR: Invalid params!');
+      }
+    } else {
+      console.log('ERROR: Machine connection not open!');
+    }
+  });
+
+  socket.on('jogXY', function(data) {
+    console.log('Jog XY' + data);
+    if (status.comms.connectionStatus > 0) {
+      // var data = {
+      //   x: xincrement,
+      //   y: yincrement,
+      //   feed: feed
+      // }
+
+      var xincrement = parseFloat(data.x);
+      var yincrement = parseFloat(data.y);
+      var feed = parseFloat(data.feed)
+      if (feed) {
+        feed = 'F' + feed;
+      }
+
+      if (xincrement && yincrement && feed) {
+        console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
+        switch (status.machine.firmware.type) {
+          case 'grbl':
+            addQToEnd('$J=G91 X' + xincrement + " Y" + yincrement + " " + feed);
+            send1Q();
+            break;
+          case 'smoothie':
+            addQToEnd('G91');
+            addQToEnd('G0 X' + xincrement + " Y" + yincrement + " " + feed);
             addQToEnd('G90');
             send1Q();
             break;
@@ -1812,13 +1854,13 @@ function send1Q() {
         status.comms.connectionStatus = 2; // finished
       }
       clearInterval(queueCounter);
-      if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Completed!",
-          content: "OpenBuilds Machine Driver completed a Job"
-        })
-      }
+      // if (jogWindow && !jogWindow.isFocused()) {
+      //   appIcon.displayBalloon({
+      //     icon: nativeImage.createFromPath(iconPath),
+      //     title: "Driver: Job Completed!",
+      //     content: "OpenBuilds Machine Driver completed a Job"
+      //   })
+      // }
       gcodeQueue.length = 0; // Dump the Queye
       // sentBuffer.length = 0; // Dump bufferSizes
       queuePointer = 0;

@@ -34,8 +34,6 @@
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
           <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
           <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
-          <li id="gamepadTab" style="display: none;"><a href="#section-gamepad" onclick="gamepadPanel();"><i class="fas fa-keyboard"></i> Keyboard <!-- i class="fas fa-gamepad"></i> Gamepad --></a></li>
-          <!-- <li><a href="#section-update" onclick="updatePanel();"><i id="updateIcon" class="fas fa-fw fa-cloud-download-alt"></i> Update <span id="updateAvailable" style="display: none;text-decoration: none !important;">new!</span></a></li> -->
         </ul>
         <div class="content-holder">
           <div class="section" id="section-grbl">
@@ -95,7 +93,7 @@
               </div>
               <span class="title">Firmware Reset Defaults</span>
             </div>
-            <div class="group">
+            <div class="group estop">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -212,9 +210,17 @@
                 </span>
                 <span class="caption grblmode">Home<br>All</span>
               </button>
+
+              <button id="mobileBtn" class="ribbon-button" onclick="jogWidget();">
+                <span class="icon">
+                  <i class="fas fa-mobile-alt"></i>
+                </span>
+                <span class="caption grblmode">Jog<br>Widget</span>
+              </button>
+
               <span class="title">Control</span>
             </div>
-            <div class="group" style="width: 100px;">
+            <div class="group estop" style="width: 100px;">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -236,57 +242,9 @@
               <span class="title">E-Stop</span>
             </div>
           </div>
-          <!-- <div class="section" id="section-update">
-
-            <div class="group">
-              <button id="checkforupdatesbtn" class="ribbon-button" onclick="$('#updateconsole').empty(); socket.emit('checkUpdates', true)">
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-sync-alt fg-green" data-fa-transform="grow-8"></i>
-                    <i class="fas fa-download" data-fa-transform="grow-1 left-0.5"></i>
-                    <div id="downloadprogress" style="display: none; color: #fff ; background-color: rgba(0, 0, 0, 0.6); font-weight:900; font-family: Arial; font-size: 12px; border: 1px solid ##607d8b; border-radius: 2px;">99%</div>
-                  </span>
-                </span>
-                <span class="caption">Download<br>Updates</span>
-              </button>
-              <button id="applyupdatesbtn" class="ribbon-button" onclick="socket.emit('applyUpdate', true)" disabled>
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-cog fg-red" data-fa-transform="grow-8"></i>
-                    <i class="fas fa-download" data-fa-transform="grow-1 left-0.5"></i>
-                    <i class="fa-inverse far fa-check-square" data-fa-transform="shrink-8 down-5"></i>
-                  </span>
-                </span>
-                <span class="caption">Install<br>Update</span>
-              </button>
-              <span class="title">Online Updates</span>
-            </div>
-            <div class="group">
-              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
-                <span class="icon">
-                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                    <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
-                    <i class="far fa-bell"></i>
-                  </span>
-                </span>
-                <span class="caption">Unlock<br>Alarm</span>
-              </button>
-              <button class="ribbon-button" onclick="socket.emit('stop', true)">
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                  </span>
-                </span>
-                <span class="caption">Stop<br>Job</span>
-              </button>
-              <span class="title">E-Stop</span>
-            </div>
-
-          </div> -->
 
           <div class="section" id="section-troubleshooting">
-            <div class="group" style="width: 100px;">
+            <div class="group estop" style="width: 100px;">
               <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -307,46 +265,6 @@
               </button>
               <span class="title">E-Stop</span>
             </div>
-          </div>
-
-          <div class="section" id="section-gamepad">
-            <div class="group" style="width: 100px;">
-              <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
-                <span class="icon">
-                  <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                    <i id="navbellBtn2" class="fas fa-bell fg-red" style="display: none;"></i>
-                    <i class="far fa-bell"></i>
-                  </span>
-                </span>
-                <span class="caption">Unlock<br>Alarm</span>
-              </button>
-              <button class="ribbon-button" onclick="socket.emit('stop', true)">
-                <span class="icon">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                    <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                  </span>
-                </span>
-                <span class="caption">Stop<br>Job</span>
-              </button>
-              <span class="title">E-Stop</span>
-            </div>
-
-            <div class="group flex-column" style="width: 320px">
-              <div>
-                <input name="c2" type="checkbox" data-role="switch" data-caption="<i class='fas fa-keyboard'></i> Use Keyboard Controls">
-              </div>
-              <div>
-                <input name="c2" type="checkbox" data-role="switch" data-caption="<i class='fas fa-gamepad'></i> Use Gamepad Controls">
-              </div>
-              <span class="title">Switches</span>
-            </div>
-
-            <!-- <div class="group" style="width: 100px;">
-              <input type="checkbox" data-role="switch" data-caption="Use&nbsp;Keyboard">
-
-              <span class="title">Enable/Disable</span>
-            </div> -->
           </div>
 
         </div>
@@ -867,12 +785,49 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Divs -->
+  <div style="display: none;">
+    <div class="dialog" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog" data-to-top="true">
+      <div class="dialog-title">Jog Widget</div>
+      <div class="dialog-content" style="max-height: calc(100vh - 200px);overflow-y: auto; overflow-x: hidden;">
+        <div class="row">
+          <div class="cell-4">
+            <img src="img/widget.png" />
+          </div>
+          <div class="cell-8">
+            <div class="row">
+              <div class="cell">
+                <center>
+                  <small>You can use your mobile device as an handheld Jog interface. To get started, open a web-browser on your Mobile device and navigate to <br></small><span id="jogip">http://0.0.0.0:3000/jog.html<span><br><small> or scan the QR Code below</small>
+                </center>
+                <hr class='thin bg-lightGray'>
+              </div>
+            </div>
+            <div class="row">
+              <div class="cell-3"></div>
+              <div class="cell-4" id="qrcode">
+              </div>
+              <div class="cell-5"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button class="button js-dialog-close">Close</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 <script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery-swipe.js"></script>
+
+<script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
 
 <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
 <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
@@ -888,9 +843,6 @@
 <script type="text/javascript" src="js/metroactions.js"></script>
 <script type="text/javascript" src="js/jog.js"></script>
 <script type="text/javascript" src="js/calibrate.js"></script>
-
-<script type="text/javascript" src="lib/gamepad/gamepad.min.js"></script>
-<script type="text/javascript" src="js/gamepad.js"></script>
-
+<script type="text/javascript" src="js/widget.js"></script>
 
 </html>
