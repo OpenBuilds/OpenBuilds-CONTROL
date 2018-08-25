@@ -20,11 +20,17 @@ $(function() {
     };
 
     function swipeInfo(event) {
+      console.log(event.originalEvent)
+      if (event.originalEvent.touches) {
+        var x = event.originalEvent.touches[0].pageX,
+          y = event.originalEvent.touches[0].pageY,
+          dx, dy;
+      } else {
+        var x = event.originalEvent.pageX,
+          y = event.originalEvent.pageY,
+          dx, dy;
+      }
 
-      // console.log(event.originalEvent.touches[0])
-      var x = event.originalEvent.touches[0].pageX,
-        y = event.originalEvent.touches[0].pageY,
-        dx, dy;
 
       dx = (x > originalPosition.x) ? "right" : "left";
       dy = (y > originalPosition.y) ? "down" : "up";
@@ -44,10 +50,18 @@ $(function() {
     $el.on("touchstart mousedown", function(event) {
       touchDown = true;
       info.eventstate = 'down';
-      originalPosition = {
-        x: event.originalEvent.touches[0].pageX,
-        y: event.originalEvent.touches[0].pageY
-      };
+      if (event.originalEvent.touches) {
+        originalPosition = {
+          x: event.originalEvent.touches[0].pageX,
+          y: event.originalEvent.touches[0].pageY
+        };
+      } else {
+        originalPosition = {
+          x: event.originalEvent.x,
+          y: event.originalEvent.y
+        };
+      }
+
       callback(info.direction, info.offset, info.eventstate, originalPosition);
     });
 

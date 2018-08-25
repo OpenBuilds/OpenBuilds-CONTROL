@@ -216,18 +216,6 @@ function initSocket() {
       }
     }
 
-    // Set the Connection Toolbar option
-    setConnectBar(status.comms.connectionStatus, status);
-    setControlBar(status.comms.connectionStatus, status)
-    setJogPanel(status.comms.connectionStatus, status)
-    setConsole(status.comms.connectionStatus, status)
-    if (status.comms.connectionStatus != 5) {
-      bellstate = false
-    };
-    if (status.comms.connectionStatus == 0) {
-      showGrbl(false)
-    }
-
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
 
@@ -389,6 +377,18 @@ function initSocket() {
     //   }
     //
     // }
+
+    // Set the Connection Toolbar option
+    setConnectBar(status.comms.connectionStatus, status);
+    setControlBar(status.comms.connectionStatus, status)
+    setJogPanel(status.comms.connectionStatus, status)
+    setConsole(status.comms.connectionStatus, status)
+    if (status.comms.connectionStatus != 5) {
+      bellstate = false
+    };
+    if (status.comms.connectionStatus == 0) {
+      showGrbl(false)
+    }
 
     laststatus = status;
   });
