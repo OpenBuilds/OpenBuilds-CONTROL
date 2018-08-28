@@ -10,6 +10,16 @@ var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
 
+var webgl = (function() {
+  try {
+    return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+  } catch (e) {
+    return false;
+  }
+})();
+
+
+
 $(document).ready(function() {
   initSocket();
 
@@ -248,11 +258,13 @@ function initSocket() {
       $('#zPos').html(zpos);
     }
 
-    if (!isJogWidget) {
-      if (!simRunning) {
-        cone.position.x = status.machine.position.work.x
-        cone.position.y = status.machine.position.work.y
-        cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+    if (webgl) {
+      if (!isJogWidget) {
+        if (!simRunning) {
+          cone.position.x = status.machine.position.work.x
+          cone.position.y = status.machine.position.work.y
+          cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+        }
       }
     }
 
