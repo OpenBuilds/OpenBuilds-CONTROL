@@ -153,7 +153,7 @@ function setJogPanel(val, status) {
     $('#xPos').html('0.00');
     $('#yPos').html('0.00');
     $('#zPos').html('0.00');
-    if (!isJogWidget) {
+    if (!isJogWidget && webgl) {
       if (!simRunning) {
         cone.visible = false;
       }
@@ -174,7 +174,7 @@ function setJogPanel(val, status) {
     if ($('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', false);
     }
-    if (!isJogWidget) {
+    if (!isJogWidget && webgl) {
       if (object) {
         if (!simRunning) {
           cone.visible = false;
@@ -197,7 +197,7 @@ function setJogPanel(val, status) {
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
     }
-    if (!isJogWidget) {
+    if (!isJogWidget && webgl) {
       if (!simRunning) {
         cone.visible = true;
       }
@@ -216,7 +216,7 @@ function setJogPanel(val, status) {
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
     }
-    if (!isJogWidget) {
+    if (!isJogWidget && webgl) {
       if (!simRunning) {
         cone.visible = true;
       }
@@ -236,7 +236,7 @@ function setJogPanel(val, status) {
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
     }
-    if (!isJogWidget) {
+    if (!isJogWidget && webgl) {
       if (!simRunning) {
         cone.visible = false;
       }

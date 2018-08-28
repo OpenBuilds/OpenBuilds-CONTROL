@@ -10,16 +10,6 @@ var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
 
-var webgl = (function() {
-  try {
-    return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
-  } catch (e) {
-    return false;
-  }
-})();
-
-
-
 $(document).ready(function() {
   initSocket();
 

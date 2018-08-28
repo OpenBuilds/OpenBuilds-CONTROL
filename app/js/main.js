@@ -135,3 +135,11 @@ function versionCompare(v1, v2, options) {
 
   return 0;
 }
+
+var webgl = (function() {
+  try {
+    return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+  } catch (e) {
+    return false;
+  }
+})();
