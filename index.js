@@ -59,10 +59,10 @@ const Menu = require('electron').Menu
 var appIcon = null,
   jogWindow = null,
   mainWindow = null
-
+var autoUpdater
 
 if (isElectron()) {
-  const autoUpdater = require("electron-updater").autoUpdater
+  autoUpdater = require("electron-updater").autoUpdater
   var availversion = '0.0.0'
 
   autoUpdater.on('checking-for-update', () => {
@@ -175,6 +175,8 @@ if (isElectron()) {
       })
     }
   });
+} else {
+  console.log("Running outside Electron: Disabled AutoUpdater")
 }
 
 if (isElectron()) {
@@ -641,6 +643,8 @@ io.on("connection", function(socket) {
   socket.on("downloadUpdate", function(data) {
     if (typeof autoUpdater !== 'undefined') {
       autoUpdater.checkForUpdates();
+    } else {
+      console.log("autoUpdater not found")
     }
   })
 
