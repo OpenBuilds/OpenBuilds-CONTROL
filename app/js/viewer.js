@@ -18,6 +18,7 @@ var objectsInScene = []; //array that holds all objects we added to the scene.
 var clearSceneFlag = false;
 
 var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+var canvas = !!window.CanvasRenderingContext2D;
 
 // pause Animation when we loose webgl context focus
 var pauseAnimation = false;
@@ -282,10 +283,6 @@ function init3D() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
     camera.position.z = 295;
 
-    var canvas = !!window.CanvasRenderingContext2D;
-
-
-
     $('#renderArea').append(renderer.domElement);
     renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
     // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
@@ -326,7 +323,7 @@ function init3D() {
       animate();
     }, 200)
 
-  } else if (canvas) {
+  } else {
     console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     $('#gcodeviewertab').hide()
