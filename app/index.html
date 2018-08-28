@@ -495,6 +495,7 @@
               <ul class="tabs-holder">
                 <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
                 <li><a href="#tab-two" id="gcodeeditortab"><i class="far fa-fw fa-edit"></i> GCODE Editor</a></li>
+                <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw"></i> 3D View</a></li>
 
               </ul>
 
@@ -525,6 +526,15 @@
                     <button title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>&nbsp;
                     <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i> Clear</button>&nbsp;
                     <!-- </form> -->
+                  </div>
+                </div>
+                <div class="section" id="tab-three">
+                  <div id="renderArea"></div>
+                  <div class="fixed-bottom m-3 mb-9">
+                    <button class="button dark" onclick="simSpeed();"><span class="icon"><span class="fas fa-tachometer-alt"></span></span><span class="caption"><span id="simspeedval">1</span>x</span></button>
+                    <button id="runSimBtn" title="Run simulation" class="button dark" onclick="simStart()"><i class="fas fa-fighter-jet"></i> Simulate</button>&nbsp;
+                    <button id="stopSimBtn" style="display: none;" title="Stop Sim" class="button dark" onclick="simStop()"><i class="fas fa-stop"></i> Stop Sim</button>&nbsp;
+                    <button id="resetViewBtn" title="Stop Sim" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
                   </div>
                 </div>
               </div>
@@ -741,6 +751,16 @@
   </div>
 </body>
 
+<script type="x-shader/x-vertex" id="vertexShader">
+  varying vec3 vWorldPosition; void main() { vec4 worldPosition = modelMatrix * vec4( position, 1.0 ); vWorldPosition = worldPosition.xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }
+
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader">
+  uniform vec3 topColor; uniform vec3 bottomColor; uniform float offset; uniform float exponent; varying vec3 vWorldPosition; void main() { float h = normalize( vWorldPosition + offset ).z; gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max(
+  h , 0.0), exponent ), 0.0 ) ), 1.0 ); }
+
+</script>
+
 <script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
@@ -755,6 +775,17 @@
 <script type="text/javascript" src="/lib/lodash.core.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
+<script type="text/javascript" src="lib/threejs/three.min.js"></script>
+<script type="text/javascript" src="lib/threejs/GridRect.js"></script>
+<script type="text/javascript" src="lib/threejs/OrbitControls.js"></script>
+<script type="text/javascript" src="lib/threejs/DragControls.js"></script>
+<script type="text/javascript" src="lib/threejs/Projector.js"></script>
+<script type="text/javascript" src="lib/threejs/CanvasRenderer.js"></script>
+<script type="text/javascript" src="lib/threejs/TransformControls.js"></script>
+<script type="text/javascript" src="lib/threejs/TweenMax.min.js"></script>
+<script type="text/javascript" src="js/viewer.js"></script>
+<script type="text/javascript" src="js/viewer-ruler.js"></script>
+
 <script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript" src="js/updates.js"></script>
 <script type="text/javascript" src="js/ui.js"></script>
@@ -764,5 +795,7 @@
 <script type="text/javascript" src="js/jog.js"></script>
 <script type="text/javascript" src="js/calibrate.js"></script>
 <script type="text/javascript" src="js/widget.js"></script>
+
+<script type="text/javascript" src="lib/3dview/3dview.js"></script>
 
 </html>

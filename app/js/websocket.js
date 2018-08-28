@@ -168,7 +168,8 @@ function initSocket() {
   socket.on("queueCount", function(data) {
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
-        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]))
+        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
+        update3Dprogress(parseInt(data[1]) - parseInt(data[0]));
       }
     }
     $('#gcodesent').html("Queue: " + parseInt(data[0]));
@@ -245,6 +246,14 @@ function initSocket() {
     }
     if ($('#zPos').html() != zpos) {
       $('#zPos').html(zpos);
+    }
+
+    if (!isJogWidget) {
+      if (!simRunning) {
+        cone.position.x = status.machine.position.work.x
+        cone.position.y = status.machine.position.work.y
+        cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+      }
     }
 
     // $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));

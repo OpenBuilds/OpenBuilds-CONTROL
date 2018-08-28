@@ -1,8 +1,11 @@
 var gcode;
 var editor;
-
+var isJogWidget = false;
 
 $(document).ready(function() {
+  if (!isJogWidget) {
+    init3D();
+  }
 
   if (typeof ace !== 'undefined') {
     editor = ace.edit("editor");
@@ -13,6 +16,10 @@ $(document).ready(function() {
     editor.setAutoScrollEditorIntoView(true);
     editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
     editor.setShowPrintMargin(false);
+    editor.getSession().on('change', function() {
+      parseGcodeInWebWorker(editor.getValue())
+    });
+
   }
 
   // editor.container.addEventListener("contextmenu", function(e) {

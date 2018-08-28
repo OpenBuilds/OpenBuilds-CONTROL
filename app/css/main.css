@@ -10,6 +10,16 @@ body {
                                    supported by Chrome and Opera */
 }
 
+#renderArea {
+    /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
+    height: 300px;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    /* margin-top: 5px; */
+    box-shadow: 0 0 2px 2px #ddd;
+}
+
+
 #editor {
     /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
     height: calc(100% - 1px);

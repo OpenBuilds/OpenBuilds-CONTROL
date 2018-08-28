@@ -37,7 +37,6 @@ function setConnectBar(val, status) {
     $('#portUSB').parent(".select").addClass('alert')
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
-
   } else if (val == 3) { // Busy Streaming GCODE
     // Status Badge
     $('#connectStatus').html("Port: Connected");
@@ -142,6 +141,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideUp(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
       editor.resize()
@@ -153,6 +153,11 @@ function setJogPanel(val, status) {
     $('#xPos').html('0.00');
     $('#yPos').html('0.00');
     $('#zPos').html('0.00');
+    if (!isJogWidget) {
+      if (!simRunning) {
+        cone.visible = false;
+      }
+    }
 
   } else if (val == 1 || val == 2) { // Connected, but not Playing yet
     // Show panel and resize editor
@@ -160,6 +165,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideDown(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
       editor.resize()
@@ -168,11 +174,20 @@ function setJogPanel(val, status) {
     if ($('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', false);
     }
+    if (!isJogWidget) {
+      if (object) {
+        if (!simRunning) {
+          cone.visible = false;
+          update3Dprogress(object.children.length)
+        }
+      }
+    }
   } else if (val == 3) { // Busy Streaming GCODE
     // Show panel and resize editor
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
       editor.resize()
@@ -181,6 +196,11 @@ function setJogPanel(val, status) {
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
+    }
+    if (!isJogWidget) {
+      if (!simRunning) {
+        cone.visible = true;
+      }
     }
   } else if (val == 4) { // Paused
     // Show panel and resize editor
@@ -188,13 +208,18 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideDown(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
-    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 480 + 'px)');
     if (editor) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
+    }
+    if (!isJogWidget) {
+      if (!simRunning) {
+        cone.visible = true;
+      }
     }
   } else if (val == 5) { // Alarm State
     // Show panel and resize editor
@@ -202,6 +227,7 @@ function setJogPanel(val, status) {
     $("#jogcontrols").slideUp(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 290 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
       editor.resize()
@@ -209,6 +235,11 @@ function setJogPanel(val, status) {
     $('.jogbtn').attr('disabled', true);
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
+    }
+    if (!isJogWidget) {
+      if (!simRunning) {
+        cone.visible = false;
+      }
     }
   }
 }

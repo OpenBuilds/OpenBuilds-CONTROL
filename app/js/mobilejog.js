@@ -1,5 +1,6 @@
 var draw;
 var line;
+var isJogWidget = true;
 
 SVG.on(document, 'DOMContentLoaded', function() {
   draw = SVG('svgview')
