@@ -17,6 +17,8 @@ var camvideo;
 var objectsInScene = []; //array that holds all objects we added to the scene.
 var clearSceneFlag = false;
 
+var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
 // pause Animation when we loose webgl context focus
 var pauseAnimation = false;
 
@@ -297,7 +299,7 @@ function init3D() {
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0); // view direction perpendicular to XY-plane
-    var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
     if (!isMac) {
       controls.mouseButtons = {
         ORBIT: THREE.MOUSE.MIDDLE,
