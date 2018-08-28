@@ -278,6 +278,7 @@ function init3D() {
   } else if (canvas) {
     printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     return false;
+    $('#gcodeviewertab').hide()
     // renderer = new THREE.CanvasRenderer();
 
   };
