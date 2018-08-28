@@ -270,6 +270,7 @@ function init3D() {
 
 
   if (webgl) {
+    console.log('WebGL Support found! success: this application will work optimally on this device!');
     printLog('WebGL Support found! success: this application will work optimally on this device!');
     renderer = new THREE.WebGLRenderer({
       autoClearColor: true,
@@ -326,6 +327,7 @@ function init3D() {
     }, 200)
 
   } else if (canvas) {
+    console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     $('#gcodeviewertab').hide()
     // renderer = new THREE.CanvasRenderer();
