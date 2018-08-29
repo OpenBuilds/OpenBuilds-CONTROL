@@ -184,6 +184,7 @@ if (isElectron()) {
 } else {
   var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local')
 }
+var uploadedgcode = ""; // var to store uploaded gcode
 
 // fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
 mkdirp(uploadsDir, function(err) {
@@ -234,7 +235,7 @@ var re = new RegExp("^[a-f0-9]{32}");
 var status = {
   driver: {
     version: require('./package').version,
-    ipaddress: ip.address()
+    ipaddress: ip.address(),
   },
   machine: {
     inputs: [],
@@ -500,6 +501,12 @@ app.get('/upload', (req, res) => {
   res.sendFile(__dirname + '/app/upload.html');
 })
 
+app.get('/gcode', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.send(uploadedgcode);
+})
+
 // File Post
 app.post('/upload', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -537,37 +544,7 @@ app.post('/upload', function(req, res) {
       jogWindow.focus();
       jogWindow.setAlwaysOnTop(false);
     }
-    setTimeout(function() {
-
-      fs.readFile(file.path, 'utf8',
-        function(err, data) {
-          if (err) {
-            console.log(err);
-            var output = {
-              'command': '',
-              'response': "ERROR: File Upload Failed"
-            }
-            io.sockets.emit('data', output);
-            if (jogWindow && !jogWindow.isFocused()) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "ERROR: File Upload Failed",
-                content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
-              })
-            }
-          }
-          if (data) {
-            io.sockets.emit('gcodeupload', data);
-            if (jogWindow && !jogWindow.isFocused()) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "GCODE Received",
-                content: "OpenBuilds Machine Driver received new GCODE"
-              })
-            }
-          }
-        });
-    }, 1500);
+    readFile(file.path)
   });
 
   form.on('aborted', function() {
@@ -890,7 +867,8 @@ io.on("connection", function(socket) {
 
 
   socket.on('runJob', function(data) {
-    // console.log(data)
+    console.log(data)
+    uploadedgcode = data;
     console.log('Run Job (' + data.length + ')');
     if (status.comms.connectionStatus > 0) {
       if (data) {
@@ -1512,6 +1490,28 @@ io.on("connection", function(socket) {
 
 });
 
+function readFile(path) {
+  if (path.length > 1) {
+    console.log('readfile: ' + path)
+    fs.readFile(path, 'utf8',
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          var output = {
+            'command': '',
+            'response': "ERROR: File Upload Failed"
+          }
+          uploadedgcode = "";
+        }
+        if (data) {
+          io.sockets.emit('gcodeupload', data);
+          uploadedgcode = data;
+          return data
+        }
+      });
+  }
+}
+
 function machineSend(gcode) {
   // console.log("SENDING: " + gcode)
   if (port.isOpen) {
@@ -1917,6 +1917,13 @@ if (isElectron()) {
       jogWindow.focus();
       jogWindow.setAlwaysOnTop(false);
     }
+    // console.log('SingleInstance')
+    // console.log(commandLine)
+    var openFilePath = commandLine[1];
+    if (openFilePath !== "") {
+      // console.log(openFilePath);
+      readFile(openFilePath);
+    }
   });
 
   if (shouldQuit) {
@@ -1930,7 +1937,15 @@ if (isElectron()) {
 
     function createApp() {
       createTrayIcon();
-      if (process.platform == 'darwin') {
+      if (process.platform == 'win32' && process.argv.length >= 2) {
+        var openFilePath = process.argv[1];
+        if (openFilePath !== "") {
+          console.log("path" + openFilePath);
+          readFile(openFilePath);
+        }
+      }
+
+      if (process.platform == 'darwin' || uploadedgcode.length > 1) {
         if (jogWindow === null) {
           createJogWindow();
           jogWindow.show()
@@ -1946,6 +1961,9 @@ if (isElectron()) {
       }
       // createWindow();
       // createJogWindow();
+      // console.log("createoa")
+
+
     }
 
     function createTrayIcon() {
@@ -2145,5 +2163,7 @@ if (isElectron()) {
     })
   }
 }
+
+
 
 process.on('exit', () => console.log('exit'))

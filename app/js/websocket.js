@@ -100,8 +100,11 @@ function initSocket() {
     printLog("Received new GCODE from API")
     editor.session.setValue(data);
     $('#controlTab').click()
-    $('#gcodeeditortab').click()
-    // gcodeeditortab
+    if (webgl) {
+      $('#gcodeviewertab').click();
+    } else {
+      $('#gcodeeditortab').click()
+    }
   });
 
   socket.on('gcodeupload', function(data) {

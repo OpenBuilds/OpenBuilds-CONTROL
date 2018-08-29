@@ -57,6 +57,20 @@ $(document).ready(function() {
     fileOpen.addEventListener('change', readFile, false);
   }
 
+
+  $.get("/gcode").done(function(data) {
+    console.log(data.length)
+    editor.session.setValue(data);
+    $('#controlTab').click()
+    if (webgl) {
+      $('#gcodeviewertab').click();
+    } else {
+      $('#gcodeeditortab').click()
+    }
+  });
+
+
+
 });
 
 function readFile(evt) {
