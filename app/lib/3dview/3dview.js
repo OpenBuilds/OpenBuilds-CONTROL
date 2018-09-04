@@ -9,7 +9,7 @@ var worker = new Worker('lib/3dview/workers/gcodeparser.js');
 worker.addEventListener('message', function(e) {
   object = loader.parse(e.data);
   scene.add(object);
-  redrawGrid(object.userData.size.minx, object.userData.size.maxx, object.userData.size.miny, object.userData.size.maxy)
+  // redrawGrid(object.userData.size.minx, object.userData.size.maxx, object.userData.size.miny, object.userData.size.maxy)
   // animate();
   setTimeout(function() {
     console.log("Reset Camera");

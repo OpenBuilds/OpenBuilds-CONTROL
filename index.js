@@ -1491,24 +1491,26 @@ io.on("connection", function(socket) {
 });
 
 function readFile(path) {
-  if (path.length > 1) {
-    console.log('readfile: ' + path)
-    fs.readFile(path, 'utf8',
-      function(err, data) {
-        if (err) {
-          console.log(err);
-          var output = {
-            'command': '',
-            'response': "ERROR: File Upload Failed"
+  if (path) {
+    if (path.length > 1) {
+      console.log('readfile: ' + path)
+      fs.readFile(path, 'utf8',
+        function(err, data) {
+          if (err) {
+            console.log(err);
+            var output = {
+              'command': '',
+              'response': "ERROR: File Upload Failed"
+            }
+            uploadedgcode = "";
           }
-          uploadedgcode = "";
-        }
-        if (data) {
-          io.sockets.emit('gcodeupload', data);
-          uploadedgcode = data;
-          return data
-        }
-      });
+          if (data) {
+            io.sockets.emit('gcodeupload', data);
+            uploadedgcode = data;
+            return data
+          }
+        });
+    }
   }
 }
 
