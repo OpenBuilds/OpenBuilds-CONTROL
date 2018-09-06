@@ -98,6 +98,12 @@ function initSocket() {
 
   socket.on('gcodeupload', function(data) {
     printLog("Received new GCODE from API")
+    if (scene.getObjectByName('gcodeobject')) {
+      // console.log("Existing GCODE object: Cleaning up first")
+      scene.remove(scene.getObjectByName('gcodeobject'))
+      object = false;
+    }
+    resetView();
     editor.session.setValue(data);
     $('#controlTab').click()
     if (webgl) {
