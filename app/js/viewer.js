@@ -150,7 +150,7 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
 }
 
 function redrawGrid(xmin, xmax, ymin, ymax) {
-  gridsystem.children.length = 0
+
 
   sizexmax = xmax;
   sizeymax = ymax;
@@ -241,9 +241,12 @@ function redrawGrid(xmin, xmax, ymin, ymax) {
   helper.name = "GridHelper50mm"
   grid.add(helper);
   grid.name = "Grid"
-  gridsystem.add(grid);
 
-  gridsystem.add(drawRuler(xmin, xmax, ymin, ymax));
+  gridsystem.children.length = 0
+  var ruler = drawRuler(xmin, xmax, ymin, ymax)
+  gridsystem.add(grid);
+  gridsystem.add(ruler);
+
 }
 
 function setBullseyePosition(x, y, z) {
@@ -345,15 +348,15 @@ function animate() {
         scene.remove(scene.children[1])
       }
 
-      var documents = new THREE.Group();
-      documents.name = "Documents";
-      for (i = 0; i < objectsInScene.length; i++) {
-        documents.add(objectsInScene[i])
-      }
-      scene.add(documents)
-
-      var toolpaths = new THREE.Group();
-      toolpaths.name = "Toolpaths";
+      // var documents = new THREE.Group();
+      // documents.name = "Documents";
+      // for (i = 0; i < objectsInScene.length; i++) {
+      //   documents.add(objectsInScene[i])
+      // }
+      // scene.add(documents)
+      //
+      // var toolpaths = new THREE.Group();
+      // toolpaths.name = "Toolpaths";
       // for (i = 0; i < toolpathsInScene.length; i++) {
       //
       //   if (toolpathsInScene[i].userData.visible) {
@@ -397,7 +400,7 @@ function animate() {
 
 
 function viewExtents(objecttosee) {
-  // console.log("viewExtents. object:", this.object);
+  // console.log("viewExtents. object:", objecttosee);
   // console.log("controls:", controls);
   //wakeAnimate();
 
@@ -441,7 +444,7 @@ function viewExtents(objecttosee) {
     var fov = 2.2 * Math.atan(maxlen / (2 * dist)) * (180 / Math.PI);
     // console.log("new fov:", fov, " old fov:", controls.object.fov);
     if (isNaN(fov)) {
-      console.log("giving up on viewing extents because fov could not be calculated");
+      // console.log("giving up on viewing extents because fov could not be calculated");
       return;
     } else {
       // console.log("fov: ", fov);
@@ -559,6 +562,7 @@ $(window).on('resize', function() {
 });
 
 function resetView(object) {
+  // console.log(resetView.caller);
   if (!object) {
     if (objectsInScene.length > 0) {
       var insceneGrp = new THREE.Group()

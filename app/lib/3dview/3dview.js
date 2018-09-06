@@ -6,15 +6,22 @@ var loader = new THREE.ObjectLoader();
 
 var worker = new Worker('lib/3dview/workers/gcodeparser.js');
 worker.addEventListener('message', function(e) {
+  // console.log('webworker message')
+  if (scene.getObjectByName('gcodeobject')) {
+    scene.remove(scene.getObjectByName('gcodeobject'))
+    object = false;
+  }
   object = loader.parse(JSON.parse(e.data));
-  scene.add(object);
-  redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y))
-  // animate();
-  setTimeout(function() {
-    console.log("Reset Camera");
-    viewExtents(object);
+  if (object) {
+    scene.add(object);
+    redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y))
     // animate();
-  }, 200);
+    setTimeout(function() {
+      clearSceneFlag = true;
+      resetView();
+      // animate();
+    }, 200);
+  }
 }, false);
 
 function parseGcodeInWebWorker(gcode) {

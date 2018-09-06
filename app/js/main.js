@@ -17,13 +17,7 @@ $(document).ready(function() {
     editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
     editor.setShowPrintMargin(false);
     editor.getSession().on('change', function() {
-      if (scene.getObjectByName('gcodeobject')) {
-        // console.log("Existing GCODE object: Cleaning up first")
-        scene.remove(scene.getObjectByName('gcodeobject'))
-        object = false;
-      }
-      resetView();
-      parseGcodeInWebWorker(editor.getValue())
+      // parseGcodeInWebWorker(editor.getValue())
     });
 
   }
@@ -68,6 +62,7 @@ $(document).ready(function() {
     console.log(data.length)
     if (data.length > 2) {
       editor.session.setValue(data);
+      parseGcodeInWebWorker(data)
       $('#controlTab').click()
       if (webgl) {
         $('#gcodeviewertab').click();
@@ -108,6 +103,7 @@ function loadFile(f) {
       // cleanupThree();
       // gcode = this.result;
       editor.session.setValue(this.result);
+      parseGcodeInWebWorker(this.result)
       printLog('GCODE Opened: ');
     };
     // }

@@ -1,4 +1,5 @@
 self.addEventListener('message', function(e) {
+  console.log("New message received by worker", e.data.data.length)
   importScripts("/lib/threejs/three.min.js");
   var data = e.data;
   var result = openGCodeFromText(e.data.data)
@@ -102,7 +103,7 @@ function openGCodeFromText(gcode) {
     extruding: false
   };
   createObjectFromGCode(gcode, object2)
-  console.log(object2)
+  // console.log(object2)
   return object2;
 }
 
