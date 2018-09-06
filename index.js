@@ -2037,8 +2037,8 @@ if (isElectron()) {
     function createJogWindow() {
       // Create the browser window.
       jogWindow = new BrowserWindow({
-        width: 660,
-        height: 730,
+        width: 850,
+        height: 850,
         fullscreen: false,
         center: true,
         resizable: true,

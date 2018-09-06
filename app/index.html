@@ -160,6 +160,7 @@
                   <li class=""><a href="#" onclick="socket.emit('opencam', true);">Open browser to https://cam.openbuilds.com</a></li>
                 </ul>
               </div>
+
               <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', editor.getValue());">
                 <span class="icon">
                   <i class="fas fa-play"></i>
@@ -183,6 +184,12 @@
                   <i class="fas fa-stop"></i>
                 </span>
                 <span class="caption">Stop<br>Job</span>
+              </button>
+              <button id="chkSize" class="ribbon-button">
+                <span class="icon">
+                  <i class="far fa-square"></i>
+                </span>
+                <span class="caption">Check<br>Size</span>
               </button>
               <div>
                 <button id="toolBtn" class="ribbon-button dropdown-toggle">
@@ -272,7 +279,7 @@
 
       <div id="manualControlPanel">
         <center>
-          <div id="jogcontrols">
+          <div id="jogcontrols" class="mt-1">
             <div class="row flex-justify-center flex-align-center" style="width: 100%;">
               <div class="cell">
                 <table class="drotable">
@@ -370,6 +377,7 @@
                       </button>
                     </td>
                   </tr>
+
                 </table>
               </div>
               <div class="cell">
@@ -489,7 +497,7 @@
           </div>
 
 
-          <div id="controlLogs">
+          <div id="controlLogs" class="mt-1">
 
             <nav data-role="ribbonmenu">
               <ul class="tabs-holder">
@@ -516,6 +524,7 @@
                 </div>
                 <div class="section" id="tab-two">
                   <div id="editor"></div>
+
                   <div class="fixed-bottom m-3 mb-9">
                     <!-- <form class="inline-form"> -->
                     <button title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i> Find/Replace</button>&nbsp;
@@ -697,6 +706,15 @@
     </div>
   </div>
 
+  <!-- Simulator Context Menu -->
+  <ul class="d-menu context" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
+    <span id="dropdowncontent">
+    <li onclick="runSimFrom();"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span id="linenumber"></span></a>
+    </li>
+    </span>
+  </ul>
+  <!--  -->
+
   <div id="hiddendivs" style="display:none;">
     <div class="dialog" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
       <div class="dialog-title">Update Ready</div>
@@ -718,6 +736,7 @@
 
   <!-- Modal Divs -->
   <div style="display: none;">
+
     <div class="dialog" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog" data-to-top="true">
       <div class="dialog-title">Jog Widget</div>
       <div class="dialog-content" style="max-height: calc(100vh - 200px);overflow-y: auto; overflow-x: hidden;">

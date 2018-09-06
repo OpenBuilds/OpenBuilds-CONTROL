@@ -173,7 +173,6 @@ function initSocket() {
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
-        update3Dprogress(parseInt(data[1]) - parseInt(data[0]));
       }
     }
     $('#gcodesent').html("Queue: " + parseInt(data[0]));

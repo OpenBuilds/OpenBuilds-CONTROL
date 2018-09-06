@@ -25,6 +25,7 @@ worker.addEventListener('message', function(e) {
 }, false);
 
 function parseGcodeInWebWorker(gcode) {
+  simstop()
   scene.remove(object)
   object = false;
   worker.postMessage({
@@ -36,6 +37,11 @@ function simSpeed() {
   timefactor = timefactor * 10;
   if (timefactor > 1024) timefactor = 0.1;
   $('#simspeedval').text(timefactor);
+}
+
+function runSimFrom() {
+  $('#gcodeviewertab').click()
+  sim(editor.getSelectionRange().start.row + 1);
 }
 
 function sim(startindex) {
@@ -166,10 +172,11 @@ function sim(startindex) {
 }
 
 function simstop() {
+  simIdx = 0;
   simRunning = false;
   $('#runSimBtn').show()
   $('#stopSimBtn').hide()
-  timefactor = 1;
+  // timefactor = 1;
   $('#simspeedval').text(timefactor);
   editor.gotoLine(0)
   cone.visible = false;

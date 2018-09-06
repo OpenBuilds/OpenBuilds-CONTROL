@@ -22,18 +22,29 @@ $(document).ready(function() {
 
   }
 
-  // editor.container.addEventListener("contextmenu", function(e) {
-  //   console.log("context")
-  //   var template = `<h6 class="dropdown-header"><div class="float-left">Line <span id="linenumber"></span>: Options</div><div class="float-right"><button type="button" class="close" aria-label="Close" onclick="$('#editorContextMenu').hide()"><span aria-hidden="true">&times;</span></button></div></h6><a class="dropdown-item" href="#"><i class="fa fa-fw fa-list-ol" aria-hidden="true"></i>&nbsp;Run queue from here</a>
-  //   <a class="dropdown-item" href="#" onclick="ContextLineRun();"><i class="fa fa-fw fa-play" aria-hidden="true"></i>&nbsp;Execute line: <code>` + editor.session.getLine(editor.getSelectionRange().start.row) + `</code></a>
-  //   <a class="dropdown-item" href="#" onclick="sim(` + (editor.getSelectionRange().start.row + 1) + `)"><i class="fa fa-fw fa-fighter-jet" aria-hidden="true"></i>&nbsp;Simulate from here</a>`
-  //   $("#dropdowncontent").html(template)
-  //   // console.log(e);
-  //   setposition(e);
-  //   e.preventDefault();
-  //   $('#linenumber').html((editor.getSelectionRange().start.row + 1));
-  //   // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
-  // }, false);
+
+  function setposition(e) {
+    var bodyOffsets = document.body.getBoundingClientRect();
+    tempX = e.pageX //- bodyOffsets.left;
+    tempY = e.pageY;
+    // console.log(tempX);
+    var offset = $("#editorContextMenu").offset();
+    console.log(offset)
+    $("#editorContextMenu").css({
+      display: 'block',
+      left: e.pageX,
+      top: e.pageY
+    });
+    console.log(e.pageX, e.pageY)
+  }
+
+  editor.container.addEventListener("contextmenu", function(e) {
+    console.log("context", e)
+    setposition(e);
+    e.preventDefault();
+    $('#linenumber').html((editor.getSelectionRange().start.row + 1));
+    // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
+  }, false);
 
   document.addEventListener('keydown', function(evt) {
     if (evt.which === 123) {

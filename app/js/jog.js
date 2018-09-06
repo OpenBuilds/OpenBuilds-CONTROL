@@ -168,6 +168,31 @@ $(document).ready(function() {
     jog('Z', jogdist, feedrate);
   })
 
+  $('#chkSize').on('click', function() {
+    var bbox2 = new THREE.Box3().setFromObject(object);
+    console.log('bbox for Draw Bounding Box: ' + object + ' Min X: ', (bbox2.min.x), '  Max X:', (bbox2.max.x), 'Min Y: ', (bbox2.min.y), '  Max Y:', (bbox2.max.y));
+    var feedrate = $('#jograte').val();
+    if (laststatus.machine.firmware.type === 'grbl') {
+      var moves = `
+       $J=G90 X` + (bbox2.min.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+       $J=G90 X` + (bbox2.max.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+       $J=G90 X` + (bbox2.max.x) + ` Y` + (bbox2.max.y) + ` F` + feedrate + `\n
+       $J=G90 X` + (bbox2.min.x) + ` Y` + (bbox2.max.y) + ` F` + feedrate + `\n
+       $J=G90 X` + (bbox2.min.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+   `;
+    } else {
+      var moves = `
+       G90\n
+       G0 X` + (bbox2.min.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+       G0 X` + (bbox2.max.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+       G0 X` + (bbox2.max.x) + ` Y` + (bbox2.max.y) + ` F` + feedrate + `\n
+       G0 X` + (bbox2.min.x) + ` Y` + (bbox2.max.y) + ` F` + feedrate + `\n
+       G0 X` + (bbox2.min.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
+       G90\n`;
+    }
+    socket.emit('runJob', moves);
+  });
+
 });
 
 function jog(dir, dist, feed = null) {
