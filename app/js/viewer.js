@@ -354,32 +354,32 @@ function animate() {
 
       var toolpaths = new THREE.Group();
       toolpaths.name = "Toolpaths";
-      for (i = 0; i < toolpathsInScene.length; i++) {
+      // for (i = 0; i < toolpathsInScene.length; i++) {
+      //
+      //   if (toolpathsInScene[i].userData.visible) {
+      //     if (toolpathsInScene[i].userData.inflated) {
+      //       if (toolpathsInScene[i].userData.inflated.userData.pretty) {
+      //         if (toolpathsInScene[i].userData.inflated.userData.pretty.children.length > 0) {
+      //           toolpaths.add(toolpathsInScene[i].userData.inflated.userData.pretty);
+      //         } else {
+      //           toolpaths.add(toolpathsInScene[i].userData.inflated);
+      //         }
+      //       } else {
+      //         toolpaths.add(toolpathsInScene[i].userData.inflated);
+      //       }
+      //     };
+      //   }
+      // }
+      // scene.add(toolpaths)
 
-        if (toolpathsInScene[i].userData.visible) {
-          if (toolpathsInScene[i].userData.inflated) {
-            if (toolpathsInScene[i].userData.inflated.userData.pretty) {
-              if (toolpathsInScene[i].userData.inflated.userData.pretty.children.length > 0) {
-                toolpaths.add(toolpathsInScene[i].userData.inflated.userData.pretty);
-              } else {
-                toolpaths.add(toolpathsInScene[i].userData.inflated);
-              }
-            } else {
-              toolpaths.add(toolpathsInScene[i].userData.inflated);
-            }
-          };
-        }
+      // if (fancysim == true) {
+      //   scene.add(simgcodeobj)
+      // } else {
+      if (object) {
+        scene.add(object)
       }
-      scene.add(toolpaths)
 
-      if (fancysim == true) {
-        scene.add(simgcodeobj)
-      } else {
-        if (object) {
-          scene.add(object)
-        }
-
-      }
+      // }
 
 
       clearSceneFlag = false;
@@ -546,8 +546,8 @@ function fixRenderSize() {
       controls.reset();
       setTimeout(function() {
         resetView();
-      }, 100);
-    }, 400)
+      }, 10);
+    }, 10)
 
   }
 

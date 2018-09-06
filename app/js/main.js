@@ -17,6 +17,12 @@ $(document).ready(function() {
     editor.session.setValue('; No GCODE yet - please Load a GCODE file from the Open GCODE button'); // from samplefile.js
     editor.setShowPrintMargin(false);
     editor.getSession().on('change', function() {
+      if (scene.getObjectByName('gcodeobject')) {
+        // console.log("Existing GCODE object: Cleaning up first")
+        scene.remove(scene.getObjectByName('gcodeobject'))
+        object = false;
+      }
+      resetView();
       parseGcodeInWebWorker(editor.getValue())
     });
 
@@ -60,13 +66,16 @@ $(document).ready(function() {
 
   $.get("/gcode").done(function(data) {
     console.log(data.length)
-    editor.session.setValue(data);
-    $('#controlTab').click()
-    if (webgl) {
-      $('#gcodeviewertab').click();
-    } else {
-      $('#gcodeeditortab').click()
+    if (data.length > 2) {
+      editor.session.setValue(data);
+      $('#controlTab').click()
+      if (webgl) {
+        $('#gcodeviewertab').click();
+      } else {
+        $('#gcodeeditortab').click()
+      }
     }
+
   });
 
 

@@ -1,15 +1,14 @@
 var object
-var draw, line, t = 0,
-  timefactor = 1,
+var draw, line, timefactor = 1,
   object, simRunning = false;
 
 var loader = new THREE.ObjectLoader();
 
 var worker = new Worker('lib/3dview/workers/gcodeparser.js');
 worker.addEventListener('message', function(e) {
-  object = loader.parse(e.data);
+  object = loader.parse(JSON.parse(e.data));
   scene.add(object);
-  // redrawGrid(object.userData.size.minx, object.userData.size.maxx, object.userData.size.miny, object.userData.size.maxy)
+  redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y))
   // animate();
   setTimeout(function() {
     console.log("Reset Camera");
@@ -26,101 +25,146 @@ function parseGcodeInWebWorker(gcode) {
   });
 };
 
-function update3Dprogress(position) {
-  for (i = 0; i < object.children.length; i++) {
-    if (object.children[i].userData.cmd.g == 0) {
-      object.children[i].material.color.set(0xdddddd);
-    };
-    if (object.children[i].userData.cmd.g == 1) {
-      object.children[i].material.color.set(0xdddddd);
-    };
-  };
-
-  for (i = 0; i < position; i++) {
-    if (object.children[i].userData.cmd.g == 0) {
-      object.children[i].material.color.set(0x00cc00);
-    };
-    if (object.children[i].userData.cmd.g == 1) {
-      object.children[i].material.color.set(0xcc0000);
-    };
-  }
-
-
-
-}
-
 function simSpeed() {
   timefactor = timefactor * 10;
   if (timefactor > 1024) timefactor = 0.1;
   $('#simspeedval').text(timefactor);
 }
 
-function simStart() {
-  if (object) {
-    simRunning = true;
+function sim(startindex) {
+  if (typeof(object) == 'undefined' || !scene.getObjectByName('gcodeobject')) {
+    console.log('No Gcode in Preview yet')
+    var message = `No Gcode in Preview yet: Please setup toolpaths, and generate GCODE before running simulation`
+    Metro.toast.create(message, null, 10000, 'bg-red');
+    simstop()
+  } else {
+    lastLine = {
+      x: 0,
+      y: 0,
+      z: 0,
+      e: 0,
+      f: 0,
+      feedrate: null,
+      extruding: false
+    };
     $('#runSimBtn').hide()
     $('#stopSimBtn').show()
-    t = 0;
-    cone.position.x = 0;
-    cone.position.y = 0;
-    cone.position.z = 20;
-    cone.visible = true;
-    for (i = 0; i < object.children.length; i++) {
-      if (object.children[i].userData.cmd.g == 0) {
-        object.children[i].material.color.set(0xdddddd);
-      };
-      if (object.children[i].userData.cmd.g == 1) {
-        object.children[i].material.color.set(0xdddddd);
-      };
-    };
-    playSim();
-  }
-}
+    clearSceneFlag = true;
+    $("#conetext").show();
+    cone.visible = true
+    var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
+    var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
+    var posz = object.userData.lines[0].p2.z + 20;
+    cone.position.x = posx;
+    cone.position.y = posy;
+    cone.position.z = posz;
+    cone.material = new THREE.MeshPhongMaterial({
+      color: 0x28a745,
+      specular: 0x0000ff,
+      shininess: 100,
+      opacity: 0.9,
+      transparent: true
+    })
 
-function simStop() {
-  if (object) {
-    t = object.children.length;
-    for (i = 0; i < object.children.length; i++) {
-      if (object.children[i].userData.cmd.g == 0) {
-        object.children[i].material.color.set(0x00cc00);
-      };
-      if (object.children[i].userData.cmd.g == 1) {
-        object.children[i].material.color.set(0xcc0000);
-      };
-    };
-    cone.visible = false;
-    $('#runSimBtn').show()
-    $('#stopSimBtn').hide()
-    simRunning = false
-    timefactor = 1;
+    simRunning = true;
+    // timefactor = 1;
     $('#simspeedval').text(timefactor);
-  }
+    var simIdx = startindex;
+    $('#simstartbtn').attr('disabled', true);
+    $('#simstopbtn').attr('disabled', false);
+    $('#editorContextMenu').hide() // sometimes we launch sim(linenum) from the context menu... close it once running
+    var runSim = function() {
+      // editor.gotoLine(simIdx + 1)
+      $('#gcodesent').html(simIdx + 1);
+      // $('#simgcode').html(object.userData.lines[simIdx].args.origtext);
+      var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
+      var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
+      var posz = object.userData.lines[simIdx].p2.z;
 
+      if (object.userData.lines[simIdx].args.isFake) {
+        if (object.userData.lines[simIdx].args.text.length < 1) {
+          var text = "empty line"
+        } else {
+          var text = object.userData.lines[simIdx].args.text
+        }
+        var simTime = 0.01 / timefactor;
+      } else {
+        var text = object.userData.lines[simIdx].args.cmd
+        var simTime = object.userData.lines[simIdx].p2.timeMins / timefactor;
+
+      }
+      if (object.userData.lines[simIdx].p2.feedrate == null) {
+        var feedrate = 0.00
+      } else {
+        var feedrate = object.userData.lines[simIdx].p2.feedrate
+      }
+
+      $("#conetext").html(
+        ` <table style="border: 1px solid #888">
+            <tr class="stripe" style="border-bottom: 1px solid #888">
+              <td><b>CMD</b></td><td align="right"><b>` + text + `</b></td>
+            </tr>
+            <tr class="stripe" style="border-bottom: 1px solid #888">
+              <td><b>X:</b></td><td align="right"><b>` + posx.toFixed(2) + `mm</b></td>
+            </tr>
+            <tr class="stripe" style="border-bottom: 1px solid #888">
+              <td><b>Y:</b></td><td align="right"><b>` + posy.toFixed(2) + `mm</b></td>
+            </tr>
+            <tr class="stripe" style="border-bottom: 1px solid #888">
+              <td><b>Z:</b></td><td align="right"><b>` + posz.toFixed(2) + `mm</b></td>
+            </tr>
+            <tr class="stripe" style="border-bottom: 1px solid #888">
+              <td><b>F:</b></td><td align="right"><b>` + feedrate + `mm/min</b></td>
+            </tr>
+          </table>
+        `);
+      var simTimeInSec = simTime * 60;
+      // console.log(simTimeInSec)
+      if (!object.userData.lines[simIdx].args.isFake) {
+        TweenMax.to(cone.position, simTimeInSec, {
+          x: posx,
+          y: posy,
+          z: posz + 20,
+          onComplete: function() {
+            if (simRunning == false) {
+              //return
+              simstop();
+            } else {
+              simIdx++;
+              if (simIdx < object.userData.lines.length) {
+                runSim();
+              } else {
+                simstop();
+              }
+            }
+          }
+        })
+      } else {
+        if (simRunning == false) {
+          //return
+          simstop();
+        } else {
+          simIdx++;
+          if (simIdx < object.userData.lines.length) {
+            runSim();
+          } else {
+            simstop();
+          }
+        }
+      }
+
+    };
+    runSim(); //kick it off
+  }
 }
 
-function playSim() {
+function simstop() {
+  simRunning = false;
+  $('#runSimBtn').show()
+  $('#stopSimBtn').hide()
+  timefactor = 1;
   $('#simspeedval').text(timefactor);
-  if (object.children[t]) {
-    object.children[t].visible = true;
-    if (object.children[t].userData.cmd.g == 0) {
-      object.children[t].material.color.set(0x00cc00);
-    };
-    if (object.children[t].userData.cmd.g == 1) {
-      object.children[t].material.color.set(0xcc0000);
-    };
-
-    TweenMax.to(cone.position, object.children[t].userData.time / timefactor, {
-      x: object.children[t].userData.cmd.x,
-      y: object.children[t].userData.cmd.y,
-      z: object.children[t].userData.cmd.z + 20,
-      onComplete: function() {
-        t++
-        if (t == object.children.length) {
-          simStop();
-        } else {
-          playSim();
-        };
-      }
-    });
-  };
-};
+  editor.gotoLine(0)
+  cone.visible = false;
+  clearSceneFlag = true;
+}

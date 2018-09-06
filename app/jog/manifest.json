@@ -1,9 +1,9 @@
 {
-  "name": "PWA Splash",
-  "short_name": "PWA Splash",
-  "description": "PWA SPlash Screens",
+  "name": "OpenBuilds Machine Driver Jog",
+  "short_name": "OpenBuilds Machine Driver Jog",
+  "description": "OpenBuilds Machine Driver Jog",
   "scope": ".",
-  "start_url": "/",
+  "start_url": "/jog",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#ffffff",
