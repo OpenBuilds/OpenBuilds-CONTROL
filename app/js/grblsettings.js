@@ -182,6 +182,9 @@ function checkifchanged() {
       // Only send values that changed
       if (parseFloat(newVal) != parseFloat(grblParams[key])) {
         hasChanged = true;
+        $("#val-" + j + "-input").addClass('alert')
+      } else {
+        $("#val-" + j + "-input").removeClass('alert')
       }
     }
   }
