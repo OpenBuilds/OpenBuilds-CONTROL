@@ -450,30 +450,30 @@ function viewExtents(objecttosee) {
       // console.log("fov: ", fov);
       controls.object.fov = fov;
       var L = dist;
-      var camera = controls.object;
+      var camera2 = controls.object;
       var vector = controls.target.clone();
-      var l = (new THREE.Vector3()).subVectors(camera.position, vector).length();
+      var l = (new THREE.Vector3()).subVectors(camera2.position, vector).length();
       var up = camera.up.clone();
       var quaternion = new THREE.Quaternion();
 
       // Zoom correction
-      camera.translateZ(L - l);
+      camera2.translateZ(L - l);
       // console.log("up:", up);
       up.y = 1;
       up.x = 0;
       up.z = 0;
       quaternion.setFromAxisAngle(up, 0);
-      //camera.position.applyQuaternion(quaternion);
+      camera2.position.applyQuaternion(quaternion);
       up.y = 0;
       up.x = 1;
       up.z = 0;
       quaternion.setFromAxisAngle(up, 0);
-      camera.position.applyQuaternion(quaternion);
+      camera2.position.applyQuaternion(quaternion);
       up.y = 0;
       up.x = 0;
       up.z = 1;
       quaternion.setFromAxisAngle(up, 0);
-      camera.lookAt(vector);
+      camera2.lookAt(vector);
       controls.object.updateProjectionMatrix();
     }
   }

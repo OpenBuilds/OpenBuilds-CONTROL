@@ -732,7 +732,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           console.log("GRBL detected");
           socket.emit('grbl')
-          addQRealtime("$10=2\n"); // force Status Report to WPOS
+          // addQRealtime("$10=2\n"); // force Status Report to WPOS
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
@@ -1567,6 +1567,28 @@ function parseFeedback(data) {
     status.comms.connectionStatus = 5;
   }
   if (status.machine.firmware.type == "grbl") {
+    // Extract work offset (for Grbl > 1.1 only!)
+    var startWCO = data.search(/wco:/i) + 4;
+    var wco;
+    if (startWCO > 4) {
+      wco = data.replace(">", "").substr(startWCO).split(/,|\|/, 4);
+    }
+    if (Array.isArray(wco)) {
+      xOffset = parseFloat(wco[0]).toFixed(config.posDecimals);
+      yOffset = parseFloat(wco[1]).toFixed(config.posDecimals);
+      zOffset = parseFloat(wco[2]).toFixed(config.posDecimals);
+      if (has4thAxis) {
+        aOffset = parseFloat(wco[3]).toFixed(config.posDecimals);
+        status.machine.position.offset.x = xOffset;
+        status.machine.position.offset.y = yOffset;
+        status.machine.position.offset.z = zOffset;
+        status.machine.position.offset.a = aOffset;
+      } else {
+        status.machine.position.offset.x = xOffset;
+        status.machine.position.offset.y = yOffset;
+        status.machine.position.offset.z = zOffset;
+      }
+    }
     // Extract wPos (for Grbl > 1.1 only!)
     var startWPos = data.search(/wpos:/i) + 5;
     var wPos;
@@ -1574,7 +1596,15 @@ function parseFeedback(data) {
       var wPosLen = data.substr(startWPos).search(/>|\|/);
       wPos = data.substr(startWPos, wPosLen).split(/,/);
     }
+    var startMPos = data.search(/mpos:/i) + 5;
+    var mPos;
+    if (startMPos > 5) {
+      var mPosLen = data.substr(startMPos).search(/>|\|/);
+      mPos = data.substr(startMPos, mPosLen).split(/,/);
+    }
+    // If we got a WPOS
     if (Array.isArray(wPos)) {
+      // console.log('wpos')
       if (xPos !== parseFloat(wPos[0]).toFixed(config.posDecimals)) {
         xPos = parseFloat(wPos[0]).toFixed(config.posDecimals);
       }
@@ -1600,29 +1630,37 @@ function parseFeedback(data) {
         status.machine.position.work.y = yPos
         status.machine.position.work.z = zPos
       }
-    } // END IS WPOS
-    // Extract work offset (for Grbl > 1.1 only!)
-    var startWCO = data.search(/wco:/i) + 4;
-    var wco;
-    if (startWCO > 4) {
-      wco = data.replace(">", "").substr(startWCO).split(/,|\|/, 4);
-    }
-    if (Array.isArray(wco)) {
-      xOffset = parseFloat(wco[0]).toFixed(config.posDecimals);
-      yOffset = parseFloat(wco[1]).toFixed(config.posDecimals);
-      zOffset = parseFloat(wco[2]).toFixed(config.posDecimals);
-      if (has4thAxis) {
-        aOffset = parseFloat(wco[3]).toFixed(config.posDecimals);
-        status.machine.position.offset.x = xOffset;
-        status.machine.position.offset.y = yOffset;
-        status.machine.position.offset.z = zOffset;
-        status.machine.position.offset.a = aOffset;
-      } else {
-        status.machine.position.offset.x = xOffset;
-        status.machine.position.offset.y = yOffset;
-        status.machine.position.offset.z = zOffset;
+      // end is WPOS
+    } else if (Array.isArray(mPos)) {
+      // console.log('mpos', mPos)
+      if (xPos !== parseFloat(mPos[0]).toFixed(config.posDecimals)) {
+        xPos = parseFloat(mPos[0]).toFixed(config.posDecimals);
       }
+      if (yPos !== parseFloat(mPos[1]).toFixed(config.posDecimals)) {
+        yPos = parseFloat(mPos[1]).toFixed(config.posDecimals);
+      }
+      if (zPos !== parseFloat(mPos[2]).toFixed(config.posDecimals)) {
+        zPos = parseFloat(mPos[2]).toFixed(config.posDecimals);
+      }
+      if (mPos.length > 3) {
+        if (aPos !== parseFloat(mPos[3]).toFixed(config.posDecimals)) {
+          aPos = parseFloat(mPos[3]).toFixed(config.posDecimals);
+          has4thAxis = true;
+        }
+      }
+      if (has4thAxis) {
+        status.machine.position.work.x = parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals)
+        status.machine.position.work.y = parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals)
+        status.machine.position.work.z = parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals)
+        status.machine.position.work.a = parseFloat(aPos - status.machine.position.offset.a).toFixed(config.posDecimals)
+      } else {
+        status.machine.position.work.x = parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals)
+        status.machine.position.work.y = parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals)
+        status.machine.position.work.z = parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals)
+      }
+      // end if MPOS
     }
+
   }
   if (status.machine.firmware.type == "smoothie") {
     // Extract wPos (for Smoothieware only!)
@@ -2037,6 +2075,7 @@ if (isElectron()) {
     function createJogWindow() {
       // Create the browser window.
       jogWindow = new BrowserWindow({
+        // 1366 * 768 == minimum to cater for
         width: 850,
         height: 850,
         fullscreen: false,
