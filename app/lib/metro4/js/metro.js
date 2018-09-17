@@ -1,5 +1,5 @@
 /*
- * Metro 4 Components Library v4.2.8 build 684 (https://metroui.org.ua)
+ * Metro 4 Components Library v4.2.22 build 699 (https://metroui.org.ua)
  * Copyright 2018 Sergey Pimenov
  * Licensed under MIT
  */
@@ -28,6 +28,8 @@ if ('MutationObserver' in window === false) {
 var meta_init = $("meta[name='metro4:init']").attr("content");
 var meta_locale = $("meta[name='metro4:locale']").attr("content");
 var meta_week_start = $("meta[name='metro4:week_start']").attr("content");
+var meta_date_format = $("meta[name='metro4:date_format']").attr("content");
+var meta_date_format_input = $("meta[name='metro4:date_format_input']").attr("content");
 var meta_animation_duration = $("meta[name='metro4:animation_duration']").attr("content");
 var meta_callback_timeout = $("meta[name='metro4:callback_timeout']").attr("content");
 var meta_timeout = $("meta[name='metro4:timeout']").attr("content");
@@ -38,7 +40,13 @@ if (window.METRO_INIT === undefined) {
 if (window.METRO_DEBUG === undefined) {window.METRO_DEBUG = true;}
 
 if (window.METRO_WEEK_START === undefined) {
-    window.METRO_WEEK_START = meta_week_start !== undefined ? parseInt(meta_week_start) : 1;
+    window.METRO_WEEK_START = meta_week_start !== undefined ? parseInt(meta_week_start) : 0;
+}
+if (window.METRO_DATE_FORMAT === undefined) {
+    window.METRO_DATE_FORMAT = meta_date_format !== undefined ? meta_date_format : "%Y-%m-%d";
+}
+if (window.METRO_DATE_FORMAT_INPUT === undefined) {
+    window.METRO_DATE_FORMAT_INPUT = meta_date_format_input !== undefined ? meta_date_format_input : "%Y-%m-%d";
 }
 if (window.METRO_LOCALE === undefined) {
     window.METRO_LOCALE = meta_locale !== undefined ? meta_locale : 'en-US';
@@ -80,7 +88,8 @@ var isTouch = (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (
 
 var Metro = {
 
-    version: "4.2.8.684 ",
+    version: "4.2.22",
+    versionFull: "4.2.22.699 ",
     isTouchable: isTouch,
     fullScreenEnabled: document.fullscreenEnabled,
     sheet: null,
@@ -155,17 +164,46 @@ var Metro = {
         resize: 'resize.metro',
         keyup: 'keyup.metro',
         keydown: 'keydown.metro',
+        keypress: 'keypredd.metro',
         dblclick: 'dblclick.metro',
         input: 'input.metro',
         change: 'change.metro',
         cut: 'cut.metro',
         paste: 'paste.metro',
-        drop: 'drop.metro',
         scroll: 'scroll.metro',
         scrollStart: 'scrollstart.metro',
         scrollStop: 'scrollstop.metro',
         mousewheel: 'mousewheel.metro',
-        inputchange: "change.metro input.metro propertychange.metro cut.metro paste.metro copy.metro"
+        inputchange: "change.metro input.metro propertychange.metro cut.metro paste.metro copy.metro",
+        dragstart: "dragstart.metro",
+        dragend: "dragend.metro",
+        dragenter: "dragenter.metro",
+        dragover: "dragover.metro",
+        dragleave: "dragleave.metro",
+        drop: 'drop.metro',
+        drag: 'drag.metro'
+    },
+
+    keyCode: {
+        BACKSPACE: 8,
+        TAB: 9,
+        ENTER: 13,
+        SHIFT: 16,
+        CTRL: 17,
+        ALT: 18,
+        BREAK: 19,
+        CAPS: 20,
+        ESCAPE: 27,
+        SPACE: 32,
+        PAGEUP: 33,
+        PAGEDOWN: 34,
+        END: 35,
+        HOME: 36,
+        LEFT_ARROW: 37,
+        UP_ARROW: 38,
+        RIGHT_ARROW: 39,
+        DOWN_ARROW: 40,
+        COMMA: 188
     },
 
     media_queries: {
@@ -179,7 +217,9 @@ var Metro = {
 
     media_sizes: {
         FS: 0,
+        XS: 360,
         SM: 576,
+        LD: 640,
         MD: 768,
         LG: 992,
         XL: 1200,
@@ -202,12 +242,16 @@ var Metro = {
 
     hotkeys: [],
 
-    about: function(){
-        console.log("Metro 4 Components Library - v"+this.version);
+    about: function(f){
+        console.log("Metro 4 Components Library - v" + (f === true ? this.versionFull : this.version));
     },
 
-    ver: function(){
-        return this.version;
+    aboutDlg: function(f){
+        alert("Metro 4 Components Library - v" + (f === true ? this.versionFull : this.version));
+    },
+
+    ver: function(f){
+        return (f === true ? this.versionFull : this.version);
     },
 
     observe: function(){
@@ -277,10 +321,6 @@ var Metro = {
 
         this.sheet = Utils.newCssSheet();
 
-        this.observe();
-
-        this.initHotkeys(hotkeys);
-        this.initWidgets(widgets);
 
         window.METRO_MEDIA = [];
         $.each(Metro.media_queries, function(key, query){
@@ -289,7 +329,12 @@ var Metro = {
             }
         });
 
-        this.about();
+        this.observe();
+
+        this.initHotkeys(hotkeys);
+        this.initWidgets(widgets);
+
+        this.about(true);
 
         return this;
     },
@@ -334,22 +379,18 @@ var Metro = {
             var $this = $(this), w = this;
             var roles = $this.data('role').split(/\s*,\s*/);
             roles.map(function (func) {
-                try {
-                    if ($.fn[func] !== undefined && $this.data(func) === undefined) {
-                        $.fn[func].call($this);
-                        $this.data(func + '-initiated', true);
+                if ($.fn[func] !== undefined && $this.attr("data-role-"+func) === undefined) {
+                    $.fn[func].call($this);
+                    $this.attr("data-role-"+func, true);
 
-                        var mc = $this.data('metroComponent');
+                    var mc = $this.data('metroComponent');
 
-                        if (mc === undefined) {
-                            mc = [func];
-                        } else {
-                            mc.push(func);
-                        }
-                        $this.data('metroComponent', mc);
+                    if (mc === undefined) {
+                        mc = [func];
+                    } else {
+                        mc.push(func);
                     }
-                } catch (e) {
-                    console.log(e.message, e.stack);
+                    $this.data('metroComponent', mc);
                 }
             });
         });
@@ -364,15 +405,24 @@ var Metro = {
     },
 
     destroyPlugin: function(element, name){
+        var p, mc;
         element = Utils.isJQueryObject(element) ? element[0] : element;
-        var p = $(element).data(name);
-        if (Utils.isFunc(p['destroy'])) {
-            p['destroy']();
+        p = $(element).data(name);
+
+        if (!Utils.isValue(p)) {
+            throw new Error("Component can not be destroyed: the element is not a Ьуекщ 4 component.");
         }
-        var mc = $(element).data("metroComponent");
+
+        if (!Utils.isFunc(p['destroy'])) {
+            throw new Error("Component can not be destroyed: method destroy not found.");
+        }
+
+        p['destroy']();
+        mc = $(element).data("metroComponent");
         Utils.arrayDelete(mc, name);
         $(element).data("metroComponent", mc);
         $.removeData(element, name);
+        $(element).removeAttr("data-role-"+name);
     },
 
     destroyPluginAll: function(element){
@@ -387,9 +437,9 @@ var Metro = {
     initPlugin: function(element, name){
         element = $(element);
         try {
-            if ($.fn[name] !== undefined) {
+            if ($.fn[name] !== undefined && element.attr("data-role-"+name) === undefined) {
                 $.fn[name].call(element);
-                element.data(name + '-initiated', true);
+                element.attr("data-role-"+name, true);
 
                 var mc = element.data('metroComponent');
 
@@ -825,6 +875,15 @@ var Colors = {
         return Object.keys(this[palette]);
     },
 
+    colors: function(palette){
+        var c = [];
+        palette = palette || this.PALETTES.ALL;
+        $.each(this[palette], function(){
+            c.push(this);
+        });
+        return c;
+    },
+
     hex2rgb: function(hex){
         var regex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
         hex = hex.replace( regex, function( m, r, g, b ) {
@@ -1133,14 +1192,34 @@ var Colors = {
     },
 
     lighten: function(color, amount){
-        var col, type, res, alpha = 1;
+        var type, res, alpha = 1, ring = amount > 0;
+
+        var calc = function(_color, _amount){
+            var col = _color.slice(1);
+
+            var num = parseInt(col, 16);
+            var r = (num >> 16) + _amount;
+
+            if (r > 255) r = 255;
+            else if  (r < 0) r = 0;
+
+            var b = ((num >> 8) & 0x00FF) + _amount;
+
+            if (b > 255) b = 255;
+            else if  (b < 0) b = 0;
+
+            var g = (num & 0x0000FF) + _amount;
+
+            if (g > 255) g = 255;
+            else if (g < 0) g = 0;
+
+            res = "#" + (g | (b << 8) | (r << 16)).toString(16);
+            return res;
+        };
 
         if (amount === undefined) {
             amount = 10;
         }
-
-        col = this.toHEX(color);
-        col = col.slice(1);
 
         type = this.is(color);
 
@@ -1148,23 +1227,10 @@ var Colors = {
             alpha = color.a;
         }
 
-        var num = parseInt(col, 16);
-        var r = (num >> 16) + amount;
-
-        if (r > 255) r = 255;
-        else if  (r < 0) r = 0;
-
-        var b = ((num >> 8) & 0x00FF) + amount;
-
-        if (b > 255) b = 255;
-        else if  (b < 0) b = 0;
-
-        var g = (num & 0x0000FF) + amount;
-
-        if (g > 255) g = 255;
-        else if (g < 0) g = 0;
-
-        res = "#" + (g | (b << 8) | (r << 16)).toString(16);
+        do {
+            res = calc(this.toHEX(color), amount);
+            ring ? amount-- : amount++;
+        } while (res.length < 7);
 
         switch (type) {
             case "rgb": return this.toRGB(res);
@@ -1586,6 +1652,120 @@ $.extend($.easing, {
 });
 
 
+// Source: js/utils/export.js
+var Export = {
+
+    init: function(){
+        return this;
+    },
+
+    options: {
+        csvDelimiter: "\t",
+        csvNewLine: "\r\n",
+        includeHeader: true
+    },
+
+    setup: function(options){
+        this.options = $.extend({}, this.options, options);
+        return this;
+    },
+
+    base64: function(data){
+        return window.btoa(unescape(encodeURIComponent(data)));
+    },
+
+    b64toBlob: function (b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = window.atob(b64Data);
+        var byteArrays = [];
+
+        var offset;
+        for (offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            var i;
+            for (i = 0; i < slice.length; i = i + 1) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new window.Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {
+            type: contentType
+        });
+    },
+
+    tableToCSV: function(table, filename, options){
+        var that = this, o = this.options;
+        var body, head, data = "";
+        var i, j, row, cell;
+
+        o = $.extend({}, o, options);
+
+        if (Utils.isJQueryObject(table)) {
+            table = table[0];
+        }
+
+        if (Utils.bool(o.includeHeader)) {
+
+            head = table.querySelectorAll("thead")[0];
+
+            for(i = 0; i < head.rows.length; i++) {
+                row = head.rows[i];
+                for(j = 0; j < row.cells.length; j++){
+                    cell = row.cells[j];
+                    data += (j ? o.csvDelimiter : '') + cell.textContent.trim();
+                }
+                data += o.csvNewLine;
+            }
+        }
+
+        body = table.querySelectorAll("tbody")[0];
+
+        for(i = 0; i < body.rows.length; i++) {
+            row = body.rows[i];
+            for(j = 0; j < row.cells.length; j++){
+                cell = row.cells[j];
+                data += (j ? o.csvDelimiter : '') + cell.textContent.trim();
+            }
+            data += o.csvNewLine;
+        }
+
+        if (Utils.isValue(filename)) {
+            return this.createDownload(this.base64("\uFEFF" + data), 'application/csv', filename);
+        }
+
+        return data;
+    },
+
+    createDownload: function (data, contentType, filename) {
+        var blob, anchor, url;
+
+        anchor = document.createElement('a');
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+
+        blob = this.b64toBlob(data, contentType);
+
+        url = window.URL.createObjectURL(blob);
+        anchor.href = url;
+        anchor.download = filename || Utils.elementId("download");
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(anchor);
+        return true;
+    }
+};
+
+Metro['export'] = Export.init();
+
+
 // Source: js/utils/extensions.js
 $.fn.extend({
     toggleAttr: function(a, v){
@@ -1641,6 +1821,19 @@ Array.prototype.unique = function () {
     return a;
 };
 
+if (typeof Array.from !== "function") {
+    Array.prototype.from = function() {
+        var i, a = [];
+        if (Utils.isNull(this.length)) {
+            throw new Error("Value is not iterable");
+        }
+        for(i = 0; i < this.length; i++) {
+            a.push(this[i]);
+        }
+        return a;
+    }
+}
+
 /**
  * Number.prototype.format(n, x, s, c)
  *
@@ -1662,6 +1855,70 @@ String.prototype.capitalize = function() {
 
 String.prototype.contains = function() {
     return !!~String.prototype.indexOf.apply(this, arguments);
+};
+
+String.prototype.toDate = function(format)
+{
+    var normalized, normalizedFormat, formatItems, dateItems;
+    var monthIndex, dayIndex, yearIndex, hourIndex, minutesIndex, secondsIndex;
+    var today, year, month, day, hour, minute, second;
+
+    if (!Utils.isValue(format)) {
+        format = "yyyy-mm-dd";
+    }
+
+    normalized      = this.replace(/[^a-zA-Z0-9%]/g, '-');
+    normalizedFormat= format.toLowerCase().replace(/[^a-zA-Z0-9%]/g, '-');
+    formatItems     = normalizedFormat.split('-');
+    dateItems       = normalized.split('-');
+
+    monthIndex  = formatItems.indexOf("mm") > -1 ? formatItems.indexOf("mm") : formatItems.indexOf("%m");
+    dayIndex    = formatItems.indexOf("dd") > -1 ? formatItems.indexOf("dd") : formatItems.indexOf("%d");
+    yearIndex   = formatItems.indexOf("yyyy") > -1 ? formatItems.indexOf("yyyy") : formatItems.indexOf("yy") > -1 ? formatItems.indexOf("yy") : formatItems.indexOf("%y");
+    hourIndex     = formatItems.indexOf("hh") > -1 ? formatItems.indexOf("hh") : formatItems.indexOf("%h");
+    minutesIndex  = formatItems.indexOf("ii") > -1 ? formatItems.indexOf("ii") : formatItems.indexOf("mi") > -1 ? formatItems.indexOf("mi") : formatItems.indexOf("%i");
+    secondsIndex  = formatItems.indexOf("ss") > -1 ? formatItems.indexOf("ss") : formatItems.indexOf("%s");
+
+    today = new Date();
+
+    year  = yearIndex >-1 ? dateItems[yearIndex] : today.getFullYear();
+    month = monthIndex >-1 ? dateItems[monthIndex]-1 : today.getMonth()-1;
+    day   = dayIndex >-1 ? dateItems[dayIndex] : today.getDate();
+
+    hour    = hourIndex >-1 ? dateItems[hourIndex] : today.getHours();
+    minute  = minutesIndex>-1 ? dateItems[minutesIndex] : today.getMinutes();
+    second  = secondsIndex>-1 ? dateItems[secondsIndex] : today.getSeconds();
+
+    return new Date(year,month,day,hour,minute,second);
+};
+
+Date.prototype.getWeek = function (dowOffset) {
+    var nYear, nday, newYear, day, daynum, weeknum;
+
+    dowOffset = !Utils.isValue(dowOffset) ? METRO_WEEK_START : typeof dowOffset === 'number' ? parseInt(dowOffset) : 0;
+    newYear = new Date(this.getFullYear(),0,1);
+    day = newYear.getDay() - dowOffset;
+    day = (day >= 0 ? day : day + 7);
+    daynum = Math.floor((this.getTime() - newYear.getTime() -
+        (this.getTimezoneOffset()-newYear.getTimezoneOffset())*60000)/86400000) + 1;
+
+    if(day < 4) {
+        weeknum = Math.floor((daynum+day-1)/7) + 1;
+        if(weeknum > 52) {
+            nYear = new Date(this.getFullYear() + 1,0,1);
+            nday = nYear.getDay() - dowOffset;
+            nday = nday >= 0 ? nday : nday + 7;
+            weeknum = nday < 4 ? 1 : 53;
+        }
+    }
+    else {
+        weeknum = Math.floor((daynum+day-1)/7);
+    }
+    return weeknum;
+};
+
+Date.prototype.getYear = function(){
+    return this.getFullYear().toString().substr(-2);
 };
 
 Date.prototype.format = function(format, locale){
@@ -1692,7 +1949,7 @@ Date.prototype.format = function(format, locale){
         zeroPad = function(nNum, nPad) {
             return ('' + (Math.pow(10, nPad) + nNum)).slice(1);
         };
-    return format.replace(/%[a-z]/gi, function(sMatch) {
+    return format.replace(/(%[a-z])/gi, function(sMatch) {
         return {
             '%a': aDays[nDay].slice(0,3),
             '%A': aDays[nDay],
@@ -1701,21 +1958,27 @@ Date.prototype.format = function(format, locale){
             '%c': date.toUTCString(),
             '%C': Math.floor(nYear/100),
             '%d': zeroPad(nDate, 2),
+            'dd': zeroPad(nDate, 2),
             '%e': nDate,
             '%F': date.toISOString().slice(0,10),
             '%G': getThursday().getFullYear(),
             '%g': ('' + getThursday().getFullYear()).slice(2),
             '%H': zeroPad(nHour, 2),
+            // 'HH': zeroPad(nHour, 2),
             '%I': zeroPad((nHour+11)%12 + 1, 2),
             '%j': zeroPad(aDayCount[nMonth] + nDate + ((nMonth>1 && isLeapYear()) ? 1 : 0), 3),
             '%k': '' + nHour,
             '%l': (nHour+11)%12 + 1,
             '%m': zeroPad(nMonth + 1, 2),
+            // 'mm': zeroPad(nMonth + 1, 2),
             '%M': zeroPad(date.getMinutes(), 2),
+            // 'MM': zeroPad(date.getMinutes(), 2),
             '%p': (nHour<12) ? 'AM' : 'PM',
             '%P': (nHour<12) ? 'am' : 'pm',
             '%s': Math.round(date.getTime()/1000),
+            // 'ss': Math.round(date.getTime()/1000),
             '%S': zeroPad(date.getSeconds(), 2),
+            // 'SS': zeroPad(date.getSeconds(), 2),
             '%u': nDay || 7,
             '%V': (function() {
                 var target = getThursday(),
@@ -1729,7 +1992,9 @@ Date.prototype.format = function(format, locale){
             '%x': date.toLocaleDateString(),
             '%X': date.toLocaleTimeString(),
             '%y': ('' + nYear).slice(2),
+            // 'yy': ('' + nYear).slice(2),
             '%Y': nYear,
+            // 'YYYY': nYear,
             '%z': date.toTimeString().replace(/.+GMT([+-]\d+).+/, '$1'),
             '%Z': date.toTimeString().replace(/.+\((.+?)\)$/, '$1')
         }[sMatch] || sMatch;
@@ -1972,7 +2237,9 @@ var Locales = {
             "help": "Help",
             "yes": "Yes",
             "no": "No",
-            "random": "Random"
+            "random": "Random",
+            "save": "Save",
+            "reset": "Reset"
         }
     },
     
@@ -2007,7 +2274,9 @@ var Locales = {
             "help": "帮助",
             "yes": "是",
             "no": "否",
-            "random": "随机"
+            "random": "随机",
+            "save": "保存",
+            "reset": "重啟"
         }
     },
     
@@ -2040,7 +2309,9 @@ var Locales = {
             "help": "Hilfe",
             "yes": "Ja",
             "no": "Nein",
-            "random": "Zufällig"
+            "random": "Zufällig",
+            "save": "Sparen",
+            "reset": "Zurücksetzen"
         }
     },
 
@@ -2072,7 +2343,9 @@ var Locales = {
             "help": "Segítség",
             "yes": "Igen",
             "no": "Nem",
-            "random": "Véletlen"
+            "random": "Véletlen",
+            "save": "Mentés",
+            "reset": "Visszaállítás"
         }
     },
 
@@ -2104,7 +2377,9 @@ var Locales = {
             "help": "Помощь",
             "yes": "Да",
             "no": "Нет",
-            "random": "Случайно"
+            "random": "Случайно",
+            "save": "Сохранить",
+            "reset": "Сброс"
         }
     },
 
@@ -2136,7 +2411,9 @@ var Locales = {
             "help": "Допомога",
             "yes": "Так",
             "no": "Ні",
-            "random": "Випадково"
+            "random": "Випадково",
+            "save": "Зберегти",
+            "reset": "Скинути"
         }
     },
 
@@ -2171,7 +2448,9 @@ var Locales = {
             "help": "Ayuda",
             "yes": "Si",
             "no": "No",
-            "random": "Aleatorio"
+            "random": "Aleatorio",
+            "save": "Salvar",
+            "reset": "Reiniciar"
         }
     },
 
@@ -2206,7 +2485,9 @@ var Locales = {
             "help": "Aide",
             "yes": "Oui",
             "no": "Non",
-            "random": "Aléatoire"
+            "random": "Aléatoire",
+            "save": "Sauvegarder",
+            "reset": "Réinitialiser"
         }
     },
 
@@ -2241,7 +2522,9 @@ var Locales = {
             "help": "Aiuto",
             "yes": "Sì",
             "no": "No",
-            "random": "Random"
+            "random": "Random",
+            "save": "Salvare",
+            "reset": "Reset"
         }
     }
 };
@@ -3074,8 +3357,20 @@ var Utils = {
         return /youtu\.be|youtube|vimeo/gi.test(val);
     },
 
-    isDate: function(val){
-        return (String(new Date(val)) !== "Invalid Date");
+    isDate: function(val, format){
+        var result;
+
+        if (typeof val === "object" && Utils.isFunc(val['getMonth'])) {
+            return true;
+        }
+
+        if (Utils.isValue(format)) {
+            result = String(val).toDate(format);
+        } else {
+            result = String(new Date(val));
+        }
+
+        return result !== "Invalid Date";
     },
 
     isInt: function(n){
@@ -3093,11 +3388,11 @@ var Utils = {
     },
 
     isFunc: function(f){
-        return this.isType(f, 'function');
+        return Utils.isType(f, 'function');
     },
 
     isObject: function(o){
-        return this.isType(o, 'object')
+        return Utils.isType(o, 'object')
     },
 
     isArray: function(a){
@@ -3113,7 +3408,7 @@ var Utils = {
             return o;
         }
 
-        if (this.isTag(o) || this.isUrl(o)) {
+        if (Utils.isTag(o) || Utils.isUrl(o)) {
             return false;
         }
 
@@ -3168,7 +3463,7 @@ var Utils = {
 
     embedObject: function(val){
         if (typeof  val !== "string" ) {
-            val = this.isJQueryObject(val) ? val.html() : val.innerHTML;
+            val = Utils.isJQueryObject(val) ? val.html() : val.innerHTML;
         }
         return "<div class='embed-container'>" + val + "</div>";
     },
@@ -3241,7 +3536,7 @@ var d = new Date().getTime();
     },
 
     callback: function(f, args, context){
-        return this.exec(f, args, context);
+        return Utils.exec(f, args, context);
     },
 
     func: function(f){
@@ -3251,9 +3546,9 @@ var d = new Date().getTime();
     exec: function(f, args, context){
         var result;
         if (f === undefined || f === null) {return false;}
-        var func = this.isFunc(f);
+        var func = Utils.isFunc(f);
         if (func === false) {
-            func = this.func(f);
+            func = Utils.func(f);
         }
 
         try {
@@ -3268,7 +3563,7 @@ var d = new Date().getTime();
     },
 
     isOutsider: function(el) {
-        el = this.isJQueryObject(el) ? el : $(el);
+        el = Utils.isJQueryObject(el) ? el : $(el);
         var rect;
         var clone = el.clone();
 
@@ -3291,11 +3586,7 @@ var d = new Date().getTime();
     },
 
     inViewport: function(el){
-        if (typeof jQuery === "function" && el instanceof jQuery) {
-            el = el[0];
-        }
-
-        var rect = el.getBoundingClientRect();
+        var rect = Utils.rect(el);
 
         return (
             rect.top >= 0 &&
@@ -3303,6 +3594,14 @@ var d = new Date().getTime();
             rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
             rect.right <= (window.innerWidth || document.documentElement.clientWidth)
         );
+    },
+
+    rect: function(el){
+        if (typeof jQuery === "function" && el instanceof jQuery) {
+            el = el[0];
+        }
+
+        return el.getBoundingClientRect();
     },
 
     objectLength: function(obj){
@@ -3454,7 +3753,7 @@ var d = new Date().getTime();
     },
 
     coords: function(el){
-        if (this.isJQueryObject(el)) {
+        if (Utils.isJQueryObject(el)) {
             el = el[0];
         }
 
@@ -3468,9 +3767,9 @@ var d = new Date().getTime();
 
     positionXY: function(e, t){
         switch (t) {
-            case 'client': return this.clientXY(e);
-            case 'screen': return this.screenXY(e);
-            case 'page': return this.pageXY(e);
+            case 'client': return Utils.clientXY(e);
+            case 'screen': return Utils.screenXY(e);
+            case 'page': return Utils.pageXY(e);
             default: return {x: 0, y: 0}
         }
     },
@@ -3530,11 +3829,11 @@ var d = new Date().getTime();
     },
 
     getStyleOne: function(el, property){
-        return this.getStyle(el).getPropertyValue(property);
+        return Utils.getStyle(el).getPropertyValue(property);
     },
 
     getTransformMatrix: function(el, returnArray){
-        var computedMatrix = this.getStyleOne(el, "transform");
+        var computedMatrix = Utils.getStyleOne(el, "transform");
         var a = computedMatrix
             .replace("matrix(", '')
             .slice(0, -1)
@@ -3551,11 +3850,13 @@ var d = new Date().getTime();
 
     computedRgbToHex: function(rgb){
         var a = rgb.replace(/[^\d,]/g, '').split(',');
-        var result = "#";
-        $.each(a, function(){
-            var h = parseInt(this).toString(16);
+        var result = "#", i;
+
+        for(i = 0; i < 3; i++) {
+            var h = parseInt(a[i]).toString(16);
             result += h.length === 1 ? "0" + h : h;
-        });
+        }
+
         return result;
     },
 
@@ -3600,7 +3901,7 @@ var d = new Date().getTime();
 
     getInlineStyles: function(el){
         var styles = {};
-        if (this.isJQueryObject(el)) {
+        if (Utils.isJQueryObject(el)) {
             el = el[0];
         }
         for (var i = 0, l = el.style.length; i < l; i++) {
@@ -3640,17 +3941,30 @@ var d = new Date().getTime();
         Metro.locales = $.extend( {}, Metro.locales, locale );
     },
 
-    strToArray: function(str, delimiter){
+    strToArray: function(str, delimiter, type, format){
         var a;
 
-        if (!this.isValue(delimiter)) {
+        if (!Utils.isValue(delimiter)) {
             delimiter = ",";
+        }
+
+        if (!Utils.isValue(type)) {
+            type = "string";
         }
 
         a = (""+str).split(delimiter);
 
         return a.map(function(s){
-            return s.trim();
+            var result;
+
+            switch (type) {
+                case "integer": result = parseInt(s); break;
+                case "float": result = parseFloat(s); break;
+                case "date": result = !Utils.isValue(format) ? new Date(s) : s.toDate(format); break;
+                default: result = s.trim();
+            }
+
+            return result;
         })
     },
 
@@ -3721,6 +4035,10 @@ var d = new Date().getTime();
         return val !== undefined && val !== null && val !== "";
     },
 
+    isNull: function(val){
+        return val === undefined || val === null;
+    },
+
     isNegative: function(val){
         return parseFloat(val) < 0;
     },
@@ -3739,6 +4057,75 @@ var d = new Date().getTime();
 
     parseMoney: function(val){
         return Number(parseFloat(val.replace(/[^0-9-.]/g, '')));
+    },
+
+    isVisible: function(el){
+        if (Utils.isJQueryObject(el)) {
+            el = el[0];
+        }
+
+        return Utils.getStyleOne(el, "display") !== "none" && Utils.getStyleOne(el, "visibility") !== "hidden" && el.offsetParent !== null;
+    },
+
+    parseNumber: function(val, thousand, decimal){
+        return val.replace(new RegExp('\\'+thousand, "g"), "").replace(new RegExp('\\'+decimal, 'g'), ".");
+    },
+
+    nearest: function(val, precision, down){
+        val /= precision;
+        val = Math[down === true ? 'floor' : 'ceil'](val) * precision;
+        return val;
+    },
+
+    bool: function(value){
+        switch(value){
+            case true:
+            case "true":
+            case 1:
+            case "1":
+            case "on":
+            case "yes":
+                return true;
+            default:
+                return false;
+        }
+    },
+
+    copy: function(el){
+        var body = document.body, range, sel;
+
+        if (Utils.isJQueryObject(el)) {
+            el = el[0];
+        }
+
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+        }
+
+        document.execCommand("Copy");
+
+        if (window.getSelection) {
+            if (window.getSelection().empty) {  // Chrome
+                window.getSelection().empty();
+            } else if (window.getSelection().removeAllRanges) {  // Firefox
+                window.getSelection().removeAllRanges();
+            }
+        } else if (document.selection) {  // IE?
+            document.selection.empty();
+        }
     }
 };
 
@@ -4041,6 +4428,8 @@ var AppBar = {
     },
 
     options: {
+        expand: false,
+        expandPoint: null,
         duration: 100,
         onAppBarCreate: Metro.noop
     },
@@ -4106,6 +4495,14 @@ var AppBar = {
         } else {
             hamburger.addClass("hidden");
         }
+
+        if (o.expand === true) {
+            element.addClass("app-bar-expand");
+        } else {
+            if (Utils.isValue(o.expandPoint) && Utils.mediaExist(o.expandPoint)) {
+                element.addClass("app-bar-expand");
+            }
+        }
     },
 
     _createEvents: function(){
@@ -4124,6 +4521,15 @@ var AppBar = {
         });
 
         $(window).on(Metro.events.resize+"-"+element.attr("id"), function(){
+
+            if (o.expand !== true) {
+                if (Utils.isValue(o.expandPoint) && Utils.mediaExist(o.expandPoint)) {
+                    element.addClass("app-bar-expand");
+                } else {
+                    element.removeClass("app-bar-expand");
+                }
+            }
+
             if (menu.length === 0) return ;
 
             if (hamburger.css('display') !== 'block') {
@@ -4275,7 +4681,7 @@ var Audio = {
             this.play();
         }
 
-        Utils.exec(o.onAudioCreate, [element, this.player]);
+        Utils.exec(o.onAudioCreate, [element, this.player], element[0]);
     },
 
     _createPlayer: function(){
@@ -4427,7 +4833,7 @@ var Audio = {
         element.on("loadedmetadata", function(){
             that.duration = audio.duration.toFixed(0);
             that._setInfo(0, that.duration);
-            Utils.exec(o.onMetadata, [audio, player]);
+            Utils.exec(o.onMetadata, [audio, player], element[0]);
         });
 
         element.on("canplay", function(){
@@ -4443,7 +4849,7 @@ var Audio = {
             var position = Math.round(audio.currentTime * 100 / that.duration);
             that._setInfo(audio.currentTime, that.duration);
             that.stream.data('slider').val(position);
-            Utils.exec(o.onTime, [audio.currentTime, that.duration, audio, player]);
+            Utils.exec(o.onTime, [audio.currentTime, that.duration, audio, player], element[0]);
         });
 
         element.on("waiting", function(){
@@ -4456,22 +4862,22 @@ var Audio = {
 
         element.on("play", function(){
             player.find(".play").html(o.pauseIcon);
-            Utils.exec(o.onPlay, [audio, player]);
+            Utils.exec(o.onPlay, [audio, player], element[0]);
         });
 
         element.on("pause", function(){
             player.find(".play").html(o.playIcon);
-            Utils.exec(o.onPause, [audio, player]);
+            Utils.exec(o.onPause, [audio, player], element[0]);
         });
 
         element.on("stop", function(){
             that.stream.data('slider').val(0);
-            Utils.exec(o.onStop, [audio, player]);
+            Utils.exec(o.onStop, [audio, player], element[0]);
         });
 
         element.on("ended", function(){
             that.stream.data('slider').val(0);
-            Utils.exec(o.onEnd, [audio, player]);
+            Utils.exec(o.onEnd, [audio, player], element[0]);
         });
 
         element.on("volumechange", function(){
@@ -4783,6 +5189,8 @@ var Calendar = {
     },
 
     options: {
+        wide: false,
+        widePoint: null,
         pickerMode: false,
         show: null,
         locale: METRO_LOCALE,
@@ -4794,6 +5202,7 @@ var Calendar = {
         headerFormat: "%A, %b %e",
         showHeader: true,
         showFooter: true,
+        showTimeField: true,
         clsCalendar: "",
         clsCalendarHeader: "",
         clsCalendarContent: "",
@@ -4817,6 +5226,8 @@ var Calendar = {
         weekDayClick: false,
         multiSelect: false,
         special: null,
+        format: METRO_DATE_FORMAT,
+        inputFormat: null,
         onCancel: Metro.noop,
         onToday: Metro.noop,
         onClear: Metro.noop,
@@ -4847,49 +5258,16 @@ var Calendar = {
 
         element.html("").addClass("calendar").addClass(o.clsCalendar);
 
-        if (o.preset !== null) {
-            if (Array.isArray(o.preset) === false) {
-                o.preset = o.preset.split(",").map(function(item){
-                    return item.trim();
-                });
-            }
-
-            $.each(o.preset, function(){
-                if (Utils.isDate(this) === false) {
-                    return ;
-                }
-                that.selected.push((new Date(this)).getTime());
-            });
+        if (Utils.isValue(o.preset)) {
+            this._dates2array(o.preset, 'selected');
         }
 
-        if (o.exclude !== null) {
-            if (Array.isArray(o.exclude) === false) {
-                o.exclude = o.exclude.split(",").map(function(item){
-                    return item.trim();
-                });
-            }
-
-            $.each(o.exclude, function(){
-                if (Utils.isDate(this) === false) {
-                    return ;
-                }
-                that.exclude.push((new Date(this)).getTime());
-            });
+        if (Utils.isValue(o.exclude)) {
+            this._dates2array(o.exclude, 'exclude');
         }
 
-        if (o.special !== null) {
-            if (Array.isArray(o.special) === false) {
-                o.special = o.special.split(",").map(function(item){
-                    return item.trim();
-                });
-            }
-
-            $.each(o.special, function(){
-                if (Utils.isDate(this) === false) {
-                    return ;
-                }
-                that.special.push((new Date(this)).getTime());
-            });
+        if (Utils.isValue(o.special)) {
+            this._dates2array(o.special, 'special');
         }
 
         if (o.buttons !== false) {
@@ -4900,19 +5278,17 @@ var Calendar = {
             }
         }
 
-        if (o.minDate !== null && Utils.isDate(o.minDate)) {
-            this.min = new Date(o.minDate);
-            this.min.setHours(0,0,0,0);
+        if (o.minDate !== null && Utils.isDate(o.minDate, o.inputFormat)) {
+            this.min = Utils.isValue(o.inputFormat) ? o.minDate.toDate(o.inputFormat) : (new Date(o.minDate));
         }
 
-        if (o.maxDate !== null && Utils.isDate(o.maxDate)) {
-            this.max = new Date(o.maxDate);
-            this.max.setHours(0,0,0,0);
+        if (o.maxDate !== null && Utils.isDate(o.maxDate, o.inputFormat)) {
+            this.max = Utils.isValue(o.inputFormat) ? o.maxDate.toDate(o.inputFormat) : (new Date(o.maxDate));
         }
 
-        if (o.show !== null && Utils.isDate(o.show)) {
-            this.show = new Date(o.show);
-            this.show.setHours(0,0,0,0);
+        if (o.show !== null && Utils.isDate(o.show, o.inputFormat)) {
+            this.show = Utils.isValue(o.inputFormat) ? o.show.toDate(o.inputFormat) : (new Date(o.show));
+
             this.current = {
                 year: this.show.getFullYear(),
                 month: this.show.getMonth(),
@@ -4922,28 +5298,53 @@ var Calendar = {
 
         this.locale = Metro.locales[o.locale] !== undefined ? Metro.locales[o.locale] : Metro.locales["en-US"];
 
-        this._build();
-    },
-
-    _build: function(){
-        var element = this.element;
-
         this._drawCalendar();
         this._bindEvents();
 
-        if (this.options.ripple === true) {
+        if (o.wide === true) {
+            element.addClass("calendar-wide");
+        } else {
+            if (!Utils.isNull(o.widePoint) && Utils.mediaExist(o.widePoint)) {
+                element.addClass("calendar-wide");
+            }
+        }
+
+
+        if (o.ripple === true && Utils.isFunc(element.ripple) !== false) {
             element.ripple({
                 rippleTarget: ".button, .prev-month, .next-month, .prev-year, .next-year, .day",
                 rippleColor: this.options.rippleColor
             });
         }
 
-
         Utils.exec(this.options.onCalendarCreate, [this.element]);
+    },
+
+    _dates2array: function(val, category){
+        var that = this, o = this.options;
+
+        $.each(Utils.strToArray(val), function(){
+            var _d = Utils.isValue(o.inputFormat) ? this.toDate(o.inputFormat) : new Date(this);
+            if (Utils.isDate(_d) === false) {
+                return ;
+            }
+            _d.setHours(0,0,0,0);
+            that[category].push(_d.getTime());
+        });
     },
 
     _bindEvents: function(){
         var that = this, element = this.element, o = this.options;
+
+        $(window).on(Metro.events.resize, function(){
+            if (o.wide !== true) {
+                if (!Utils.isNull(o.widePoint) && Utils.mediaExist(o.widePoint)) {
+                    element.addClass("calendar-wide");
+                } else {
+                    element.removeClass("calendar-wide");
+                }
+            }
+        });
 
         element.on(Metro.events.click, ".prev-month, .next-month, .prev-year, .next-year", function(e){
             var new_date, el = $(this);
@@ -4993,14 +5394,7 @@ var Calendar = {
         });
 
         element.on(Metro.events.click, ".button.today", function(e){
-            that.today = new Date();
-            that.current = {
-                year: that.today.getFullYear(),
-                month: that.today.getMonth(),
-                day: that.today.getDate()
-            };
-            that._drawHeader();
-            that._drawContent();
+            that.toDay();
             Utils.exec(o.onToday, [that.today, element]);
 
             e.preventDefault();
@@ -5313,10 +5707,10 @@ var Calendar = {
                     if (this.exclude.indexOf(s.getTime()) !== -1) {
                         d.addClass("disabled excluded").addClass(o.clsExcluded);
                     }
-                    if (this.min !== null && s.getTime() < this.min.getTime()) {
+                    if (this.min !== null && s < this.min) {
                         d.addClass("disabled excluded").addClass(o.clsExcluded);
                     }
-                    if (this.max !== null && s.getTime() > this.max.getTime()) {
+                    if (this.max !== null && s > this.max) {
                         d.addClass("disabled excluded").addClass(o.clsExcluded);
                     }
                 } else {
@@ -5334,6 +5728,10 @@ var Calendar = {
             d = $("<div>").addClass("day").html(first.getDate()).appendTo(days_row);
 
             d.data('day', first.getTime());
+
+            if (this.show.format("%d-%m-%Y") === first.format("%d-%m-%Y")) {
+                d.addClass("showed");
+            }
 
             if (
                 this.today.getFullYear() === first.getFullYear() &&
@@ -5414,13 +5812,6 @@ var Calendar = {
                 }
             }
         }
-
-        var day_height = element.find(".day:nth-child(1)").css('width');
-
-        element.find(".days-row .day").css({
-            height: day_height,
-            lineHeight: day_height
-        });
     },
 
     _drawCalendar: function(){
@@ -5450,6 +5841,22 @@ var Calendar = {
 
     getCurrent: function(){
         return this.current;
+    },
+
+    clearSelected: function(){
+        this.selected = [];
+        this._drawContent();
+    },
+
+    toDay: function(){
+        this.today = new Date();
+        this.current = {
+            year: this.today.getFullYear(),
+            month: this.today.getMonth(),
+            day: this.today.getDate()
+        };
+        this._drawHeader();
+        this._drawContent();
     },
 
     setExclude: function(exclude){
@@ -5643,11 +6050,12 @@ var CalendarPicker = {
         this.value = null;
         this.value_date = null;
         this.calendar = null;
+        this.overlay = null;
 
         this._setOptionsFromDOM();
         this._create();
 
-        Utils.exec(this.options.onCalendarPickerCreate, [this.element]);
+        Utils.exec(this.options.onCalendarPickerCreate, [this.element], this.elem);
 
         return this;
     },
@@ -5655,9 +6063,21 @@ var CalendarPicker = {
     dependencies: ['calendar'],
 
     options: {
+
+        calendarWide: false,
+        calendarWidePoint: null,
+
+
+        dialogMode: false,
+        dialogPoint: 360,
+        dialogOverlay: true,
+        overlayColor: '#000000',
+        overlayAlpha: .5,
+
         locale: METRO_LOCALE,
         size: "100%",
-        format: "%Y/%m/%d",
+        format: METRO_DATE_FORMAT,
+        inputFormat: null,
         headerFormat: "%A, %b %e",
         clearButton: false,
         calendarButtonIcon: "<span class='default-icon-calendar'></span>",
@@ -5670,24 +6090,22 @@ var CalendarPicker = {
         yearsAfter: 100,
         weekStart: METRO_WEEK_START,
         outside: true,
+        ripple: false,
+        rippleColor: "#cccccc",
+        exclude: null,
+        minDate: null,
+        maxDate: null,
+        special: null,
+        showHeader: true,
+
         clsCalendar: "",
         clsCalendarHeader: "",
         clsCalendarContent: "",
-        clsCalendarFooter: "",
         clsCalendarMonths: "",
         clsCalendarYears: "",
         clsToday: "",
         clsSelected: "",
         clsExcluded: "",
-        ripple: false,
-        rippleColor: "#cccccc",
-        exclude: null,
-        preset: null,
-        minDate: null,
-        maxDate: null,
-        special: null,
-        showHeader: true,
-        showFooter: true,
 
         onDayClick: Metro.noop,
         onCalendarPickerCreate: Metro.noop,
@@ -5699,7 +6117,7 @@ var CalendarPicker = {
     },
 
     _setOptionsFromDOM: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
 
         $.each(element.data(), function(key, value){
             if (key in o) {
@@ -5713,18 +6131,30 @@ var CalendarPicker = {
     },
 
     _create: function(){
+
+        this._createStructure();
+        this._createEvents();
+    },
+
+    _createStructure: function(){
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
         var container = $("<div>").addClass("input " + element[0].className + " calendar-picker");
         var buttons = $("<div>").addClass("button-group");
         var calendarButton, clearButton, cal = $("<div>").addClass("drop-shadow");
+        var curr = element.val().trim();
 
         if (element.attr("type") === undefined) {
             element.attr("type", "text");
         }
 
-        this.value = element.val();
+        if (!Utils.isValue(curr)) {
+            this.value = (new Date()).format("%Y/%m/%d");
+        } else {
+            this.value = Utils.isValue(o.inputFormat) === false ? curr : (curr.toDate(o.inputFormat)).format("%Y/%m/%d");
+        }
+
         if (Utils.isDate(this.value)) {
             this.value_date = new Date(this.value);
             this.value_date.setHours(0,0,0,0);
@@ -5742,6 +6172,11 @@ var CalendarPicker = {
         cal.appendTo(container);
 
         cal.calendar({
+            wide: o.calendarWide,
+            widePoint: o.calendarWidePoint,
+
+            format: o.format,
+            inputFormat: o.inputFormat,
             pickerMode: true,
             show: o.value,
             locale: o.locale,
@@ -5749,15 +6184,17 @@ var CalendarPicker = {
             outside: o.outside,
             buttons: false,
             headerFormat: o.headerFormat,
-            clsCalendar: o.clsCalendar,
+
+            clsCalendar: o.clsCalendar + " calendar-picker",
             clsCalendarHeader: o.clsCalendarHeader,
             clsCalendarContent: o.clsCalendarContent,
-            clsCalendarFooter: o.clsCalendarFooter,
+            clsCalendarFooter: "d-none",
             clsCalendarMonths: o.clsCalendarMonths,
             clsCalendarYears: o.clsCalendarYears,
             clsToday: o.clsToday,
             clsSelected: o.clsSelected,
             clsExcluded: o.clsExcluded,
+
             ripple: o.ripple,
             rippleColor: o.rippleColor,
             exclude: o.exclude,
@@ -5767,17 +6204,20 @@ var CalendarPicker = {
             yearsAfter: o.yearsAfter,
             special: o.special,
             showHeader: o.showHeader,
-            showFooter: o.showFooter,
+            showFooter: false,
             onDayClick: function(sel, day, el){
                 var date = new Date(sel[0]);
-                that.value = date.format("%Y/%m/%d");
+
+                that._removeOverlay();
+
+                that.value = date.format(Metro.utils.isValue(o.inputFormat) ? o.inputFormat : "%Y/%m/%d");
                 that.value_date = date;
                 element.val(date.format(o.format, o.locale));
                 element.trigger("change");
                 cal.removeClass("open open-up");
                 cal.hide();
-                Utils.exec(o.onChange, [that.value, that.value_date, element]);
-                Utils.exec(o.onDayClick, [sel, day, el]);
+                Utils.exec(o.onChange, [that.value, that.value_date, element], element[0]);
+                Utils.exec(o.onDayClick, [sel, day, el], element[0]);
             },
             onMonthChange: o.onMonthChange,
             onYearChange: o.onYearChange
@@ -5787,46 +6227,14 @@ var CalendarPicker = {
 
         this.calendar = cal;
 
-        calendarButton = $("<button>").addClass("button").attr("tabindex", -1).attr("type", "button").html(o.calendarButtonIcon);
-        calendarButton.appendTo(buttons);
-        container.on(Metro.events.click, "button, input", function(e){
-            if (Utils.isDate(that.value) && (cal.hasClass("open") === false && cal.hasClass("open-up") === false)) {
-                cal.css({
-                    visibility: "hidden",
-                    display: "block"
-                });
-                cal.data('calendar').setPreset(that.value);
-                cal.data('calendar').setShow(that.value);
-                cal.data('calendar').setToday(that.value);
-                cal.css({
-                    visibility: "visible",
-                    display: "none"
-                });
-            }
-            if (cal.hasClass("open") === false && cal.hasClass("open-up") === false) {
-                $(".calendar-picker .calendar").removeClass("open open-up").hide();
-                cal.addClass("open");
-                if (Utils.isOutsider(cal) === false) {
-                    cal.addClass("open-up");
-                }
-                cal.show();
-                Utils.exec(o.onCalendarShow, [element, cal]);
-            } else {
-                cal.removeClass("open open-up");
-                cal.hide();
-                Utils.exec(o.onCalendarHide, [element, cal]);
-            }
-            e.preventDefault();
-            e.stopPropagation();
-        });
-
         if (o.clearButton === true) {
-            clearButton = $("<button>").addClass("button").attr("tabindex", -1).attr("type", "button").html(o.clearButtonIcon);
-            clearButton.on(Metro.events.click, function () {
-                element.val("").trigger('change');
-            });
+            clearButton = $("<button>").addClass("button input-clear-button").attr("tabindex", -1).attr("type", "button").html(o.clearButtonIcon);
             clearButton.appendTo(buttons);
         }
+
+        calendarButton = $("<button>").addClass("button").attr("tabindex", -1).attr("type", "button").html(o.calendarButtonIcon);
+        calendarButton.appendTo(buttons);
+
 
         if (element.attr('dir') === 'rtl' ) {
             container.addClass("rtl");
@@ -5854,15 +6262,111 @@ var CalendarPicker = {
         container.addClass(o.clsPicker);
         element.addClass(o.clsInput);
 
+        if (o.dialogOverlay === true) {
+            this.overlay = that._overlay();
+        }
+
+        if (o.dialogMode === true) {
+            container.addClass("dialog-mode");
+        } else {
+            if (Utils.media("(max-width: "+o.dialogPoint+"px)")) {
+                container.addClass("dialog-mode");
+            }
+        }
+    },
+
+    _createEvents: function(){
+        var that = this, element = this.element, o = this.options;
+        var container = element.parent();
+        var clear = container.find(".input-clear-button");
+        var cal = this.calendar;
+
+        $(window).on(Metro.events.resize, function(){
+            if (o.dialogMode !== true) {
+                if (Utils.media("(max-width: " + o.dialogPoint + "px)")) {
+                    container.addClass("dialog-mode");
+                } else {
+                    container.removeClass("dialog-mode");
+                }
+            }
+        });
+
+        if (clear.length > 0) clear.on(Metro.events.click, function(e){
+            element.val("").trigger('change').blur();
+            that.value = (new Date()).format("%Y/%m/%d");
+            that.value_date = new Date(this.value);
+            that.value_date.setHours(0,0,0,0);
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        container.on(Metro.events.click, "button, input", function(e){
+            if (Utils.isDate(that.value, o.inputFormat) && (cal.hasClass("open") === false && cal.hasClass("open-up") === false)) {
+                cal.css({
+                    visibility: "hidden",
+                    display: "block"
+                });
+                cal.data('calendar').setPreset(that.value);
+                cal.data('calendar').setShow(that.value);
+                cal.data('calendar').setToday(that.value);
+                cal.css({
+                    visibility: "visible",
+                    display: "none"
+                });
+            }
+            if (cal.hasClass("open") === false && cal.hasClass("open-up") === false) {
+                if (container.hasClass("dialog-mode")) {
+                    that.overlay.appendTo($('body'));
+                }
+                $(".calendar-picker .calendar").removeClass("open open-up").hide();
+                cal.addClass("open");
+                if (Utils.isOutsider(cal) === false) {
+                    cal.addClass("open-up");
+                }
+                cal.show();
+                Utils.exec(o.onCalendarShow, [element, cal]);
+            } else {
+
+                that._removeOverlay();
+
+                cal.removeClass("open open-up");
+                cal.hide();
+                Utils.exec(o.onCalendarHide, [element, cal]);
+            }
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
         element.on(Metro.events.blur, function(){container.removeClass("focused");});
         element.on(Metro.events.focus, function(){container.addClass("focused");});
         element.on(Metro.events.change, function(){
-            Utils.exec(o.onChange, [that.value_date, that.value, element]);
+            Utils.exec(o.onChange, [that.value_date, that.value, element], element[0]);
         });
     },
 
+    _overlay: function(){
+        var o = this.options;
+
+        var overlay = $("<div>");
+        overlay.addClass("overlay for-calendar-picker").addClass(o.clsOverlay);
+
+        if (o.overlayColor === 'transparent') {
+            overlay.addClass("transparent");
+        } else {
+            overlay.css({
+                background: Utils.hex2rgba(o.overlayColor, o.overlayAlpha)
+            });
+        }
+
+        return overlay;
+    },
+
+    _removeOverlay: function(){
+        $('body').find('.overlay.for-calendar-picker').remove();
+    },
+
     val: function(v){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
 
         if (v === undefined) {
             return this.value_date;
@@ -5877,7 +6381,7 @@ var CalendarPicker = {
     },
 
     changeValue: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element;
         this.val(element.attr("value"));
     },
 
@@ -5900,8 +6404,8 @@ var CalendarPicker = {
     },
 
     i18n: function(val){
-        var that = this, element = this.element, o = this.options;
-        var hidden = false;
+        var o = this.options;
+        var hidden;
         var cal = this.calendar;
         if (val === undefined) {
             return o.locale;
@@ -5927,20 +6431,32 @@ var CalendarPicker = {
     },
 
     changeAttrLocale: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element;
         this.i18n(element.attr("data-locale"));
     },
 
     changeAttrSpecial: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element;
         var cal = this.calendar.data("calendar");
         cal.setSpecial(element.attr("data-special"));
     },
 
     changeAttrExclude: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element;
         var cal = this.calendar.data("calendar");
         cal.setExclude(element.attr("data-exclude"));
+    },
+
+    changeAttrMinDate: function(){
+        var element = this.element;
+        var cal = this.calendar.data("calendar");
+        cal.setMinDate(element.attr("data-min-date"));
+    },
+
+    changeAttrMaxDate: function(){
+        var element = this.element;
+        var cal = this.calendar.data("calendar");
+        cal.setMaxDate(element.attr("data-max-date"));
     },
 
     changeAttribute: function(attributeName){
@@ -5950,13 +6466,19 @@ var CalendarPicker = {
             case 'data-locale': this.changeAttrLocale(); break;
             case 'data-special': this.changeAttrSpecial(); break;
             case 'data-exclude': this.changeAttrExclude(); break;
+            case 'data-min-date': this.changeAttrMinDate(); break;
+            case 'data-max-date': this.changeAttrMaxDate(); break;
         }
     }
 };
 
 Metro.plugin('calendarpicker', CalendarPicker);
 
-$(document).on(Metro.events.click, function(e){
+$(document).on(Metro.events.click, ".overlay.for-calendar-picker",function(){
+    $(this).remove();
+});
+
+$(document).on(Metro.events.click, function(){
     $(".calendar-picker .calendar").removeClass("open open-up").hide();
 });
 
@@ -6671,11 +7193,11 @@ var Checkbox = {
         return this;
     },
     options: {
+        style: 1,
         caption: "",
-        indeterminate: false,
         captionPosition: "right",
-        disabled: false,
-        clsElement: "",
+        indeterminate: false,
+        clsCheckbox: "",
         clsCheck: "",
         clsCaption: "",
         onCheckboxCreate: Metro.noop
@@ -6699,7 +7221,7 @@ var Checkbox = {
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
-        var checkbox = $("<label>").addClass("checkbox " + element[0].className);
+        var checkbox = $("<label>").addClass("checkbox " + element[0].className).addClass(o.style === 2 ? "style2" : "");
         var check = $("<span>").addClass("check");
         var caption = $("<span>").addClass("caption").html(o.caption);
 
@@ -6728,7 +7250,7 @@ var Checkbox = {
         this.origin.className = element[0].className;
         element[0].className = '';
 
-        checkbox.addClass(o.clsElement);
+        checkbox.addClass(o.clsCheckbox);
         caption.addClass(o.clsCaption);
         check.addClass(o.clsCheck);
 
@@ -6736,7 +7258,7 @@ var Checkbox = {
             element[0].indeterminate = true;
         }
 
-        if (o.disabled === true && element.is(':disabled')) {
+        if (element.is(':disabled')) {
             this.disable();
         } else {
             this.enable();
@@ -6765,14 +7287,27 @@ var Checkbox = {
         }
     },
 
-    toggleIndeterminate: function(){
-        this.element[0].indeterminate = JSON.parse(this.element.attr("data-indeterminate")) === true;
-    },
-
     changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+        var parent = element.parent();
+
+        var changeStyle = function(){
+            var new_style = parseInt(element.attr("data-style"));
+
+            if (!Utils.isInt(new_style)) return;
+
+            o.style = new_style;
+            parent.removeClass("style1 style2").addClass("style"+new_style);
+        };
+
+        var indeterminateState = function(){
+            element[0].indeterminate = JSON.parse(element.attr("data-indeterminate")) === true;
+        };
+
         switch (attributeName) {
             case 'disabled': this.toggleState(); break;
-            case 'data-indeterminate': this.toggleIndeterminate(); break;
+            case 'data-indeterminate': indeterminateState(); break;
+            case 'data-style': changeStyle(); break;
         }
     },
 
@@ -6963,7 +7498,10 @@ var Collapse = {
             } else {
                 that._open(element);
             }
-            e.preventDefault();
+
+            if (["INPUT"].indexOf(e.target.tagName) === -1) {
+                e.preventDefault();
+            }
             e.stopPropagation();
         });
 
@@ -8267,9 +8805,23 @@ var DatePicker = {
         var picker = this.picker;
         var m = this.value.getMonth(), d = this.value.getDate() - 1, y = this.value.getFullYear();
         var m_list, d_list, y_list;
+        var select_wrapper = picker.find(".select-wrapper");
+        var select_wrapper_in_viewport, select_wrapper_rect;
 
-        picker.find(".select-wrapper").show();
+        select_wrapper.parent().removeClass("for-top for-bottom");
+        select_wrapper.show();
         picker.find("li").removeClass("active");
+
+        select_wrapper_in_viewport = Utils.inViewport(select_wrapper);
+        select_wrapper_rect = Utils.rect(select_wrapper);
+
+        if (!select_wrapper_in_viewport && select_wrapper_rect.top > 0) {
+            select_wrapper.parent().addClass("for-bottom");
+        }
+
+        if (!select_wrapper_in_viewport && select_wrapper_rect.top < 0) {
+            select_wrapper.parent().addClass("for-top");
+        }
 
         if (o.month === true) {
             m_list = picker.find(".sel-month");
@@ -8377,6 +8929,8 @@ var Dialog = {
     },
 
     options: {
+        toTop: false,
+        toBottom: false,
         locale: METRO_LOCALE,
         title: "",
         content: "",
@@ -8554,9 +9108,24 @@ var Dialog = {
     },
 
     setPosition: function(){
-        var element = this.element;
+        var element = this.element, o = this.options;
+        var top, left, bottom;
+        if (o.toTop !== true && o.toBottom !== true) {
+            top = ( $(window).height() - element.outerHeight() ) / 2;
+            bottom = "auto";
+        } else {
+            if (o.toTop === true) {
+                top = 0;
+                bottom = "auto";
+            }
+            if (o.toTop !== true && o.toBottom === true) {
+                bottom = 0;
+                top = "auto";
+            }
+        }
         element.css({
-            top: ( $(window).height() - element.outerHeight() ) / 2,
+            top: top,
+            bottom: bottom,
             left: ( $(window).width() - element.outerWidth() ) / 2
         });
     },
@@ -9194,15 +9763,21 @@ var File = {
         this._setOptionsFromDOM();
         this._create();
 
-        Utils.exec(this.options.onFileCreate, [this.element]);
+        Utils.exec(this.options.onFileCreate, [this.element], elem);
 
         return this;
     },
     options: {
-        copyInlineStyles: true,
+        mode: "input",
+        buttonTitle: "Choose file(s)",
+        dropTitle: "<strong>Choose a file</strong> or drop it here",
+        dropIcon: "<span class='default-icon-upload'></span>",
         prepend: "",
-        caption: "Choose file",
-        disabled: false,
+        clsComponent: "",
+        clsPrepend: "",
+        clsButton: "",
+        clsCaption: "",
+        copyInlineStyles: true,
         onSelect: Metro.noop,
         onFileCreate: Metro.noop
     },
@@ -9230,9 +9805,9 @@ var File = {
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
-        var container = $("<div>").addClass("file " + element[0].className);
-        var caption = $("<span>").addClass("caption");
-        var button;
+        var container = $("<label>").addClass((o.mode === "input" ? " file " : " drop-zone ") + element[0].className).addClass(o.clsComponent);
+        var caption = $("<span>").addClass("caption").addClass(o.clsCaption);
+        var icon, button;
 
         if (prev.length === 0) {
             parent.prepend(container);
@@ -9241,21 +9816,28 @@ var File = {
         }
 
         element.appendTo(container);
-        caption.insertBefore(element);
 
-        button = $("<button>").addClass("button").attr("tabindex", -1).attr("type", "button").html(o.caption);
-        button.appendTo(container);
+        if (o.mode === "input") {
+            caption.insertBefore(element);
 
-        if (element.attr('dir') === 'rtl' ) {
-            container.addClass("rtl");
+            button = $("<button>").addClass("button").attr("tabindex", -1).attr("type", "button").html(o.buttonTitle);
+            button.appendTo(container);
+            button.addClass(o.clsButton);
+
+            if (element.attr('dir') === 'rtl' ) {
+                container.addClass("rtl");
+            }
+
+            if (o.prepend !== "") {
+                var prepend = $("<div>").html(o.prepend);
+                prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
+            }
+        } else {
+            icon = $(o.dropIcon).addClass("icon").appendTo(container);
+            caption.html(o.dropTitle).insertAfter(icon);
         }
 
         element[0].className = '';
-
-        if (o.prepend !== "") {
-            var prepend = Utils.isTag(o.prepend) ? $(o.prepend) : $("<span>"+o.prepend+"</span>");
-            prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
-        }
 
         if (o.copyInlineStyles === true) {
             for (var i = 0, l = element[0].style.length; i < l; i++) {
@@ -9263,7 +9845,7 @@ var File = {
             }
         }
 
-        if (o.disabled === true || element.is(":disabled")) {
+        if (element.is(":disabled")) {
             this.disable();
         } else {
             this.enable();
@@ -9272,20 +9854,58 @@ var File = {
 
     _createEvents: function(){
         var element = this.element, o = this.options;
-        var parent = element.parent();
-        var caption = parent.find(".caption");
-        parent.on(Metro.events.click, "button, .caption", function(){
+        var container = element.closest("label");
+        var caption = container.find(".caption");
+
+        container.on(Metro.events.click, "button", function(){
             element.trigger("click");
         });
+
         element.on(Metro.events.change, function(){
-            var val = $(this).val();
-            if (val !== '') {
-                val = val.replace(/.+[\\\/]/, "");
-                caption.html(val);
-                caption.attr('title', val);
-                Utils.exec(o.onSelect, [val, element], element[0]);
+            var fi = this;
+            var file_names = [];
+            var entry;
+            if (fi.files.length === 0) {
+                return ;
             }
+
+            Array.from(fi.files).forEach(function(file){
+                file_names.push(file.name);
+            });
+
+            if (o.mode === "input") {
+
+                entry = file_names.join(", ");
+
+                caption.html(entry);
+                caption.attr('title', entry);
+            }
+
+            Utils.exec(o.onSelect, [fi.files, element], element[0]);
         });
+
+        element.on(Metro.events.focus, function(){container.addClass("focused");});
+        element.on(Metro.events.blur, function(){container.removeClass("focused");});
+
+        if (o.mode !== "input") {
+            container.on('drag dragstart dragend dragover dragenter dragleave drop', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            container.on('dragenter dragover', function(){
+                container.addClass("drop-on");
+            });
+
+            container.on('dragleave', function(){
+                container.removeClass("drop-on");
+            });
+
+            container.on('drop', function(e){
+                element[0].files = e.originalEvent.dataTransfer.files;
+                container.removeClass("drop-on");
+            });
+        }
     },
 
     disable: function(){
@@ -9499,7 +10119,7 @@ var Hint = {
         this.hint = hint;
         this.hint_size = Utils.hiddenElementSize(hint);
 
-        $(".hint").remove();
+        $(".hint:not(.permanent-hint)").remove();
 
         if (elem.tagName === 'TD' || elem.tagName === 'TH') {
             var wrp = $("<div/>").css("display", "inline-block").html(element.html());
@@ -9888,34 +10508,54 @@ var Input = {
         this.options = $.extend( {}, this.options, options );
         this.elem  = elem;
         this.element = $(elem);
+        this.history = [];
+        this.historyIndex = -1;
 
         this._setOptionsFromDOM();
         this._create();
 
-        Utils.exec(this.options.onInputCreate, [this.element]);
+        Utils.exec(this.options.onInputCreate, [this.element], this.elem);
 
         return this;
     },
     options: {
-        clsElement: "",
-        clsInput: "",
-        clsPrepend: "",
-        clsClearButton: "",
-        clsRevealButton: "",
+        history: false,
+        historyPreset: "",
+        historyDivider: "|",
+        preventSubmit: false,
+        defaultValue: "",
         size: "default",
         prepend: "",
+        append: "",
         copyInlineStyles: true,
+        searchButton: false,
         clearButton: true,
         revealButton: true,
         clearButtonIcon: "<span class='default-icon-cross'></span>",
         revealButtonIcon: "<span class='default-icon-eye'></span>",
+        searchButtonIcon: "<span class='default-icon-search'></span>",
         customButtons: [],
-        disabled: false,
+        searchButtonClick: 'submit',
+
+        clsComponent: "",
+        clsInput: "",
+        clsPrepend: "",
+        clsAppend: "",
+        clsClearButton: "",
+        clsRevealButton: "",
+        clsCustomButton: "",
+        clsSearchButton: "",
+
+        onHistoryChange: Metro.noop,
+        onHistoryUp: Metro.noop,
+        onHistoryDown: Metro.noop,
+        onClearClick: Metro.noop,
+        onRevealClick: Metro.noop,
         onInputCreate: Metro.noop
     },
 
     _setOptionsFromDOM: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
 
         $.each(element.data(), function(key, value){
             if (key in o) {
@@ -9929,12 +10569,24 @@ var Input = {
     },
 
     _create: function(){
+        this._createStructure();
+        this._createEvents();
+    },
+
+    _createStructure: function(){
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
         var container = $("<div>").addClass("input " + element[0].className);
         var buttons = $("<div>").addClass("button-group");
-        var clearButton, revealButton;
+        var clearButton, revealButton, searchButton;
+
+        if (Utils.isValue(o.historyPreset)) {
+            $.each(Utils.strToArray(o.historyPreset, o.historyDivider), function(){
+                that.history.push(this);
+            });
+            that.historyIndex = that.history.length - 1;
+        }
 
         if (element.attr("type") === undefined) {
             element.attr("type", "text");
@@ -9949,24 +10601,31 @@ var Input = {
         element.appendTo(container);
         buttons.appendTo(container);
 
-        if (o.clearButton !== false) {
+        if (!Utils.isValue(element.val().trim())) {
+            element.val(o.defaultValue);
+        }
+
+        if (o.clearButton === true) {
             clearButton = $("<button>").addClass("button input-clear-button").addClass(o.clsClearButton).attr("tabindex", -1).attr("type", "button").html(o.clearButtonIcon);
-            clearButton.on(Metro.events.click, function(){
-                element.val("").trigger('change').trigger('keyup').focus();
-            });
             clearButton.appendTo(buttons);
         }
-        if (element.attr('type') === 'password' && o.revealButton !== false) {
+        if (element.attr('type') === 'password' && o.revealButton === true) {
             revealButton = $("<button>").addClass("button input-reveal-button").addClass(o.clsRevealButton).attr("tabindex", -1).attr("type", "button").html(o.revealButtonIcon);
-            revealButton
-                .on(Metro.events.start, function(){element.attr('type', 'text');})
-                .on(Metro.events.stop, function(){element.attr('type', 'password').focus();});
             revealButton.appendTo(buttons);
+        }
+        if (o.searchButton === true) {
+            searchButton = $("<button>").addClass("button input-search-button").addClass(o.clsSearchButton).attr("tabindex", -1).attr("type", o.searchButtonClick === 'submit' ? "submit" : "button").html(o.searchButtonIcon);
+            searchButton.appendTo(buttons);
         }
 
         if (o.prepend !== "") {
-            var prepend = Utils.isTag(o.prepend) ? $(o.prepend) : $("<span>"+o.prepend+"</span>");
+            var prepend = $("<div>").html(o.prepend);
             prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
+        }
+
+        if (o.append !== "") {
+            var append = $("<div>").html(o.append);
+            append.addClass("append").addClass(o.clsAppend).appendTo(container);
         }
 
         if (typeof o.customButtons === "string") {
@@ -9976,10 +10635,18 @@ var Input = {
         if (typeof o.customButtons === "object" && Utils.objectLength(o.customButtons) > 0) {
             $.each(o.customButtons, function(){
                 var item = this;
-                var customButton = $("<button>").addClass("button input-custom-button").addClass(item.cls).attr("tabindex", -1).attr("type", "button").html(item.html);
-                customButton.on(Metro.events.click, function(){
-                    Utils.exec(item.onclick, [element.val(), customButton], element[0]);
-                });
+                var customButton = $("<button>");
+
+                customButton
+                    .addClass("button input-custom-button")
+                    .addClass(o.clsCustomButton)
+                    .addClass(item.cls)
+                    .attr("tabindex", -1)
+                    .attr("type", "button")
+                    .html(item.html);
+
+                customButton.data("action", item.onclick);
+
                 customButton.appendTo(buttons);
             });
         }
@@ -9995,7 +10662,7 @@ var Input = {
             }
         }
 
-        container.addClass(o.clsElement);
+        container.addClass(o.clsComponent);
         element.addClass(o.clsInput);
 
         if (o.size !== "default") {
@@ -10004,24 +10671,130 @@ var Input = {
             });
         }
 
-        element.on(Metro.events.blur, function(){container.removeClass("focused");});
-        element.on(Metro.events.focus, function(){container.addClass("focused");});
-
-        if (o.disabled === true || element.is(":disabled")) {
+        if (element.is(":disabled")) {
             this.disable();
         } else {
             this.enable();
         }
     },
 
+    _createEvents: function(){
+        var that = this, element = this.element, o = this.options;
+        var container = element.closest(".input");
+
+        container.on(Metro.events.click, ".input-clear-button", function(){
+            var curr = element.val();
+            element.val(Utils.isValue(o.defaultValue) ? o.defaultValue : "").trigger('change').trigger('keyup').focus();
+            Utils.exec(o.onClearClick, [curr, element.val()], element[0]);
+        });
+
+        container.on(Metro.events.start, ".input-reveal-button", function(){
+            element.attr('type', 'text');
+            Utils.exec(o.onRevealClick, [element.val()], element[0]);
+        });
+
+        container.on(Metro.events.start, ".input-search-button", function(){
+            if (o.searchButtonClick !== 'submit') {
+                Utils.exec(o.onSearchButtonClick, [element.val(), $(this)], element[0]);
+            } else {
+                this.form.submit();
+            }
+        });
+
+        container.on(Metro.events.stop, ".input-reveal-button", function(){
+            element.attr('type', 'password').focus();
+        });
+
+        container.on(Metro.events.stop, ".input-custom-button", function(){
+            var button = $(this);
+            var action = button.data("action");
+            Utils.exec(action, [element.val(), button], this);
+        });
+
+        element.on(Metro.events.keyup, function(e){
+            var val = element.val().trim();
+
+            if (o.history && e.keyCode === Metro.keyCode.ENTER && val !== "") {
+                element.val("");
+                that.history.push(val);
+                that.historyIndex = that.history.length - 1;
+                Utils.exec(o.onHistoryChange, [val, that.history, that.historyIndex], element[0]);
+                if (o.preventSubmit === true) {
+                    e.preventDefault();
+                }
+            }
+
+            if (o.history && e.keyCode === Metro.keyCode.UP_ARROW) {
+                that.historyIndex--;
+                if (that.historyIndex >= 0) {
+                    element.val("");
+                    element.val(that.history[that.historyIndex]);
+                    Utils.exec(o.onHistoryDown, [element.val(), that.history, that.historyIndex], element[0]);
+                } else {
+                    that.historyIndex = 0;
+                }
+                e.preventDefault();
+            }
+
+            if (o.history && e.keyCode === Metro.keyCode.DOWN_ARROW) {
+                that.historyIndex++;
+                if (that.historyIndex < that.history.length) {
+                    element.val("");
+                    element.val(that.history[that.historyIndex]);
+                    Utils.exec(o.onHistoryUp, [element.val(), that.history, that.historyIndex], element[0]);
+                } else {
+                    that.historyIndex = that.history.length - 1;
+                }
+                e.preventDefault();
+            }
+        });
+
+        element.on(Metro.events.blur, function(){container.removeClass("focused");});
+        element.on(Metro.events.focus, function(){container.addClass("focused");});
+    },
+
+    getHistory: function(){
+        return this.history;
+    },
+
+    getHistoryIndex: function(){
+        return this.historyIndex;
+    },
+
+    setHistoryIndex: function(val){
+        this.historyIndex = val >= this.history.length ? this.history.length - 1 : val;
+    },
+
+    setHistory: function(history, append) {
+        var that = this, o = this.options;
+        if (Utils.isNull(history)) return;
+        if (!Array.isArray(history)) {
+            history = Utils.strToArray(history, o.historyDivider);
+        }
+        if (append === true) {
+            $.each(history, function () {
+                that.history.push(this);
+            })
+        } else{
+            this.history = history;
+        }
+        this.historyIndex = this.history.length - 1;
+    },
+
+    clear: function(){
+        this.element.val('');
+    },
+
+    toDefault: function(){
+        this.element.val(Utils.isValue(this.options.defaultValue) ? this.options.defaultValue : "");
+    },
+
     disable: function(){
-        //this.element.attr("disabled", true);
         this.element.data("disabled", true);
         this.element.parent().addClass("disabled");
     },
 
     enable: function(){
-        //this.element.attr("disabled", false);
         this.element.data("disabled", false);
         this.element.parent().removeClass("disabled");
     },
@@ -10041,7 +10814,7 @@ var Input = {
     },
 
     destroy: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element;
         var parent = element.parent();
         var clearBtn = parent.find(".input-clear-button");
         var revealBtn = parent.find(".input-reveal-button");
@@ -10483,6 +11256,10 @@ var List = {
     },
 
     options: {
+
+        thousandSeparator: ",",
+        decimalSeparator: ",",
+
         sortTarget: "li",
         sortClass: null,
         sortDir: "asc",
@@ -10730,7 +11507,8 @@ var List = {
             })
         }
 
-        element.html("").addClass(o.clsList);
+        // element.html("").addClass(o.clsList);
+        element.addClass(o.clsList);
 
         this._createTopBlock();
         this._createBottomBlock();
@@ -10991,14 +11769,13 @@ var List = {
             stop = o.items === -1 ? this.items.length - 1 : start + o.items - 1;
         var items;
 
-        element.html("");
-
         items = this._filter();
+
+        element.children(o.sortTarget).remove();
 
         for (i = start; i <= stop; i++) {
             if (Utils.isValue(items[i])) {
-                items[i].className += " "+o.clsListItem;
-                element[0].appendChild(items[i]);
+                $(items[i]).addClass(o.clsListItem).appendTo(element);
             }
             Utils.exec(o.onDrawItem, [items[i]], element[0]);
         }
@@ -11022,20 +11799,25 @@ var List = {
 
         if (Utils.isValue(o.sortClass)) {
             data = "";
-            inset = item.getElementsByClassName(o.sortClass);
+            inset = $(item).find("."+o.sortClass);
 
             if (inset.length > 0) for (i = 0; i < inset.length; i++) {
                 data += inset[i].textContent;
             }
-            format = inset[0].dataset.format;
+            format = inset.length > 0 ? inset[0].getAttribute("data-format") : "";
         } else {
             data = item.textContent;
-            format = item.dataset.format;
+            format = item.getAttribute("data-format");
         }
 
         data = (""+data).toLowerCase().replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
 
         if (Utils.isValue(format)) {
+
+            if (['number', 'int', 'float', 'money'].indexOf(format) !== -1 && (o.thousandSeparator !== "," || o.decimalSeparator !== "." )) {
+                data = Utils.parseNumber(data, o.thousandSeparator, o.decimalSeparator);
+            }
+
             switch (format) {
                 case "date": data = Utils.isDate(data) ? new Date(data) : ""; break;
                 case "number": data = Number(data); break;
@@ -11294,6 +12076,7 @@ var Listview = {
 
     options: {
         selectable: false,
+        checkStyle: 1,
         effect: "slide",
         duration: 100,
         view: Metro.listView.LIST,
@@ -11411,7 +12194,7 @@ var Listview = {
             }
 
             if (node.hasClass("node")) {
-                var cb = $("<input data-role='checkbox'>");
+                var cb = $("<input type='checkbox' data-role='checkbox' data-style='"+o.checkStyle+"'>");
                 cb.data("node", node);
                 node.prepend(cb);
             }
@@ -11533,7 +12316,7 @@ var Listview = {
 
         new_node.addClass("node").appendTo(target);
 
-        var cb = $("<input>");
+        var cb = $("<input type='checkbox'>");
         cb.data("node", new_node);
         new_node.prepend(cb);
         cb.checkbox();
@@ -11597,22 +12380,42 @@ var Listview = {
         Utils.exec(o.onNodeClean, [node, element]);
     },
 
-    changeView: function(){
-        var element = this.element, o = this.options;
-        var new_view = "view-"+element.attr("data-view");
-        this.view(new_view);
+    getSelected: function(){
+        var that = this, element = this.element, o = this.options;
+        var nodes = [];
+
+        $.each(element.find(":checked"), function(){
+            var check = $(this);
+            nodes.push(check.closest(".node")[0])
+        });
+
+        return nodes;
     },
 
-    changeSelectable: function(){
-        var element = this.element, o = this.options;
-        o.selectable = JSON.parse(element.attr("data-selectable")) === true;
-        this.toggleSelectable();
+    clearSelected: function(){
+        this.element.find(":checked").prop("checked", false);
+    },
+
+    selectAll: function(mode){
+        this.element.find(".node > .checkbox input").prop("checked", mode !== false);
     },
 
     changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+
+        var changeView = function(){
+            var new_view = "view-"+element.attr("data-view");
+            this.view(new_view);
+        };
+
+        var changeSelectable = function(){
+            o.selectable = JSON.parse(element.attr("data-selectable")) === true;
+            this.toggleSelectable();
+        };
+
         switch (attributeName) {
-            case "data-view": this.changeView(); break;
-            case "data-selectable": this.changeSelectable(); break;
+            case "data-view": changeView(); break;
+            case "data-selectable": changeSelectable(); break;
         }
     }
 };
@@ -12402,6 +13205,7 @@ var Popover = {
     options: {
         popoverText: "",
         popoverHide: 3000,
+        popoverTimeout: 100,
         popoverOffset: 10,
         popoverTrigger: Metro.popoverEvents.HOVER,
         popoverPosition: Metro.position.TOP,
@@ -12446,12 +13250,14 @@ var Popover = {
             if (that.popover !== null || that.popovered === true) {
                 return ;
             }
-            that.createPopover();
-            if (o.popoverHide > 0) {
-                setTimeout(function(){
-                    that.removePopover();
-                }, o.popoverHide);
-            }
+            setTimeout(function(){
+                that.createPopover();
+                if (o.popoverHide > 0) {
+                    setTimeout(function(){
+                        that.removePopover();
+                    }, o.popoverHide);
+                }
+            }, o.popoverTimeout);
         });
 
         if (o.hideOnLeave === true && !Utils.isTouchDevice()) {
@@ -12556,12 +13362,14 @@ var Popover = {
             return ;
         }
 
-        this.createPopover();
-        if (o.popoverHide > 0) {
-            setTimeout(function(){
-                that.removePopover();
-            }, o.popoverHide);
-        }
+        setTimeout(function(){
+            that.createPopover();
+            if (o.popoverHide > 0) {
+                setTimeout(function(){
+                    that.removePopover();
+                }, o.popoverHide);
+            }
+        }, o.popoverTimeout);
     },
 
     hide: function(){
@@ -12765,10 +13573,10 @@ var Radio = {
         return this;
     },
     options: {
+        style: 1,
         caption: "",
         captionPosition: "right",
-        disabled: false,
-        clsElement: "",
+        clsRadio: "",
         clsCheck: "",
         clsCaption: "",
         onRadioCreate: Metro.noop
@@ -12792,7 +13600,7 @@ var Radio = {
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
-        var radio = $("<label>").addClass("radio " + element[0].className);
+        var radio = $("<label>").addClass("radio " + element[0].className).addClass(o.style === 2 ? "style2" : "");
         var check = $("<span>").addClass("check");
         var caption = $("<span>").addClass("caption").html(o.caption);
 
@@ -12815,11 +13623,11 @@ var Radio = {
         this.origin.className = element[0].className;
         element[0].className = '';
 
-        radio.addClass(o.clsElement);
+        radio.addClass(o.clsRadio);
         caption.addClass(o.clsCaption);
         check.addClass(o.clsCheck);
 
-        if (o.disabled === true && element.is(':disabled')) {
+        if (element.is(':disabled')) {
             this.disable();
         } else {
             this.enable();
@@ -12845,8 +13653,21 @@ var Radio = {
     },
 
     changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+        var parent = element.parent();
+
+        var changeStyle = function(){
+            var new_style = parseInt(element.attr("data-style"));
+
+            if (!Utils.isInt(new_style)) return;
+
+            o.style = new_style;
+            parent.removeClass("style1 style2").addClass("style"+new_style);
+        };
+
         switch (attributeName) {
             case 'disabled': this.toggleState(); break;
+            case 'data-style': changeStyle(); break;
         }
     },
 
@@ -13114,6 +13935,7 @@ var Resizable = {
         this.options = $.extend( {}, this.options, options );
         this.elem  = elem;
         this.element = $(elem);
+        this.resizer = null;
 
         this._setOptionsFromDOM();
         this._create();
@@ -13123,7 +13945,13 @@ var Resizable = {
         return this;
     },
     options: {
+        canResize: true,
         resizeElement: ".resize-element",
+        minWidth: 0,
+        minHeight: 0,
+        maxWidth: 0,
+        maxHeight: 0,
+        preserveRatio: false,
         onResizeStart: Metro.noop,
         onResizeStop: Metro.noop,
         onResize: Metro.noop,
@@ -13131,7 +13959,7 @@ var Resizable = {
     },
 
     _setOptionsFromDOM: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
 
         $.each(element.data(), function(key, value){
             if (key in o) {
@@ -13145,45 +13973,70 @@ var Resizable = {
     },
 
     _create: function(){
-        var that = this, element = this.element, o = this.options;
+        this._createStructure();
+        this._createEvents();
+    },
 
-        if (o.resizeElement !== "" && $(o.resizeElement).length === 0) {
-            $("<span>").addClass("resize-element").appendTo(element);
+    _createStructure: function(){
+        var element = this.element, o = this.options;
+
+        if (Utils.isValue(o.resizeElement) && $(o.resizeElement).length > 0) {
+            this.resizer = $(o.resizeElement);
+        } else {
+            this.resizer = $("<span>").addClass("resize-element").appendTo(element);
         }
+    },
 
-        element.on(Metro.events.start, o.resizeElement, function(e){
+    _createEvents: function(){
+        var element = this.element, o = this.options;
 
-            if (element.data("canResize") === false) {
+        this.resizer.on(Metro.events.start + "-resize-element", function(e){
+
+            if (o.canResize === false) {
                 return ;
             }
 
-            var startXY = Utils.clientXY(e);
+            var startXY = Utils.pageXY(e);
             var startWidth = parseInt(element.outerWidth());
             var startHeight = parseInt(element.outerHeight());
             var size = {width: startWidth, height: startHeight};
 
             Utils.exec(o.onResizeStart, [element, size]);
 
-            $(document).on(Metro.events.move, function(e){
-                var moveXY = Utils.clientXY(e);
+            $(document).on(Metro.events.move + "-resize-element", function(e){
+                var moveXY = Utils.pageXY(e);
                 var size = {
                     width: startWidth + moveXY.x - startXY.x,
                     height: startHeight + moveXY.y - startXY.y
                 };
+
+                if (o.maxWidth > 0 && size.width > o.maxWidth) {return true;}
+                if (o.minWidth > 0 && size.width < o.minWidth) {return true;}
+
+                if (o.maxHeight > 0 && size.height > o.maxHeight) {return true;}
+                if (o.minHeight > 0 && size.height < o.minHeight) {return true;}
+
                 element.css(size);
+
                 Utils.exec(o.onResize, [element, size]);
             });
+
+            $(document).on(Metro.events.stop + "-resize-element", function(){
+                $(document).off(Metro.events.move + "-resize-element");
+                $(document).off(Metro.events.stop + "-resize-element");
+
+                var size = {
+                    width: parseInt(element.outerWidth()),
+                    height: parseInt(element.outerHeight())
+                };
+
+                Utils.exec(o.onResizeStop, [element, size]);
+            });
+
+            e.preventDefault();
+            e.stopPropagation();
         });
 
-        element.on(Metro.events.stop, o.resizeElement, function(){
-            $(document).off(Metro.events.move);
-
-            var size = {
-                width: parseInt(element.outerWidth()),
-                height: parseInt(element.outerHeight())
-            };
-            Utils.exec(o.onResizeStop, [element, size]);
-        });
     },
 
     off: function(){
@@ -13195,6 +14048,15 @@ var Resizable = {
     },
 
     changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+
+        var canResize = function(){
+            o.canResize = JSON.parse(element.attr('data-can-resize')) === true;
+        };
+
+        switch (attributeName) {
+            case "data-can-resize": canResize(); break;
+        }
     }
 };
 
@@ -13415,179 +14277,13 @@ var Ripple = {
 
 Metro.plugin('ripple', Ripple);
 
-// Source: js/plugins/search.js
-var Search = {
-    init: function( options, elem ) {
-        this.options = $.extend( {}, this.options, options );
-        this.elem  = elem;
-        this.element = $(elem);
-
-        this._setOptionsFromDOM();
-        this._create();
-
-        Utils.exec(this.options.onInputCreate, [this.element]);
-
-        return this;
-    },
-    options: {
-        clsElement: "",
-        clsInput: "",
-        clsPrepend: "",
-        clsClearButton: "",
-        clsSearchButton: "",
-        size: "default",
-        prepend: "",
-        copyInlineStyles: true,
-        clearButton: true,
-        searchButton: true,
-        searchButtonClick: "submit",
-        clearButtonIcon: "<span class='default-icon-cross'></span>",
-        searchButtonIcon: "<span class='default-icon-search'></span>",
-        customButtons: [],
-        disabled: false,
-        onSearchButtonClick: Metro.noop,
-        onInputCreate: Metro.noop
-    },
-
-    _setOptionsFromDOM: function(){
-        var that = this, element = this.element, o = this.options;
-
-        $.each(element.data(), function(key, value){
-            if (key in o) {
-                try {
-                    o[key] = JSON.parse(value);
-                } catch (e) {
-                    o[key] = value;
-                }
-            }
-        });
-    },
-
-    _create: function(){
-        var that = this, element = this.element, o = this.options;
-        var prev = element.prev();
-        var parent = element.parent();
-        var container = $("<div>").addClass("input " + element[0].className);
-        var buttons = $("<div>").addClass("button-group");
-        var clearButton, searchButton;
-
-        if (element.attr("type") === undefined) {
-            element.attr("type", "text");
-        }
-
-        if (prev.length === 0) {
-            parent.prepend(container);
-        } else {
-            container.insertAfter(prev);
-        }
-
-        element.appendTo(container);
-        buttons.appendTo(container);
-
-        if (o.clearButton !== false) {
-            clearButton = $("<button>").addClass("button input-clear-button").addClass(o.clsClearButton).attr("tabindex", -1).attr("type", "button").html(o.clearButtonIcon);
-            clearButton.on(Metro.events.click, function(){
-                element.val("").trigger('change').trigger('keyup').focus();
-            });
-            clearButton.appendTo(buttons);
-        }
-        if (o.searchButton !== false) {
-            searchButton = $("<button>").addClass("button input-search-button").addClass(o.clsSearchButton).attr("tabindex", -1).attr("type", o.searchButtonClick === 'submit' ? "submit" : "button").html(o.searchButtonIcon);
-            searchButton.on(Metro.events.click, function(){
-                if (o.searchButtonClick === 'submit') {
-                    Utils.exec(o.onSearchButtonClick, [element.val(), $(this)], element[0]);
-                } else {
-                    this.form.submit();
-                }
-            });
-            searchButton.appendTo(buttons);
-        }
-
-        if (o.prepend !== "") {
-            var prepend = Utils.isTag(o.prepend) ? $(o.prepend) : $("<span>"+o.prepend+"</span>");
-            prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
-        }
-
-        if (typeof o.customButtons === "string") {
-            o.customButtons = Utils.isObject(o.customButtons);
-        }
-
-        if (typeof o.customButtons === "object" && Utils.objectLength(o.customButtons) > 0) {
-            $.each(o.customButtons, function(){
-                var item = this;
-                var customButton = $("<button>").addClass("button input-custom-button").addClass(item.cls).attr("tabindex", -1).attr("type", "button").html(item.html);
-                customButton.on(Metro.events.click, function(){
-                    Utils.exec(item.onclick, [element.val(), customButton], element[0]);
-                });
-                customButton.appendTo(buttons);
-            });
-        }
-
-        if (element.attr('dir') === 'rtl' ) {
-            container.addClass("rtl").attr("dir", "rtl");
-        }
-
-        element[0].className = '';
-        if (o.copyInlineStyles === true) {
-            for (var i = 0, l = element[0].style.length; i < l; i++) {
-                container.css(element[0].style[i], element.css(element[0].style[i]));
-            }
-        }
-
-        container.addClass(o.clsElement);
-        element.addClass(o.clsInput);
-
-        if (o.size !== "default") {
-            container.css({
-                width: o.size
-            });
-        }
-
-        element.on(Metro.events.blur, function(){container.removeClass("focused");});
-        element.on(Metro.events.focus, function(){container.addClass("focused");});
-
-        if (o.disabled === true || element.is(":disabled")) {
-            this.disable();
-        } else {
-            this.enable();
-        }
-    },
-
-    disable: function(){
-        //this.element.attr("disabled", true);
-        this.element.data("disabled", true);
-        this.element.parent().addClass("disabled");
-    },
-
-    enable: function(){
-        //this.element.attr("disabled", false);
-        this.element.data("disabled", false);
-        this.element.parent().removeClass("disabled");
-    },
-
-    toggleState: function(){
-        if (this.element.data("disabled") === false) {
-            this.disable();
-        } else {
-            this.enable();
-        }
-    },
-
-    changeAttribute: function(attributeName){
-        switch (attributeName) {
-            case 'disabled': this.toggleState(); break;
-        }
-    }
-};
-
-Metro.plugin('search', Search);
-
 // Source: js/plugins/select.js
 var Select = {
     init: function( options, elem ) {
         this.options = $.extend( {}, this.options, options );
         this.elem  = elem;
         this.element = $(elem);
+        this.list = null;
 
         this._setOptionsFromDOM();
         this._create();
@@ -13598,26 +14294,34 @@ var Select = {
     },
     options: {
         duration: 100,
-        clsElement: "",
-        clsSelect: "",
-        clsPrepend: "",
-        clsOption: "",
-        clsOptionGroup: "",
         prepend: "",
+        append: "",
         placeholder: "",
         filterPlaceholder: "",
         filter: true,
         copyInlineStyles: true,
         dropHeight: 200,
-        disabled: false,
+
+        clsSelect: "",
+        clsSelectInput: "",
+        clsPrepend: "",
+        clsAppend: "",
+        clsOption: "",
+        clsOptionGroup: "",
+        clsDropList: "",
+        clsSelectedItem: "",
+        clsSelectedItemRemover: "",
+
         onChange: Metro.noop,
-        onSelectCreate: Metro.noop,
         onUp: Metro.noop,
-        onDrop: Metro.noop
+        onDrop: Metro.noop,
+        onItemSelect: Metro.noop,
+        onItemDeselect: Metro.noop,
+        onSelectCreate: Metro.noop
     },
 
     _setOptionsFromDOM: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
 
         $.each(element.data(), function(key, value){
             if (key in o) {
@@ -13639,16 +14343,26 @@ var Select = {
         var option = $(item);
         var l, a;
         var element = this.element, o = this.options;
-        var input = element.siblings("input");
+        var multiple = element[0].multiple;
+        var input = element.siblings(".select-input");
+        var html = Utils.isValue(option.attr('data-template')) ? option.attr('data-template').replace("$1", item.text):item.text;
+        var tag;
 
-        l = $("<li>").addClass(o.clsOption).data("text", item.text).data('value', item.value ? item.value : item.text).appendTo(parent);
-        a = $("<a>").html(item.text).appendTo(l).addClass(item.className);
+        l = $("<li>").addClass(o.clsOption).data("option", item).attr("data-text", item.text).attr('data-value', Utils.isValue(item.value) ? item.value : "").appendTo(parent);
+        a = $("<a>").html(html).appendTo(l).addClass(item.className);
 
         if (option.is(":selected")) {
-            element.val(item.value);
-            input.val(item.text).trigger("change");
-            element.trigger("change");
-            l.addClass("active");
+            if (multiple) {
+                l.addClass("d-none");
+                tag = $("<div>").addClass("selected-item").addClass(o.clsSelectedItem).html("<span class='title'>"+html+"</span>").appendTo(input);
+                tag.data("option", l);
+                $("<span>").addClass("remover").addClass(o.clsSelectedItemRemover).html("&times;").appendTo(tag);
+            } else {
+                element.val(item.value);
+                input.html(html);
+                element.trigger("change");
+                l.addClass("active");
+            }
         }
 
         a.appendTo(l);
@@ -13666,16 +14380,35 @@ var Select = {
         })
     },
 
+    _createOptions: function(){
+        var that = this, element = this.element, select = element.parent();
+        var list = select.find("ul").html("");
+
+        $.each(element.children(), function(){
+            if (this.tagName === "OPTION") {
+                that._addOption(this, list);
+            } else if (this.tagName === "OPTGROUP") {
+                that._addOptionGroup(this, list);
+            }
+        });
+    },
+
     _createSelect: function(){
         var that = this, element = this.element, o = this.options;
 
         var prev = element.prev();
         var parent = element.parent();
-        var container = $("<div>").addClass("select " + element[0].className).addClass(o.clsElement);
-        var multiple = element.prop("multiple");
+        var container = $("<label>").addClass("select " + element[0].className).addClass(o.clsSelect);
+        var multiple = element[0].multiple;
         var select_id = Utils.elementId("select");
+        var buttons = $("<div>").addClass("button-group");
+        var input, drop_container, list, filter_input;
 
         container.attr("id", select_id).addClass("dropdown-toggle");
+
+        if (multiple) {
+            container.addClass("multiple");
+        }
 
         if (prev.length === 0) {
             parent.prepend(container);
@@ -13684,75 +14417,72 @@ var Select = {
         }
 
         element.appendTo(container);
-        element.addClass(o.clsSelect);
+        buttons.appendTo(container);
 
-        if (multiple === false) {
+        input = $("<div>").addClass("select-input").addClass(o.clsSelectInput).attr("name", "__" + select_id + "__");
+        drop_container = $("<div>").addClass("drop-container");
+        list = $("<ul>").addClass("d-menu").addClass(o.clsDropList).css({
+            "max-height": o.dropHeight
+        });
+        filter_input = $("<input type='text' data-role='input'>").attr("placeholder", o.filterPlaceholder);
 
-            var input = $("<input>").attr("placeholder", o.placeholder).attr("type", "text").attr("name", "__" + select_id + "__").prop("readonly", true);
-            var drop_container = $("<div>").addClass("drop-container");
-            var list = $("<ul>").addClass("d-menu").css({
-                "max-height": o.dropHeight
-            });
-            var filter_input = $("<input type='text' data-role='input'>").attr("placeholder", o.filterPlaceholder);
+        container.append(input);
+        container.append(drop_container);
 
-            container.append(input);
-            container.append(drop_container);
+        drop_container.append(filter_input);
 
-            drop_container.append(filter_input);
-
-            if (o.filter !== true) {
-                filter_input.hide();
-            }
-
-            drop_container.append(list);
-
-            $.each(element.children(), function(){
-                if (this.tagName === "OPTION") {
-                    that._addOption(this, list);
-                } else if (this.tagName === "OPTGROUP") {
-                    that._addOptionGroup(this, list);
-                }
-            });
-
-            drop_container.dropdown({
-                duration: o.duration,
-                toggleElement: "#"+select_id,
-                onDrop: function(){
-                    var dropped, target;
-
-                    dropped = $(".select .drop-container");
-                    $.each(dropped, function(){
-                        var drop = $(this);
-                        if (drop.is(drop_container)) {
-                            return ;
-                        }
-                        drop.data('dropdown').close();
-                    });
-
-                    filter_input.val("").trigger(Metro.events.keyup).focus();
-
-                    target = list.find("li.active").length > 0 ? $(list.find("li.active")[0]) : undefined;
-                    if (target !== undefined) {
-                        list.scrollTop(0);
-                        setTimeout(function(){
-                            list.animate({
-                                scrollTop: target.position().top - ( (list.height() - target.height() )/ 2)
-                            }, 100);
-                        }, 200);
-                    }
-
-                    Utils.exec(o.onDrop, [list, element], list[0]);
-                },
-                onUp: function(){
-                    Utils.exec(o.onUp, [list, element], list[0]);
-                }
-            });
-
+        if (o.filter !== true) {
+            filter_input.hide();
         }
 
+        drop_container.append(list);
+
+        this._createOptions();
+
+        drop_container.dropdown({
+            duration: o.duration,
+            toggleElement: "#"+select_id,
+            onDrop: function(){
+                var dropped, target;
+
+                dropped = $(".select .drop-container");
+                $.each(dropped, function(){
+                    var drop = $(this);
+                    if (drop.is(drop_container)) {
+                        return ;
+                    }
+                    drop.data('dropdown').close();
+                });
+
+                filter_input.val("").trigger(Metro.events.keyup).focus();
+
+                target = list.find("li.active").length > 0 ? $(list.find("li.active")[0]) : undefined;
+                if (target !== undefined) {
+                    list.scrollTop(0);
+                    setTimeout(function(){
+                        list.animate({
+                            scrollTop: target.position().top - ( (list.height() - target.height() )/ 2)
+                        }, 100);
+                    }, 200);
+                }
+
+                Utils.exec(o.onDrop, [list, element], list[0]);
+            },
+            onUp: function(){
+                Utils.exec(o.onUp, [list, element], list[0]);
+            }
+        });
+
+        this.list = list;
+
         if (o.prepend !== "") {
-            var prepend = Utils.isTag(o.prepend) ? $(o.prepend) : $("<span>"+o.prepend+"</span>");
+            var prepend = $("<div>").html(o.prepend);
             prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
+        }
+
+        if (o.append !== "") {
+            var append = $("<div>").html(o.append);
+            append.addClass("append").addClass(o.clsAppend).appendTo(container);
         }
 
         if (o.copyInlineStyles === true) {
@@ -13765,7 +14495,7 @@ var Select = {
             container.addClass("rtl").attr("dir", "rtl");
         }
 
-        if (o.disabled === true || element.is(':disabled')) {
+        if (element.is(':disabled')) {
             this.disable();
         } else {
             this.enable();
@@ -13777,17 +14507,24 @@ var Select = {
         var that = this, element = this.element, o = this.options;
         var container = element.closest(".select");
         var drop_container = container.find(".drop-container");
-        var input = element.siblings("input");
+        var input = element.siblings(".select-input");
         var filter_input = drop_container.find("input");
         var list = drop_container.find("ul");
+
+        element.on(Metro.events.focus, function(){
+            container.addClass("focused");
+        });
+
+        element.on(Metro.events.blur, function(){
+            container.removeClass("focused");
+        });
 
         container.on(Metro.events.click, function(e){
             e.preventDefault();
             e.stopPropagation();
         });
 
-        input.on(Metro.events.blur, function(){container.removeClass("focused");});
-        input.on(Metro.events.focus, function(){container.addClass("focused");});
+        input.on(Metro.events.click, function(){container.toggleClass("focused");});
         filter_input.on(Metro.events.blur, function(){container.removeClass("focused");});
         filter_input.on(Metro.events.focus, function(){container.addClass("focused");});
 
@@ -13800,14 +14537,50 @@ var Select = {
             var leaf = $(this);
             var val = leaf.data('value');
             var txt = leaf.data('text');
+            var html = leaf.children('a').html();
+            var selected_item;
+            var option = leaf.data("option");
+            var options = element.find("option");
 
-            list.find("li.active").removeClass("active");
-            leaf.addClass("active");
-            input.val(txt).trigger("change");
-            element.val(val);
+            if (element[0].multiple) {
+                leaf.addClass("d-none");
+                selected_item = $("<div>").addClass("selected-item").addClass(o.clsSelectedItem).html("<span class='title'>"+html+"</span>").appendTo(input);
+                selected_item.data("option", leaf);
+                $("<span>").addClass("remover").addClass(o.clsSelectedItemRemover).html("&times;").appendTo(selected_item);
+            } else {
+                list.find("li.active").removeClass("active");
+                leaf.addClass("active");
+                input.html(html);
+                drop_container.data("dropdown").close();
+            }
+
+            $.each(options, function(){
+                if (this === option) {
+                    this.selected = true;
+                }
+            });
+
             element.trigger("change");
-            drop_container.data("dropdown").close();
-            Utils.exec(o.onChange, [val], element[0]);
+
+            Utils.exec(o.onItemSelect, [val, option, leaf], element[0]);
+            Utils.exec(o.onChange, [that.getSelected()], element[0]);
+        });
+
+        input.on("click", ".selected-item .remover", function(e){
+            var item = $(this).closest(".selected-item");
+            var leaf = item.data("option");
+            var option = leaf.data('option');
+            leaf.removeClass("d-none");
+            $.each(element.find("option"), function(){
+                if (this === option) {
+                    this.selected = false;
+                }
+            });
+            item.remove();
+            Utils.exec(o.onItemDeselect, [option], element[0]);
+            Utils.exec(o.onChange, [that.getSelected()], element[0]);
+            e.preventDefault();
+            e.stopPropagation();
         });
 
         filter_input.on(Metro.events.keyup, function(){
@@ -13833,40 +14606,114 @@ var Select = {
 
     disable: function(){
         this.element.data("disabled", true);
-        this.element.parent().addClass("disabled");
+        this.element.closest(".select").addClass("disabled");
     },
 
     enable: function(){
         this.element.data("disabled", false);
-        this.element.parent().removeClass("disabled");
+        this.element.closest(".select").removeClass("disabled");
     },
 
-    val: function(v){
-        var that = this, element = this.element;
-        var input = element.siblings("input");
-        var options = element.find("option");
-        if (v === undefined) {
-            return element.val();
+    toggleState: function(){
+        if (this.element.data("disabled") === false) {
+            this.disable();
+        } else {
+            this.enable();
         }
-        options.removeAttr("selected");
+    },
+
+    reset: function(to_default){
+        var element = this.element, o = this.options;
+        var options = element.find("option");
+        var select = element.closest('.select');
+
         $.each(options, function(){
-            var op = $(this);
-            if (this.value == v) {
-                op.attr("selected", "selected");
-                input.val(this.text);
-                element.trigger("change");
+            console.log(this.defaultSelected);
+            this.selected = !Utils.isNull(to_default) ? this.defaultSelected : false;
+        });
+
+        this.list.find("li").remove();
+        select.find(".select-input").html('');
+
+        this._createOptions();
+
+        element.trigger('change');
+        Utils.exec(o.onChange, [this.getSelected()], element[0]);
+    },
+
+    getSelected: function(){
+        var element = this.element;
+        var result = [];
+
+        element.find("option:selected").each(function(){
+            result.push(this.value);
+        });
+
+        return result;
+    },
+
+    val: function(val){
+        var that = this, element = this.element, o = this.options;
+        var input = element.siblings(".select-input");
+        var options = element.find("option");
+        var list_items = this.list.find("li");
+        var result = [];
+        var multiple = element.attr("multiple") !== undefined;
+        var option;
+        var i, html, list_item, option_value, tag;
+
+        if (Utils.isNull(val)) {
+            $.each(options, function(){
+                if (this.selected) result.push(this.value);
+            });
+            return result;
+        }
+
+        $.each(options, function(){this.selected = false;});
+        list_items.removeClass("active");
+        input.html('');
+
+        if (Array.isArray(val) === false) {
+            val  = [val];
+        }
+
+        $.each(val, function(){
+            for (i = 0; i < options.length; i++) {
+                option = options[i];
+                html = Utils.isValue(option.getAttribute('data-template')) ? option.getAttribute('data-template').replace("$1", option.text) : option.text;
+                if (""+option.value === ""+this) {
+                    option.selected = true;
+                    break;
+                }
+            }
+
+            for(i = 0; i < list_items.length; i++) {
+                list_item = $(list_items[i]);
+                option_value = list_item.attr("data-value");
+                if (""+option_value === ""+this) {
+                    if (multiple) {
+                        list_item.addClass("d-none");
+                        tag = $("<div>").addClass("selected-item").addClass(o.clsSelectedItem).html("<span class='title'>"+html+"</span>").appendTo(input);
+                        tag.data("option", list_item);
+                        $("<span>").addClass("remover").addClass(o.clsSelectedItemRemover).html("&times;").appendTo(tag);
+                    } else {
+                        list_item.addClass("active");
+                        input.html(html);
+                    }
+                    break;
+                }
             }
         });
+
+        element.trigger('change');
+        Utils.exec(o.onChange, [this.getSelected()], element[0]);
     },
 
     data: function(op){
-        var that = this, element = this.element;
-        var select = element.parent();
-        var list = select.find("ul");
-        var option, option_group;
+        var element = this.element;
+        var option_group;
 
         element.html("");
-        list.html("");
 
         if (typeof op === 'string') {
             element.html(op);
@@ -13883,30 +14730,26 @@ var Select = {
             });
         }
 
-        $.each(element.children(), function(){
-            if (this.tagName === "OPTION") {
-                that._addOption(this, list);
-            } else if (this.tagName === "OPTGROUP") {
-                that._addOptionGroup(this, list);
-            }
-        });
+        this._createOptions();
     },
 
     changeAttribute: function(attributeName){
-
+        switch (attributeName) {
+            case 'disabled': this.toggleState(); break;
+        }
     },
 
     destroy: function(){
-        var that = this, element = this.element;
+        var element = this.element;
         var container = element.closest(".select");
         var drop_container = container.find(".drop-container");
-        var input = element.siblings("input");
+        var input = element.siblings(".select-input");
         var filter_input = drop_container.find("input");
         var list = drop_container.find("ul");
 
         container.off(Metro.events.click);
-        input.off(Metro.events.blur);
-        input.off(Metro.events.focus);
+        container.off(Metro.events.click, ".input-clear-button");
+        input.off(Metro.events.click);
         filter_input.off(Metro.events.blur);
         filter_input.off(Metro.events.focus);
         list.off(Metro.events.click, "li");
@@ -13920,7 +14763,7 @@ var Select = {
     }
 };
 
-$(document).on(Metro.events.click, function(e){
+$(document).on(Metro.events.click, function(){
     var selects = $(".select .drop-container");
     $.each(selects, function(){
         $(this).data('dropdown').close();
@@ -14138,6 +14981,13 @@ Metro['sidebar'] = {
             return ;
         }
         $(el).data("sidebar").toggle();
+    },
+
+    isOpen: function(el){
+        if (!this.isSidebar(el)) {
+            return ;
+        }
+        return $(el).data("sidebar").isOpen();
     }
 };
 
@@ -14191,6 +15041,7 @@ var Slider = {
         onStop: Metro.noop,
         onMove: Metro.noop,
         onClick: Metro.noop,
+        onChange: Metro.noop,
         onChangeValue: Metro.noop,
         onChangeBuffer: Metro.noop,
         onFocus: Metro.noop,
@@ -14260,7 +15111,7 @@ var Slider = {
         if (o.hintAlways === true) {
             hint.css({
                 display: "block"
-            });
+            }).addClass("permanent-hint");
         }
 
         element.appendTo(slider);
@@ -14397,6 +15248,8 @@ var Slider = {
             case "prc2pix": return Math.round( v / ( 100 / length ));
             case "val2pix": return Math.round( this._convert(this._convert(v, 'val2prc'), 'prc2pix') );
         }
+
+        return 0;
     },
 
     _correct: function(value){
@@ -14475,19 +15328,39 @@ var Slider = {
             }
         }
 
-        Utils.exec(o.onChangeValue, [value, this.percent, slider]);
+        Utils.exec(o.onChangeValue, [value, this.percent, slider], element[0]);
+        Utils.exec(o.onChange, [value, this.percent, this.buffer], element[0]);
     },
 
     _marker: function(){
         var slider = this.slider, o = this.options;
         var marker = slider.find(".marker"), complete = slider.find(".complete");
         var length = o.vertical === true ? slider.outerHeight() : slider.outerWidth();
+        var marker_size = parseInt(Utils.getStyleOne(marker, "width"));
+        var slider_visible = Utils.isVisible(slider);
+
+        if (slider_visible) {
+            marker.css({
+                'margin-top': 0,
+                'margin-left': 0
+            });
+        }
 
         if (o.vertical === true) {
-            marker.css('top', length - this.pixel);
+            if (slider_visible) {
+                marker.css('top', length - this.pixel);
+            } else {
+                marker.css('top', this.percent + "%");
+                marker.css('margin-top', this.percent === 0 ? 0 : -1 * marker_size / 2);
+            }
             complete.css('height', this.percent+"%");
         } else {
-            marker.css('left', this.pixel);
+            if (slider_visible) {
+                marker.css('left', this.pixel);
+            } else {
+                marker.css('left', this.percent + "%");
+                marker.css('margin-left', this.percent === 0 ? 0 : -1 * marker_size / 2);
+            }
             complete.css('width', this.percent+"%");
         }
     },
@@ -14499,7 +15372,7 @@ var Slider = {
     },
 
     _buffer: function(){
-        var o = this.options;
+        var element = this.element, o = this.options;
         var buffer = this.slider.find(".buffer");
 
         if (o.vertical === true) {
@@ -14508,7 +15381,8 @@ var Slider = {
             buffer.css("width", this.buffer + "%");
         }
 
-        Utils.exec(o.onChangeBuffer, [this.buffer, this.slider]);
+        Utils.exec(o.onChangeBuffer, [this.buffer, this.slider], element[0]);
+        Utils.exec(o.onChange, [element.val(), this.percent, this.buffer], element[0]);
     },
 
     val: function(v){
@@ -14608,6 +15482,8 @@ var Sorter = {
     },
 
     options: {
+        thousandSeparator: ",",
+        decimalSeparator: ",",
         sortTarget: null,
         sortSource: null,
         sortDir: "asc",
@@ -14675,6 +15551,11 @@ var Sorter = {
         data = (""+data).toLowerCase().replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
 
         if (Utils.isValue(format)) {
+
+            if (['number', 'int', 'float', 'money'].indexOf(format) !== -1 && (o.thousandSeparator !== "," || o.decimalSeparator !== "." )) {
+                data = Utils.parseNumber(data, o.thousandSeparator, o.decimalSeparator);
+            }
+
             switch (format) {
                 case "date": data = Utils.isDate(data) ? new Date(data) : ""; break;
                 case "number": data = Number(data); break;
@@ -14825,6 +15706,240 @@ Metro['sorter'] = {
         sorter.reset();
     }
 };
+
+// Source: js/plugins/spinner.js
+var Spinner = {
+    init: function( options, elem ) {
+        this.options = $.extend( {}, this.options, options );
+        this.elem  = elem;
+        this.element = $(elem);
+        this.repeat_timer = false;
+
+        this._setOptionsFromDOM();
+        this._create();
+
+        return this;
+    },
+
+    options: {
+        step: 1,
+        plusIcon: "<span class='default-icon-plus'></span>",
+        minusIcon: "<span class='default-icon-minus'></span>",
+        buttonsPosition: "default",
+        defaultValue: 0,
+        minValue: null,
+        maxValue: null,
+        fixed: 0,
+        repeatThreshold: 500,
+        hideCursor: false,
+        clsSpinner: "",
+        clsSpinnerInput: "",
+        clsSpinnerButton: "",
+        clsSpinnerButtonPlus: "",
+        clsSpinnerButtonMinus: "",
+        onBeforeChange: Metro.noop_true,
+        onChange: Metro.noop,
+        onPlusClick: Metro.noop,
+        onMinusClick: Metro.noop,
+        onArrowUp: Metro.noop,
+        onArrowDown: Metro.noop,
+        onButtonClick: Metro.noop,
+        onArrowClick: Metro.noop,
+        onSpinnerCreate: Metro.noop
+    },
+
+    _setOptionsFromDOM: function(){
+        var element = this.element, o = this.options;
+
+        $.each(element.data(), function(key, value){
+            if (key in o) {
+                try {
+                    o[key] = JSON.parse(value);
+                } catch (e) {
+                    o[key] = value;
+                }
+            }
+        });
+    },
+
+    _create: function(){
+        var element = this.element, o = this.options;
+
+        this._createStructure();
+        this._createEvents();
+
+        Utils.exec(o.onCreate, [element]);
+    },
+
+    _createStructure: function(){
+        var element = this.element, o = this.options;
+        var spinner = $("<div>").addClass("spinner").addClass("buttons-"+o.buttonsPosition).addClass(element[0].className).addClass(o.clsSpinner);
+        var button_plus = $("<button>").attr("type", "button").addClass("button spinner-button spinner-button-plus").addClass(o.clsSpinnerButton + " " + o.clsSpinnerButtonPlus).html(o.plusIcon);
+        var button_minus = $("<button>").attr("type", "button").addClass("button spinner-button spinner-button-minus").addClass(o.clsSpinnerButton + " " + o.clsSpinnerButtonMinus).html(o.minusIcon);
+        var init_value = element.val().trim();
+
+        if (!Utils.isValue(init_value)) {
+            element.val(0);
+        }
+
+        element[0].className = '';
+
+        spinner.insertBefore(element);
+        element.appendTo(spinner).addClass(o.clsSpinnerInput);
+
+        element.addClass("original-input");
+
+        button_plus.appendTo(spinner);
+        button_minus.appendTo(spinner);
+
+        if (o.hideCursor === true) {
+            spinner.addClass("hide-cursor");
+        }
+
+        if (o.disabled === true || element.is(":disabled")) {
+            this.disable();
+        } else {
+            this.enable();
+        }
+    },
+
+    _createEvents: function(){
+        var that = this, element = this.element, o = this.options;
+        var spinner = element.closest(".spinner");
+
+        var spinnerButtonClick = function(plus, threshold){
+            var curr = element.val();
+
+            var val = Number(element.val());
+            var step = Number(o.step);
+
+            if (plus) {
+                val += step;
+            } else {
+                val -= step;
+            }
+
+            that._setValue(val.toFixed(o.fixed), true);
+
+            Utils.exec(plus ? o.onPlusClick : o.onMinusClick, [curr, val, element.val()], element[0]);
+            Utils.exec(plus ? o.onArrowUp : o.onArrowDown, [curr, val, element.val()], element[0]);
+            Utils.exec(o.onButtonClick, [curr, val, element.val(), plus ? 'plus' : 'minus'], element[0]);
+            Utils.exec(o.onArrowClick, [curr, val, element.val(), plus ? 'plus' : 'minus'], element[0]);
+
+            setTimeout(function(){
+                if (that.repeat_timer) {
+                    spinnerButtonClick(plus, 100);
+                }
+            }, threshold);
+        };
+
+        spinner.on(Metro.events.start, ".spinner-button", function(){
+            that.repeat_timer = true;
+            spinnerButtonClick($(this).hasClass("spinner-button-plus"), o.repeatThreshold);
+        });
+
+        spinner.on(Metro.events.stop, ".spinner-button", function(){
+            that.repeat_timer = false;
+        });
+
+        element.on(Metro.events.keydown, function(e){
+            if (e.keyCode === Metro.keyCode.UP_ARROW || e.keyCode === Metro.keyCode.DOWN_ARROW) {
+                that.repeat_timer = true;
+                spinnerButtonClick(e.keyCode === Metro.keyCode.UP_ARROW, o.repeatThreshold);
+            }
+        });
+
+        spinner.on(Metro.events.keyup, function(){
+            that.repeat_timer = false;
+        });
+    },
+
+    _setValue: function(val, trigger_change){
+        var element = this.element, o = this.options;
+
+        if (Utils.exec(o.onBeforeChange, [val], element[0]) !== true) {
+            return ;
+        }
+
+        if (Utils.isValue(o.maxValue) && val > Number(o.maxValue)) {
+            val =  Number(o.maxValue);
+        }
+
+        if (Utils.isValue(o.minValue) && val < Number(o.minValue)) {
+            val =  Number(o.minValue);
+        }
+
+        element.val(val);
+
+        Utils.exec(o.onChange, [val], element[0]);
+
+        if (trigger_change === true) {
+            element.trigger("change");
+        }
+    },
+
+    val: function(val){
+        var that = this, element = this.element, o = this.options;
+        if (!Utils.isValue(val)) {
+            return element.val();
+        }
+
+        that._setValue(val.toFixed(o.fixed), true);
+    },
+
+    toDefault: function(){
+        var element = this.element, o = this.options;
+        var val = Utils.isValue(o.defaultValue) ? Number(o.defaultValue) : 0;
+        this._setValue(val.toFixed(o.fixed), true);
+        Utils.exec(o.onChange, [val], element[0]);
+    },
+
+    disable: function(){
+        this.element.data("disabled", true);
+        this.element.parent().addClass("disabled");
+    },
+
+    enable: function(){
+        this.element.data("disabled", false);
+        this.element.parent().removeClass("disabled");
+    },
+
+    toggleState: function(){
+        if (this.element.data("disabled") === false) {
+            this.disable();
+        } else {
+            this.enable();
+        }
+    },
+
+
+    changeAttribute: function(attributeName){
+        var that = this, element = this.element;
+
+        var changeValue = function(){
+            var val = element.attr('value').trim();
+            if (Utils.isValue(val)) {
+                that._setValue(Number(val), false);
+            }
+        };
+
+        switch (attributeName) {
+            case 'disabled': this.toggleState(); break;
+            case 'value': changeValue(); break;
+        }
+    },
+
+    destroy: function(){
+        var element = this.element;
+        var spinner = element.closest(".spinner");
+
+        spinner.off(Metro.events.click, ".spinner-button");
+        element.insertBefore(spinner);
+        spinner.remove();
+    }
+};
+
+Metro.plugin('spinner', Spinner);
 
 // Source: js/plugins/stepper.js
 var Stepper = {
@@ -15557,7 +16672,7 @@ var Streamer = {
 
         o.data = new_data;
 
-        this.data = new_data;
+        this.data = JSON.parse(o.data);
         this.build();
 
         element.trigger("datachanged");
@@ -15597,8 +16712,7 @@ var Switch = {
     options: {
         caption: "",
         captionPosition: "right",
-        disabled: false,
-        clsElement: "",
+        clsSwitch: "",
         clsCheck: "",
         clsCaption: "",
         onSwitchCreate: Metro.noop
@@ -15644,11 +16758,11 @@ var Switch = {
 
         element[0].className = '';
 
-        container.addClass(o.clsElement);
+        container.addClass(o.clsSwitch);
         caption.addClass(o.clsCaption);
         check.addClass(o.clsCheck);
 
-        if (o.disabled === true && element.is(':disabled')) {
+        if (element.is(':disabled')) {
             this.disable();
         } else {
             this.enable();
@@ -15701,15 +16815,24 @@ var Table = {
         this.wrapperPagination = null;
         this.filterIndex = null;
         this.filtersIndexes = null;
+        this.component = null;
+        this.inspector = null;
+        this.view = {};
+        this.viewDefault = {};
+        this.locale = Metro.locales["en-US"];
+        this.input_interval = null;
 
         this.sort = {
             dir: "asc",
             colIndex: 0
         };
 
+        this.service = [];
         this.heads = [];
         this.items = [];
         this.foots = [];
+
+        this.filteredItems = [];
 
         this._setOptionsFromDOM();
         this._create();
@@ -15718,16 +16841,28 @@ var Table = {
     },
 
     options: {
+        locale: METRO_LOCALE,
+
+        check: false,
+        checkColIndex: 0,
+        checkName: null,
+        checkType: "checkbox",
+        checkStyle: 1,
+        checkStoreKey: "TABLE:$1:KEYS",
+        rownum: false,
 
         filter: null,
         filters: null,
         source: null,
 
+        filterMinLength: 1,
+        filterThreshold: 500,
+
         showRowsSteps: true,
         showSearch: true,
         showTableInfo: true,
         showPagination: true,
-        showAllPages: false,
+        paginationShortMode: true,
         showActivity: true,
 
         muteTable: true,
@@ -15735,13 +16870,20 @@ var Table = {
         rows: 10,
         rowsSteps: "10,25,50,100",
 
+        viewSaveMode: "client",
+        viewSavePath: "TABLE:$1:OPTIONS",
+
         sortDir: "asc",
+        decimalSeparator: ".",
+        thousandSeparator: ",",
 
         tableRowsCountTitle: "Show entries:",
         tableSearchTitle: "Search:",
         tableInfoTitle: "Showing $1 to $2 of $3 entries",
         paginationPrevTitle: "Prev",
         paginationNextTitle: "Next",
+        allRecordsTitle: "All",
+        inspectorTitle: "Inspector",
 
         activityType: "cycle",
         activityStyle: "color",
@@ -15751,6 +16893,8 @@ var Table = {
         rowsWrapper: null,
         infoWrapper: null,
         paginationWrapper: null,
+
+        cellWrapper: true,
 
         clsComponent: "",
         clsTable: "",
@@ -15762,6 +16906,7 @@ var Table = {
         clsBody: "",
         clsBodyRow: "",
         clsBodyCell: "",
+        clsCellWrapper: "",
 
         clsFooter: "",
         clsFooterRow: "",
@@ -15779,6 +16924,9 @@ var Table = {
 
         onDraw: Metro.noop,
         onDrawRow: Metro.noop,
+        onDrawCell: Metro.noop,
+        onAppendRow: Metro.noop,
+        onAppendCell: Metro.noop,
         onSortStart: Metro.noop,
         onSortStop: Metro.noop,
         onSortItemSwitch: Metro.noop,
@@ -15788,6 +16936,12 @@ var Table = {
         onDataLoaded: Metro.noop,
         onFilterRowAccepted: Metro.noop,
         onFilterRowDeclined: Metro.noop,
+        onCheckClick: Metro.noop,
+        onCheckClickAll: Metro.noop,
+        onCheckDraw: Metro.noop,
+        onViewSave: Metro.noop,
+        onViewGet: Metro.noop,
+        onViewCreated: Metro.noop,
         onTableCreate: Metro.noop
     },
 
@@ -15807,11 +16961,23 @@ var Table = {
 
     _create: function(){
         var that = this, element = this.element, o = this.options;
+        var id = Utils.elementId("table");
+
+        if (!Utils.isValue(element.attr("id"))) {
+            element.attr("id", id);
+        }
+
+        if (Utils.isValue(Metro.locales[o.locale])) {
+            this.locale = Metro.locales[o.locale];
+        }
 
         if (o.source !== null) {
             Utils.exec(o.onDataLoad, [o.source], element[0]);
 
             $.get(o.source, function(data){
+                if (typeof data !== "object") {
+                    throw new Error("Data for table is not a object");
+                }
                 that._build(data);
                 Utils.exec(o.onDataLoaded, [o.source, data], element[0]);
             }).fail(function( jqXHR, textStatus, errorThrown) {
@@ -15823,7 +16989,14 @@ var Table = {
     },
 
     _build: function(data){
-        var element = this.element, o = this.options;
+        var that = this, element = this.element, o = this.options;
+        var view, id = element.attr("id");
+
+        o.rows = parseInt(o.rows);
+
+        this.items = [];
+        this.heads = [];
+        this.foots = [];
 
         if (Utils.isValue(data)) {
             this._createItemsFromJSON(data);
@@ -15831,31 +17004,180 @@ var Table = {
             this._createItemsFromHTML()
         }
 
+        this.view = this._createView();
+        this.viewDefault = Utils.objectClone(this.view);
+
+        if (o.viewSaveMode.toLowerCase() === "client") {
+            view = Metro.storage.getItem(o.viewSavePath.replace("$1", id));
+            if (Utils.isValue(view) && Utils.objectLength(view) === Utils.objectLength(this.view)) {
+                this.view = view;
+                Utils.exec(o.onViewGet, [view], element[0]);
+            }
+            this._final();
+        } else {
+            $.get(
+                o.viewSavePath,
+                {
+                    id: id
+                },
+                function(view){
+                    if (Utils.isValue(view) && Utils.objectLength(view) === Utils.objectLength(that.view)) {
+                        that.view = view;
+                        Utils.exec(o.onViewGet, [view], element[0]);
+                    }
+                    that._final();
+                }
+            ).fail(function(jqXHR, textStatus) {
+                that._final();
+                console.log("Warning! View " + textStatus + " for table " + element.attr('id') + " ");
+            });
+        }
+    },
+
+    _final: function(){
+        var element = this.element, o = this.options;
+        var id = element.attr("id");
+
+        Metro.storage.delItem(o.checkStoreKey.replace("$1", id));
+
+        this._service();
         this._createStructure();
+        this._createInspector();
         this._createEvents();
 
         Utils.exec(o.onTableCreate, [element], element[0]);
     },
 
-    _createItemsFromHTML: function(){
-        var that = this, element = this.element;
-        var body = element.find("tbody");
-        var head = element.find("thead");
-        var foot = element.find("tfoot");
+    _service: function(){
+        var o = this.options;
+        var item_check, item_rownum;
+        var service = [];
 
-        this.items = [];
-        this.heads = [];
-        this.foots = [];
+        this.service = {};
 
-        if (body.length > 0) $.each(body.find("tr"), function(){
-            var row = $(this);
-            var tr = [];
-            $.each(row.children("td"), function(){
-                var td = $(this);
-                tr.push(td.html());
-            });
-            that.items.push(tr);
+        item_rownum = {
+            title: "#",
+            format: undefined,
+            name: undefined,
+            sortable: false,
+            sortDir: undefined,
+            clsColumn: o.rownum !== true ? "d-none" : "",
+            cls: o.rownum !== true ? "d-none" : "",
+            colspan: undefined,
+            type: "rownum"
+        };
+
+        item_check = {
+            title: o.checkType === "checkbox" ? "<input type='checkbox' data-role='checkbox' class='table-service-check-all' data-style='"+o.checkStyle+"'>" : "",
+            format: undefined,
+            name: undefined,
+            sortable: false,
+            sortDir: undefined,
+            clsColumn: o.check !== true ? "d-none" : "",
+            cls: o.check !== true ? "d-none" : "",
+            colspan: undefined,
+            type: "rowcheck"
+        };
+
+        service.push(item_rownum);
+        service.push(item_check);
+
+        this.service = service;
+    },
+
+    _createView: function(){
+        var view, o = this.options;
+
+        view = {};
+
+        $.each(this.heads, function(i){
+
+            if (Utils.isValue(this.cls)) {this.cls = this.cls.replace("hidden", "");}
+            if (Utils.isValue(this.clsColumn)) {this.clsColumn = this.clsColumn.replace("hidden", "");}
+
+            view[i] = {
+                "index": i,
+                "index-view": i,
+                "show": !Utils.isValue(this.show) ? true : this.show,
+                "size": Utils.isValue(this.size) ? this.size : ""
+            }
         });
+
+        Utils.exec(o.onViewCreated, [view], view);
+        return view;
+    },
+
+    _createInspectorItems: function(table){
+        var that = this, o = this.options;
+        var j, tds = [], row;
+        var cells = this.heads;
+
+        table.html("");
+
+        for (j = 0; j < cells.length; j++){
+            tds[j] = null;
+        }
+
+        $.each(cells, function(i){
+            row = $("<tr>");
+            row.data('index', i);
+            row.data('index-view', i);
+            $("<td>").html("<input type='checkbox' data-style='"+o.checkStyle+"' data-role='checkbox' name='column_show_check[]' value='"+i+"' "+(Utils.bool(that.view[i]['show']) ? "checked" : "")+">").appendTo(row);
+            $("<td>").html(this.title).appendTo(row);
+            $("<td>").html("<input type='number' name='column_size' value='"+that.view[i]['size']+"' data-index='"+i+"'>").appendTo(row);
+            $("<td>").html("" +
+                "<button class='button mini js-table-inspector-field-up' type='button'><span class='mif-arrow-up'></span></button>" +
+                "<button class='button mini js-table-inspector-field-down' type='button'><span class='mif-arrow-down'></span></button>" +
+                "").appendTo(row);
+            tds[that.view[i]['index-view']] = row;
+        });
+
+        //
+        for (j = 0; j < cells.length; j++){
+            tds[j].appendTo(table);
+        }
+    },
+
+    _createInspector: function(){
+        var o = this.options;
+        var component = this.component;
+        var inspector, table_wrap, table, tbody, actions;
+
+        inspector = $("<div data-role='draggable' data-drag-element='.table-inspector-header' data-drag-area='body'>").addClass("table-inspector");
+
+        $("<div class='table-inspector-header'>"+o.inspectorTitle+"</div>").appendTo(inspector);
+
+        table_wrap = $("<div>").addClass("table-wrap").appendTo(inspector);
+
+        table = $("<table>").addClass("table subcompact");
+        tbody = $("<tbody>").appendTo(table);
+
+        table.appendTo(table_wrap);
+
+        this._createInspectorItems(tbody);
+
+        actions = $("<div class='table-inspector-actions'>").appendTo(inspector);
+        $("<button class='button primary js-table-inspector-save' type='button'>").html(this.locale.buttons.save).appendTo(actions);
+        $("<button class='button secondary js-table-inspector-reset ml-2 mr-2' type='button'>").html(this.locale.buttons.reset).appendTo(actions);
+        $("<button class='button link js-table-inspector-cancel place-right' type='button'>").html(this.locale.buttons.cancel).appendTo(actions);
+
+        this.inspector = inspector;
+
+        component.append(inspector);
+
+        this._createInspectorEvents();
+    },
+
+    _resetInspector: function(){
+        var inspector = this.inspector;
+        var table = inspector.find("table tbody");
+        this._createInspectorItems(table);
+        this._createInspectorEvents();
+    },
+
+    _createHeadsFormHTML: function(){
+        var that = this, element = this.element;
+        var head = element.find("thead");
 
         if (head.length > 0) $.each(head.find("tr > *"), function(){
             var item = $(this);
@@ -15880,10 +17202,19 @@ var Table = {
                 sortable: item.hasClass("sortable-column"),
                 sortDir: dir,
                 clsColumn: Utils.isValue(item.data("cls-column")) ? item.data("cls-column") : "",
-                cls: item_class
+                cls: item_class,
+                colspan: item.attr("colspan"),
+                type: "data",
+                size: Utils.isValue(item.data("size")) ? item.data("size") : "",
+                show: !item.hasClass("hidden") || (Utils.isValue(item.data("show")) && JSON.parse(item.data("show")) === false)
             };
             that.heads.push(head_item);
         });
+    },
+
+    _createFootsFromHTML: function(){
+        var that = this, element = this.element;
+        var foot = element.find("tfoot");
 
         if (foot.length > 0) $.each(foot.find("tr > *"), function(){
             var item = $(this);
@@ -15892,23 +17223,43 @@ var Table = {
             foot_item = {
                 title: item.html(),
                 name: Utils.isValue(item.data("name")) ? item.data("name") : false,
-                cls: item[0].className
+                cls: item[0].className,
+                colspan: item.attr("colspan")
             };
 
             that.foots.push(foot_item);
         });
+    },
 
+    _createItemsFromHTML: function(){
+        var that = this, element = this.element;
+        var body = element.find("tbody");
+
+        if (body.length > 0) $.each(body.find("tr"), function(){
+            var row = $(this);
+            var tr = [];
+            $.each(row.children("td"), function(){
+                var td = $(this);
+                tr.push(td.html());
+            });
+            that.items.push(tr);
+        });
+
+        this._createHeadsFormHTML();
+        this._createFootsFromHTML();
     },
 
     _createItemsFromJSON: function(source){
         var that = this;
 
-        this.items = [];
-        this.heads = [];
-        this.foots = [];
+        if (typeof source === "string") {
+            source = JSON.parse(source);
+        }
 
         if (source.header !== undefined) {
             that.heads = source.header;
+        } else {
+            this._createHeadsFormHTML();
         }
 
         if (source.data !== undefined) {
@@ -15925,13 +17276,18 @@ var Table = {
 
         if (source.footer !== undefined) {
             this.foots = source.footer;
+        } else {
+            this._createFootsFromHTML();
         }
     },
 
     _createTableHeader: function(){
-        var o = this.options;
-        var head = $("<thead>");
-        var tr, th;
+        var element = this.element, o = this.options;
+        var head = $("<thead>").html('');
+        var tr, th, tds = [], j, cells;
+        var view = this.view;
+
+        element.find("thead").remove();
 
         head.addClass(o.clsHead);
 
@@ -15940,56 +17296,93 @@ var Table = {
         }
 
         tr = $("<tr>").addClass(o.clsHeadRow).appendTo(head);
-        $.each(this.heads, function(){
-            var item = this;
+
+        $.each(this.service, function(){
+            var item = this, classes = [];
             th = $("<th>").appendTo(tr);
-            if (item.sortable === true) {
-                th.addClass("sortable-column");
-                if (item.sortDir !== undefined) {
-                    th.addClass("sort-" + item.sortDir);
-                }
-            }
-            if (item.title !== undefined) {
-                th.html(item.title);
-            }
-            if (item.format !== undefined) {
-                th.attr("data-format", item.format);
-            }
-            if (item.name !== undefined) {
-                th.addClass("column-name-" + item.name);
-            }
-            if (item.size !== undefined) {
-                th.css({
-                    width: item.size
-                })
-            }
-            if (item.cls !== undefined) {
-                th.addClass(item.cls);
-            }
-            if (item.clsColumn !== undefined) {
-                th.addClass(item.clsColumn);
-            }
-            th.addClass(o.clsHeadCell);
+            if (Utils.isValue(item.title)) {th.html(item.title);}
+            if (Utils.isValue(item.size)) {th.css({width: item.size});}
+            if (Utils.isValue(item.cls)) {classes.push(item.cls);}
+            if (item.type === 'rowcheck') {classes.push("check-cell");}
+            if (item.type === 'rownum') {classes.push("rownum-cell");}
+            classes.push(o.clsHeadCell);
+            th.addClass(classes.join(" "));
         });
 
-        return head;
+        cells = this.heads;
+
+        for (j = 0; j < cells.length; j++){
+            tds[j] = null;
+        }
+
+        $.each(cells, function(cell_index){
+            var item = this;
+            var classes = [];
+
+            th = $("<th>");
+            th.data("index", cell_index);
+
+            if (Utils.isValue(item.title)) {th.html(item.title);}
+            if (Utils.isValue(item.format)) {th.attr("data-format", item.format);}
+            if (Utils.isValue(item.name)) {th.attr("data-name", item.name);}
+            if (Utils.isValue(item.colspan)) {th.attr("colspan", item.colspan);}
+            if (Utils.isValue(view[cell_index]['size'])) {th.css({width: view[cell_index]['size']});}
+            if (item.sortable === true) {
+                classes.push("sortable-column");
+
+                if (Utils.isValue(item.sortDir)) {
+                    classes.push("sort-" + item.sortDir);
+                }
+            }
+            if (Utils.isValue(item.cls)) {classes.push(item.cls);}
+            if (Utils.bool(view[cell_index]['show']) === false) {
+                classes.push("hidden");
+            }
+
+            if (item.type === 'rowcheck') {classes.push("check-cell");}
+            if (item.type === 'rownum') {classes.push("rownum-cell");}
+
+            classes.push(o.clsHeadCell);
+
+            if (Utils.bool(view[cell_index]['show'])) {
+                Utils.arrayDelete(classes, "hidden");
+            }
+
+            th.addClass(classes.join(" "));
+
+            tds[view[cell_index]['index-view']] = th;
+        });
+
+        for (j = 0; j < cells.length; j++){
+            tds[j].appendTo(tr);
+        }
+
+        element.prepend(head);
     },
 
     _createTableBody: function(){
-        return $("<tbody>").addClass(this.options.clsBody);
+        var body, head, element = this.element;
+
+        head  = element.find("thead");
+        element.find("tbody").remove();
+        body = $("<tbody>").addClass(this.options.clsBody);
+        body.insertAfter(head);
     },
 
     _createTableFooter: function(){
-        var that = this, o = this.options;
+        var element = this.element, o = this.options;
         var foot = $("<tfoot>").addClass(o.clsFooter);
         var tr, th;
 
+        element.find("tfoot").remove();
+
         if (this.foots.length === 0) {
-            return foot;
+            element.append(foot);
+            return;
         }
 
         tr = $("<tr>").addClass(o.clsHeadRow).appendTo(foot);
-        $.each(this.foots, function(i){
+        $.each(this.foots, function(){
             var item = this;
             th = $("<th>").appendTo(tr);
 
@@ -16005,14 +17398,14 @@ var Table = {
                 th.addClass(item.cls);
             }
 
-            if (Utils.isValue(that.heads[i].clsColumn)) {
-                th.addClass(that.heads[i].clsColumn);
+            if (Utils.isValue(item.colspan)) {
+                th.attr("colspan", item.colspan);
             }
 
             th.appendTo(tr);
         });
 
-        return foot;
+        element.append(foot);
     },
 
     _createTopBlock: function (){
@@ -16035,8 +17428,9 @@ var Table = {
 
         rows_select = $("<select>").appendTo(rows_block);
         $.each(Utils.strToArray(o.rowsSteps), function () {
-            var option = $("<option>").attr("value", this).text(this).appendTo(rows_select);
-            if (parseInt(this) === parseInt(o.rows)) {
+            var val = parseInt(this);
+            var option = $("<option>").attr("value", val).text(val === -1 ? o.allRecordsTitle : val).appendTo(rows_select);
+            if (val === parseInt(o.rows)) {
                 option.attr("selected", "selected");
             }
         });
@@ -16044,7 +17438,8 @@ var Table = {
             filter: false,
             prepend: o.tableRowsCountTitle,
             onChange: function (val) {
-                if (parseInt(val) === parseInt(o.rows)) {
+                val = parseInt(val);
+                if (val === parseInt(o.rows)) {
                     return;
                 }
                 o.rows = val;
@@ -16066,12 +17461,12 @@ var Table = {
         var bottom_block = $("<div>").addClass("table-bottom").addClass(o.clsTableBottom).insertAfter(element);
         var info, pagination;
 
-        info = $("<div>").addClass("table-info").addClass(o.clsTableInfo).appendTo(bottom_block);
+        info = Utils.isValue(this.wrapperInfo) ? this.wrapperInfo : $("<div>").addClass("table-info").addClass(o.clsTableInfo).appendTo(bottom_block);
         if (o.showTableInfo !== true) {
             info.hide();
         }
 
-        pagination = $("<div>").addClass("table-pagination").addClass(o.clsTablePagination).appendTo(bottom_block);
+        pagination = Utils.isValue(this.wrapperPagination) ? this.wrapperPagination : $("<div>").addClass("table-pagination").addClass(o.clsTablePagination).appendTo(bottom_block);
         if (o.showPagination !== true) {
             pagination.hide();
         }
@@ -16081,7 +17476,7 @@ var Table = {
 
     _createStructure: function(){
         var that = this, element = this.element, o = this.options;
-        var table_component, sortable_columns;
+        var table_component, columns;
         var w_search = $(o.searchWrapper), w_info = $(o.infoWrapper), w_rows = $(o.rowsWrapper), w_paging = $(o.paginationWrapper);
 
         if (w_search.length > 0) {this.wrapperSearch = w_search;}
@@ -16112,9 +17507,9 @@ var Table = {
 
         element.html("").addClass(o.clsTable);
 
-        element.append(this._createTableHeader());
-        element.append(this._createTableBody());
-        element.append(this._createTableFooter());
+        this._createTableHeader();
+        this._createTableBody();
+        this._createTableFooter();
 
         this._createTopBlock();
         this._createBottomBlock();
@@ -16130,9 +17525,9 @@ var Table = {
         });
 
         if (need_sort) {
-            sortable_columns = element.find(".sortable-column");
-            this._resetSortClass(sortable_columns);
-            $(sortable_columns.get(this.sort.colIndex)).addClass("sort-"+this.sort.dir);
+            columns = element.find("thead th");
+            this._resetSortClass(columns);
+            $(columns.get(this.sort.colIndex + that.service.length)).addClass("sort-"+this.sort.dir);
             this.sorting();
         }
 
@@ -16157,6 +17552,7 @@ var Table = {
 
         this.currentPage = 1;
 
+        this.component = table_component;
         this._draw();
     },
 
@@ -16169,6 +17565,7 @@ var Table = {
         var component = element.parent();
         var search = component.find(".table-search-block input");
         var customSearch;
+        var id = element.attr("id");
 
         element.on(Metro.events.click, ".sortable-column", function(){
 
@@ -16183,7 +17580,7 @@ var Table = {
 
             that.activity.show(o.activityTimeout, function(){
                 that.currentPage = 1;
-                that.sort.colIndex = col.index();
+                that.sort.colIndex = col.data("index");
                 if (!col.has("sort-asc") && !col.hasClass("sort-desc")) {
                     that.sort.dir = o.sortDir;
                 } else {
@@ -16203,32 +17600,86 @@ var Table = {
             });
         });
 
-        search.on(Metro.events.inputchange, function(){
+        element.on(Metro.events.click, ".table-service-check input", function(){
+            var check = $(this);
+            var status = check.is(":checked");
+            var val = ""+check.val();
+            var store_key = o.checkStoreKey.replace("$1", id);
+            var storage = Metro.storage;
+            var data = storage.getItem(store_key);
+
+            if (status) {
+                if (!Utils.isValue(data)) {
+                    data = [val];
+                } else {
+                    if (Array(data).indexOf(val) === -1) {
+                        data.push(val);
+                    }
+                }
+            } else {
+                if (Utils.isValue(data)) {
+                    Utils.arrayDelete(data, val);
+                } else {
+                    data = [];
+                }
+            }
+
+            storage.setItem(store_key, data);
+
+            Utils.exec(o.onCheckClick, [status], this);
+        });
+
+        element.on(Metro.events.click, ".table-service-check-all input", function(){
+            var status = $(this).is(":checked");
+            var store_key = o.checkStoreKey.replace("$1", id);
+            var data = [];
+
+            if (status) {
+                $.each(that.filteredItems, function(){
+                    if (data.indexOf(this[o.checkColIndex]) !== -1) return ;
+                    data.push(""+this[o.checkColIndex]);
+                });
+            } else {
+                data = [];
+            }
+
+            Metro.storage.setItem(store_key, data);
+
+            that._draw();
+
+            Utils.exec(o.onCheckClickAll, [status], this);
+        });
+
+        var _search = function(e){
             that.filterString = this.value.trim().toLowerCase();
+
             if (that.filterString[that.filterString.length - 1] === ":") {
                 return ;
             }
-            that.currentPage = 1;
-            that._draw();
-        });
+
+            clearInterval(that.input_interval); that.input_interval = false;
+            if (!that.input_interval) that.input_interval = setTimeout(function(){
+                that.currentPage = 1;
+                that._draw();
+                clearInterval(that.input_interval); that.input_interval = false;
+            }, o.filterThreshold);
+        };
+
+        search.on(Metro.events.inputchange, _search);
 
         if (Utils.isValue(this.wrapperSearch)) {
             customSearch = this.wrapperSearch.find("input");
             if (customSearch.length > 0) {
-                customSearch.on(Metro.events.inputchange, function(){
-                    that.filterString = this.value.trim().toLowerCase();
-                    if (that.filterString[that.filterString.length - 1] === ":") {
-                        return ;
-                    }
-                    that.currentPage = 1;
-                    that._draw();
-                });
+                customSearch.on(Metro.events.inputchange, _search);
             }
         }
 
         function pageLinkClick(l){
             var link = $(l);
             var item = link.parent();
+            if (that.filteredItems.length === 0) {
+                return ;
+            }
 
             if (item.hasClass("active")) {
                 return ;
@@ -16261,6 +17712,160 @@ var Table = {
             this.wrapperPagination.on(Metro.events.click, ".pagination .page-link", function(){
                 pageLinkClick(this)
             });
+        }
+
+        this._createInspectorEvents();
+    },
+
+    _createInspectorEvents: function(){
+        var that = this, inspector = this.inspector;
+        // Inspector event
+
+        this._removeInspectorEvents();
+
+        inspector.on(Metro.events.click, ".js-table-inspector-field-up", function(){
+            var button = $(this), tr = button.closest("tr");
+            var tr_prev = tr.prev("tr");
+            var index = tr.data("index");
+            var index_view;
+            if (tr_prev.length === 0) {
+                return ;
+            }
+            tr.insertBefore(tr_prev);
+            tr.addClass("flash");
+            setTimeout(function(){
+                tr.removeClass("flash");
+            }, 1000);
+            index_view = tr.index();
+
+            tr.data("index-view", index_view);
+            that.view[index]['index-view'] = index_view;
+
+            $.each(tr.nextAll(), function(){
+                var t = $(this);
+                index_view++;
+                t.data("index-view", index_view);
+                that.view[t.data("index")]['index-view'] = index_view;
+            });
+
+            that._createTableHeader();
+            that._draw();
+        });
+
+        inspector.on(Metro.events.click, ".js-table-inspector-field-down", function(){
+            var button = $(this), tr = button.closest("tr");
+            var tr_next = tr.next("tr");
+            var index = tr.data("index");
+            var index_view;
+            if (tr_next.length === 0) {
+                return ;
+            }
+            tr.insertAfter(tr_next);
+            tr.addClass("flash");
+            setTimeout(function(){
+                tr.removeClass("flash");
+            }, 1000);
+            index_view = tr.index();
+
+            tr.data("index-view", index_view);
+            that.view[index]['index-view'] = index_view;
+
+            $.each(tr.prevAll(), function(){
+                var t = $(this);
+                index_view--;
+                t.data("index-view", index_view);
+                that.view[t.data("index")]['index-view'] = index_view;
+            });
+
+            that._createTableHeader();
+            that._draw();
+        });
+
+        inspector.on(Metro.events.click, "input[type=checkbox]", function(){
+            var check = $(this);
+            var status = check.is(":checked");
+            var index = check.val();
+            var op = ['cls', 'clsColumn'];
+
+            if (status) {
+                $.each(op, function(){
+                    var a;
+                    a = Utils.isValue(that.heads[index][this]) ? Utils.strToArray(that.heads[index][this]) : [];
+                    Utils.arrayDelete(a, "hidden");
+                    that.heads[index][this] = a.join(" ");
+                    that.view[index]['show'] = true;
+                });
+            } else {
+                $.each(op, function(){
+                    var a;
+
+                    a = Utils.isValue(that.heads[index][this]) ? Utils.strToArray(that.heads[index][this]) : [];
+                    if (a.indexOf("hidden") === -1) {
+                        a.push("hidden");
+                    }
+                    that.heads[index][this] = a.join(" ");
+                    that.view[index]['show'] = false;
+                });
+            }
+
+            that._createTableHeader();
+            that._draw();
+        });
+
+        inspector.find("input[type=number]").on(Metro.events.inputchange, function(){
+            var input = $(this);
+            var index = input.attr("data-index");
+            var val = parseInt(input.val());
+
+            that.view[index]['size'] = val === 0 ? "" : val;
+
+            that._createTableHeader();
+        });
+
+        inspector.on(Metro.events.click, ".js-table-inspector-save", function(){
+            that._saveTableView();
+            that.openInspector(false);
+        });
+
+        inspector.on(Metro.events.click, ".js-table-inspector-cancel", function(){
+            that.openInspector(false);
+        });
+
+        inspector.on(Metro.events.click, ".js-table-inspector-reset", function(e){
+            that.resetView();
+        });
+    },
+
+    _removeInspectorEvents: function(){
+        var inspector = this.inspector;
+        inspector.off(Metro.events.click, ".js-table-inspector-field-up");
+        inspector.off(Metro.events.click, ".js-table-inspector-field-down");
+        inspector.off(Metro.events.click, "input[type=checkbox]");
+        inspector.off(Metro.events.click, ".js-table-inspector-save");
+        inspector.off(Metro.events.click, ".js-table-inspector-cancel");
+        inspector.off(Metro.events.click, ".js-table-inspector-reset");
+        inspector.find("input[type=number]").off(Metro.events.inputchange);
+    },
+
+    _saveTableView: function(){
+        var element = this.element, o = this.options;
+        var view = this.view;
+        var id = element.attr("id");
+
+        if (o.viewSaveMode.toLowerCase() === "client") {
+            Metro.storage.setItem(o.viewSavePath.replace("$1", id), view);
+            Utils.exec(o.onViewSave, [o.viewSavePath, view], element[0]);
+        } else {
+            $.post(
+                o.viewSavePath,
+                {
+                    id : element.attr("id"),
+                    view : view
+                },
+                function(data, status, xhr){
+                    Utils.exec(o.onViewSave, [o.viewSavePath, view, data, status, xhr], element[0]);
+                }
+            );
         }
     },
 
@@ -16305,6 +17910,10 @@ var Table = {
             return ;
         }
 
+        if (o.rows === -1) {
+            return ;
+        }
+
         this.pagesCount = Math.ceil(length / o.rows);
 
         var add_item = function(item_title, item_type, data){
@@ -16323,7 +17932,7 @@ var Table = {
 
         pagination.append(add_item(1, that.currentPage === 1 ? "active" : "", 1));
 
-        if (o.showAllPages === true || this.pagesCount <= 7) {
+        if (o.paginationShortMode !== true || this.pagesCount <= 7) {
             for (i = 2; i < this.pagesCount; i++) {
                 pagination.append(add_item(i, i === that.currentPage ? "active" : "", i));
             }
@@ -16367,20 +17976,17 @@ var Table = {
         if (this.currentPage === this.pagesCount) {
             next.addClass("disabled");
         }
+
+        if (this.filteredItems.length === 0) {
+            pagination.addClass("disabled");
+            pagination.children().addClass("disabled");
+        }
     },
 
-    _draw: function(cb){
-        var that = this, element = this.element, o = this.options;
-        var body = element.find("tbody");
-        var i;
-        var start = o.rows === -1 ? 0 : o.rows * (this.currentPage - 1),
-            stop = o.rows === -1 ? this.items.length - 1 : start + o.rows - 1;
-        var items;
-        var flt, idx = -1;
-
-        body.html("");
-
-        if (Utils.isValue(this.filterString) || this.filters.length > 0) {
+    _filter: function(){
+        var that = this, o = this.options, element = this.element;
+        var items, flt, idx = -1, i;
+        if ((Utils.isValue(this.filterString) && that.filterString.length >= o.filterMinLength) || this.filters.length > 0) {
             flt = this.filterString.split(":");
             if (flt.length > 1) {
                 $.each(that.heads, function (i, v) {
@@ -16392,11 +17998,12 @@ var Table = {
             items = this.items.filter(function(row){
                 var row_data = "" + (flt.length > 1 && idx > -1 ? row[idx] : row.join());
                 var c1 = row_data.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim().toLowerCase();
-                var result = Utils.isValue(that.filterString) ? c1.indexOf(flt.length > 1 ? flt[1] : flt[0]) > -1 : true;
+                var result = Utils.isValue(that.filterString) && that.filterString.length >= o.filterMinLength ? ~c1.indexOf(flt.length > 1 ? flt[1] : flt[0]) : true;
 
                 if (result === true && that.filters.length > 0) {
                     for (i = 0; i < that.filters.length; i++) {
-                        if (Utils.exec(that.filters[i], [row]) !== true) {
+                        if (!Utils.isValue(that.filters[i])) continue;
+                        if (Utils.exec(that.filters[i], [row, that.heads]) !== true) {
                             result = false;
                             break;
                         }
@@ -16417,24 +18024,104 @@ var Table = {
             items = this.items;
         }
 
+        this.filteredItems = items;
+
+        return items;
+    },
+
+    _draw: function(cb){
+        var that = this, element = this.element, o = this.options;
+        var body = element.find("tbody");
+        var i;
+        var start = parseInt(o.rows) === -1 ? 0 : o.rows * (this.currentPage - 1),
+            stop = parseInt(o.rows) === -1 ? this.items.length - 1 : start + o.rows - 1;
+        var items;
+        var stored_keys = Metro.storage.getItem(o.checkStoreKey.replace("$1", element.attr('id')));
+        var view = this.view;
+
+        body.html("");
+
+        items = this._filter();
+
         for (i = start; i <= stop; i++) {
-            var tr = $("<tr>").addClass(o.clsBodyRow);
-            if (items[i] !== undefined) $.each(items[i], function(cell_i){
-                var td = $("<td>").html(this);
-                td.addClass(o.clsBodyCell);
-                if (that.heads[cell_i].clsColumn !== undefined) {
-                    td.addClass(that.heads[cell_i].clsColumn);
+            var j, tr, td, check, cells = [], tds = [];
+            if (Utils.isValue(items[i])) {
+                tr = $("<tr>").addClass(o.clsBodyRow);
+
+                // Rownum
+                td = $("<td>").html(i + 1);
+                if (that.service[0].clsColumn !== undefined) {
+                    td.addClass(that.service[0].clsColumn);
                 }
                 td.appendTo(tr);
-            });
-            tr.appendTo(body);
-            Utils.exec(o.onDrawRow, [tr], element[0]);
+
+                // Checkbox
+                td = $("<td>");
+                if (o.checkType === "checkbox") {
+                    check = $("<input type='checkbox' data-style='"+o.checkStyle+"' data-role='checkbox' name='" + (Utils.isValue(o.checkName) ? o.checkName : 'table_row_check') + "[]' value='" + items[i][o.checkColIndex] + "'>");
+                } else {
+                    check = $("<input type='radio' data-style='"+o.checkStyle+"' data-role='radio' name='" + (Utils.isValue(o.checkName) ? o.checkName : 'table_row_check') + "' value='" + items[i][o.checkColIndex] + "'>");
+                }
+
+                if (Utils.isValue(stored_keys) && Array.isArray(stored_keys) && stored_keys.indexOf(""+items[i][o.checkColIndex]) > -1) {
+                    check.prop("checked", true);
+                }
+
+                check.addClass("table-service-check");
+                Utils.exec(o.onCheckDraw, [check], check[0]);
+                check.appendTo(td);
+                if (that.service[1].clsColumn !== undefined) {
+                    td.addClass(that.service[1].clsColumn);
+                }
+                td.appendTo(tr);
+
+                cells = items[i];
+
+                for (j = 0; j < cells.length; j++){
+                    tds[j] = null;
+                }
+
+                $.each(cells, function(cell_index){
+                    if (o.cellWrapper === true) {
+                        td = $("<td>");
+                        $("<div>").addClass("cell-wrapper").addClass(o.clsCellWrapper).html(this).appendTo(td);
+                    } else {
+                        td = $("<td>").html(this);
+                    }
+                    td.addClass(o.clsBodyCell);
+                    if (Utils.isValue(that.heads[cell_index].clsColumn)) {
+                        td.addClass(that.heads[cell_index].clsColumn);
+                    }
+
+                    if (Utils.bool(view[cell_index].show) === false) {
+                        td.addClass("hidden");
+                    }
+
+                    if (Utils.bool(view[cell_index].show)) {
+                        td.removeClass("hidden");
+                    }
+
+                    tds[view[cell_index]['index-view']] = td;
+                    Utils.exec(o.onDrawCell, [td, this, cell_index, that.heads[cell_index]], td[0]);
+                });
+
+                for (j = 0; j < cells.length; j++){
+                    tds[j].appendTo(tr);
+                    Utils.exec(o.onAppendCell, [tds[j], tr, j, element], tds[j][0])
+                }
+
+                Utils.exec(o.onDrawRow, [tr, that.view, that.heads, element], tr[0]);
+
+                tr.appendTo(body);
+
+                Utils.exec(o.onAppendRow, [tr, element], tr[0]);
+            }
         }
 
         this._info(start + 1, stop + 1, items.length);
         this._paging(items.length);
 
-        this.activity.hide();
+        if (this.activity) this.activity.hide();
 
         Utils.exec(o.onDraw, [element], element[0]);
 
@@ -16444,14 +18131,24 @@ var Table = {
     },
 
     _getItemContent: function(row){
+
+        // console.log(this.sort);
+
         var result, col = row[this.sort.colIndex];
         var format = this.heads[this.sort.colIndex].format;
+        var formatMask = this.heads[this.sort.colIndex].formatMask;
+        var o = this.options;
 
         result = (""+col).toLowerCase().replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
 
-        if (format !== undefined) {
+        if (Utils.isValue(format)) {
+
+            if (['number', 'int', 'float', 'money'].indexOf(format) !== -1 && (o.thousandSeparator !== "," || o.decimalSeparator !== "." )) {
+                result = Utils.parseNumber(result, o.thousandSeparator, o.decimalSeparator);
+            }
+
             switch (format) {
-                case "date": result = Utils.isDate(result) ? new Date(result) : ""; break;
+                case "date": result = Utils.isValue(formatMask) ? result.toDate(formatMask) : new Date(result); break;
                 case "number": result = Number(result); break;
                 case "int": result = parseInt(result); break;
                 case "float": result = parseFloat(result); break;
@@ -16468,9 +18165,8 @@ var Table = {
 
     sorting: function(dir){
         var that = this, element = this.element, o = this.options;
-        var items;
 
-        if (dir !== undefined && dir !== null) {
+        if (Utils.isValue(dir)) {
             this.sort.dir = dir;
         }
 
@@ -16504,28 +18200,24 @@ var Table = {
         this._draw();
     },
 
-    loadData: function(source){
+    loadData: function(source, review){
         var that = this, element = this.element, o = this.options;
+        var need_sort = false;
+        var sortable_columns;
 
-        if (Utils.isValue(source) !== true) {
-            return ;
+        if (!Utils.isValue(review)) {
+            review = true;
         }
 
-        o.source = source;
+        function redraw(){
 
-        Utils.exec(o.onDataLoad, [o.source], element[0]);
+            if (review === true) {
+                that.view = that._createView();
+            }
 
-        $.get(o.source, function(data){
-            var need_sort = false;
-            var sortable_columns;
-
-            that._createItemsFromJSON(data);
-
-            element.html("");
-
-            element.append(that._createTableHeader());
-            element.append(that._createTableBody());
-            element.append(that._createTableFooter());
+            that._createTableHeader();
+            that._createTableBody();
+            that._createTableFooter();
 
             if (that.heads.length > 0) $.each(that.heads, function(i){
                 var item = this;
@@ -16546,11 +18238,39 @@ var Table = {
             that.currentPage = 1;
 
             that._draw();
+        }
 
-            Utils.exec(o.onDataLoaded, [o.source, data], element[0]);
-        }).fail(function( jqXHR, textStatus, errorThrown) {
-            console.log(textStatus); console.log(jqXHR); console.log(errorThrown);
-        });
+        element.html("");
+
+        if (!Utils.isValue(source)) {
+
+            // this._createItemsFromHTML();
+            redraw();
+
+        } else {
+            o.source = source;
+
+            Utils.exec(o.onDataLoad, [o.source], element[0]);
+
+            $.get(o.source, function(data){
+
+                that.items = [];
+                that.heads = [];
+                that.foots = [];
+
+                that._createItemsFromJSON(data);
+
+                redraw();
+
+                Utils.exec(o.onDataLoaded, [o.source, data], element[0]);
+            }).fail(function( jqXHR, textStatus, errorThrown) {
+                console.log(textStatus); console.log(jqXHR); console.log(errorThrown);
+            });
+        }
+    },
+
+    reload: function(review){
+        this.loadData(this.options.source, review);
     },
 
     next: function(){
@@ -16614,7 +18334,7 @@ var Table = {
     },
 
     removeFilter: function(key, redraw){
-        Utils.arrayDeleteByKey(this.filters, key);
+        this.filters[key] = null;
         if (redraw === true) {
             this.currentPage = 1;
             this.draw();
@@ -16630,6 +18350,51 @@ var Table = {
         }
     },
 
+    getItems: function(){
+        return this.items;
+    },
+
+    getHeads: function(){
+        return this.heads;
+    },
+
+    getView: function(){
+        return this.view;
+    },
+
+    getFilteredItems: function(){
+        return this.filteredItems.length > 0 ? this.filteredItems : this.items;
+    },
+
+    getSelectedItems: function(){
+        var element = this.element, o = this.options;
+        var stored_keys = Metro.storage.getItem(o.checkStoreKey.replace("$1", element.attr("id")));
+        var selected = [];
+
+        if (!Utils.isValue(stored_keys)) {
+            return [];
+        }
+
+        $.each(this.items, function(){
+            if (stored_keys.indexOf(""+this[o.checkColIndex]) !== -1) {
+                selected.push(this);
+            }
+        });
+        return selected;
+    },
+
+    getStoredKeys: function(){
+        var element = this.element, o = this.options;
+        return Metro.storage.getItem(o.checkStoreKey.replace("$1", element.attr("id")), []);
+    },
+
+    clearSelected: function(redraw){
+        var element = this.element, o = this.options;
+        Metro.storage.setItem(o.checkStoreKey.replace("$1", element.attr("id")), []);
+        element.find("table-service-check-all input").prop("checked", false);
+        if (redraw === true) this._draw();
+    },
+
     getFilters: function(){
         return this.filters;
     },
@@ -16642,11 +18407,132 @@ var Table = {
         return this.filtersIndexes;
     },
 
-    changeAttribute: function(attributeName){
-
+    openInspector: function(mode){
+        this.inspector[mode ? "addClass" : "removeClass"]("open");
     },
 
-    destroy: function(){}
+    toggleInspector: function(){
+        this.inspector.toggleClass("open");
+    },
+
+    resetView: function(){
+
+        this.view = this._createView();
+
+        this._createTableHeader();
+        this._createTableFooter();
+        this._draw();
+
+        this._resetInspector();
+        this._saveTableView();
+    },
+
+    export: function(to, mode, filename, options){
+        var that = this, o = this.options;
+        var table = document.createElement("table");
+        var head = $("<thead>").appendTo(table);
+        var body = $("<tbody>").appendTo(table);
+        var i, j, cells, tds = [], items, tr, td;
+        var start, stop;
+
+        mode = Utils.isValue(mode) ? mode.toLowerCase() : "all-filtered";
+        filename = Utils.isValue(filename) ? filename : Utils.elementId("table")+"-export.csv";
+
+        // Create table header
+        tr = $("<tr>");
+        cells = this.heads;
+
+        for (j = 0; j < cells.length; j++){
+            tds[j] = null;
+        }
+
+        $.each(cells, function(cell_index){
+            var item = this;
+            if (Utils.bool(that.view[cell_index]['show']) === false) {
+                return ;
+            }
+            td = $("<th>");
+            if (Utils.isValue(item.title)) {
+                td.html(item.title);
+            }
+            tds[that.view[cell_index]['index-view']] = td;
+        });
+
+        for (j = 0; j < cells.length; j++){
+            if (Utils.isValue(tds[j])) tds[j].appendTo(tr);
+        }
+        tr.appendTo(head);
+
+        // Create table data
+        if (mode === "checked") {
+            items = this.getSelectedItems();
+            start = 0; stop = items.length - 1;
+        } else if (mode === "view") {
+            items = this._filter();
+            start = parseInt(o.rows) === -1 ? 0 : o.rows * (this.currentPage - 1);
+            stop = parseInt(o.rows) === -1 ? items.length - 1 : start + o.rows - 1;
+        } else if (mode === "all") {
+            items = this.items;
+            start = 0; stop = items.length - 1;
+        } else {
+            items = this._filter();
+            start = 0; stop = items.length - 1;
+        }
+
+        for (i = start; i <= stop; i++) {
+            if (Utils.isValue(items[i])) {
+                tr = $("<tr>");
+
+                cells = items[i];
+
+                for (j = 0; j < cells.length; j++){
+                    tds[j] = null;
+                }
+
+                $.each(cells, function(cell_index){
+                    if (Utils.bool(that.view[cell_index].show) === false) {
+                        return ;
+                    }
+                    td = $("<td>").html(this);
+                    tds[that.view[cell_index]['index-view']] = td;
+                });
+
+                for (j = 0; j < cells.length; j++){
+                    if (Utils.isValue(tds[j])) tds[j].appendTo(tr);
+                }
+
+                tr.appendTo(body);
+            }
+        }
+
+        switch (to) {
+            default: Export.tableToCSV(table, filename, options);
+        }
+        table.remove();
+    },
+
+    changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+
+        function dataCheck(){
+            o.check = Utils.bool(element.attr("data-check"));
+            that._service();
+            that._createTableHeader();
+            that._draw();
+        }
+
+        function dataRownum(){
+            o.rownum = Utils.bool(element.attr("data-rownum"));
+            that._service();
+            that._createTableHeader();
+            that._draw();
+        }
+
+        switch (attributeName) {
+            case "data-check": dataCheck(); break;
+            case "data-rownum": dataRownum(); break;
+        }
+    }
 };
 
 Metro.plugin('table', Table);
@@ -16668,6 +18554,13 @@ var Tabs = {
     },
 
     options: {
+        expand: null,
+        tabsPosition: "top",
+
+        clsTabs: "",
+        clsTabsList: "",
+        clsTabsListItem: "",
+
         onTab: Metro.noop,
         onBeforeTab: Metro.noop_true,
         onTabsCreate: Metro.noop
@@ -16700,18 +18593,24 @@ var Tabs = {
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
-        var container = $("<div>").addClass("tabs tabs-wrapper " + element[0].className);
+        var right_parent = parent.hasClass("tabs");
+        var container = right_parent ? parent : $("<div>").addClass("tabs tabs-wrapper");
         var expandTitle, hamburger;
 
-        element[0].className = "";
-
-        if (prev.length === 0) {
-            parent.prepend(container);
-        } else {
-            container.insertAfter(prev);
+        if (Utils.isValue(o.expand)) {
+            container.addClass("tabs-expand-"+o.expand);
         }
 
-        element.appendTo(container);
+        container.addClass(o.tabsPosition.replace(["-", "_", "+"], " "));
+        if (o.tabsPosition.contains("vertical")) {
+            container.addClass("tabs-expand-fs"); // TODO need redesign this behavior
+        }
+
+        element.addClass("tabs-list");
+        if (!right_parent) {
+            container.insertBefore(element);
+            element.appendTo(container);
+        }
 
         element.data('expanded', false);
 
@@ -16728,6 +18627,9 @@ var Tabs = {
             }
         }
 
+        container.addClass(o.clsTabs);
+        element.addClass(o.clsTabsList);
+        element.children("li").addClass(o.clsTabsListItem);
     },
 
     _createEvents: function(){
@@ -16748,15 +18650,27 @@ var Tabs = {
 
         element.on(Metro.events.click, "a", function(e){
             var link = $(this);
+            var href = link.attr("href").trim();
             var tab = link.parent("li");
+
+            if (tab.hasClass("active")) {
+                e.preventDefault();
+            }
 
             if (element.data('expanded') === true) {
                 element.removeClass("expand");
                 element.data('expanded', false);
                 container.find(".hamburger").removeClass("active");
             }
-            if (Utils.exec(o.onBeforeTab, [tab, element], tab[0]) === true) that._open(tab);
-            e.preventDefault();
+
+            if (Utils.exec(o.onBeforeTab, [tab, element], tab[0]) !== true) {
+                return false;
+            }
+
+            if (Utils.isValue(href) && href[0] === "#") {
+                that._open(tab);
+                e.preventDefault();
+            }
         });
     },
 
@@ -16765,8 +18679,8 @@ var Tabs = {
         var tabs = element.find("li");
 
         $.each(tabs, function(){
-            var target = $(this).find("a").attr("href");
-            if (target && target !== "#") {
+            var target = $(this).find("a").attr("href").trim();
+            if (target.length > 1 && target[0] === "#") {
                 that._targets.push(target);
             }
         });
@@ -16802,10 +18716,11 @@ var Tabs = {
         }
 
         $.each(this._targets, function(){
-            $(this).hide();
+            var t = $(this);
+            if (t.length > 0) t.hide();
         });
 
-        if (target !== "#") {
+        if (target !== "#" && target[0] === "#") {
             $(target).show();
         }
 
@@ -16814,12 +18729,290 @@ var Tabs = {
         Utils.exec(o.onTab, [tab, element]);
     },
 
+    next: function(){
+        var that = this, element = this.element, o = this.options;
+        var next, active_tab = element.find("li.active");
+
+        next = active_tab.next("li");
+        if (next.length > 0) {
+            this._open(next);
+        }
+    },
+
+    prev: function(){
+        var that = this, element = this.element, o = this.options;
+        var next, active_tab = element.find("li.active");
+
+        next = active_tab.prev("li");
+        if (next.length > 0) {
+            this._open(next);
+        }
+    },
+
+    open: function(tab){
+        var that = this, element = this.element, o = this.options;
+        var tabs = element.find("li");
+
+        if (!Utils.isValue(tab)) {
+            tab = 1;
+        }
+
+        if (Utils.isInt(tab)) {
+            if (Utils.isValue(tabs[tab-1])) this._open($(tabs[tab-1]));
+        } else {
+            this._open($(tab));
+        }
+    },
+
     changeAttribute: function(attributeName){
 
     }
 };
 
 Metro.plugin('tabs', Tabs);
+
+// Source: js/plugins/tag-input.js
+var TagInput = {
+    init: function( options, elem ) {
+        this.options = $.extend( {}, this.options, options );
+        this.elem  = elem;
+        this.element = $(elem);
+        this.values = [];
+
+        this._setOptionsFromDOM();
+        this._create();
+
+        return this;
+    },
+
+    options: {
+        randomColor: false,
+        maxTags: 0,
+        tagSeparator: ",",
+        tagTrigger: "13,188",
+        clsTag: "",
+        clsTagTitle: "",
+        clsTagRemover: "",
+        onBeforeTagAdd: Metro.noop_true,
+        onTagAdd: Metro.noop,
+        onBeforeTagRemove: Metro.noop_true,
+        onTagRemove: Metro.noop,
+        onTag: Metro.noop,
+        onTagInputCreate: Metro.noop
+    },
+
+    _setOptionsFromDOM: function(){
+        var element = this.element, o = this.options;
+
+        $.each(element.data(), function(key, value){
+            if (key in o) {
+                try {
+                    o[key] = JSON.parse(value);
+                } catch (e) {
+                    o[key] = value;
+                }
+            }
+        });
+    },
+
+    _create: function(){
+        var element = this.element, o = this.options;
+
+        this._createStructure();
+        this._createEvents();
+
+        Utils.exec(o.onTagInputCreate, [element], element[0]);
+    },
+
+    _createStructure: function(){
+        var that = this, element = this.element, o = this.options;
+        var container, input;
+        var values = element.val().trim();
+
+        container = $("<div>").addClass("tag-input "  + element[0].className).insertBefore(element);
+        element.appendTo(container);
+
+        element[0].className = "";
+
+        element.addClass("original-input");
+        input = $("<input type='text'>").addClass("input-wrapper");
+        input.appendTo(container);
+
+        if (Utils.isValue(values)) {
+            $.each(Utils.strToArray(values, o.tagSeparator), function(){
+                that._addTag(this);
+            })
+        }
+    },
+
+    _createEvents: function(){
+        var that = this, element = this.element, o = this.options;
+        var container = element.closest(".tag-input");
+        var input = container.find(".input-wrapper");
+
+        input.on(Metro.events.focus, function(){
+            container.addClass("focused");
+        });
+
+        input.on(Metro.events.blur, function(){
+            container.removeClass("focused");
+        });
+
+        input.on(Metro.events.keyup, function(e){
+            var val = input.val().trim();
+
+            if (val === "") {return ;}
+
+            if (Utils.strToArray(o.tagTrigger, ",", "integer").indexOf(e.keyCode) === -1) {
+                return ;
+            }
+
+            input.val("");
+            that._addTag(val.replace(",", ""));
+
+            if (e.keyCode === Metro.keyCode.ENTER) {
+                e.preventDefault();
+            }
+        });
+
+        container.on(Metro.events.click, ".tag .remover", function(){
+            var tag = $(this).closest(".tag");
+            that._delTag(tag);
+        });
+
+        container.on(Metro.events.click, function(){
+            input.focus();
+        });
+    },
+
+    _addTag: function(val){
+        var element = this.element, o = this.options;
+        var container = element.closest(".tag-input");
+        var input = container.find(".input-wrapper");
+        var tag, title, remover;
+
+        if (o.maxTags > 0 && this.values.length === o.maxTags) {
+            return ;
+        }
+
+        if (!Utils.exec(o.onBeforeTagAdd, [val, this.values], element[0])) {
+            return ;
+        }
+
+
+        tag = $("<span>").addClass("tag").addClass(o.clsTag).insertBefore(input);
+        tag.data("value", val);
+
+        title = $("<span>").addClass("title").addClass(o.clsTagTitle).html(val);
+        remover = $("<span>").addClass("remover").addClass(o.clsTagRemover).html("&times;");
+
+        title.appendTo(tag);
+        remover.appendTo(tag);
+
+        if (o.randomColor === true) {
+            var colors = Colors.colors(Colors.PALETTES.ALL), bg, fg, bg_r;
+
+            bg = colors[Utils.random(0, colors.length - 1)];
+            bg_r = Colors.darken(bg, 15);
+            fg = Colors.isDark(bg) ? "#ffffff" : "#000000";
+
+            tag.css({
+                backgroundColor: bg,
+                color: fg
+            });
+            remover.css({
+                backgroundColor: bg_r,
+                color: fg
+            });
+        }
+
+        this.values.push(val);
+        element.val(this.values.join(o.tagSeparator));
+
+        Utils.exec(o.onTagAdd, [tag, val, this.values], element[0]);
+        Utils.exec(o.onTag, [tag, val, this.values], element[0]);
+    },
+
+    _delTag: function(tag) {
+        var element = this.element, o = this.options;
+        var val = tag.data("value");
+
+        if (!Utils.exec(o.onBeforeTagRemove, [tag, val, this.values], element[0])) {
+            return ;
+        }
+
+        Utils.arrayDelete(this.values, val);
+        element.val(this.values.join(o.tagSeparator));
+
+        Utils.exec(o.onTagRemove, [tag, val, this.values], element[0]);
+        Utils.exec(o.onTag, [tag, val, this.values], element[0]);
+        tag.remove();
+    },
+
+    tags: function(){
+        return this.values;
+    },
+
+    val: function(v){
+        var that = this, o = this.options;
+
+        if (!Utils.isValue(v)) {
+            return this.tags();
+        }
+
+        this.values = [];
+
+        if (Utils.isValue(v)) {
+            $.each(Utils.strToArray(v, o.tagSeparator), function(){
+                that._addTag(this);
+            })
+        }
+    },
+
+    clear: function(){
+        var element = this.element;
+        var container = element.closest(".tag-input");
+
+        this.values = [];
+        element.val("");
+
+        container.find(".tag").remove();
+    },
+
+    changeAttribute: function(attributeName){
+        var that = this, element = this.element, o = this.options;
+
+        var changeValue = function(){
+            var val = element.attr("value").trim();
+            that.clear();
+            if (!Utils.isValue(val)) {
+                return ;
+            }
+            that.val(Utils.strToArray(val, ","));
+        };
+
+        switch (attributeName) {
+            case "value": changeValue(); break;
+        }
+    },
+
+    destroy: function(){
+        var element = this.element;
+        var container = element.closest(".tag-input");
+        var input = container.find(".input-wrapper");
+
+        input.off(Metro.events.focus);
+        input.off(Metro.events.blur);
+        input.off(Metro.events.keydown);
+        container.off(Metro.events.click, ".tag .remover");
+        container.off(Metro.events.click);
+
+        element.insertBefore(container);
+        container.remove();
+    }
+};
+
+Metro.plugin('taginput', TagInput);
 
 // Source: js/plugins/textarea.js
 var Textarea = {
@@ -16836,12 +19029,20 @@ var Textarea = {
         return this;
     },
     options: {
+        charsCounter: null,
+        charsCounterTemplate: "$1",
+        defaultValue: "",
         prepend: "",
+        append: "",
         copyInlineStyles: true,
         clearButton: true,
         clearButtonIcon: "<span class='default-icon-cross'></span>",
-        autoSize: false,
-        disabled: false,
+        autoSize: true,
+        clsPrepend: "",
+        clsAppend: "",
+        clsComponent: "",
+        clsTextarea: "",
+        onChange: Metro.noop,
         onTextareaCreate: Metro.noop
     },
 
@@ -16860,6 +19061,11 @@ var Textarea = {
     },
 
     _create: function(){
+        this._createStructure();
+        this._createEvents();
+    },
+
+    _createStructure: function(){
         var that = this, element = this.element, o = this.options;
         var prev = element.prev();
         var parent = element.parent();
@@ -16873,21 +19079,12 @@ var Textarea = {
             container.insertAfter(prev);
         }
 
-
         if (o.clearButton !== false) {
             clearButton = $("<button>").addClass("button input-clear-button").attr("tabindex", -1).attr("type", "button").html(o.clearButtonIcon);
-            clearButton.on(Metro.events.click, function(){
-                element.val("").trigger('change').trigger('keyup').focus();
-            });
             clearButton.appendTo(container);
         }
 
         element.appendTo(container);
-
-        var resize = function(){
-            element[0].style.cssText = 'height:auto;';
-            element[0].style.cssText = 'height:' + element[0].scrollHeight + 'px';
-        };
 
         if (o.autoSize) {
 
@@ -16895,16 +19092,8 @@ var Textarea = {
 
             timer = setTimeout(function(){
                 timer = null;
-                resize();
+                that.resize();
             }, 0);
-
-            element.on(Metro.events.keyup, resize);
-            element.on(Metro.events.keydown, resize);
-            element.on(Metro.events.change, resize);
-            element.on(Metro.events.focus, resize);
-            element.on(Metro.events.cut, resize);
-            element.on(Metro.events.paste, resize);
-            element.on(Metro.events.drop, resize);
         }
 
         if (element.attr('dir') === 'rtl' ) {
@@ -16912,8 +19101,16 @@ var Textarea = {
         }
 
         if (o.prepend !== "") {
-            var prepend = Utils.isTag(o.prepend) ? $(o.prepend) : $("<span>"+o.prepend+"</span>");
+            var prepend = $("<div>").html(o.prepend);
             prepend.addClass("prepend").addClass(o.clsPrepend).appendTo(container);
+        }
+
+        if (o.append !== "") {
+            var append = $("<div>").html(o.append);
+            append.addClass("append").addClass(o.clsAppend).appendTo(container);
+            clearButton.css({
+                right: append.outerWidth() + 4
+            });
         }
 
         element[0].className = '';
@@ -16923,14 +19120,72 @@ var Textarea = {
             }
         }
 
-        element.on(Metro.events.blur, function(){container.removeClass("focused");});
-        element.on(Metro.events.focus, function(){container.addClass("focused");});
+        if (Utils.isValue(o.defaultValue) && element.val().trim() === "") {
+            element.val(o.defaultValue);
+        }
 
-        if (o.disabled === true || element.is(':disabled')) {
+        container.addClass(o.clsComponent);
+        element.addClass(o.clsTextarea);
+
+        if (element.is(':disabled')) {
             this.disable();
         } else {
             this.enable();
         }
+    },
+
+    _createEvents: function(){
+        var that = this, element = this.element, o = this.options;
+        var textarea = element.closest(".textarea");
+        var chars_counter = $(o.charsCounter);
+
+        textarea.on(Metro.events.click, ".input-clear-button", function(){
+            element.val(Utils.isValue(o.defaultValue) ? o.defaultValue : "").trigger('change').trigger('keyup').focus();
+        });
+
+        if (o.autoSize) {
+            element.on(Metro.events.keyup, $.proxy(this.resize, that));
+            element.on(Metro.events.keydown, $.proxy(this.resize, that));
+            element.on(Metro.events.change, $.proxy(this.resize, that));
+            element.on(Metro.events.focus, $.proxy(this.resize, that));
+            element.on(Metro.events.cut, $.proxy(this.resize, that));
+            element.on(Metro.events.paste, $.proxy(this.resize, that));
+            element.on(Metro.events.drop, $.proxy(this.resize, that));
+        }
+
+        element.on(Metro.events.blur, function(){textarea.removeClass("focused");});
+        element.on(Metro.events.focus, function(){textarea.addClass("focused");});
+
+        element.on(Metro.events.keyup, function(){
+            if (Utils.isValue(o.charsCounter) && chars_counter.length > 0) {
+                if (chars_counter[0].tagName === "INPUT") {
+                    chars_counter.val(that.length());
+                } else {
+                    chars_counter.html(o.charsCounterTemplate.replace("$1", that.length()));
+                }
+            }
+            Utils.exec(o.onChange, [element.val(), that.length()], element[0]);
+        })
+    },
+
+    resize: function(){
+        var element = this.element;
+
+        element[0].style.cssText = 'height:auto;';
+        element[0].style.cssText = 'height:' + element[0].scrollHeight + 'px';
+    },
+
+    clear: function(){
+        this.element.val("").trigger('change').trigger('keyup').focus();
+    },
+
+    toDefault: function(){
+        this.element.val(Utils.isValue(this.options.defaultValue) ? this.options.defaultValue : "").trigger('change').trigger('keyup').focus();
+    },
+
+    length: function(){
+        var characters = this.elem.value.split('');
+        return characters.length;
     },
 
     disable: function(){
@@ -17208,6 +19463,9 @@ var TimePicker = {
     },
 
     options: {
+        hoursStep: 1,
+        minutesStep: 1,
+        secondsStep: 1,
         value: null,
         locale: METRO_LOCALE,
         distance: 3,
@@ -17254,7 +19512,16 @@ var TimePicker = {
             o.distance = 1;
         }
 
-        if (element.val() === "" && (o.value === null || String(o.value).trim() === "")) {
+        if (o.hoursStep < 1) {o.hoursStep = 1;}
+        if (o.hoursStep > 23) {o.hoursStep = 23;}
+
+        if (o.minutesStep < 1) {o.minutesStep = 1;}
+        if (o.minutesStep > 59) {o.minutesStep = 59;}
+
+        if (o.secondsStep < 1) {o.secondsStep = 1;}
+        if (o.secondsStep > 59) {o.secondsStep = 59;}
+
+        if (element.val() === "" && (!Utils.isValue(o.value))) {
             o.value = (new Date()).format("%H:%M:%S");
         }
 
@@ -17268,6 +19535,8 @@ var TimePicker = {
             }
         }
 
+        this._normalizeValue();
+
         if (Metro.locales[o.locale] === undefined) {
             o.locale = METRO_LOCALE;
         }
@@ -17279,6 +19548,20 @@ var TimePicker = {
         this._set();
 
         Utils.exec(o.onTimePickerCreate, [element, picker]);
+    },
+
+    _normalizeValue: function(){
+        var o = this.options;
+
+        if (o.hoursStep > 1) {
+            this.value[0] = Utils.nearest(this.value[0], o.hoursStep, true);
+        }
+        if (o.minutesStep > 1) {
+            this.value[1] = Utils.nearest(this.value[1], o.minutesStep, true);
+        }
+        if (o.minutesStep > 1) {
+            this.value[2] = Utils.nearest(this.value[2], o.secondsStep, true);
+        }
     },
 
     _createStructure: function(){
@@ -17319,7 +19602,7 @@ var TimePicker = {
         if (o.hours === true) {
             hours = $("<ul>").addClass("sel-hours").appendTo(selectBlock);
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(hours);
-            for (i = 0; i < 24; i++) {
+            for (i = 0; i < 24; i = i + o.hoursStep) {
                 $("<li>").addClass("js-hours-"+i).html(i < 10 ? "0"+i : i).data("value", i).appendTo(hours);
             }
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(hours);
@@ -17327,7 +19610,7 @@ var TimePicker = {
         if (o.minutes === true) {
             minutes = $("<ul>").addClass("sel-minutes").appendTo(selectBlock);
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(minutes);
-            for (i = 0; i < 60; i++) {
+            for (i = 0; i < 60; i = i + o.minutesStep) {
                 $("<li>").addClass("js-minutes-"+i).html(i < 10 ? "0"+i : i).data("value", i).appendTo(minutes);
             }
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(minutes);
@@ -17335,7 +19618,7 @@ var TimePicker = {
         if (o.seconds === true) {
             seconds = $("<ul>").addClass("sel-seconds").appendTo(selectBlock);
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(seconds);
-            for (i = 0; i < 60; i++) {
+            for (i = 0; i < 60; i = i + o.secondsStep) {
                 $("<li>").addClass("js-seconds-"+i).html(i < 10 ? "0"+i : i).data("value", i).appendTo(seconds);
             }
             for (i = 0; i < o.distance; i++) $("<li>").html("&nbsp;").data("value", -1).appendTo(seconds);
@@ -17404,6 +19687,7 @@ var TimePicker = {
             s = ss.length === 0 ? 0 : ss.data("value");
 
             that.value = [h, m, s];
+            that._normalizeValue();
             that._set();
 
             that.close();
@@ -17433,8 +19717,8 @@ var TimePicker = {
             });
 
             list.on(Metro.events.scrollStop, {latency: 50}, function(){
-                var target = Math.round((Math.ceil(list.scrollTop() + 40) / 40)) - 1;
-                var target_element = list.find(".js-"+list_name+"-"+target);
+                var target = Math.round((Math.ceil(list.scrollTop() + 40) / 40)) ;
+                var target_element = list.find("li").eq(target + o.distance - 1);
                 var scroll_to = target_element.position().top - (o.distance * 40) + list.scrollTop();
 
                 list.animate({
@@ -17491,31 +19775,50 @@ var TimePicker = {
         var that  = this, element = this.element, o = this.options;
         var picker = this.picker;
         var h, m, s;
-        var h_list, m_list, s_list, a_list;
+        var h_list, m_list, s_list;
+        var items = picker.find("li");
+        var select_wrapper = picker.find(".select-wrapper");
+        var select_wrapper_in_viewport, select_wrapper_rect;
+        var h_item, m_item, s_item;
 
-        picker.find(".select-wrapper").show();
-        picker.find("li").removeClass("active");
+        select_wrapper.parent().removeClass("for-top for-bottom");
+        select_wrapper.show();
+        items.removeClass("active");
+
+        select_wrapper_in_viewport = Utils.inViewport(select_wrapper);
+        select_wrapper_rect = Utils.rect(select_wrapper);
+
+        if (!select_wrapper_in_viewport && select_wrapper_rect.top > 0) {
+            select_wrapper.parent().addClass("for-bottom");
+        }
+
+        if (!select_wrapper_in_viewport && select_wrapper_rect.top < 0) {
+            select_wrapper.parent().addClass("for-top");
+        }
+
+        var animateList = function(list, item){
+            list.scrollTop(0).animate({
+                scrollTop: item.position().top - (o.distance * 40) + list.scrollTop()
+            }, 100);
+        };
 
         if (o.hours === true) {
-            h = this.value[0];
+            h = parseInt(this.value[0]);
             h_list = picker.find(".sel-hours");
-            h_list.scrollTop(0).animate({
-                scrollTop: h_list.find("li").eq(h).addClass("active").position().top
-            }, 100);
+            h_item = h_list.find("li.js-hours-" + h).addClass("active");
+            animateList(h_list, h_item);
         }
         if (o.minutes === true) {
-            m = this.value[1];
+            m = parseInt(this.value[1]);
             m_list = picker.find(".sel-minutes");
-            m_list.scrollTop(0).animate({
-                scrollTop: m_list.find("li").eq(m).addClass("active").position().top
-            }, 100);
+            m_item = m_list.find("li.js-minutes-" + m).addClass("active");
+            animateList(m_list, m_item);
         }
         if (o.seconds === true) {
-            s = this.value[2];
+            s = parseInt(this.value[2]);
             s_list = picker.find(".sel-seconds");
-            s_list.scrollTop(0).animate({
-                scrollTop: s_list.find("li").eq(s).addClass("active").position().top
-            }, 100);
+            s_item = s_list.find("li.js-seconds-" + s).addClass("active");
+            animateList(s_list, s_item);
         }
 
         this.isOpen = true;
@@ -17548,9 +19851,10 @@ var TimePicker = {
 
     val: function(t){
         if (t === undefined) {
-            return element.val();
+            return this.element.val();
         }
         this.value = this._convert(t);
+        this._normalizeValue();
         this._set();
     },
 
@@ -17564,6 +19868,7 @@ var TimePicker = {
         }
 
         this.value = this._convert(t);
+        this._normalizeValue();
         this._set();
     },
 
@@ -17578,16 +19883,19 @@ var TimePicker = {
         }
 
         this.value = this._convert(t);
+        this._normalizeValue();
         this._set();
     },
 
-    changeValueAttribute: function(){
-        this.val(this.element.attr("data-value"));
-    },
-
     changeAttribute: function(attributeName){
+        var that = this, element = this.element;
+
+        var changeValueAttribute = function(){
+            that.val(element.attr("data-value"));
+        };
+
         switch (attributeName) {
-            case "data-value": this.changeValueAttribute(); break;
+            case "data-value": changeValueAttribute(); break;
         }
     }
 };
@@ -17674,6 +19982,11 @@ var Treeview = {
         this._createTree();
         this._createEvents();
 
+        $.each(element.find("input"), function(){
+            if (!$(this).is(":checked")) return;
+            that._recheck(this);
+        });
+
         Utils.exec(o.onTreeviewCreate, [element]);
     },
 
@@ -17716,7 +20029,6 @@ var Treeview = {
 
         return node;
     },
-
 
     _createTree: function(){
         var that = this, element = this.element, o = this.options;
@@ -17765,7 +20077,7 @@ var Treeview = {
 
             that.current(node);
 
-            Utils.exec(o.onNodeClick, [node, element]);
+            Utils.exec(o.onNodeClick, [node, element], node[0]);
 
             e.preventDefault();
         });
@@ -17779,7 +20091,7 @@ var Treeview = {
                 that.toggleNode(node);
             }
 
-            Utils.exec(o.onNodeDblClick, [node, element]);
+            Utils.exec(o.onNodeDblClick, [node, element], node[0]);
 
             e.preventDefault();
         });
@@ -17791,53 +20103,64 @@ var Treeview = {
 
             that.current(node);
 
-            Utils.exec(o.onRadioClick, [checked, check, node, element]);
+            Utils.exec(o.onRadioClick, [checked, check, node, element], this);
         });
 
         element.on(Metro.events.click, "input[type=checkbox]", function(e){
             var check = $(this);
             var checked = check.is(":checked");
             var node = check.closest("li");
-            var checks;
 
-            that.current(node);
-
-            // down
-            checks = check.closest("li").find("ul input[type=checkbox]");
-            checks.attr("data-indeterminate", false);
-            checks.prop("checked", checked);
-
-            checks = [];
-
-            $.each(element.find("input[type=checkbox]"), function(){
-                checks.push(this);
-            });
-
-            $.each(checks.reverse(), function(){
-                var ch = $(this);
-                var children = ch.closest("li").children("ul").find("input[type=checkbox]").length;
-                var children_checked = ch.closest("li").children("ul").find("input[type=checkbox]:checked").length;
-
-                if (children > 0 && children_checked === 0) {
-                    ch.attr("data-indeterminate", false);
-                    ch.prop("checked", false);
-                }
-
-                if (children_checked === 0) {
-                    ch.attr("data-indeterminate", false);
-                } else {
-                    if (children_checked > 0 && children > children_checked) {
-                        ch.attr("data-indeterminate", true);
-                    } else if (children === children_checked) {
-                        ch.attr("data-indeterminate", false);
-                        ch.prop("checked", true);
-                    }
-                }
-            });
-
+            that._recheck(check);
 
             Utils.exec(o.onCheckClick, [checked, check, node, element], this);
+        });
+    },
 
+    _recheck: function(check){
+        var element = this.element;
+        var checked, node, checks;
+
+        if (!Utils.isJQueryObject(check)) {
+            check = $(check);
+        }
+
+        checked = check.is(":checked");
+        node = check.closest("li");
+
+        this.current(node);
+
+        // down
+        checks = check.closest("li").find("ul input[type=checkbox]");
+        checks.attr("data-indeterminate", false);
+        checks.prop("checked", checked);
+
+        checks = [];
+
+        $.each(element.find(":checkbox"), function(){
+            checks.push(this);
+        });
+
+        $.each(checks.reverse(), function(){
+            var ch = $(this);
+            var children = ch.closest("li").children("ul").find(":checkbox").length;
+            var children_checked = ch.closest("li").children("ul").find(":checkbox:checked").length;
+
+            if (children > 0 && children_checked === 0) {
+                ch.attr("data-indeterminate", false);
+                ch.prop("checked", false);
+            }
+
+            if (children_checked === 0) {
+                ch.attr("data-indeterminate", false);
+            } else {
+                if (children_checked > 0 && children > children_checked) {
+                    ch.attr("data-indeterminate", true);
+                } else if (children === children_checked) {
+                    ch.attr("data-indeterminate", false);
+                    ch.prop("checked", true);
+                }
+            }
         });
     },
 
@@ -17891,7 +20214,7 @@ var Treeview = {
 
         new_node.appendTo(target);
 
-        Utils.exec(o.onNodeInsert, [new_node, element]);
+        Utils.exec(o.onNodeInsert, [new_node, element], new_node[0]);
 
         return new_node;
     },
@@ -17900,7 +20223,7 @@ var Treeview = {
         var element = this.element, o = this.options;
         var new_node = this._createNode(data);
         new_node.insertBefore(node);
-        Utils.exec(o.onNodeInsert, [new_node, element]);
+        Utils.exec(o.onNodeInsert, [new_node, element], new_node[0]);
         return new_node;
     },
 
@@ -17908,7 +20231,7 @@ var Treeview = {
         var element = this.element, o = this.options;
         var new_node = this._createNode(data);
         new_node.insertAfter(node);
-        Utils.exec(o.onNodeInsert, [new_node, element]);
+        Utils.exec(o.onNodeInsert, [new_node, element], new_node[0]);
         return new_node;
     },
 
@@ -17922,7 +20245,7 @@ var Treeview = {
             parent_node.removeClass("expanded");
             parent_node.children(".node-toggle").remove();
         }
-        Utils.exec(o.onNodeDelete, [node, element]);
+        Utils.exec(o.onNodeDelete, [element], element[0]);
     },
 
     clean: function(node){
@@ -17930,7 +20253,7 @@ var Treeview = {
         node.children("ul").remove();
         node.removeClass("expanded");
         node.children(".node-toggle").remove();
-        Utils.exec(o.onNodeClean, [node, element]);
+        Utils.exec(o.onNodeClean, [node, element], node[0]);
     },
 
     changeAttribute: function(attributeName){
@@ -17943,28 +20266,28 @@ Metro.plugin('treeview', Treeview);
 // Source: js/plugins/validator.js
 var ValidatorFuncs = {
     required: function(val){
-        return val.trim() !== "";
+        return Utils.isValue(val.trim());
     },
     length: function(val, len){
-        if (len === undefined || isNaN(len) || len <= 0) {
+        if (!Utils.isValue(len) || isNaN(len) || len <= 0) {
             return false;
         }
         return val.trim().length === parseInt(len);
     },
     minlength: function(val, len){
-        if (len === undefined || isNaN(len) || len <= 0) {
+        if (!Utils.isValue(len) || isNaN(len) || len <= 0) {
             return false;
         }
         return val.trim().length >= parseInt(len);
     },
     maxlength: function(val, len){
-        if (len === undefined || isNaN(len) || len <= 0) {
+        if (!Utils.isValue(len) || isNaN(len) || len <= 0) {
             return false;
         }
         return val.trim().length <= parseInt(len);
     },
     min: function(val, min_value){
-        if (min_value === undefined || isNaN(min_value)) {
+        if (!Utils.isValue(min_value) || isNaN(min_value)) {
             return false;
         }
         if (!this.number(val)) {
@@ -17976,7 +20299,7 @@ var ValidatorFuncs = {
         return Number(val) >= Number(min_value);
     },
     max: function(val, max_value){
-        if (max_value === undefined || isNaN(max_value)) {
+        if (!Utils.isValue(max_value) || isNaN(max_value)) {
             return false;
         }
         if (!this.number(val)) {
@@ -18018,7 +20341,7 @@ var ValidatorFuncs = {
         return Colors.color(val, Colors.PALETTES.STANDARD) !== false;
     },
     pattern: function(val, pat){
-        if (pat === undefined) {
+        if (!Utils.isValue(pat)) {
             return false;
         }
         var reg = new RegExp(pat);
@@ -18030,7 +20353,12 @@ var ValidatorFuncs = {
     not: function(val, not_this){
         return val !== not_this;
     },
-
+    notequals: function(val, val2){
+        return val.trim() !== val2.trim();
+    },
+    equals: function(val, val2){
+        return val.trim() === val2.trim();
+    },
     custom: function(val, func){
         if (Utils.isFunc(func) === false) {
             return false;
@@ -18045,6 +20373,7 @@ var ValidatorFuncs = {
             || el.parent().hasClass("checkbox")
             || el.parent().hasClass("switch")
             || el.parent().hasClass("radio")
+            || el.parent().hasClass("spinner")
             ;
     },
 
@@ -18097,10 +20426,8 @@ var ValidatorFuncs = {
     validate: function(el, result, cb_ok, cb_error, required_mode){
         var this_result = true;
         var input = $(el);
-        var is_control = ValidatorFuncs.is_control(input);
         var funcs = input.data('validate') !== undefined ? String(input.data('validate')).split(" ").map(function(s){return s.trim();}) : [];
         var errors = [];
-        var required = funcs.indexOf('required') !== -1;
 
         if (funcs.length === 0) {
             return true;
@@ -18142,7 +20469,7 @@ var ValidatorFuncs = {
                 f = rule[0]; rule.shift();
                 a = rule.join("=");
 
-                if (f === 'compare') {
+                if (['compare', 'equals', 'notequals'].indexOf(f) > -1) {
                     a = input[0].form.elements[a].value;
                 }
 
@@ -18158,7 +20485,6 @@ var ValidatorFuncs = {
                             this_result = true;
                         }
                     }
-                    // this_result = ValidatorFuncs[f](input.val(), a);
                 }
 
                 if (this_result === false) {
@@ -18453,7 +20779,7 @@ var Video = {
             this.play();
         }
 
-        Utils.exec(o.onVideoCreate, [element, this.player]);
+        Utils.exec(o.onVideoCreate, [element, this.player], element[0]);
     },
 
     _createPlayer: function(){
@@ -18619,7 +20945,7 @@ var Video = {
         element.on("loadedmetadata", function(){
             that.duration = video.duration.toFixed(0);
             that._setInfo(0, that.duration);
-            Utils.exec(o.onMetadata, [video, player]);
+            Utils.exec(o.onMetadata, [video, player], element[0]);
         });
 
         element.on("canplay", function(){
@@ -18635,7 +20961,7 @@ var Video = {
             var position = Math.round(video.currentTime * 100 / that.duration);
             that._setInfo(video.currentTime, that.duration);
             that.stream.data('slider').val(position);
-            Utils.exec(o.onTime, [video.currentTime, that.duration, video, player]);
+            Utils.exec(o.onTime, [video.currentTime, that.duration, video, player], element[0]);
         });
 
         element.on("waiting", function(){
@@ -18648,25 +20974,25 @@ var Video = {
 
         element.on("play", function(){
             player.find(".play").html(o.pauseIcon);
-            Utils.exec(o.onPlay, [video, player]);
+            Utils.exec(o.onPlay, [video, player], element[0]);
             that._onMouse();
         });
 
         element.on("pause", function(){
             player.find(".play").html(o.playIcon);
-            Utils.exec(o.onPause, [video, player]);
+            Utils.exec(o.onPause, [video, player], element[0]);
             that._offMouse();
         });
 
         element.on("stop", function(){
             that.stream.data('slider').val(0);
-            Utils.exec(o.onStop, [video, player]);
+            Utils.exec(o.onStop, [video, player], element[0]);
             that._offMouse();
         });
 
         element.on("ended", function(){
             that.stream.data('slider').val(0);
-            Utils.exec(o.onEnd, [video, player]);
+            Utils.exec(o.onEnd, [video, player], element[0]);
             that._offMouse();
         });
 
@@ -19200,7 +21526,7 @@ var Window = {
             if (o.modal === true) {
                 win.siblings(".overlay").remove();
             }
-            Utils.exec(o.onCloseClick(), [win], element[0]);
+            Utils.exec(o.onCloseClick, [win], element[0]);
             Utils.exec(o.onWindowDestroy, [win], element[0]);
             if (o.closeAction === Metro.actions.REMOVE) {
                 win.remove();

@@ -19,19 +19,6 @@ $(document).ready(function() {
     }
   });
 
-  // $("#command").keyup(function(event) {
-  //   event.preventDefault()
-  //   if (event.keyCode === 13) {
-  //     $("#sendCommand").click();
-  //   }
-  //   return false;
-  // });
-  //
-  // $("#command").inputhistory({
-  //   history: [],
-  //   preventSubmit: false
-  // });
-
 
   $("form").submit(function() {
     return false;

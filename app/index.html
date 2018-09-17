@@ -118,11 +118,11 @@
           <div class="section" id="section-two">
             <div class="group">
               <div class="form-group">
-                <form class="inline-form">
+                <form class="form">
                   <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" data-filter="false" id="portUSB" disabled>
                     <option value="">Waiting for USB</option>
                   </select>
-                  <button class="button success" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
+                  <button class="button success float-right" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
                   <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
                 </form>
 
@@ -511,7 +511,7 @@
                 <div class="section" id="tab-one">
                   <div id="console"></div>
                   <div class="fixed-bottom m-3 mb-9">
-                    <form class="inline-form" id="commandform">
+                    <form class="inline-form" id="commandform" autocomplete="off">
                       <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" />
                       <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
                           <i class="fa fa-play" style="margin-right: 10px;"></i> Send
@@ -816,5 +816,7 @@
 <script type="text/javascript" src="js/widget.js"></script>
 
 <script type="text/javascript" src="lib/3dview/3dview.js"></script>
+
+<script type="text/javascript" src="js/grbl-defaults.js"></script>
 
 </html>
