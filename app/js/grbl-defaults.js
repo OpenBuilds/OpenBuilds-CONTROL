@@ -2,7 +2,7 @@ function selectMachine(type) {
   if (type == "sphinx55") {
     // Sphinx 55 - COMPLETE with homing switches
     var grblParams_def = {
-      $0: "11", //"Step pulse time, microseconds"
+      $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
       $2: "0", //"Step pulse invert, mask"
       $3: "4", //"Step direction invert, mask"

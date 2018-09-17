@@ -68,7 +68,7 @@ function grblPopulate() {
                 <div class="cell-8">
                 <a style="width: 100%;" class="button dropdown-toggle secondary outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
                 <ul class="d-menu border bd-gray" data-role="dropdown" data-toggle-element="#context_toggle2">
-                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png"/>  OpenBuilds Acro 55</a></li>
+                  <!-- li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png"/>  OpenBuilds Acro 55</a></li>
                   <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png"/>  OpenBuilds Acro 510</a></li>
                   <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png"/>  OpenBuilds Acro 1010</a></li>
                   <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png"/>  OpenBuilds Acro 1510</a></li>
@@ -81,12 +81,12 @@ function grblPopulate() {
                   <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png"/>  OpenBuilds Lead Machine 1010 </a></li>
                   <li class="divider"></li>
                   <li onclick="selectMachine('minimill');"><a href="#"><img src="img/mch/minimill.png"/>  OpenBuilds MiniMill</a></li>
-                  <li class="divider"></li>
+                  <li class="divider"></li -->
                   <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png"/>  OpenBuilds Sphinx 55</a></li>
-                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png"/>  OpenBuilds Sphinx 1050</a></li>
+                  <!-- li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png"/>  OpenBuilds Sphinx 1050</a></li>
                   <li class="divider"></li>
                   <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png"/>  OpenBuilds Workbee 1010</a></li>
-                  <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png"/>  OpenBuilds Workbee 1050</a></li>
+                  <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png"/>  OpenBuilds Workbee 1050</a></li -->
                   <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png"/>  OpenBuilds Workbee 1510</a></li>
                 </ul>
                 </div>
