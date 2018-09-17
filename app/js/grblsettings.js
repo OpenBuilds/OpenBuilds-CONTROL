@@ -91,7 +91,7 @@ function grblPopulate() {
                 </ul>
                 </div>
                 <div class="cell-4">
-                  <input id="limitsinstalled" class="secondary" type="checkbox" data-role="switch" data-caption="Limit Switches Installed">
+                  <!-- input id="limitsinstalled" class="secondary" type="checkbox" data-role="switch" data-caption="Limit Switches Installed" -->
                 </div>
               </div>
             </div>
