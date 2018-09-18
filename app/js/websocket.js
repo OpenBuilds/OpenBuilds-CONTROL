@@ -241,9 +241,18 @@ function initSocket() {
     if (webgl) {
       if (!isJogWidget) {
         if (!simRunning) {
-          cone.position.x = status.machine.position.work.x
-          cone.position.y = status.machine.position.work.y
-          cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+          if (object) {
+            if (object.userData.inch) {
+              cone.position.x = status.machine.position.work.x * 0.0393701
+              cone.position.y = status.machine.position.work.y * 0.0393701
+              cone.position.z = (parseFloat(status.machine.position.work.z * 0.0393701) + 20)
+            } else {
+              cone.position.x = status.machine.position.work.x
+              cone.position.y = status.machine.position.work.y
+              cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+            }
+          }
+
         }
       }
     }
