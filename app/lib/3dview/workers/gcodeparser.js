@@ -288,7 +288,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       var units = "mm";
       if (!this.isUnitsMm) units = "inch";
       // $('.com-chilipeppr-widget-3dviewer-units-indicator').text(units);
-      // console.log("USING UNITS:" + units)
+      console.log("USING UNITS:" + units)
 
     }
     // these are extra Object3D elements added during
@@ -1237,6 +1237,12 @@ GCodeParser = function(handlers, modecmdhandlers) {
     gcobject.name = "gcodeobject"
     // scene.add(object);
     // viewObject();
+
+    if (!isUnitsMm) {
+      gcobject.userData.inch = true;
+    } else {
+      gcobject.userData.inch = false;
+    }
 
     return gcobject;
   } // end of createObjectFromGCode()

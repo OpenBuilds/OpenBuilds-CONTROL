@@ -19,6 +19,8 @@ var path = require("path");
 const join = require('path').join;
 var mkdirp = require('mkdirp');
 
+app.use(express.static(path.join(__dirname, "app")));
+
 var httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, 'domain-key.key')),
   cert: fs.readFileSync(path.join(__dirname, 'domain-crt.cer'))
@@ -456,8 +458,6 @@ var PortCheckinterval = setInterval(function() {
   }
 }, 500);
 
-// Static Webserver
-app.use(express.static(path.join(__dirname, "app")));
 
 // JSON API
 app.get('/api/version', (req, res) => {

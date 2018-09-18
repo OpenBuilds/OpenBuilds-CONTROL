@@ -101,6 +101,7 @@ function readFile(evt) {
   for (var i = 0; i < files.length; i++) {
     loadFile(files[i]);
   }
+  document.getElementById('file').value = '';
 }
 
 // load file

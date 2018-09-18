@@ -1,4 +1,11 @@
-function drawRuler(xmin, xmax, ymin, ymax) {
+function drawRuler(xmin, xmax, ymin, ymax, inches) {
+
+  if (inches) {
+    xmin = Math.floor(xmin * 0.0393701);
+    xmax = Math.ceil(xmax * 0.0393701);
+    ymin = Math.floor(ymin * 0.0393701);
+    ymax = Math.ceil(ymax * 0.0393701);
+  }
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
     color: 0x888888
@@ -116,6 +123,10 @@ function drawRuler(xmin, xmax, ymin, ymax) {
   geometry.vertices.push(new THREE.Vector3(0, ymax, 0));
   var line = new THREE.Line(geometry, material);
   ruler.add(line);
+
+  if (inches) {
+    ruler.scale.multiplyScalar(25.4);
+  }
 
   return (ruler)
 }

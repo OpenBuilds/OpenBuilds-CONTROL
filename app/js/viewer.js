@@ -149,8 +149,14 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   scene.add(workspace)
 }
 
-function redrawGrid(xmin, xmax, ymin, ymax) {
+function redrawGrid(xmin, xmax, ymin, ymax, inches) {
 
+  if (inches) {
+    xmin = Math.floor(xmin * 25.4);
+    xmax = Math.ceil(xmax * 25.4);
+    ymin = Math.floor(ymin * 25.4);
+    ymax = Math.ceil(ymax * 25.4);
+  }
 
   sizexmax = xmax;
   sizeymax = ymax;
@@ -168,31 +174,47 @@ function redrawGrid(xmin, xmax, ymin, ymax) {
   var axesgrp = new THREE.Object3D();
   axesgrp.name = "Axes Markers"
 
+  if (inches) {
+    var unitsval = "in"
+    var offset = 5 * 25.4
+    var size = 5 * 25.4
+  } else {
+    var unitsval = "mm"
+    var offset = 5
+    var size = 5
+  }
+
   // add axes labels
   var xlbl = this.makeSprite(this.scene, "webgl", {
-    x: parseInt(xmax) + 5,
+    x: parseInt(xmax) + offset,
     y: 0,
     z: 0,
     text: "X",
-    color: "#ff0000"
+    color: "#ff0000",
+    size: size
   });
   var ylbl = this.makeSprite(this.scene, "webgl", {
     x: 0,
-    y: parseInt(ymax) + 5,
+    y: parseInt(ymax) + offset,
     z: 0,
     text: "Y",
-    color: "#006600"
+    color: "#006600",
+    size: size
   });
-  var zlbl = this.makeSprite(this.scene, "webgl", {
-    x: 0,
-    y: 0,
-    z: 125,
-    text: "Z",
-    color: "#0000ff"
-  });
+
 
   axesgrp.add(xlbl);
   axesgrp.add(ylbl);
+
+  var unitslabel = this.makeSprite(this.scene, "webgl", {
+    x: xmin - offset,
+    y: ymin - offset,
+    z: 0,
+    text: unitsval,
+    color: "#888888",
+    size: size
+  });
+  axesgrp.add(unitslabel);
   //axesgrp.add(zlbl); Laser don't have Z - but CNCs do
 
   var materialX = new THREE.LineBasicMaterial({
@@ -220,9 +242,20 @@ function redrawGrid(xmin, xmax, ymin, ymax) {
   axesgrp.add(line1);
   axesgrp.add(line2);
 
+  // if (inches) {
+  //   axesgrp.scale.multiplyScalar(2.5);
+  // }
+
   grid.add(axesgrp);
 
-  helper = new THREE.GridHelper(xmax, ymax, 10, 0x888888);
+  var step10 = 10;
+  var step100 = 100;
+  if (inches) {
+    step10 = 25.4;
+    step100 = 254;
+  }
+
+  helper = new THREE.GridHelper(xmax, ymax, step10, 0x888888);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
@@ -231,7 +264,7 @@ function redrawGrid(xmin, xmax, ymin, ymax) {
   helper.receiveShadow = false;
   helper.name = "GridHelper10mm"
   grid.add(helper);
-  helper = new THREE.GridHelper(xmax, ymax, 100, 0x666666);
+  helper = new THREE.GridHelper(xmax, ymax, step100, 0x666666);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
@@ -243,9 +276,13 @@ function redrawGrid(xmin, xmax, ymin, ymax) {
   grid.name = "Grid"
 
   gridsystem.children.length = 0
-  var ruler = drawRuler(xmin, xmax, ymin, ymax)
+  var ruler = drawRuler(xmin, xmax, ymin, ymax, inches)
   gridsystem.add(grid);
   gridsystem.add(ruler);
+
+  if (inches) {
+    gridsystem.scale.multiplyScalar(0.0393701);
+  }
 
 }
 

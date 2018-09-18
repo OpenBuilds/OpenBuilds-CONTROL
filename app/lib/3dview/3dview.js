@@ -14,7 +14,7 @@ worker.addEventListener('message', function(e) {
   object = loader.parse(JSON.parse(e.data));
   if (object) {
     scene.add(object);
-    redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y))
+    redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
     // animate();
     setTimeout(function() {
       clearSceneFlag = true;
