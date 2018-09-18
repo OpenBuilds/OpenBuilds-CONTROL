@@ -143,3 +143,8 @@ select{
   width: 60px;
   height: 60px;
 }
+#splash {
+  z-index: 2000;
+  padding: 1000px;
+  background-color: #fff
+}
