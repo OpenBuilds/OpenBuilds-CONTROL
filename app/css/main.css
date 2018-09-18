@@ -133,6 +133,21 @@ select{
 .bg-openbuilds {
   background-color: rgb(74, 78, 81) !important;
 }
+.bd-openbuilds {
+  border-color: rgb(74, 78, 81) !important;
+}
+
+.openbuilds-switch .check::after {
+  background: rgb(74, 78, 81) !important;
+  border-color: rgb(74, 78, 81) !important;
+}
+.openbuilds-switch input[type="checkbox"]:checked ~ .check {
+  background: rgb(74, 78, 81) !important;
+}
+.openbuilds-switch input[type="checkbox"]:checked ~ .check::after {
+  border-color: #ffffff!important;
+  background: #ffffff!important;
+}
 
 .keyboardpanel td:nth-child(1){
   width: 60px;

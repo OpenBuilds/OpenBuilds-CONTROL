@@ -68,7 +68,7 @@ function printLog(string) {
 
 function initSocket() {
   socket = io.connect(server); // socket.io init
-  printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-brown'>Bidirectional Websocket Interface Started</span>")
+  printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-green'>Bidirectional Websocket Interface Started</span>")
   setTimeout(function() {
     populatePortsMenu();
   }, 2000);
