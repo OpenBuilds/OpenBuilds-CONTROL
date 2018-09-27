@@ -787,7 +787,7 @@ io.on("connection", function(socket) {
           status.comms.blocked = false;
           send1Q();
         } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
-          console.log("ALARM:  " + data)
+          // console.log("ALARM:  " + data)
           status.comms.connectionStatus = 5;
           switch (status.machine.firmware.type) {
             case 'grbl':
@@ -838,11 +838,23 @@ io.on("connection", function(socket) {
           // do nothing with +data
         }
 
+        if (data.indexOf("[MSG:Reset to continue]") === 0) {
+          switch (status.machine.firmware.type) {
+            case 'grbl':
+              console.log("[MSG:Reset to continue] -> Sending Reset")
+              addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+              break;
+              // case 'smoothie':
+              //
+              //   break;
+          }
+        }
+
         if (command) {
           command = command.replace(/(\r\n|\n|\r)/gm, "");
           // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
-          if (command != "?" && command != "M105" && data.length > 0) {
+          if (command != "?" && command != "M105" && command != "$H" && data.length > 0) {
             var string = "";
             if (status.comms.sduploading) {
               string += "SD: "
@@ -855,8 +867,15 @@ io.on("connection", function(socket) {
             // console.log(output.response)
             io.sockets.emit('data', output);
           }
+        } else {
+          if (data.indexOf("<") != 0) {
+            var output = {
+              'command': "none",
+              'response': data
+            }
+            io.sockets.emit('data', output);
+          }
         }
-
       }); // end of parser.on(data)
     }
   });
@@ -944,7 +963,7 @@ io.on("connection", function(socket) {
         }
       }
       if (dir && dist && feed) {
-        console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
+        console.log('Adding jog commands to queue. Firmw=' + status.machine.firmware.type + ', blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
             addQToEnd('$J=G91' + dir + dist + feed);
@@ -1426,12 +1445,15 @@ io.on("connection", function(socket) {
           break;
         case 2:
           console.log('Emptying Queue');
+          status.comms.queue = 0
+          queuePointer = 0;
           gcodeQueue.length = 0; // Dump the queue
           sentBuffer.length = 0; // Dump bufferSizes
           queuePointer = 0;
           console.log('Clearing Lockout');
           switch (status.machine.firmware.type) {
             case 'grbl':
+              addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               addQRealtime('$X\n');
               console.log('Sent: $X');
               status.comms.blocked = false;
@@ -1551,7 +1573,7 @@ function parseFeedback(data) {
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
-    console.log("ALARM:  " + data)
+    // console.log("ALARM:  " + data)
     status.comms.connectionStatus = 5;
     switch (status.machine.firmware.type) {
       case 'grbl':
@@ -1878,7 +1900,7 @@ function send1Q() {
             queuePointer++;
             sentBuffer.push(gcode);
             machineSend(gcode + '\n');
-            // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
+            console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
           } else {
             status.comms.blocked = true;
           }
@@ -1913,7 +1935,8 @@ function send1Q() {
       status.comms.connectionStatus = 2; // finished
       // status.comms.runStatus = "Finished"
     }
-
+  } else {
+    console.log('Not Connected')
   }
 }
 

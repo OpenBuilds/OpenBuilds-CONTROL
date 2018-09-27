@@ -125,8 +125,8 @@ function initSocket() {
   });
 
   socket.on('data', function(data) {
-    // console.log(data.length, data)
-    var toPrint = data.response;
+    console.log(data)
+    var toPrint = escapeHTML(data.response);
 
     // Parse Grbl Settings Feedback
     if (data.response.indexOf('$') === 0) {
@@ -137,6 +137,8 @@ function initSocket() {
         toPrint = data.response + "  ;" + descr
         printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
       }
+    } else {
+      printLog("<span class='fg-red'>[ " + data.command + " ]</span>  <span class='fg-green'>" + toPrint + "</span>")
     };
 
   });
@@ -562,4 +564,8 @@ function friendlyPort(i) {
     img: img,
     note: note
   };
+}
+
+function escapeHTML(html) {
+  return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
 }
