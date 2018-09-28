@@ -870,7 +870,7 @@ io.on("connection", function(socket) {
         } else {
           if (data.indexOf("<") != 0) {
             var output = {
-              'command': "none",
+              'command': "",
               'response': data
             }
             io.sockets.emit('data', output);
