@@ -17,6 +17,9 @@ worker.addEventListener('message', function(e) {
     redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
     // animate();
     setTimeout(function() {
+      if (webgl) {
+        $('#gcodeviewertab').click();
+      }
       clearSceneFlag = true;
       resetView();
       // animate();
