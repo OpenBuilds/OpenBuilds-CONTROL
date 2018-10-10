@@ -673,11 +673,20 @@ io.on("connection", function(socket) {
         }
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
+            console.log("Lets see if we have Grbl instance with a board that doesnt have AutoReset");
+            addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+            console.log("Sent: Ctrl+x");
+          }
+        }, config.grblWaitTime * 1000);
+
+        setTimeout(function() { //wait for controller to be ready
+          if (status.machine.firmware.type.length < 1) {
             console.log("No GRBL, lets see if we have Smoothie?");
             addQRealtime("version\n"); // Check if it's Smoothieware?
             console.log("Sent: version");
           }
-        }, config.grblWaitTime * 1000);
+        }, config.grblWaitTime * 2000);
+
         if (config.firmwareWaitTime > 0) {
           setTimeout(function() {
             // Close port if we don't detect supported firmware after 2s.
