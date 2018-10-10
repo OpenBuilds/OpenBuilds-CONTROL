@@ -659,21 +659,36 @@ io.on("connection", function(socket) {
         }
       });
       port.on("open", function() {
+        console.log("PORT INFO: Connected to " + port.path + " at " + port.options.baudRate);
         var output = {
-          'command': '',
-          'response': "PORT INFO: Opening USB Port"
+          'command': 'connect',
+          'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware"
         }
         io.sockets.emit('data', output);
+
         status.comms.connectionStatus = 1;
-        if (config.resetOnConnect == 1) {
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
-          console.log("Sent: ctrl-x");
-        } else {
-          addQRealtime("\n"); // this causes smoothie to send the welcome string
+
+        var output = {
+          'command': 'connect',
+          'response': "Checking for firmware on " + port.path
         }
+        io.sockets.emit('data', output);
+        addQRealtime("\n"); // this causes smoothie to send the welcome string
+
+        var output = {
+          'command': 'connect',
+          'response': "Detecting Firmware: Method 1 (Autoreset)"
+        }
+        io.sockets.emit('data', output);
+
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
-            console.log("Lets see if we have Grbl instance with a board that doesnt have AutoReset");
+            console.log("Didnt detect firmware after AutoReset. Lets see if we have Grbl instance with a board that doesnt have AutoReset");
+            var output = {
+              'command': 'connect',
+              'response': "Detecting Firmware: Method 2 (Ctrl+X)"
+            }
+            io.sockets.emit('data', output);
             addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
             console.log("Sent: Ctrl+x");
           }
@@ -681,7 +696,12 @@ io.on("connection", function(socket) {
 
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
-            console.log("No GRBL, lets see if we have Smoothie?");
+            console.log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
+            var output = {
+              'command': 'connect',
+              'response': "Detecting Firmware: Method 3 (Smoothieware)"
+            }
+            io.sockets.emit('data', output);
             addQRealtime("version\n"); // Check if it's Smoothieware?
             console.log("Sent: version");
           }
@@ -692,17 +712,23 @@ io.on("connection", function(socket) {
             // Close port if we don't detect supported firmware after 2s.
             if (status.machine.firmware.type.length < 1) {
               console.log("No supported firmware detected. Closing port " + port.path);
+              var output = {
+                'command': '',
+                'response': "No supported firmware detected. Closing port " + port.path
+              }
+              io.sockets.emit('data', output);
               stopPort();
+            } else {
+              var output = {
+                'command': 'connect',
+                'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + port.path
+              }
+              io.sockets.emit('data', output);
             }
           }, config.firmwareWaitTime * 1000);
         }
 
-        console.log("PORT INFO: Connected to " + port.path + " at " + port.options.baudRate);
-        var output = {
-          'command': '',
-          'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware"
-        }
-        io.sockets.emit('data', output);
+
         status.comms.connectionStatus = 2;
         status.comms.interfaces.activePort = port.path;
         status.comms.interfaces.activeBaud = port.options.baudRate;
