@@ -2142,7 +2142,11 @@ if (isElectron()) {
         title: "OpenBuilds Machine Driver ",
         frame: false,
         autoHideMenuBar: true,
-        icon: '/app/favicon.png'
+        icon: '/app/favicon.png',
+        webgl: true,
+        experimentalFeatures: true,
+        experimentalCanvasFeatures: true,
+        offscreen: true,
       });
 
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
