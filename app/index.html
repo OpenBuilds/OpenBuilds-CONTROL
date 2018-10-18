@@ -291,7 +291,7 @@
                 <table class="drotable">
                   <tr>
                     <td>
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -315,7 +315,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Y0')" style="width: 60px;">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Y0')" style="width: 60px;" data-role="ripple" data-ripple-color="#5de21b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
                           <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
@@ -338,7 +338,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-8"></i>
                           <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
@@ -361,7 +361,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')" style="width: 60px;">
+                      <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')" style="width: 60px;" data-role="ripple">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-crosshairs fg-grayBlue" data-fa-transform="shrink-2 down-8 left-18"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-2" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -372,7 +372,7 @@
                       </button>
                     </td>
                     <td>
-                      <button class="button light jogbtn" style="width: 161px;" id="gotozero">
+                      <button class="button light jogbtn" style="width: 161px;" id="gotozero" data-role="ripple">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -394,7 +394,7 @@
                     </td>
 
                     <td>
-                      <button class="button light square large jogbtn" id="yP">
+                      <button class="button light square large jogbtn" id="yP" data-role="ripple" data-ripple-color="#5de21b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
@@ -407,7 +407,7 @@
 
 
                     <td>
-                      <button class="button light square large jogbtn" id="zP">
+                      <button class="button light square large jogbtn" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
@@ -417,7 +417,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="button light square large jogbtn" id="xM">
+                      <button class="button light square large jogbtn" id="xM" data-role="ripple" data-ripple-color="#e21b1b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
@@ -426,7 +426,7 @@
                     </td>
 
                     <td>
-                      <button class="button light square large jogbtn" id="yM">
+                      <button class="button light square large jogbtn" id="yM" data-role="ripple" data-ripple-color="#5de21b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
@@ -435,7 +435,7 @@
                     </td>
 
                     <td>
-                      <button class="button light square large jogbtn" id="xP">
+                      <button class="button light square large jogbtn" id="xP" data-role="ripple" data-ripple-color="#e21b1b">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
@@ -443,7 +443,7 @@
                       </button>
                     </td>
                     <td>
-                      <button class="button light square large jogbtn" id="zM">
+                      <button class="button light square large jogbtn" id="zM" data-role="ripple" data-ripple-color="#1ba1e2">
                         <span class="fa-layers fa-fw">
                           <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                           <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
