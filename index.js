@@ -433,13 +433,13 @@ var PortCheckinterval = setInterval(function() {
         var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
         if (newPorts.length > 0) {
           console.log("Plugged " + newPorts[0].comName);
-          if (jogWindow && !jogWindow.isFocused()) {
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "Driver Detected a new Port",
-              content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
-            })
-          }
+          // if (jogWindow && !jogWindow.isFocused()) {
+          //   appIcon.displayBalloon({
+          //     icon: nativeImage.createFromPath(iconPath),
+          //     title: "Driver Detected a new Port",
+          //     content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
+          //   })
+          // }
         }
         var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
         if (removedPorts.length > 0) {
@@ -866,6 +866,7 @@ io.on("connection", function(socket) {
               break;
           }
           console.log("error;")
+          sentBuffer.shift();
           status.comms.connectionStatus = 5;
         } else if (data === ' ') {
           // nothing

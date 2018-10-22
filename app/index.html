@@ -311,6 +311,14 @@
                         <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
                       </div>
                     </td>
+                    <td>
+                      <div class="pos-relative">
+                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
+                          <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto X Zero (G0 X0)</a></li>
+                        </ul>
+                      </div>
+                    </td>
 
                   </tr>
                   <tr>
@@ -328,11 +336,18 @@
                         <div class="float-left fg-green">
                           <span class="fa-layers fa-fw">
                             <span class="fa-layers-text fg-green">Y</span>
-                          <!-- <span class="fa-layers-text fg-green" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
                           </span>
                         </div>
                         <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
                         <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
+                      </div>
+                    </td>
+                    <td>
+                      <div class="pos-relative">
+                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
+                          <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto Y Zero (G0 Y0)</a></li>
+                        </ul>
                       </div>
                     </td>
                   </tr>
@@ -351,11 +366,20 @@
                         <div class="float-left fg-blue">
                           <span class="fa-layers fa-fw">
                             <span class="fa-layers-text fg-blue">Z</span>
-                          <!-- <span class="fa-layers-text fg-blue" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
                           </span>
                         </div>
                         <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
                         <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
+                      </div>
+                    </td>
+                    <td>
+                      <div class="pos-relative">
+                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
+                          <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto Z Zero (G0 Z0)</a></li>
+                          <li class="divider"></li>
+                          <li><a href="#" onclick="sendGcode('G38.2 F10 Z-20');"><span class="fas fa-podcast fa-rotate-180 fg-grayBlue icon"></span>Probe Z (G38.2 F10 Z-20)</a></li>
+                        </ul>
                       </div>
                     </td>
                   </tr>
@@ -382,6 +406,9 @@
                         </span>
 
                       </button>
+                    </td>
+                    <td>
+                      <!--  -->
                     </td>
                   </tr>
 
@@ -744,7 +771,7 @@
   <!-- Modal Divs -->
   <div style="display: none;">
 
-    <div class="dialog" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog" data-to-top="true">
+    <div class="dialog" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog">
       <div class="dialog-title">Jog Widget</div>
       <div class="dialog-content" style="max-height: calc(100vh - 200px);overflow-y: auto; overflow-x: hidden;">
         <div class="row">
