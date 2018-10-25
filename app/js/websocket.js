@@ -180,9 +180,13 @@ function initSocket() {
 
   socket.on('toastError', function(data) {
     // console.log("toast", data)
-    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
+    // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
+    Metro.dialog.create({
+      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data
+    });
     //
   });
+
   socket.on('toastSuccess', function(data) {
     console.log("toast", data)
     toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-green fg-white");

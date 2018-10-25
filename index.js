@@ -830,6 +830,12 @@ io.on("connection", function(socket) {
               var alarmCode = parseInt(data.split(':')[1]);
               console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+              var output = {
+                'command': '',
+                'response': 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]"
+              }
+              io.sockets.emit('data', output);
+              socket.emit("toastError", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
               break;
             case 'smoothie':
               status.comms.alarm = data;
@@ -890,7 +896,7 @@ io.on("connection", function(socket) {
           command = command.replace(/(\r\n|\n|\r)/gm, "");
           // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
-          if (command != "?" && command != "M105" && command != "$H" && data.length > 0) {
+          if (command != "?" && command != "M105" && data.length > 0) {
             var string = "";
             if (status.comms.sduploading) {
               string += "SD: "
