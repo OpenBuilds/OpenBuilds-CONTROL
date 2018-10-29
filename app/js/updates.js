@@ -1,5 +1,9 @@
 var time = 10
 $(document).ready(function() {
+  checkUpdate()
+});
+
+function checkUpdate() {
   if (!isMac && webgl) {
     setTimeout(function() {
       console.log('checking for update')
@@ -19,11 +23,15 @@ $(document).ready(function() {
           }, 1000);
         } else {
           printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds Machine Driver " + currentVersion + "</span>")
+          setTimeout(function() {
+            checkUpdate()
+          }, 15 * 60 * 1000) // 15 mins
         }
       });
     }, 1000)
   }
-});
+}
+
 
 function updateTime() {
   time--

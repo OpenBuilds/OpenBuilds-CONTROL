@@ -168,18 +168,25 @@ if (isElectron()) {
     // repeat every minute
     setTimeout(function() {
       io.sockets.emit('updateready', availversion);
-    }, 15 * 60 * 1000) // 5 mins
+    }, 15 * 60 * 1000) // 15 mins
     if (jogWindow && !jogWindow.isFocused()) {
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
         title: "OpenBuilds Machine Driver",
         content: string
       })
+      // Launch Gui to run Update
     }
   });
+
+  // Schedule AutoUpdater to run from Tray
+  // if (process.platform == 'win32') {
+  //   autoUpdater.checkForUpdates();
+  // }
 } else {
   console.log("Running outside Electron: Disabled AutoUpdater")
 }
+
 
 if (isElectron()) {
   var uploadsDir = electronApp.getPath('userData') + '/upload/';
@@ -2133,7 +2140,6 @@ if (isElectron()) {
         }])
         electronApp.dock.setMenu(dockMenu)
       };
-
 
     }
 

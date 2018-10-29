@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsMachineDriver",
-  "version": "1.0.110",
+  "version": "1.0.111",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -50,12 +50,18 @@
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "fileAssociations": [
-    {
-      "ext": [".gcode", ".gc", ".tap", ".nc", ".cnc"],
-      "description": "GCODE File",
-      "role": "none"
-    }
-  ],
+      {
+        "ext": [
+          ".gcode",
+          ".gc",
+          ".tap",
+          ".nc",
+          ".cnc"
+        ],
+        "description": "GCODE File",
+        "role": "none"
+      }
+    ],
     "files": [
       "**/*",
       "ssl/**/*"
