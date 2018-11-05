@@ -2071,10 +2071,6 @@ if (isElectron()) {
           jogWindow.setAlwaysOnTop(false);
         }
       }
-      // createWindow();
-      // createJogWindow();
-      // console.log("createoa")
-
 
     }
 
@@ -2191,49 +2187,6 @@ if (isElectron()) {
 
     }
 
-    function createWindow() {
-      // Create the browser window.
-      mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 900,
-        fullscreen: false,
-        center: true,
-        resizable: true,
-        title: "OpenBuilds Machine Driver ",
-        frame: true,
-        autoHideMenuBar: true,
-        icon: '/app/favicon.png'
-      });
-
-      // and load the index.html of the app.
-      // mainWindow.loadURL('file://' + __dirname + '/app/index.html');
-      // mainWindow.loadURL(`file://${__dirname}/app/index.html`)
-      var ipaddr = ip.address();
-      // mainWindow.loadURL(`//` + ipaddr + `:3000/`)
-      mainWindow.loadURL("http://localhost:3000");
-
-      mainWindow.on('close', function(event) {
-        event.preventDefault();
-        mainWindow.hide();
-        return false;
-      });
-
-      // Emitted when the window is closed.
-      mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
-      });
-      mainWindow.once('ready-to-show', () => {
-        mainWindow.show()
-      })
-      mainWindow.maximize()
-      // mainWindow.webContents.openDevTools()
-
-    };
-
-
     electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
     electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
     electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
@@ -2246,27 +2199,19 @@ if (isElectron()) {
     electronApp.on('ready', createApp);
 
     electronApp.on('will-quit', function(event) {
-      event.preventDefault()
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
-      if (process.platform !== 'darwin') {
-        electronApp.quit();
-        appIcon.destroy();
-      }
-      electronApp.quit();
+      // We don't take that route, we close it completely
       appIcon.destroy();
+      electronApp.exit(0);
     });
 
     // Quit when all windows are closed.
     electronApp.on('window-all-closed', function() {
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
-      if (process.platform !== 'darwin') {
-        electronApp.quit();
-        appIcon.destroy();
-      }
-      electronApp.quit();
       appIcon.destroy();
+      electronApp.exit(0);
     });
 
     electronApp.on('activate', function() {
