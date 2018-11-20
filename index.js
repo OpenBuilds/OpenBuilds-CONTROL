@@ -2080,6 +2080,23 @@ if (isElectron()) {
           nativeImage.createFromPath(iconPath)
         )
         const contextMenu = Menu.buildFromTemplate([{
+          label: 'Open User Interface (GUI)',
+          click() {
+           // console.log("Clicked Systray")
+		  if (jogWindow === null) {
+		    createJogWindow();
+		    jogWindow.show()
+		    jogWindow.setAlwaysOnTop(true);
+		    jogWindow.focus();
+		    jogWindow.setAlwaysOnTop(false);
+		  } else {
+		    jogWindow.show()
+		    jogWindow.setAlwaysOnTop(true);
+		    jogWindow.focus();
+		    jogWindow.setAlwaysOnTop(false);
+		  }
+          }
+        },{
           label: 'Quit Machine Driver (Disables all integration until started again)',
           click() {
             appIcon.destroy();
