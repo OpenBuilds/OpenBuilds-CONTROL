@@ -77,7 +77,7 @@ function grblPopulate() {
                   <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png"/>  OpenBuilds C-Beam Machine</a></li>
                   <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png"/>  OpenBuilds C-Beam XL </a></li>
                   <li class="divider"></li>
-                  <li onclick="selectMachine('leadmachine55');"><a href="#"><img src="img/mch/leadmachine55.png"/>  OpenBuilds Lead Machine 55 </a></li>
+                  <!--li onclick="selectMachine('leadmachine55');"><a href="#"><img src="img/mch/leadmachine55.png"/>  OpenBuilds Lead Machine 55 </a></li -->
                   <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png"/>  OpenBuilds Lead Machine 1010 </a></li>
                   <li class="divider"></li>
                   <li onclick="selectMachine('minimill');"><a href="#"><img src="img/mch/minimill.png"/>  OpenBuilds MiniMill</a></li>

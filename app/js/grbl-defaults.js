@@ -527,9 +527,9 @@ function selectMachine(type) {
       $120: "150.000", //"X-axis acceleration, mm/sec^2"
       $121: "150.000", //"Y-axis acceleration, mm/sec^2"
       $122: "150.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "824", //"X-axis maximum travel, millimeters"
-      $131: "780", //"Y-axis maximum travel, millimeters"
-      $132: "122", //"Z-axis maximum travel, millimeters"
+      $130: "810", //"X-axis maximum travel, millimeters"
+      $131: "730", //"Y-axis maximum travel, millimeters"
+      $132: "90", //"Z-axis maximum travel, millimeters"
     }
   } else if (type == "leadmachine55") {
     // Leadmachine 55
