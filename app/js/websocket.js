@@ -75,7 +75,7 @@ function initSocket() {
 
   socket.on('disconnect', function() {
     console.log("WEBSOCKET DISCONNECTED")
-    printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-brown'> Disconnected.  Driver probably quit or crashed</span>")
+    printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-brown'> Disconnected.  OpenBuilds CONTROL probably quit or crashed</span>")
     $("#websocketstatus").html("Disconnected")
   });
 
@@ -196,7 +196,7 @@ function initSocket() {
   socket.on('status', function(status) {
 
     if (nostatusyet) {
-      $('#windowtitle').html("OpenBuilds Machine Driver v" + status.driver.version)
+      $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
     }
     nostatusyet = false;
 

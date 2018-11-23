@@ -1,4 +1,4 @@
-console.log("Starting OpenBuilds Machine Driver v" + require('./package').version)
+console.log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
 config.webPort = process.env.WEB_PORT || 3000;
@@ -81,7 +81,7 @@ autoUpdater.on('checking-for-update', () => {
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds CONTROL",
       content: string
     })
   }
@@ -97,7 +97,7 @@ autoUpdater.on('update-available', (ev, info) => {
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds CONTROL",
       content: string
     })
   }
@@ -116,7 +116,7 @@ autoUpdater.on('update-not-available', (ev, info) => {
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds CONTROL",
       content: string
     })
   }
@@ -131,7 +131,7 @@ autoUpdater.on('error', (ev, err) => {
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds CONTROL",
       content: string
     })
   }
@@ -149,7 +149,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
     if (jogWindow && !jogWindow.isFocused()) {
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds Machine Driver",
+        title: "OpenBuilds CONTROL",
         content: string
       })
     }
@@ -157,7 +157,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
 })
 
 autoUpdater.on('update-downloaded', (info) => {
-  var string = "New update ready.  Click INSTALL UPDATE once you are ready. NB Note that this closes the running instance of the OpenBuilds Machine Driver, and aborts any running jobs.  Only run the Update before beginning a job / once you are done working with your machine. ";
+  var string = "New update ready.  Click INSTALL UPDATE once you are ready. NB Note that this closes the running instance of the OpenBuilds CONTROL, and aborts any running jobs.  Only run the Update before beginning a job / once you are done working with your machine. ";
   var output = {
     'command': 'autoupdate',
     'response': string
@@ -167,7 +167,7 @@ autoUpdater.on('update-downloaded', (info) => {
   if (jogWindow && !jogWindow.isFocused()) {
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "OpenBuilds Machine Driver",
+      title: "OpenBuilds CONTROL",
       content: string
     })
   }
@@ -459,8 +459,8 @@ var PortCheckinterval = setInterval(function() {
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
-              title: "Driver Detected a new Port",
-              content: "OpenBuilds Machine Driver detected a new port: " + newPorts[0].comName
+              title: "Detected a new Port",
+              content: "OpenBuilds CONTROL detected a new port: " + newPorts[0].comName
             })
           }
         }
@@ -470,8 +470,8 @@ var PortCheckinterval = setInterval(function() {
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
-              title: "Driver Detected a disconnected Port",
-              content: "OpenBuilds Machine Driver detected that port: " + removedPorts[0].comName + " was removed"
+              title: "Detected a disconnected Port",
+              content: "OpenBuilds CONTROL detected that port: " + removedPorts[0].comName + " was removed"
             })
           }
         }
@@ -500,7 +500,7 @@ app.get('/activate', (req, res) => {
   console.log(req.hostname)
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.send('Host: ' + req.hostname + ' asked to activate OpenBuildsMachineDriver v' + require('./package').version);
+  res.send('Host: ' + req.hostname + ' asked to activate OpenBuilds CONTROL v' + require('./package').version);
   if (jogWindow === null) {
     createJogWindow();
     jogWindow.show()
@@ -579,7 +579,7 @@ app.post('/upload', function(req, res) {
               appIcon.displayBalloon({
                 icon: nativeImage.createFromPath(iconPath),
                 title: "ERROR: File Upload Failed",
-                content: "OpenBuilds Machine Driver ERROR: File Upload Failed"
+                content: "OpenBuilds CONTROL ERROR: File Upload Failed"
               })
             }
           }
@@ -589,7 +589,7 @@ app.post('/upload', function(req, res) {
               appIcon.displayBalloon({
                 icon: nativeImage.createFromPath(iconPath),
                 title: "GCODE Received",
-                content: "OpenBuilds Machine Driver received new GCODE"
+                content: "OpenBuilds CONTROL received new GCODE"
               })
             }
           }
@@ -693,8 +693,8 @@ io.on("connection", function(socket) {
         if (jogWindow && !jogWindow.isFocused()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
-            title: "Driver encountered a Port error",
-            content: "OpenBuilds Machine Driver received the following error: " + err.message
+            title: "OpenBuilds CONTROL encountered a Port error",
+            content: "OpenBuilds CONTROL received the following error: " + err.message
           })
         }
         if (status.comms.connectionStatus > 0) {
@@ -817,8 +817,8 @@ io.on("connection", function(socket) {
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
-              title: "Driver has established a Connection",
-              content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+              title: "OpenBuilds CONTROL has established a Connection",
+              content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
             })
           }
           // Start interval for status queries
@@ -835,8 +835,8 @@ io.on("connection", function(socket) {
           if (jogWindow && !jogWindow.isFocused()) {
             appIcon.displayBalloon({
               icon: nativeImage.createFromPath(iconPath),
-              title: "Driver has established a Connection",
-              content: "OpenBuilds Machine Driver is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+              title: "OpenBuilds CONTROL has established a Connection",
+              content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
             })
           }
           status.machine.firmware.type = "smoothie";
@@ -1133,8 +1133,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Started",
-          content: "OpenBuilds Machine Driver started a job: Job Size: " + data.length + " lines of GCODE"
+          title: "OpenBuilds CONTROL: Job Started",
+          content: "OpenBuilds CONTROL started a job: Job Size: " + data.length + " lines of GCODE"
         })
       }
     } else {
@@ -1266,8 +1266,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Work Coordinate System Reset",
-          content: "OpenBuilds Machine Driver has reset the WCS on the " + data + " axes."
+          title: "OpenBuilds CONTROL: Work Coordinate System Reset",
+          content: "OpenBuilds CONTROL has reset the WCS on the " + data + " axes."
         })
       }
     } else {
@@ -1506,8 +1506,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Paused",
-          content: "OpenBuilds Machine Driver paused the job"
+          title: "OpenBuilds CONTROL: Job Paused",
+          content: "OpenBuilds CONTROL paused the job"
         })
       }
     } else {
@@ -1539,8 +1539,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Resumed",
-          content: "OpenBuilds Machine Driver resumed the job"
+          title: "OpenBuilds CONTROL: Job Resumed",
+          content: "OpenBuilds CONTROL resumed the job"
         })
       }
     } else {
@@ -1589,8 +1589,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Job Aborted",
-          content: "OpenBuilds Machine Driver was asked to abort the running job."
+          title: "OpenBuilds CONTROL: Job Aborted",
+          content: "OpenBuilds CONTROL was asked to abort the running job."
         })
       }
       // status.comms.connectionStatus = 2;
@@ -1651,8 +1651,8 @@ io.on("connection", function(socket) {
       if (jogWindow && !jogWindow.isFocused()) {
         appIcon.displayBalloon({
           icon: nativeImage.createFromPath(iconPath),
-          title: "Driver: Alarm Cleared",
-          content: "OpenBuilds Machine Driver has cleared the Alarm Condition, you may continue"
+          title: "OpenBuilds CONTROL: Alarm Cleared",
+          content: "OpenBuilds CONTROL has cleared the Alarm Condition, you may continue"
         })
       }
     } else {
@@ -1794,8 +1794,8 @@ function send1Q() {
         if (jogWindow && !jogWindow.isFocused()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
-            title: "Driver: Job Completed!",
-            content: "OpenBuilds Machine Driver completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
+            title: "OpenBuilds CONTROL: Job Completed!",
+            content: "OpenBuilds CONTROL completed a Job in " + elapsedTime + " seconds. We processed " + speed + " gcode lines/second on average."
           })
         }
       }
@@ -2196,7 +2196,7 @@ if (electronApp) {
       nativeImage.createFromPath(iconPath)
     )
     const contextMenu = Menu.buildFromTemplate([{
-      label: 'Quit Machine Driver (Disables all integration until started again)',
+      label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
       click() {
         appIcon.destroy();
         electronApp.exit(0);
@@ -2239,8 +2239,8 @@ if (electronApp) {
 
     appIcon.displayBalloon({
       icon: nativeImage.createFromPath(iconPath),
-      title: "Driver Started",
-      content: "OpenBuilds Machine Driver has started successfully: Active on " + ip.address() + ":" + config.webPort
+      title: "OpenBuilds CONTROL Started",
+      content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
     })
 
   }
@@ -2253,7 +2253,7 @@ if (electronApp) {
       fullscreen: false,
       center: true,
       resizable: true,
-      title: "OpenBuilds Machine Driver ",
+      title: "OpenBuilds CONTROL ",
       frame: false,
       autoHideMenuBar: true,
       icon: '/app/favicon.png'
@@ -2296,7 +2296,7 @@ if (electronApp) {
       fullscreen: false,
       center: true,
       resizable: true,
-      title: "OpenBuilds Machine Driver ",
+      title: "OpenBuilds CONTROL ",
       frame: true,
       autoHideMenuBar: true,
       icon: '/app/favicon.png'

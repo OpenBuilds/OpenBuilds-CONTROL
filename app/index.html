@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>OpenBuilds Machine Driver</title>
+  <title>OpenBuilds CONTROL</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="author" content="">
@@ -19,7 +19,7 @@
 
   <div class="pos-fixed pos-center" id="splash">
     <img src="splashicon.png" style="display:block; margin:auto;">
-    <br>Starting&nbsp;OpenBuilds&nbsp;Machine&nbsp;Driver...
+    <br>Starting&nbsp;OpenBuilds&nbsp;CONTROL...
   </div>
 
 
@@ -27,7 +27,7 @@
     <div class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
       <!-- <span class="icon mif-cog"></span> -->
       <span class="icon"><img src="icon-transparent.png"/></span>
-      <span class="title" id="windowtitle">OpenBuilds Machine Driver</span>
+      <span class="title" id="windowtitle">OpenBuilds CONTROL</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
         <span class="btn-min" onclick="socket.emit('minimize')"></span>
         <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimisetotray')"></span>
@@ -673,7 +673,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Driver</td>
+                        <td>Version</td>
                         <td><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
                       </tr>
                       <tr>
@@ -689,7 +689,7 @@
                         <td><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
                       </tr>
                       <tr>
-                        <td>Driver Queue</td>
+                        <td>Serial Queue</td>
                         <td><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
                       </tr>
                       <tr>
@@ -759,7 +759,7 @@
         Version <code><span id="availVersion">1.0.100</span></code> update ready to be installed!<br> Note that proceeding will:
         <ul>
           <li>Stops any running jobs</li>
-          <li>Shuts down this instance of the driver</li>
+          <li>Shuts down this instance of OpenBuilds CONTROL</li>
           <li>Launches the installer for the new version</li>
         </ul>
         <small>You may want to wait until your machine is idle before continuing</small>

@@ -15,14 +15,14 @@ function checkUpdate() {
         if (versionCompare(availVersion, currentVersion) == 1) {
           console.log('outdated')
           time = 10
-          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds Machine Driver <code>" + availVersion + "</code>. is available now.</span>")
+          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds CONTROL <code>" + availVersion + "</code>. is available now.</span>")
           printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>Download will start in <span class='tally' id='countdown'>10</span> seconds (<a href='#' onclick='cancelTimer();'>cancel</a>) </span>")
           printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>You will be prompted when its ready to be installed </span>")
           setTimeout(function() {
             updateTime();
           }, 1000);
         } else {
-          printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds Machine Driver " + currentVersion + "</span>")
+          printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds CONTROL " + currentVersion + "</span>")
           setTimeout(function() {
             checkUpdate()
           }, 15 * 60 * 1000) // 15 mins

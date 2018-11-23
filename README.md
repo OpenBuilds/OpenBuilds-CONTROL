@@ -1,5 +1,5 @@
 # SW-Machine-Drivers
-OpenBuilds Machine Driver - Interface Driver for all CNC style machines (Grbl, Smoothieware)
+OpenBuilds CONTROL - Interface Driver for all CNC style machines (Grbl, Smoothieware)
 
 ## Download
 Download from [Github releases](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)

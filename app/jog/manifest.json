@@ -1,7 +1,7 @@
 {
-  "name": "OpenBuilds Machine Driver Jog",
-  "short_name": "OpenBuilds Machine Driver Jog",
-  "description": "OpenBuilds Machine Driver Jog",
+  "name": "OpenBuilds CONTROL Jog",
+  "short_name": "OpenBuilds CONTROL Jog",
+  "description": "OpenBuilds CONTROL Jog",
   "scope": ".",
   "start_url": "/jog",
   "display": "standalone",
