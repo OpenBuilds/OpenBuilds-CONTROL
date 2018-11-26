@@ -10,6 +10,7 @@
   <meta name="metro4:init" content="true">
   <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
   <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
+  <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" />
   <link rel="stylesheet" href="css/buttons.css" />
   <link rel="stylesheet" href="css/main.css" />
 </head>
@@ -541,6 +542,7 @@
                 <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
                 <li><a href="#tab-two" id="gcodeeditortab"><i class="far fa-fw fa-edit"></i> GCODE Editor</a></li>
                 <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw"></i> 3D View</a></li>
+                <li><a href="#tab-four" id="macrostab"><i class="fas fa-th fa-fw"></i> Macros</a></li>
 
               </ul>
 
@@ -582,6 +584,9 @@
                     <button id="stopSimBtn" style="display: none;" title="Stop Sim" class="button dark" onclick="simstop()"><i class="fas fa-stop"></i> Stop Sim</button>&nbsp;
                     <button id="resetViewBtn" title="Stop Sim" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
                   </div>
+                </div>
+                <div class="section" id="tab-four">
+                  <div id="macros"></div>
                 </div>
               </div>
             </nav>
@@ -830,6 +835,9 @@
 
 <script type="text/javascript" src="/lib/lodash.core.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+<script type="text/javascript" src="/lib/iconpicker/js/fontawesome-iconpicker.min.js"></script>
+<script type="text/javascript" src="/js/macros.js"></script>
 
 <script type="text/javascript" src="lib/threejs/three.min.js"></script>
 <script type="text/javascript" src="lib/threejs/GridRect.js"></script>
