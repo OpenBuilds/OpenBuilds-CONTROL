@@ -14,7 +14,7 @@ function populateMacroButtons() {
   }
   // append add button
   var button = `
-  <button class="shortcut outline rounded no-caption m-1" onclick="edit(10, event)">
+  <button class="shortcut outline rounded no-caption m-1" onclick="edit(` + (buttonsarray.length + 1) + `, event)">
     <span class="caption">Add Macro</span>
     <span class="fas fa-plus icon"></span>
   </button>`
