@@ -145,6 +145,7 @@ function setJogPanel(val, status) {
     $("#svgview").css('background-color', '#f5f6f7');
     // $("#jogcontrols").slideUp(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
@@ -168,6 +169,7 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#svgview").css('background-color', '#ffffff');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
@@ -190,6 +192,7 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     if (editor) {
@@ -209,6 +212,7 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     if (editor) {
@@ -227,6 +231,7 @@ function setJogPanel(val, status) {
     // Show panel and resize editor
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
