@@ -204,15 +204,48 @@
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-bookmark" data-fa-transform="rotate-180"></i>
                         <i class="fas fa-screwdriver" data-fa-transform="rotate-135 down-3"></i>
+                        <i class="fas fa-check fg-green" data-fa-transform="down-3"></i>
                       </span>
                     </span>
-                    <span class="caption">Tool<br>Options</span>
+                    <span class="caption">Tool<br>On</span>
                 </button>
                 <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                  <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Tool On (M3 S1000)</a></li>
-                  <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Tool Off (M5)</a></li>
-                  <li class="divider"></li>
+                  <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Spindle On (M3 S1000)</a></li>
+                  <!-- <li class="divider"></li> -->
+                  <li>
+                    <a href="#" class="dropdown-toggle">Laser On (M4 Sxxx)</a>
+                    <ul class="ribbon-dropdown" data-role="dropdown">
+                      <li onclick="sendGcode('M3 S50\n G1F1000')"><a href="#">Laser On 5% Power (M3 S50)</a></li>
+                      <li onclick="sendGcode('M3 S100\n G1F1000')"><a href="#">Laser On 10% Power (M3 S100)</a></li>
+                      <li onclick="sendGcode('M3 S250\n G1F1000')"><a href="#">Laser On 25% Power (M3 S250)</a></li>
+                      <li onclick="sendGcode('M3 S500\n G1F1000')"><a href="#">Laser On 50% Power (M3 S500)</a></li>
+                      <li onclick="sendGcode('M3 S750\n G1F1000')"><a href="#">Laser On 75% Power (M3 S750)</a></li>
+                      <li onclick="sendGcode('M3 S1000\n G1F1000')"><a href="#">Laser On 100% Power (M3 S1000)</a></li>
+                    </ul>
+                  </li>
+                  <!-- <li class="divider"></li> -->
+                  <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Plasma On (M3 S1000)</a></li>
+                  <li class="divider fg-lightGray"></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Coolant On (M8)</a></li>
+                  <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
+
+                </ul>
+              </div>
+
+              <div>
+                <button id="toolBtn" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-bookmark" data-fa-transform="rotate-180"></i>
+                        <i class="fas fa-screwdriver" data-fa-transform="rotate-135 down-3"></i>
+                        <i class="fas fa-times fg-red" data-fa-transform="down-3"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Tool<br>Off</span>
+                </button>
+                <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
+                  <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Spindle / Laser / Plasma Off (M5)</a></li>
+                  <li class="divider fg-lightGray"></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li>
 
                 </ul>
