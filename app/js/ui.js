@@ -94,6 +94,7 @@ function setControlBar(val, status) {
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
+    $('#toolBtn2').hide().attr('disabled', true);
     $('#homeBtn').hide().attr('disabled', true);
     $('.estop').hide()
   } else if (val == 1 || val == 2) { // Connected, but not Playing yet
@@ -107,6 +108,7 @@ function setControlBar(val, status) {
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').show().attr('disabled', true);
     $('#toolBtn').show().attr('disabled', false);
+    $('#toolBtn2').show().attr('disabled', false);
     $('#homeBtn').show().attr('disabled', false);
     $('.estop').show()
   } else if (val == 3) { // Busy Streaming GCODE
@@ -116,6 +118,7 @@ function setControlBar(val, status) {
     $('#pauseBtn').show().attr('disabled', false);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
+    $('#toolBtn2').show().attr('disabled', false);
     $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
   } else if (val == 4) { // Paused
@@ -125,6 +128,7 @@ function setControlBar(val, status) {
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
+    $('#toolBtn2').show().attr('disabled', false);
     $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
   } else if (val == 5) { // Alarm State
@@ -134,6 +138,7 @@ function setControlBar(val, status) {
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', true);
+    $('#toolBtn2').show().attr('disabled', true);
     $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
   }
