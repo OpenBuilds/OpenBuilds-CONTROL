@@ -666,7 +666,7 @@ io.on("connection", function(socket) {
       });
 
       status.comms.connectionStatus = 6;
-      avrgirl.flash(file, function(error) {
+      avrgirl.flash(path.join(__dirname, file), function(error) {
         if (error) {
           console.error(error);
           io.sockets.emit("progStatus", 'Flashing FAILED!');
