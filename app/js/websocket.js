@@ -43,7 +43,7 @@ function printLog(string) {
     template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
     template += string;
     $('#console').append(template);
-    $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
   }
 }
 
@@ -191,6 +191,26 @@ function initSocket() {
     console.log("toast", data)
     toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-green fg-white");
     //
+  });
+
+  socket.on('progStatus', function(data) {
+    $('#controlTab').click();
+    $('#consoletab').click();
+    console.log(data.port, data.string)
+    var string = data.string
+    if (string) {
+      if (string.indexOf('flash complete') != -1) {
+        setTimeout(function() {
+          populatePortsMenu();
+        }, 400)
+      }
+      string = string.replace('[31mflash complete.[39m', "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'> </i> FLASH FAILED!</span> ");
+      string = string.replace('[32m', "<span class='fg-green'><i class='fas fa-check fa-fw fg-green fa-fw'></i> ");
+      string = string.replace('[39m', "</span>");
+      printLog("<span class='fg-red'>[ Firmware Upgrade ] </span>" + string)
+
+      // $('#sendCommand').click();
+    }
   });
 
   socket.on('status', function(status) {

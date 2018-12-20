@@ -1,6 +1,9 @@
+var lastSelectedMachine = '';
+
 function selectMachine(type) {
   if (type == "sphinx55") {
     // Sphinx 55 - COMPLETE with homing switches
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -39,6 +42,7 @@ function selectMachine(type) {
     }
   } else if (type == "sphinx1050") {
     // Sphinx 1050
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -77,6 +81,7 @@ function selectMachine(type) {
     }
   } else if (type == "workbee1050") {
     //Workbee 1050 COMPLETE with homing switches
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -115,6 +120,7 @@ function selectMachine(type) {
     }
   } else if (type == "workbee1010") {
     // Workbee 1010
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -153,6 +159,7 @@ function selectMachine(type) {
     }
   } else if (type == "workbee1510") {
     // Workbee1510
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -191,6 +198,8 @@ function selectMachine(type) {
     }
   } else if (type == "acro55") {
     // Acro 55
+    var customFirmware = true;
+    var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -229,6 +238,8 @@ function selectMachine(type) {
     }
   } else if (type == "acro510") {
     // Acro 510
+    var customFirmware = true;
+    var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -267,6 +278,8 @@ function selectMachine(type) {
     }
   } else if (type == "acro1010") {
     // Acro 1010
+    var customFirmware = true;
+    var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -305,6 +318,8 @@ function selectMachine(type) {
     }
   } else if (type == "acro1510") {
     // Acro 1510
+    var customFirmware = true;
+    var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -343,6 +358,8 @@ function selectMachine(type) {
     }
   } else if (type == "acro1515") {
     // Acro 1515
+    var customFirmware = true;
+    var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -381,6 +398,7 @@ function selectMachine(type) {
     }
   } else if (type == "minimill") {
     // minimill
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -419,6 +437,7 @@ function selectMachine(type) {
     }
   } else if (type == "cbeam") {
     // C-Beam Machine
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -457,6 +476,7 @@ function selectMachine(type) {
     }
   } else if (type == "cbeamxl") {
     // C-Beam XL:
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -495,6 +515,7 @@ function selectMachine(type) {
     }
   } else if (type == "leadmachine1010") {
     // Leadmachine 1010
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -533,6 +554,7 @@ function selectMachine(type) {
     }
   } else if (type == "leadmachine55") {
     // Leadmachine 55
+    var customFirmware = false;
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
@@ -582,6 +604,54 @@ function selectMachine(type) {
   enableLimits(); // Enable or Disable
   displayDirInvert();
   setMachineButton(type);
+
+  if (lastSelectedMachine != type) {
+    if (lastSelectedMachine.substr(0, 4) != type.substr(0, 4)) {
+      if (customFirmware) {
+        if (customFirmwareFile == 'acro') {
+          Metro.dialog.create({
+            title: "Custom Firmware Required",
+            content: "<div>The OpenBuilds Acro is a 2-axes machine.  This requires a custom Grbl installation to allow 2-axes specific homing.  We can flash the new firmware for you right now.  Proceeding will wipe the firmware from your controller and replace it with an Acro specific version of Grbl.  Would you like to proceed?</div>",
+            actions: [{
+                caption: "No Thank you",
+                cls: "js-dialog-close",
+                onclick: function() {
+                  console.log("Do nothing")
+                }
+              },
+              {
+                caption: "I already flashed it",
+                cls: "js-dialog-close",
+                onclick: function() {
+                  console.log("Do nothing")
+                }
+              },
+              {
+                caption: "Yes!",
+                cls: "js-dialog-close success",
+                onclick: function() {
+                  $('#controlTab').click();
+                  $('#consoletab').click();
+                  $('#grblSettings').hide();
+
+                  var data = {
+                    port: laststatus.comms.interfaces.activePort,
+                    file: 'grbl1.1f-acro.hex'
+                  }
+                  socket.emit('flashGrbl', data)
+                }
+              },
+
+            ]
+          });
+        }
+        console.log('This machine needs a custom firmware')
+      }
+    }
+
+  }
+
+  lastSelectedMachine = type;
   checkifchanged()
 };
 

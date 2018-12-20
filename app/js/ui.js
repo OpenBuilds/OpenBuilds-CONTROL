@@ -5,6 +5,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Not Connected");
     // Connect/Disconnect Button
     $("#disconnectBtn").hide();
+    $("#flashBtn").hide();
     $('#portUSB').parent().show();
     $("#connectBtn").show();
     if ($('#portUSB').val() != "") {
@@ -31,6 +32,8 @@ function setConnectBar(val, status) {
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
+    $("#flashBtn").hide();
+
     // Port Dropdown
     $('#portUSB').parent(".select").addClass('disabled')
     $('#portUSB').parent(".select").removeClass('success')
@@ -45,6 +48,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
+    $("#flashBtn").hide();
     // Port Dropdown
     $('#portUSB').parent(".select").addClass('disabled')
     $('#portUSB').parent(".select").removeClass('success')
@@ -60,6 +64,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
+    $("#flashBtn").hide();
     // Port Dropdown
     $('#portUSB').parent(".select").addClass('disabled')
     $('#portUSB').parent(".select").removeClass('success')
@@ -75,6 +80,22 @@ function setConnectBar(val, status) {
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
     $("#disconnectBtn").show();
+    $("#flashBtn").hide();
+    // Port Dropdown
+    $('#portUSB').parent(".select").addClass('disabled')
+    $('#portUSB').parent(".select").removeClass('success')
+    $('#portUSB').parent(".select").addClass('alert')
+    // Set Port Dropdown to Current Value
+    $("#portUSB").val(status.comms.interfaces.activePort);
+  } else if (val == 6) { // Firmware Upgrade State
+    // Status Badge
+    $('#connectStatus').html("Port: Flashing");
+    // Connect/Disconnect Button
+    $("#connectBtn").hide();
+    $('#portUSB').parent().hide();
+    $("#connectBtn").attr('disabled', false);
+    $("#disconnectBtn").hide();
+    $("#flashBtn").show();
     // Port Dropdown
     $('#portUSB').parent(".select").addClass('disabled')
     $('#portUSB').parent(".select").removeClass('success')
@@ -141,6 +162,16 @@ function setControlBar(val, status) {
     $('#toolBtn2').show().attr('disabled', true);
     $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
+  } else if (val == 6) { // Firmware Upgrade State
+    $('#runBtn').hide().attr('disabled', true);
+    $('#chkSize').show().attr('disabled', true);
+    $('#resumeBtn').hide().attr('disabled', true);
+    $('#pauseBtn').hide().attr('disabled', true);
+    $('#stopBtn').hide().attr('disabled', true);
+    $('#toolBtn').hide().attr('disabled', true);
+    $('#toolBtn2').hide().attr('disabled', true);
+    $('#homeBtn').hide().attr('disabled', true);
+    $('.estop').hide()
   }
 }
 
@@ -151,7 +182,7 @@ function setJogPanel(val, status) {
     // $("#jogcontrols").slideUp(20);
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
@@ -175,7 +206,7 @@ function setJogPanel(val, status) {
     $("#svgview").css('background-color', '#ffffff');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
@@ -198,7 +229,7 @@ function setJogPanel(val, status) {
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     if (editor) {
       editor.resize()
@@ -218,7 +249,7 @@ function setJogPanel(val, status) {
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     if (editor) {
       editor.resize()
@@ -237,7 +268,7 @@ function setJogPanel(val, status) {
     $("#svgview").css('background-color', '#f5f6f7');
     $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
     $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
-    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
     $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
     // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
     if (editor) {
@@ -247,6 +278,30 @@ function setJogPanel(val, status) {
     if (!$('#jograte').attr('disabled')) {
       $('#jograte').attr('disabled', true);
     }
+    if (!isJogWidget && webgl) {
+      if (!simRunning) {
+        cone.visible = false;
+      }
+    }
+  } else if (val == 6) { // Firmware Upgrade State
+    // Show panel and resize editor
+    $("#svgview").css('background-color', '#f5f6f7');
+    // $("#jogcontrols").slideUp(20);
+    $("#editor").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#macros").css('height', 'calc(' + 100 + 'vh - ' + 485 + 'px)');
+    $("#console").css('height', 'calc(' + 100 + 'vh - ' + 505 + 'px)');
+    $("#renderArea").css('height', 'calc(' + 100 + 'vh - ' + 448 + 'px)');
+    // $('#console').scrollTop($("#console")[0].scrollHeight - $("#console").height());
+    if (editor) {
+      editor.resize()
+    }
+    $('.jogbtn').attr('disabled', true);
+    if ($('#jograte').attr('disabled')) {
+      $('#jograte').attr('disabled', false);
+    }
+    $('#xPos').html('0.00');
+    $('#yPos').html('0.00');
+    $('#zPos').html('0.00');
     if (!isJogWidget && webgl) {
       if (!simRunning) {
         cone.visible = false;
@@ -277,5 +332,10 @@ function setConsole(val, status) {
   } else if (val == 5) { // Alarm State
     $("#command").attr('disabled', false);
     $("#sendCommand").prop('disabled', false);
+  } else if (val == 6) { // Firmware Upgrade State
+    if (!$('#command').attr('disabled')) {
+      $('#command').attr('disabled', true);
+    }
+    $("#sendCommand").prop('disabled', true);
   }
 }

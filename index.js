@@ -633,6 +633,60 @@ io.on("connection", function(socket) {
   })
 
 
+  socket.on("flashGrbl", function(data) {
+
+    var port = data.port;
+    var file = data.file;
+    const Avrgirl = require('avrgirl-arduino');
+
+    if (status.comms.connectionStatus > 0) {
+      console.log('WARN: Closing Port ' + port);
+      stopPort();
+    } else {
+      console.log('ERROR: Machine connection not open!');
+    }
+
+    function flashGrblCallback(debugString, port) {
+      console.log(port, debugString);
+      var data = {
+        'port': port,
+        'string': debugString
+      }
+      io.sockets.emit("progStatus", data);
+    }
+
+    setTimeout(function() {
+      var avrgirl = new Avrgirl({
+        board: 'uno',
+        port: port,
+        debug: function(debugString) {
+          var port = this.connection.options.port;
+          flashGrblCallback(debugString, port)
+        }
+      });
+
+      status.comms.connectionStatus = 6;
+      avrgirl.flash(file, function(error) {
+        if (error) {
+          console.error(error);
+          io.sockets.emit("progStatus", 'Flashing FAILED!');
+          status.comms.connectionStatus = 0;
+        } else {
+          console.info('done.');
+          io.sockets.emit("progStatus", 'Programmed Succesfully');
+          io.sockets.emit("progStatus", 'Please Reconnect');
+          status.comms.connectionStatus = 0;
+        }
+        status.comms.connectionStatus = 0;
+      });
+    }, 1000)
+
+
+
+
+  })
+
+
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 
     if (status.comms.connectionStatus < 1) {
@@ -645,25 +699,28 @@ io.on("connection", function(socket) {
       });
 
       port.on("error", function(err) {
-        console.log("Error: ", err.message);
-        var output = {
-          'command': '',
-          'response': "PORT ERROR: " + err.message
+        if (err.message != "Port is not open") {
+          console.log("Error: ", err.message);
+          var output = {
+            'command': '',
+            'response': "PORT ERROR: " + err.message
+          }
+          io.sockets.emit('data', output);
+          if (jogWindow && !jogWindow.isFocused()) {
+            appIcon.displayBalloon({
+              icon: nativeImage.createFromPath(iconPath),
+              title: "OpenBuilds CONTROL encountered a Port error",
+              content: "OpenBuilds CONTROL received the following error: " + err.message
+            })
+          }
+          if (status.comms.connectionStatus > 0) {
+            console.log('WARN: Closing Port ' + port.path);
+            stopPort();
+          } else {
+            console.log('ERROR: Machine connection not open!');
+          }
         }
-        io.sockets.emit('data', output);
-        if (jogWindow && !jogWindow.isFocused()) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL encountered a Port error",
-            content: "OpenBuilds CONTROL received the following error: " + err.message
-          })
-        }
-        if (status.comms.connectionStatus > 0) {
-          console.log('WARN: Closing Port ' + port.path);
-          stopPort();
-        } else {
-          console.log('ERROR: Machine connection not open!');
-        }
+
       });
       port.on("open", function() {
         console.log("PORT INFO: Connected to " + port.path + " at " + port.options.baudRate);

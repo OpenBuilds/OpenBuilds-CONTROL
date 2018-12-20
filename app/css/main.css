@@ -43,7 +43,7 @@ body {
 #console {
     /*font-family: "Courier New", Courier, monospace;*/
     font-family: "Lucida Console", Monaco, monospace;
-    height: calc(100vh - 480px);
+    height: calc(100vh - 505px);
     width: 100%;
     overflow-y: auto;
     overflow-x: none;
