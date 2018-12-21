@@ -430,6 +430,8 @@ var status = {
   }
 };
 
+
+
 SerialPort.list(function(err, ports) {
   oldportslist = ports;
   status.comms.interfaces.ports = ports;

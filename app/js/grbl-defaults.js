@@ -692,3 +692,11 @@ function setMachineButton(type) {
   }
   $('#context_toggle2').html(template);
 };
+
+function flashGrblfromTroubleshooting() {
+  var data = {
+    port: $("#portUSB").val(),
+    file: $("#flashGrblHex").val()
+  }
+  socket.emit('flashGrbl', data)
+}

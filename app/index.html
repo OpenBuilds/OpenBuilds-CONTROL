@@ -146,7 +146,7 @@
                     <span class="caption">Reset</span>
                   </button>
                 <br>
-                <button class="ribbon-icon-button" onclick="sendGcode('$$')">
+                <button class="ribbon-icon-button" onclick="sendGcode('$$'); sendGcode('$I');">
                     <span class="icon">
                       <span class="mif-cogs"></span>
                     </span>
@@ -638,7 +638,7 @@
           <div class="row  p-0 m-0">
             <div class="cell p-0 m-0">
               <div class="card">
-                <div class="card-header">
+                <div class="card-header p-1 m-0">
                   <i class="fas fa-fw fa-bolt"></i>Endstops
                 </div>
                 <div class="card-content">
@@ -670,35 +670,10 @@
                   </table>
                 </div>
               </div>
+
+
               <div class="card">
-                <div class="card-header">
-                  <i class="fas fa-fw fa-microchip"></i>Firmware
-                </div>
-                <div class="card-content">
-                  <table class="table striped compact">
-                    <thead>
-                      <tr>
-                        <th style="width: 50%;">Value</th>
-                        <th style="width: 50%;">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Version</td>
-                        <td><span class="tally bg-openbuilds fg-white" id="firmwarever">NOCOMM</span></td>
-                      </tr>
-                      <tr>
-                        <td>Buffer</td>
-                        <td><span class="tally bg-openbuilds fg-white" id="buffstatus">NOCOMM</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div class="cell p-0 m-0">
-              <div class="card">
-                <div class="card-header">
+                <div class="card-header  p-1 m-0">
                   <i class="fas fa-fw fa-tty"></i>Communications
                 </div>
                 <div class="card-content">
@@ -738,6 +713,76 @@
                   </table>
                 </div>
               </div>
+
+            </div>
+            <div class="cell p-0 m-0">
+              <div class="card">
+                <div class="card-header  p-1 m-0">
+                  <i class="fas fa-fw fa-microchip"></i>Firmware
+                </div>
+                <div class="card-content">
+                  <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">Value</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Version</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="firmwarever">NOCOMM</span></td>
+                      </tr>
+                      <!-- <tr>
+                        <td>Buffer</td>
+                        <td><span class="tally bg-openbuilds fg-white" id="buffstatus">NOCOMM</span></td>
+                      </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header  p-1 m-0">
+                  <img src="img/grbl.png" /> Flashing tool
+                </div>
+                <div class="card-content">
+                  <p class="text-small ml-2">You can use this section to flash Grbl onto a compatible controller</p>
+                  <table class="table striped compact">
+                    <tbody>
+                      <tr>
+                        <td>Port</td>
+                        <td>
+                          <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled>
+                            <option value="">Waiting for USB</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Firmware</td>
+                        <td>
+                          <select data-prepend="&nbsp;<i class='fas fa-layer-group'></i>" data-role="select" id="flashGrblHex" data-filter="false">
+                            <optgroup label="Default Grbl">
+                              <option value="grbl1.1f.hex">Grbl 1.1f (github.com/gnea/grbl)</option>
+                            </optgroup>
+                            <optgroup label="Customised">
+                              <option value="grbl1.1f-acro.hex">Grbl 1.1g-prerelease for OpenBuilds Acro</option>
+
+                            </optgroup>
+                        </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>
+                          <center><button class="button bg-openbuilds fg-white" onclick="flashGrblfromTroubleshooting();">Flash</button></center>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
