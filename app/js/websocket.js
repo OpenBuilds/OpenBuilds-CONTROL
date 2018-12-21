@@ -125,7 +125,7 @@ function initSocket() {
   });
 
   socket.on('data', function(data) {
-    console.log(data)
+    // console.log(data)
     var toPrint = escapeHTML(data.response);
 
     // Parse Grbl Settings Feedback
@@ -150,6 +150,7 @@ function initSocket() {
   function showGrbl(bool) {
     if (bool) {
       sendGcode('$$')
+      sendGcode('$I')
       $("#grblButtons").show()
       $("#firmwarename").html('Grbl')
     } else {
@@ -362,11 +363,11 @@ function initSocket() {
     $('#commstatus').html(string);
     $('#runstatus').html(status.comms.runStatus);
     $('#drvqueue').html(status.comms.queue);
-    if (status.machine.firmware.buffer.length > 0) {
-      $('#buffstatus').html(status.machine.firmware.buffer[0] + " blocks / " + status.machine.firmware.buffer[1] + " bytes");
-    } else {
-      $('#buffstatus').html("NOCOMM");
-    }
+    // if (status.machine.firmware.buffer.length > 0) {
+    //   $('#buffstatus').html(status.machine.firmware.buffer[0] + " blocks / " + status.machine.firmware.buffer[1] + " bytes");
+    // } else {
+    //   $('#buffstatus').html("NOCOMM");
+    // }
 
     // if (status.machine.firmware.state) {
     //   if (status.machine.firmware.state.workoffset.length) {
@@ -406,11 +407,11 @@ function initSocket() {
     //     $('#units').html("NOCOMM");
     //   }
     //
-    //   if (status.comms.interfaces.activePort) {
-    //     $('#activeportstatus').html(status.comms.interfaces.activePort)
-    //   } else {
-    //     $('#activeportstatus').html("none")
-    //   }
+    if (status.comms.interfaces.activePort) {
+      $('#activeportstatus').html(status.comms.interfaces.activePort)
+    } else {
+      $('#activeportstatus').html("none")
+    }
     //
     // }
 
@@ -493,7 +494,10 @@ function populatePortsMenu() {
   response += `</optgroup></select>`
   var select = $("#portUSB").data("select");
   select.data(response);
+  var select2 = $("#portUSB2").data("select");
+  select2.data(response);
   $('#portUSB').parent(".select").removeClass('disabled')
+  $('#portUSB2').parent(".select").removeClass('disabled')
   $("#connectBtn").attr('disabled', false);
 }
 

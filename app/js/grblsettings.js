@@ -249,6 +249,10 @@ function grblPopulate() {
   } else {
     $('#limitsinstalled:checkbox').prop('checked', false);
   }
+
+  setTimeout(function() {
+    setMachineButton(laststatus.machine.name)
+  }, 500)
 }
 
 function checkifchanged() {
@@ -332,6 +336,7 @@ function refreshGrblSettings() {
   $('#grblconfig').append("<center>Please Wait... </center><br><center>Requesting updated parameters from the controller firmware...</center>");
   setTimeout(function() {
     sendGcode('$$');
+    sendGcode('$I');
     setTimeout(function() {
       grblPopulate();
     }, 500);

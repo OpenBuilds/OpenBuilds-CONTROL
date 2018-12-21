@@ -652,6 +652,7 @@ function selectMachine(type) {
   }
 
   lastSelectedMachine = type;
+  sendGcode('$I=' + lastSelectedMachine)
   checkifchanged()
 };
 

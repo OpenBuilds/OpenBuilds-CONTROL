@@ -1,3 +1,5 @@
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
+
 console.log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
@@ -247,6 +249,7 @@ var status = {
     ipaddress: ip.address(),
   },
   machine: {
+    name: '',
     inputs: [],
     tools: {
       hotend1: false,
@@ -809,6 +812,14 @@ io.on("connection", function(socket) {
 
       port.on("data", function(data) {
         var command = sentBuffer[0];
+
+        // Grbl $I parser
+
+        if (data.indexOf("[VER:") === 0) {
+          status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
+          io.sockets.emit("status", status);
+        }
+
 
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
