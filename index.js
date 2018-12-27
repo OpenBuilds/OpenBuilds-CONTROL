@@ -65,6 +65,7 @@ var appIcon = null,
   mainWindow = null
 var autoUpdater
 
+var updateIsDownloading = false;
 if (isElectron()) {
   autoUpdater = require("electron-updater").autoUpdater
   var availversion = '0.0.0'
@@ -85,6 +86,7 @@ if (isElectron()) {
     }
   })
   autoUpdater.on('update-available', (ev, info) => {
+    updateIsDownloading = true;
     var string = "Starting Download: v" + ev.version;
     availversion = ev.version
     var output = {
@@ -140,6 +142,7 @@ if (isElectron()) {
     }
   })
   autoUpdater.on('download-progress', (ev, progressObj) => {
+    updateIsDownloading = true;
     var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
     console.log(string)
     var output = {
@@ -179,6 +182,7 @@ if (isElectron()) {
       })
       // Launch Gui to run Update
     }
+    updateIsDownloading = false;
   });
 
   // Schedule AutoUpdater to run from Tray
@@ -630,10 +634,12 @@ io.on("connection", function(socket) {
   })
 
   socket.on("downloadUpdate", function(data) {
-    if (typeof autoUpdater !== 'undefined') {
-      autoUpdater.checkForUpdates();
-    } else {
-      console.log("autoUpdater not found")
+    if (!updateIsDownloading) {
+      if (typeof autoUpdater !== 'undefined') {
+        autoUpdater.checkForUpdates();
+      } else {
+        console.log("autoUpdater not found")
+      }
     }
   })
 
