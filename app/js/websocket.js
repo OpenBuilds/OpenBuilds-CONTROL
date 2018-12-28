@@ -147,6 +147,10 @@ function initSocket() {
     showGrbl(true)
   });
 
+  socket.on("prbResult", function(data) {
+    z0proberesult(data)
+  });
+
   function showGrbl(bool) {
     if (bool) {
       sendGcode('$$')

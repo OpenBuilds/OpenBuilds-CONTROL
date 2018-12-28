@@ -268,6 +268,15 @@ var status = {
       realFeed: 0, //
       realSpindle: 0 //
     },
+    // status.machine.probe.
+    probe: {
+      x: 0.00,
+      y: 0.00,
+      z: 0.00,
+      state: -1,
+      plate: 0.00,
+      request: {}
+    },
     position: {
       work: {
         x: 0,
@@ -828,6 +837,40 @@ io.on("connection", function(socket) {
           io.sockets.emit("status", status);
         }
 
+        // [PRB:0.000,0.000,0.000:0]
+        if (data.indexOf("[PRB:") === 0) {
+          console.log(data)
+          var prbLen = data.substr(5).search(/\]/);
+          var prbData = data.substr(5, prbLen).split(/,/);
+          var success = data.split(':')[2].split(']')[0];
+          status.machine.probe.x = prbData[0];
+          status.machine.probe.y = prbData[1];
+          status.machine.probe.z = prbData[2];
+          status.machine.probe.state = success;
+          if (success > 0) {
+            var output = {
+              'command': '[ PROBE ]',
+              'response': "Probe Completed.  Setting Z to " + status.machine.probe.plate + 'mm',
+            }
+            io.sockets.emit('data', output);
+            addQToEnd('G10 P1 L20 Z' + status.machine.probe.plate);
+            send1Q();
+            // if (status.machine.probe.request.direction == 'Z-') {
+            //   console.log('Lifting Z Probe up, off the probe')
+            //   setTimeout(function() {
+            //     addQToEnd('$J=G91Z5F' + parseInt(status.machine.probe.request.feedrate));
+            //     send1Q();
+            //   }, 200);
+            // };
+          } else {
+            var output = {
+              'command': '[ PROBE ]',
+              'response': "Probe move aborted - probe did not make contact within specified distance",
+            }
+            io.sockets.emit('data', output);
+          }
+          io.sockets.emit('prbResult', status);
+        };
 
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
@@ -913,12 +956,14 @@ io.on("connection", function(socket) {
               var alarmCode = parseInt(data.split(':')[1]);
               console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+              if (alarmCode != 5) {
+                socket.emit("toastError", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
+              }
               var output = {
                 'command': '',
                 'response': 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]"
               }
               io.sockets.emit('data', output);
-              socket.emit("toastError", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
               break;
             case 'smoothie':
               status.comms.alarm = data;
@@ -1071,6 +1116,32 @@ io.on("connection", function(socket) {
       }
     } else {
       console.log('ERROR: Machine connection not open!');
+    }
+  });
+
+  socket.on('zProbe', function(data) {
+    console.log('Probing ' + data.direction + ' down to ' + data.dist + "mm at " + data.feedrate + "mm/min and then subtracting a plate of " + data.plate + "mm")
+    status.machine.probe.request = data;
+    status.machine.probe.x = 0.00;
+    status.machine.probe.y = 0.00;
+    status.machine.probe.z = 0.00;
+    status.machine.probe.state = -1;
+    status.machine.probe.plate = data.plate;
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        addQToEnd('G10 P1 L20 Z0');
+        addQToEnd('G38.2 Z-' + data.dist + ' F' + data.feedrate);
+        send1Q();
+        break;
+        // case 'smoothie':
+        //   addQToEnd('G91');
+        //   addQToEnd('G0' + feed + dir + dist);
+        //   addQToEnd('G90');
+        //   send1Q();
+        //   break;
+      default:
+        console.log('ERROR: Unsupported firmware!');
+        break;
     }
   });
 
