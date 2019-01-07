@@ -223,9 +223,9 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
-      $100: "114.290", //X-axis steps per millimeter-1/16 step
-      $101: "114.290", //Y-axis steps per millimeter-1/16 step
-      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
       $110: "5000.000", //X-axis maximum rate, mm/min
       $111: "5000.000", //Y-axis maximum rate, mm/min
       $112: "5000.000", //Z-axis maximum rate, mm/min
@@ -263,9 +263,9 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
-      $100: "114.290", //X-axis steps per millimeter-1/16 step
-      $101: "114.290", //Y-axis steps per millimeter-1/16 step
-      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
       $110: "5000.000", //X-axis maximum rate, mm/min
       $111: "5000.000", //Y-axis maximum rate, mm/min
       $112: "5000.000", //Z-axis maximum rate, mm/min
@@ -303,9 +303,9 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
-      $100: "114.290", //X-axis steps per millimeter-1/16 step
-      $101: "114.290", //Y-axis steps per millimeter-1/16 step
-      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
       $110: "5000.000", //X-axis maximum rate, mm/min
       $111: "5000.000", //Y-axis maximum rate, mm/min
       $112: "5000.000", //Z-axis maximum rate, mm/min
@@ -343,9 +343,9 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
-      $100: "114.290", //X-axis steps per millimeter-1/16 step
-      $101: "114.290", //Y-axis steps per millimeter-1/16 step
-      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
       $110: "5000.000", //X-axis maximum rate, mm/min
       $111: "5000.000", //Y-axis maximum rate, mm/min
       $112: "5000.000", //Z-axis maximum rate, mm/min
@@ -383,9 +383,9 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
-      $100: "114.290", //X-axis steps per millimeter-1/16 step
-      $101: "114.290", //Y-axis steps per millimeter-1/16 step
-      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
       $110: "5000.000", //X-axis maximum rate, mm/min
       $111: "5000.000", //Y-axis maximum rate, mm/min
       $112: "5000.000", //Z-axis maximum rate, mm/min
