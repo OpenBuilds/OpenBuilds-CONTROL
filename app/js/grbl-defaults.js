@@ -202,39 +202,39 @@ function selectMachine(type) {
     var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
-      $1: "255", //"Step idle delay, milliseconds"
-      $2: "0", //"Step pulse invert, mask"
-      $3: "3", //"Step direction invert, mask"
-      $4: "1", //"Invert step enable pin, boolean"
-      $5: "0", //"Invert limit pins, boolean"
-      $6: "0", //"Invert probe pin, boolean"
-      $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
-      $12: "0.002", //"Arc tolerance, millimeters"
-      $13: "0", //"Report in inches, boolean"
-      $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "1", //"Homing cycle enable, boolean"
-      $23: "0", //"Homing direction invert, mask"
-      $24: "100.000", //"Homing locate feed rate, mm/min"
-      $25: "1000.000", //"Homing search seek rate, mm/min"
-      $26: "250", //"Homing switch debounce delay, milliseconds"
-      $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
-      $31: "0", //"Minimum spindle speed, RPM"
-      $32: "1", //"Maximum spindle speed, RPM"
-      $100: "114.290", //"X-axis steps per millimeter"
-      $101: "114.290", //"Y-axis steps per millimeter"
-      $102: "114.290", //"Z-axis steps per millimeter"
-      $110: "5000.000", //"X-axis maximum rate, mm/min"
-      $111: "5000.000", //"Y-axis maximum rate, mm/min"
-      $112: "5000.000", //"Z-axis maximum rate, mm/min"
-      $120: "2000.000", //"X-axis acceleration, mm/sec^2"
-      $121: "2000.000", //"Y-axis acceleration, mm/sec^2"
-      $122: "2000.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "500.000", //"X-axis maximum travel, millimeters"
-      $131: "500.000", //"Y-axis maximum travel, millimeters"
-      $132: "500.000", //"Z-axis maximum travel, millimeters"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "1000", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "1", //Laser-mode enable, boolean
+      $100: "114.290", //X-axis steps per millimeter-1/16 step
+      $101: "114.290", //Y-axis steps per millimeter-1/16 step
+      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "2000.000", //X-axis acceleration, mm/sec^2
+      $121: "2000.000", //Y-axis acceleration, mm/sec^2
+      $122: "2000.000", //Z-axis acceleration, mm/sec^2
+      $130: "300.000", //X-axis maximum travel, millimeters
+      $131: "300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
     }
   } else if (type == "acro510") {
     // Acro 510
@@ -242,39 +242,39 @@ function selectMachine(type) {
     var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
-      $1: "255", //"Step idle delay, milliseconds"
-      $2: "0", //"Step pulse invert, mask"
-      $3: "3", //"Step direction invert, mask"
-      $4: "1", //"Invert step enable pin, boolean"
-      $5: "0", //"Invert limit pins, boolean"
-      $6: "0", //"Invert probe pin, boolean"
-      $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
-      $12: "0.002", //"Arc tolerance, millimeters"
-      $13: "0", //"Report in inches, boolean"
-      $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "1", //"Homing cycle enable, boolean"
-      $23: "0", //"Homing direction invert, mask"
-      $24: "100.000", //"Homing locate feed rate, mm/min"
-      $25: "1000.000", //"Homing search seek rate, mm/min"
-      $26: "250", //"Homing switch debounce delay, milliseconds"
-      $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
-      $31: "0", //"Minimum spindle speed, RPM"
-      $32: "1", //"Maximum spindle speed, RPM"
-      $100: "114.290", //"X-axis steps per millimeter"
-      $101: "114.290", //"Y-axis steps per millimeter"
-      $102: "114.290", //"Z-axis steps per millimeter"
-      $110: "5000.000", //"X-axis maximum rate, mm/min"
-      $111: "5000.000", //"Y-axis maximum rate, mm/min"
-      $112: "5000.000", //"Z-axis maximum rate, mm/min"
-      $120: "2000.000", //"X-axis acceleration, mm/sec^2"
-      $121: "2000.000", //"Y-axis acceleration, mm/sec^2"
-      $122: "2000.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "200.000", //"X-axis maximum travel, millimeters"
-      $131: "200.000", //"Y-axis maximum travel, millimeters"
-      $132: "200.000", //"Z-axis maximum travel, millimeters"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "1000", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "1", //Laser-mode enable, boolean
+      $100: "114.290", //X-axis steps per millimeter-1/16 step
+      $101: "114.290", //Y-axis steps per millimeter-1/16 step
+      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "2000.000", //X-axis acceleration, mm/sec^2
+      $121: "2000.000", //Y-axis acceleration, mm/sec^2
+      $122: "2000.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
     }
   } else if (type == "acro1010") {
     // Acro 1010
@@ -282,39 +282,39 @@ function selectMachine(type) {
     var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
-      $1: "255", //"Step idle delay, milliseconds"
-      $2: "0", //"Step pulse invert, mask"
-      $3: "3", //"Step direction invert, mask"
-      $4: "1", //"Invert step enable pin, boolean"
-      $5: "0", //"Invert limit pins, boolean"
-      $6: "0", //"Invert probe pin, boolean"
-      $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
-      $12: "0.002", //"Arc tolerance, millimeters"
-      $13: "0", //"Report in inches, boolean"
-      $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "1", //"Homing cycle enable, boolean"
-      $23: "0", //"Homing direction invert, mask"
-      $24: "100.000", //"Homing locate feed rate, mm/min"
-      $25: "1000.000", //"Homing search seek rate, mm/min"
-      $26: "250", //"Homing switch debounce delay, milliseconds"
-      $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
-      $31: "0", //"Minimum spindle speed, RPM"
-      $32: "1", //"Maximum spindle speed, RPM"
-      $100: "114.290", //"X-axis steps per millimeter"
-      $101: "114.290", //"Y-axis steps per millimeter"
-      $102: "114.290", //"Z-axis steps per millimeter"
-      $110: "5000.000", //"X-axis maximum rate, mm/min"
-      $111: "5000.000", //"Y-axis maximum rate, mm/min"
-      $112: "5000.000", //"Z-axis maximum rate, mm/min"
-      $120: "2000.000", //"X-axis acceleration, mm/sec^2"
-      $121: "2000.000", //"Y-axis acceleration, mm/sec^2"
-      $122: "2000.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "200.000", //"X-axis maximum travel, millimeters"
-      $131: "200.000", //"Y-axis maximum travel, millimeters"
-      $132: "200.000", //"Z-axis maximum travel, millimeters"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "1000", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "1", //Laser-mode enable, boolean
+      $100: "114.290", //X-axis steps per millimeter-1/16 step
+      $101: "114.290", //Y-axis steps per millimeter-1/16 step
+      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "2000.000", //X-axis acceleration, mm/sec^2
+      $121: "2000.000", //Y-axis acceleration, mm/sec^2
+      $122: "2000.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "800.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
     }
   } else if (type == "acro1510") {
     // Acro 1510
@@ -322,39 +322,39 @@ function selectMachine(type) {
     var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
-      $1: "255", //"Step idle delay, milliseconds"
-      $2: "0", //"Step pulse invert, mask"
-      $3: "3", //"Step direction invert, mask"
-      $4: "1", //"Invert step enable pin, boolean"
-      $5: "0", //"Invert limit pins, boolean"
-      $6: "0", //"Invert probe pin, boolean"
-      $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
-      $12: "0.002", //"Arc tolerance, millimeters"
-      $13: "0", //"Report in inches, boolean"
-      $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "1", //"Homing cycle enable, boolean"
-      $23: "0", //"Homing direction invert, mask"
-      $24: "100.000", //"Homing locate feed rate, mm/min"
-      $25: "1000.000", //"Homing search seek rate, mm/min"
-      $26: "250", //"Homing switch debounce delay, milliseconds"
-      $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
-      $31: "0", //"Minimum spindle speed, RPM"
-      $32: "1", //"Maximum spindle speed, RPM"
-      $100: "114.290", //"X-axis steps per millimeter"
-      $101: "114.290", //"Y-axis steps per millimeter"
-      $102: "114.290", //"Z-axis steps per millimeter"
-      $110: "5000.000", //"X-axis maximum rate, mm/min"
-      $111: "5000.000", //"Y-axis maximum rate, mm/min"
-      $112: "5000.000", //"Z-axis maximum rate, mm/min"
-      $120: "2000.000", //"X-axis acceleration, mm/sec^2"
-      $121: "2000.000", //"Y-axis acceleration, mm/sec^2"
-      $122: "2000.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "200.000", //"X-axis maximum travel, millimeters"
-      $131: "200.000", //"Y-axis maximum travel, millimeters"
-      $132: "200.000", //"Z-axis maximum travel, millimeters"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "1000", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "1", //Laser-mode enable, boolean
+      $100: "114.290", //X-axis steps per millimeter-1/16 step
+      $101: "114.290", //Y-axis steps per millimeter-1/16 step
+      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "2000.000", //X-axis acceleration, mm/sec^2
+      $121: "2000.000", //Y-axis acceleration, mm/sec^2
+      $122: "2000.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "1300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
     }
   } else if (type == "acro1515") {
     // Acro 1515
@@ -362,39 +362,39 @@ function selectMachine(type) {
     var customFirmwareFile = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
-      $1: "255", //"Step idle delay, milliseconds"
-      $2: "0", //"Step pulse invert, mask"
-      $3: "3", //"Step direction invert, mask"
-      $4: "1", //"Invert step enable pin, boolean"
-      $5: "0", //"Invert limit pins, boolean"
-      $6: "0", //"Invert probe pin, boolean"
-      $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
-      $12: "0.002", //"Arc tolerance, millimeters"
-      $13: "0", //"Report in inches, boolean"
-      $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "1", //"Homing cycle enable, boolean"
-      $23: "0", //"Homing direction invert, mask"
-      $24: "100.000", //"Homing locate feed rate, mm/min"
-      $25: "1000.000", //"Homing search seek rate, mm/min"
-      $26: "250", //"Homing switch debounce delay, milliseconds"
-      $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
-      $31: "0", //"Minimum spindle speed, RPM"
-      $32: "1", //"Maximum spindle speed, RPM"
-      $100: "114.290", //"X-axis steps per millimeter"
-      $101: "114.290", //"Y-axis steps per millimeter"
-      $102: "114.290", //"Z-axis steps per millimeter"
-      $110: "5000.000", //"X-axis maximum rate, mm/min"
-      $111: "5000.000", //"Y-axis maximum rate, mm/min"
-      $112: "5000.000", //"Z-axis maximum rate, mm/min"
-      $120: "2000.000", //"X-axis acceleration, mm/sec^2"
-      $121: "2000.000", //"Y-axis acceleration, mm/sec^2"
-      $122: "2000.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "200.000", //"X-axis maximum travel, millimeters"
-      $131: "200.000", //"Y-axis maximum travel, millimeters"
-      $132: "200.000", //"Z-axis maximum travel, millimeters"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "1000", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "1", //Laser-mode enable, boolean
+      $100: "114.290", //X-axis steps per millimeter-1/16 step
+      $101: "114.290", //Y-axis steps per millimeter-1/16 step
+      $102: "114.290", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "2000.000", //X-axis acceleration, mm/sec^2
+      $121: "2000.000", //Y-axis acceleration, mm/sec^2
+      $122: "2000.000", //Z-axis acceleration, mm/sec^2
+      $130: "1300.000", //X-axis maximum travel, millimeters
+      $131: "1300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
     }
   } else if (type == "minimill") {
     // minimill
