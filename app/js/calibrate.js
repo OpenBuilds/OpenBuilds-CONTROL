@@ -1,10 +1,4 @@
 var grblcalctemplate = `<div>
-<ul class="tabs-expand-sm" data-role="tabs">
-  <li><a href="#_stepspermm_1">Preset</a></li>
-  <!-- li><a href="#_stepspermm_2">Calibrate</a></li -->
-</ul>
-
-<div id="_stepspermm_1">
   <div class="card">
     <div class="card-content">
       <table class="table striped compact">
@@ -75,12 +69,6 @@ var grblcalctemplate = `<div>
       </table>
     </div>
   </div>
-
-</div>
-
-<div id="_stepspermm_2">
-
-
 </div>`
 
 function xstepspermm() {
@@ -88,7 +76,7 @@ function xstepspermm() {
   Metro.dialog.create({
     width: 600,
     toTop: true,
-    title: "Calibrate Steps per mm for X-Axis  ($100)",
+    title: "Calculate Steps per mm for X-Axis  ($100)",
     content: grblcalctemplate,
     actions: [{
         caption: "Apply",
@@ -118,7 +106,7 @@ function ystepspermm() {
   Metro.dialog.create({
     width: 600,
     toTop: true,
-    title: "Calibrate Steps per mm for Y-Axis ($101)",
+    title: "Calculate Steps per mm for Y-Axis ($101)",
     content: grblcalctemplate,
     actions: [{
         caption: "Apply",
@@ -147,7 +135,7 @@ function zstepspermm() {
   Metro.dialog.create({
     width: 600,
     toTop: true,
-    title: "Calibrate Steps per mm for Z-Axis ($102)",
+    title: "Calculate Steps per mm for Z-Axis ($102)",
     content: grblcalctemplate,
     actions: [{
         caption: "Apply",
