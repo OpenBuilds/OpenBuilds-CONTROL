@@ -135,9 +135,9 @@ function grblPopulate() {
           <td></td>
           </tr>
           <tr><td>$3</td><td>Step direction invert</td><td><input readonly type="hidden" id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
-          <input data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" id="xdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert X Direction"><br>
-          <input data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" id="ydirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Y Direction"><br>
-          <input data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" id="zdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Z Direction">
+          <input data-cls-caption="fg-openbuilds" id="xdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert X Direction"><br>
+          <input data-cls-caption="fg-openbuilds" id="ydirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Y Direction"><br>
+          <input data-cls-caption="fg-openbuilds" id="zdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Z Direction">
           </td><td></td></tr>
           <tr><td>$4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
           <tr><td>$5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
@@ -325,9 +325,25 @@ function checkifchanged() {
       // Only send values that changed
       if (parseFloat(newVal) != parseFloat(grblParams[key])) {
         hasChanged = true;
-        $("#val-" + j + "-input").parent().addClass('alert')
+        if (!$("#val-" + j + "-input").parent().is('td')) {
+          $("#val-" + j + "-input").parent().addClass('alert')
+        } else if ($("#val-" + j + "-input").is('select')) {
+          $("#val-" + j + "-input").addClass('alert')
+        } else if (j == 3) { // Endstops
+          $('#xdirinvert').parent().children('.check').addClass('bd-red')
+          $('#ydirinvert').parent().children('.check').addClass('bd-red')
+          $('#zdirinvert').parent().children('.check').addClass('bd-red')
+        }
       } else {
-        $("#val-" + j + "-input").parent().removeClass('alert')
+        if (!$("#val-" + j + "-input").parent().is('td')) {
+          $("#val-" + j + "-input").parent().removeClass('alert')
+        } else if ($("#val-" + j + "-input").is('select')) {
+          $("#val-" + j + "-input").removeClass('alert')
+        } else if (j == 3) {
+          $('#xdirinvert').parent().children('.check').removeClass('bd-red')
+          $('#ydirinvert').parent().children('.check').removeClass('bd-red')
+          $('#zdirinvert').parent().children('.check').removeClass('bd-red')
+        }
       }
     }
   }
