@@ -59,6 +59,7 @@ const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
 const nativeImage = require('electron').nativeImage
 const Menu = require('electron').Menu
+var forceQuit
 
 var appIcon = null,
   jogWindow = null,
@@ -2328,9 +2329,11 @@ if (isElectron()) {
       jogWindow.loadURL("http://localhost:3000/");
 
       jogWindow.on('close', function(event) {
-        event.preventDefault();
-        jogWindow.hide();
-        return false;
+        if (!forceQuit) {
+          event.preventDefault();
+          jogWindow.hide();
+          return false;
+        }
       });
 
       // Emitted when the window is closed.
@@ -2351,22 +2354,28 @@ if (isElectron()) {
 
     }
 
-    electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
-    electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
-    electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
-    electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
-    electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
+    //electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
+    //electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
+    //electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
+    //electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
+    //electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     electronApp.on('ready', createApp);
 
+    electronApp.on('before-quit', function() {
+      forceQuit = true;
+    })
+
     electronApp.on('will-quit', function(event) {
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
       // We don't take that route, we close it completely
-      appIcon.destroy();
+      if(appIcon) {
+        appIcon.destroy();
+      }
       electronApp.exit(0);
     });
 
