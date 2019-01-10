@@ -2354,11 +2354,14 @@ if (isElectron()) {
 
     }
 
-    //electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
-    //electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
-    //electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
-    //electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
-    //electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
+    if (!process.platform == 'darwin') {
+      electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
+      electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
+      electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
+      electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
+      electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
+    }
+
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
@@ -2373,7 +2376,7 @@ if (isElectron()) {
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
       // We don't take that route, we close it completely
-      if(appIcon) {
+      if (appIcon) {
         appIcon.destroy();
       }
       electronApp.exit(0);
@@ -2396,10 +2399,12 @@ if (isElectron()) {
     });
 
     // Autostart on Login
-    electronApp.setLoginItemSettings({
-      openAtLogin: true,
-      args: []
-    })
+    if (!process.platform == 'darwin') {
+      electronApp.setLoginItemSettings({
+        openAtLogin: true,
+        args: []
+      })
+    }
   }
 }
 
