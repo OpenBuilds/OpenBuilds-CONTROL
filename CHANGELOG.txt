@@ -1,3 +1,4 @@
+V1.0.130: Fixed MacOS Quit Behaviour
 v1.0.129: Enhanced Grbl Settings panel, added Laser specific hello-world
 v1.0.127: Added Steps-per-mm Fine Tuning tool
 v1.0.124: Added Z0 Probing
