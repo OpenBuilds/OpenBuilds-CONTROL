@@ -2,6 +2,29 @@ var gcode;
 var editor;
 var isJogWidget = false;
 
+function getChangelog() {
+
+  $("#changelog").empty()
+  var template2 = `<ul>`
+  $.get("https://raw.githubusercontent.com/OpenBuilds/SW-Machine-Drivers/master/CHANGELOG.txt", function(data) {
+    var lines = data.split('\n');
+    if (lines.length < 7) {
+      var count = lines.length - 1
+    } else {
+      var count = 7
+    }
+    for (var line = 0; line < count - 1; line++) {
+      template2 += '<li>' + lines[line] + '</li>'
+    }
+    template2 += `</ul>`
+    $("#changelog").html(template2);
+  });
+
+  if (!Metro.dialog.isOpen('#settingsmodal')) {
+    Metro.dialog.open('#splashModal')
+  }
+}
+
 $(document).ready(function() {
   if (!isJogWidget) {
     init3D();
@@ -83,6 +106,8 @@ $(document).ready(function() {
     }
 
   });
+
+  getChangelog()
 
   setTimeout(function() {
     $('#splash').fadeOut(500);
