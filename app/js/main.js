@@ -6,7 +6,7 @@ function getChangelog() {
 
   $("#changelog").empty()
   var template2 = `<ul>`
-  $.get("https://raw.githubusercontent.com/OpenBuilds/SW-Machine-Drivers/master/CHANGELOG.txt", function(data) {
+  $.get("https://raw.githubusercontent.com/OpenBuilds/SW-Machine-Drivers/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
     var lines = data.split('\n');
     if (lines.length < 7) {
       var count = lines.length - 1

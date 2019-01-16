@@ -1,3 +1,4 @@
+v1.0.133: Fixed MacOS errors, Improved Icons
 v1.0.131: Added Changelog section to Troubleshooting
 v1.0.130: Fixed MacOS Quit Behaviour
 v1.0.129: Enhanced Grbl Settings panel, added Laser specific hello-world

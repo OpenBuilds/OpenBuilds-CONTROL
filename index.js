@@ -79,11 +79,13 @@ if (isElectron()) {
     }
     io.sockets.emit('updatedata', output);
     if (jogWindow && !jogWindow.isFocused()) {
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL",
-        content: string
-      })
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL",
+          content: string
+        })
+      }
     }
   })
   autoUpdater.on('update-available', (ev, info) => {
@@ -97,11 +99,13 @@ if (isElectron()) {
     io.sockets.emit('updatedata', output);
     console.log(JSON.stringify(ev))
     if (jogWindow && !jogWindow.isFocused()) {
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL",
-        content: string
-      })
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL",
+          content: string
+        })
+      }
     }
   })
   autoUpdater.on('update-not-available', (ev, info) => {
@@ -116,11 +120,13 @@ if (isElectron()) {
     io.sockets.emit('updatedata', output);
     console.log(JSON.stringify(ev))
     if (jogWindow && !jogWindow.isFocused()) {
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL",
-        content: string
-      })
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL",
+          content: string
+        })
+      }
     }
   })
   autoUpdater.on('error', (ev, err) => {
@@ -135,11 +141,13 @@ if (isElectron()) {
     }
     io.sockets.emit('updatedata', output);
     if (jogWindow && !jogWindow.isFocused()) {
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL",
-        content: string
-      })
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL",
+          content: string
+        })
+      }
     }
   })
   autoUpdater.on('download-progress', (ev, progressObj) => {
@@ -154,11 +162,13 @@ if (isElectron()) {
     io.sockets.emit('updateprogress', ev.percent.toFixed(0));
     if (ev.percent % 10 === 0) {
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL",
+            content: string
+          })
+        }
       }
     }
   })
@@ -176,11 +186,13 @@ if (isElectron()) {
       io.sockets.emit('updateready', availversion);
     }, 15 * 60 * 1000) // 15 mins
     if (jogWindow && !jogWindow.isFocused()) {
-      appIcon.displayBalloon({
-        icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL",
-        content: string
-      })
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL",
+          content: string
+        })
+      }
       // Launch Gui to run Update
     }
     updateIsDownloading = false;
@@ -459,23 +471,18 @@ var PortCheckinterval = setInterval(function() {
         var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
         if (newPorts.length > 0) {
           console.log("Plugged " + newPorts[0].comName);
-          // if (jogWindow && !jogWindow.isFocused()) {
-          //   appIcon.displayBalloon({
-          //     icon: nativeImage.createFromPath(iconPath),
-          //     title: "Driver Detected a new Port",
-          //     content: "OpenBuilds CONTROL detected a new port: " + newPorts[0].comName
-          //   })
-          // }
         }
         var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
         if (removedPorts.length > 0) {
           console.log("Unplugged " + removedPorts[0].comName);
           if (jogWindow && !jogWindow.isFocused()) {
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "OpenBuilds CONTROL Detected a disconnected Port",
-              content: "OpenBuilds CONTROL detected that port: " + removedPorts[0].comName + " was removed"
-            })
+            if (appIcon) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "OpenBuilds CONTROL Detected a disconnected Port",
+                content: "OpenBuilds CONTROL detected that port: " + removedPorts[0].comName + " was removed"
+              })
+            }
           }
         }
       }
@@ -635,7 +642,9 @@ io.on("connection", function(socket) {
   socket.on("maximise", function(data) {});
 
   socket.on("quit", function(data) {
-    appIcon.destroy();
+    if (appIcon) {
+      appIcon.destroy();
+    }
     electronApp.exit(0);
   });
 
@@ -728,11 +737,13 @@ io.on("connection", function(socket) {
           }
           io.sockets.emit('data', output);
           if (jogWindow && !jogWindow.isFocused()) {
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "OpenBuilds CONTROL encountered a Port error",
-              content: "OpenBuilds CONTROL received the following error: " + err.message
-            })
+            if (appIcon) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "OpenBuilds CONTROL encountered a Port error",
+                content: "OpenBuilds CONTROL received the following error: " + err.message
+              })
+            }
           }
           if (status.comms.connectionStatus > 0) {
             console.log('WARN: Closing Port ' + port.path);
@@ -896,11 +907,13 @@ io.on("connection", function(socket) {
           socket.emit('grbl')
           // addQRealtime("$10=2\n"); // force Status Report to WPOS
           if (jogWindow && !jogWindow.isFocused()) {
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "OpenBuilds CONTROL has established a Connection",
-              content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-            })
+            if (appIcon) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "OpenBuilds CONTROL has established a Connection",
+                content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+              })
+            }
           }
           // Start interval for status queries
           statusLoop = setInterval(function() {
@@ -912,11 +925,13 @@ io.on("connection", function(socket) {
           status.comms.blocked = false;
           console.log("Smoothieware detected");
           if (jogWindow && !jogWindow.isFocused()) {
-            appIcon.displayBalloon({
-              icon: nativeImage.createFromPath(iconPath),
-              title: "OpenBuilds CONTROL has established a Connection",
-              content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-            })
+            if (appIcon) {
+              appIcon.displayBalloon({
+                icon: nativeImage.createFromPath(iconPath),
+                title: "OpenBuilds CONTROL has established a Connection",
+                content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
+              })
+            }
           }
           status.machine.firmware.type = "smoothie";
           status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
@@ -1082,11 +1097,13 @@ io.on("connection", function(socket) {
 
       }
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Started",
-          content: "OpenBuilds CONTROL started a job: Job Size: " + data.length + " lines of GCODE"
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Job Started",
+            content: "OpenBuilds CONTROL started a job: Job Size: " + data.length + " lines of GCODE"
+          })
+        }
       }
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1282,11 +1299,13 @@ io.on("connection", function(socket) {
       }
       send1Q();
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Work Coordinate System Reset",
-          content: "OpenBuilds CONTROL has reset the WCS on the " + data + " axes."
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Work Coordinate System Reset",
+            content: "OpenBuilds CONTROL has reset the WCS on the " + data + " axes."
+          })
+        }
       }
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1526,11 +1545,13 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Paused';
       status.comms.connectionStatus = 4;
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Paused",
-          content: "OpenBuilds CONTROL paused the job"
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Job Paused",
+            content: "OpenBuilds CONTROL paused the job"
+          })
+        }
       }
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1559,11 +1580,13 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Resuming';
       status.comms.connectionStatus = 3;
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Resumed",
-          content: "OpenBuilds CONTROL resumed the job"
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Job Resumed",
+            content: "OpenBuilds CONTROL resumed the job"
+          })
+        }
       }
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -1609,11 +1632,13 @@ io.on("connection", function(socket) {
       status.comms.paused = false;
       status.comms.runStatus = 'Stopped';
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Aborted",
-          content: "OpenBuilds CONTROL was asked to abort the running job."
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Job Aborted",
+            content: "OpenBuilds CONTROL was asked to abort the running job."
+          })
+        }
       }
       // status.comms.connectionStatus = 2;
     } else {
@@ -1669,11 +1694,13 @@ io.on("connection", function(socket) {
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
       if (jogWindow && !jogWindow.isFocused()) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Alarm Cleared",
-          content: "OpenBuilds CONTROL has cleared the Alarm Condition, you may continue"
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL: Alarm Cleared",
+            content: "OpenBuilds CONTROL has cleared the Alarm Condition, you may continue"
+          })
+        }
       }
     } else {
       console.log('ERROR: Machine connection not open!');
@@ -2119,18 +2146,9 @@ function send1Q() {
         status.comms.connectionStatus = 2; // finished
       }
       clearInterval(queueCounter);
-      // if (jogWindow && !jogWindow.isFocused()) {
-      //   appIcon.displayBalloon({
-      //     icon: nativeImage.createFromPath(iconPath),
-      //     title: "OpenBuilds CONTROL: Job Completed!",
-      //     content: "OpenBuilds CONTROL completed a Job"
-      //   })
-      // }
       gcodeQueue.length = 0; // Dump the Queye
-      // sentBuffer.length = 0; // Dump bufferSizes
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
-      // status.comms.runStatus = "Finished"
     }
   } else {
     console.log('Not Connected')
@@ -2247,50 +2265,60 @@ if (isElectron()) {
         }, {
           label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
           click() {
-            appIcon.destroy();
+            if (appIcon) {
+              appIcon.destroy();
+            }
             electronApp.exit(0);
           }
         }])
-        appIcon.on('click', function() {
-          // console.log("Clicked Systray")
-          if (jogWindow === null) {
-            createJogWindow();
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
-          } else {
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
-          }
-        })
+        if (appIcon) {
+          appIcon.on('click', function() {
+              // console.log("Clicked Systray")
+              if (jogWindow === null) {
+                createJogWindow();
+                jogWindow.show()
+                jogWindow.setAlwaysOnTop(true);
+                jogWindow.focus();
+                jogWindow.setAlwaysOnTop(false);
+              } else {
+                jogWindow.show()
+                jogWindow.setAlwaysOnTop(true);
+                jogWindow.focus();
+                jogWindow.setAlwaysOnTop(false);
+              }
+            }
+          })
 
-        appIcon.on('balloon-click', function() {
-          // console.log("Clicked Systray")
-          if (jogWindow === null) {
-            createJogWindow();
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
-          } else {
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
-          }
-        })
+        if (appIcon) {
+          appIcon.on('balloon-click', function() {
+            // console.log("Clicked Systray")
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            }
+          })
+        }
 
         // Call this again for Linux because we modified the context menu
-        appIcon.setContextMenu(contextMenu)
+        if (appIcon) {
+          appIcon.setContextMenu(contextMenu)
+        }
 
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL Started",
-          content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
-        })
+        if (appIcon) {
+          appIcon.displayBalloon({
+            icon: nativeImage.createFromPath(iconPath),
+            title: "OpenBuilds CONTROL Started",
+            content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+          })
+        }
       } else {
         const dockMenu = Menu.buildFromTemplate([{
           label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
@@ -2386,7 +2414,9 @@ if (isElectron()) {
     electronApp.on('window-all-closed', function() {
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
-      appIcon.destroy();
+      if (appIcon) {
+        appIcon.destroy();
+      }
       electronApp.exit(0);
     });
 
