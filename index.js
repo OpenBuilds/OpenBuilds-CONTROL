@@ -2273,21 +2273,21 @@ if (isElectron()) {
         }])
         if (appIcon) {
           appIcon.on('click', function() {
-              // console.log("Clicked Systray")
-              if (jogWindow === null) {
-                createJogWindow();
-                jogWindow.show()
-                jogWindow.setAlwaysOnTop(true);
-                jogWindow.focus();
-                jogWindow.setAlwaysOnTop(false);
-              } else {
-                jogWindow.show()
-                jogWindow.setAlwaysOnTop(true);
-                jogWindow.focus();
-                jogWindow.setAlwaysOnTop(false);
-              }
+            // console.log("Clicked Systray")
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
             }
           })
+        }
 
         if (appIcon) {
           appIcon.on('balloon-click', function() {
