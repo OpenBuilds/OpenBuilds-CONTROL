@@ -337,7 +337,8 @@
                       <div class="dro">
                         <div class="float-left fg-red" data-fa-transform="right-15">
                           <span class="fa-layers fa-fw">
-                            <span class="fa-layers-text fg-red">X</span>
+                            <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
+                          <span class="fa-layers-text fg-red" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
                           <!-- <span class="fa-layers-text fg-red" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
                           </span>
                         </div>
@@ -349,7 +350,8 @@
                       <div class="pos-relative">
                         <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                          <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto X Zero (G0 X0)</a></li>
+                          <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
+                          <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
                         </ul>
                       </div>
                     </td>
@@ -368,7 +370,8 @@
                       <div class="dro">
                         <div class="float-left fg-green">
                           <span class="fa-layers fa-fw">
-                            <span class="fa-layers-text fg-green">Y</span>
+                            <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
+                          <span class="fa-layers-text fg-green" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
                           </span>
                         </div>
                         <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
@@ -379,7 +382,8 @@
                       <div class="pos-relative">
                         <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                          <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto Y Zero (G0 Y0)</a></li>
+                          <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
+                          <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
                         </ul>
                       </div>
                     </td>
@@ -398,7 +402,8 @@
                       <div class="dro">
                         <div class="float-left fg-blue">
                           <span class="fa-layers fa-fw">
-                            <span class="fa-layers-text fg-blue">Z</span>
+                            <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
+                          <span class="fa-layers-text fg-blue" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
                           </span>
                         </div>
                         <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
@@ -409,9 +414,10 @@
                       <div class="pos-relative">
                         <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                          <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-grayBlue icon"></span>Goto Z Zero (G0 Z0)</a></li>
+                          <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
+                          <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
                           <li class="divider"></li>
-                          <li><a href="#" onclick="z0probe()"><span class="fas fa-podcast fa-rotate-180 fg-grayBlue icon"></span>Probe Z0 Wizard</a></li>
+                          <li><a href="#" onclick="z0probe()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z0 Wizard</a></li>
                         </ul>
                       </div>
                     </td>
@@ -429,19 +435,31 @@
                       </button>
                     </td>
                     <td>
-                      <button class="button light jogbtn" style="width: 161px;" id="gotozero" data-role="ripple">
-                        <span class="fa-layers fa-fw">
-                          <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
-                          <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
-                          <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
-                          <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
-                          <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
-                        </span>
-
-                      </button>
+                      <div class="pos-relative">
+                        <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
+                          <span class="fa-layers fa-fw">
+                            <i class="fas fa-chart-line fg-grayBlue" data-fa-transform="shrink-2 down-8 left-12"></i>
+                            <i class="fas fa-caret-down fg-grayBlue" data-fa-transform="shrink-2 right-70"></i>
+                            <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
+                            <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
+                            <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                            <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
+                          </span>
+                        </button>
+                        <ul class="d-menu context drop-shadow" data-role="dropdown">
+                          <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-grayBlue icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
+                          <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-grayBlue icon"></span>GOTO X0Y0Z0 (Work Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
+                        </ul>
+                      </div>
                     </td>
                     <td>
-
+                      <!-- <div class="pos-relative">
+                        <button class="button light disabled"><i class="fas fa-caret-down fg-grayBlue" disabled></i></button>
+                        <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
+                          <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
+                          <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
+                      </ul>
+                    </div> -->
                     </td>
                   </tr>
 
@@ -745,7 +763,7 @@
                   <img src="img/grbl.png" /> Flashing tool
                 </div>
                 <div class="card-content">
-                  <p class="text-small ml-2">You can use this section to flash Grbl onto a compatible controller</p>
+                  <p class="text-small ml-2">You can use this section to flash Grbl onto a compatible controller<br>Careful, use with care, or when instructed by Support</p>
                   <table class="table striped compact">
                     <tbody>
                       <tr>

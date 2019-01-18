@@ -535,9 +535,12 @@ app.get('/upload', (req, res) => {
 })
 
 app.get('/gcode', (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.send(uploadedgcode);
+  if (uploadedgcode.indexOf('$') != 0) { // Ignore grblSettings jobs
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.send(uploadedgcode);
+  }
+
 })
 
 // File Post

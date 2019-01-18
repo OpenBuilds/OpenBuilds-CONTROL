@@ -126,8 +126,14 @@ $(document).ready(function() {
     $('#dist500label').addClass('fg-grayBlue')
   })
 
-  $('#gotozero').on('click', function(ev) {
+  $('#gotozeroWPos').on('click', function(ev) {
     sendGcode('G0 Z5');
+    sendGcode('G0 X0 Y0');
+    sendGcode('G0 Z0');
+  });
+
+  $('#gotozeroMPos').on('click', function(ev) {
+    sendGcode('G53 G0 Z0');
     sendGcode('G0 X0 Y0');
     sendGcode('G0 Z0');
   });

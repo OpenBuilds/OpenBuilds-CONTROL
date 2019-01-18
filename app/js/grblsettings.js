@@ -49,6 +49,20 @@ function grblSettings(data) {
   // $('#grblSaveBtn').removeAttr('disabled');
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
+
+  if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
+    $('#gotozeroMPos').removeClass('disabled')
+    $('#homeBtn').attr('disabled', false)
+    $('#gotoXzeroMpos').removeClass('disabled')
+    $('#gotoYzeroMpos').removeClass('disabled')
+    $('#gotoZzeroMpos').removeClass('disabled')
+  } else {
+    $('#gotozeroMPos').addClass('disabled')
+    $('#homeBtn').attr('disabled', true)
+    $('#gotoXzeroMpos').addClass('disabled')
+    $('#gotoYzeroMpos').addClass('disabled')
+    $('#gotoZzeroMpos').addClass('disabled')
+  }
 }
 
 function grblPopulate() {
@@ -307,8 +321,12 @@ function grblPopulate() {
 
   if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
     $('#limitsinstalled:checkbox').prop('checked', true);
+    $('#gotozeroMPos').removeClass('disabled')
+    $('#homeBtn').attr('disabled', false)
   } else {
     $('#limitsinstalled:checkbox').prop('checked', false);
+    $('#gotozeroMPos').addClass('disabled')
+    $('#homeBtn').attr('disabled', true)
   }
 
   setTimeout(function() {
