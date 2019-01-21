@@ -812,7 +812,7 @@ io.on("connection", function(socket) {
             if (status.machine.firmware.type.length < 1) {
               console.log("No supported firmware detected. Closing port " + port.path);
               var output = {
-                'command': '',
+                'command': 'connect',
                 'response': "No supported firmware detected. Closing port " + port.path
               }
               io.sockets.emit('data', output);
@@ -836,7 +836,7 @@ io.on("connection", function(socket) {
       port.on("close", function() { // open errors will be emitted as an error event
         console.log("PORT INFO: Port closed");
         var output = {
-          'command': '',
+          'command': 'disconnect',
           'response': "PORT INFO: Port closed"
         }
         io.sockets.emit('data', output);
@@ -846,7 +846,6 @@ io.on("connection", function(socket) {
         var command = sentBuffer[0];
 
         // Grbl $I parser
-
         if (data.indexOf("[VER:") === 0) {
           status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
           io.sockets.emit("status", status);
@@ -1043,7 +1042,7 @@ io.on("connection", function(socket) {
           command = command.replace(/(\r\n|\n|\r)/gm, "");
           // console.log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
 
-          if (command != "?" && command != "M105" && data.length > 0) {
+          if (command != "?" && command != "M105" && data.length > 0 && data.indexOf('<') == -1) {
             var string = "";
             if (status.comms.sduploading) {
               string += "SD: "
@@ -1075,9 +1074,9 @@ io.on("connection", function(socket) {
 
 
   socket.on('runJob', function(data) {
-    console.log(data)
+    // console.log(data)
     uploadedgcode = data;
-    console.log('Run Job (' + data.length + ')');
+    // console.log('Run Job (' + data.length + ')');
     if (status.comms.connectionStatus > 0) {
       if (data) {
         data = data.split('\n');
@@ -1160,6 +1159,8 @@ io.on("connection", function(socket) {
         //   addQToEnd('G90');
         //   send1Q();
         //   break;
+        console.log('ERROR: Unsupported firmware!');
+        break;
       default:
         console.log('ERROR: Unsupported firmware!');
         break;
@@ -1527,126 +1528,15 @@ io.on("connection", function(socket) {
   });
 
   socket.on('pause', function() {
-    if (status.comms.connectionStatus > 0) {
-      status.comms.paused = true;
-      console.log('PAUSE');
-      switch (status.machine.firmware.type) {
-        case 'grbl':
-          addQRealtime('!'); // Send hold command
-          console.log('Sent: !');
-          if (status.machine.firmware.version === '1.1d') {
-            addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
-            console.log('Sent: Code(0x9E)');
-          }
-          break;
-        case 'smoothie':
-          addQToStart('M600'); // Laser will be turned off by smoothie (in default config!)
-          send1Q();
-          console.log('Sent: M600');
-          break;
-      }
-      status.comms.runStatus = 'Paused';
-      status.comms.connectionStatus = 4;
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Job Paused",
-            content: "OpenBuilds CONTROL paused the job"
-          })
-        }
-      }
-    } else {
-      console.log('ERROR: Machine connection not open!');
-    }
+    pause();
   });
 
   socket.on('resume', function() {
-    if (status.comms.connectionStatus > 0) {
-      console.log('UNPAUSE');
-      switch (status.machine.firmware.type) {
-        case 'grbl':
-          addQRealtime('~'); // Send resume command
-          console.log('Sent: ~');
-          break;
-        case 'smoothie':
-          addQToStart('M601'); // Send resume command
-          send1Q();
-          console.log('Sent: M601');
-          break;
-      }
-      status.comms.paused = false;
-      status.comms.blocked = false;
-      setTimeout(function() {
-        send1Q(); // restart queue
-      }, 200);
-      status.comms.runStatus = 'Resuming';
-      status.comms.connectionStatus = 3;
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Job Resumed",
-            content: "OpenBuilds CONTROL resumed the job"
-          })
-        }
-      }
-    } else {
-      console.log('ERROR: Machine connection not open!');
-    }
+    unpause();
   });
 
   socket.on('stop', function() {
-    if (status.comms.connectionStatus > 0) {
-      status.comms.paused = true;
-      console.log('STOP');
-      switch (status.machine.firmware.type) {
-        case 'grbl':
-          addQRealtime('!'); // hold
-          console.log('Sent: !');
-          if (status.machine.firmware.version === '1.1d') {
-            addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
-            console.log('Sent: Code(0x9E)');
-          }
-          console.log('Cleaning Queue');
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-          console.log('Sent: Code(0x18)');
-          status.comms.connectionStatus = 2;
-          break;
-        case 'smoothie':
-          status.comms.paused = true;
-          addQRealtime('M112'); // ctrl-x
-          setTimeout(function() {
-            addQToEnd("?");
-            send1Q();
-          }, 1000);
-          status.comms.connectionStatus = 5;
-          console.log('Sent: M112');
-          break;
-      }
-      clearInterval(queueCounter);
-      status.comms.queue = 0
-      queuePointer = 0;
-      gcodeQueue.length = 0; // Dump the queue
-      sentBuffer.length = 0; // Dump the queue
-      // sentBuffer.length = 0; // Dump bufferSizes
-      laserTestOn = false;
-      status.comms.blocked = false;
-      status.comms.paused = false;
-      status.comms.runStatus = 'Stopped';
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Job Aborted",
-            content: "OpenBuilds CONTROL was asked to abort the running job."
-          })
-        }
-      }
-      // status.comms.connectionStatus = 2;
-    } else {
-      console.log('ERROR: Machine connection not open!');
-    }
+    stop();
   });
 
   socket.on('clearAlarm', function(data) { // Clear Alarm
@@ -2012,8 +1902,38 @@ function parseFeedback(data) {
   if (startPin > 3) {
     var pinsdata = data.replace(">", "").replace("\r", "").substr(startPin).split(/,|\|/, 1);
     var pins = pinsdata[0].split('')
-    // console.log("PINS: " + JSON.stringify(pins, null, 2));
+    console.log("PINS: " + JSON.stringify(pins, null, 2));
     status.machine.inputs = pins;
+    if (pins.includes('H')) {
+      // pause
+      pause();
+      var output = {
+        'command': '[external from hardware]',
+        'response': "OpenBuilds CONTROL received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
+      }
+      io.sockets.emit('data', output);
+    } // end if HOLD
+
+    if (pins.includes('R')) {
+      // abort
+      stop();
+      var output = {
+        'command': '[external from hardware]',
+        'response': "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
+      }
+      io.sockets.emit('data', output);
+    } // end if ABORT
+
+    if (pins.includes('S')) {
+      // abort
+      unpause();
+      var output = {
+        'command': '[external from hardware]',
+        'response': "OpenBuilds CONTROL received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)"
+      }
+      io.sockets.emit('data', output);
+    } // end if RESUME/START
+
   } else {
     status.machine.inputs = [];
   }
@@ -2127,7 +2047,7 @@ function send1Q() {
             queuePointer++;
             sentBuffer.push(gcode);
             machineSend(gcode + '\n');
-            console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
+            // console.log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
           } else {
             status.comms.blocked = true;
           }
@@ -2442,5 +2362,127 @@ if (isElectron()) {
 }
 
 
+function stop() {
+  if (status.comms.connectionStatus > 0) {
+    status.comms.paused = true;
+    console.log('STOP');
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        addQRealtime('!'); // hold
+        console.log('Sent: !');
+        if (status.machine.firmware.version === '1.1d') {
+          addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
+          console.log('Sent: Code(0x9E)');
+        }
+        console.log('Cleaning Queue');
+        addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+        console.log('Sent: Code(0x18)');
+        status.comms.connectionStatus = 2;
+        break;
+      case 'smoothie':
+        status.comms.paused = true;
+        addQRealtime('M112'); // ctrl-x
+        setTimeout(function() {
+          addQToEnd("?");
+          send1Q();
+        }, 1000);
+        status.comms.connectionStatus = 5;
+        console.log('Sent: M112');
+        break;
+    }
+    clearInterval(queueCounter);
+    status.comms.queue = 0
+    queuePointer = 0;
+    gcodeQueue.length = 0; // Dump the queue
+    sentBuffer.length = 0; // Dump the queue
+    // sentBuffer.length = 0; // Dump bufferSizes
+    laserTestOn = false;
+    status.comms.blocked = false;
+    status.comms.paused = false;
+    status.comms.runStatus = 'Stopped';
+    if (jogWindow && !jogWindow.isFocused()) {
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL: Job Aborted",
+          content: "OpenBuilds CONTROL was asked to abort the running job."
+        })
+      }
+    }
+    // status.comms.connectionStatus = 2;
+  } else {
+    console.log('ERROR: Machine connection not open!');
+  }
+}
+
+function pause() {
+  if (status.comms.connectionStatus > 0) {
+    status.comms.paused = true;
+    console.log('PAUSE');
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        addQRealtime('!'); // Send hold command
+        console.log('Sent: !');
+        if (status.machine.firmware.version === '1.1d') {
+          addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
+          console.log('Sent: Code(0x9E)');
+        }
+        break;
+      case 'smoothie':
+        addQToStart('M600'); // Laser will be turned off by smoothie (in default config!)
+        send1Q();
+        console.log('Sent: M600');
+        break;
+    }
+    status.comms.runStatus = 'Paused';
+    status.comms.connectionStatus = 4;
+    if (jogWindow && !jogWindow.isFocused()) {
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL: Job Paused",
+          content: "OpenBuilds CONTROL paused the job"
+        })
+      }
+    }
+  } else {
+    console.log('ERROR: Machine connection not open!');
+  }
+}
+
+function unpause() {
+  if (status.comms.connectionStatus > 0) {
+    console.log('UNPAUSE');
+    switch (status.machine.firmware.type) {
+      case 'grbl':
+        addQRealtime('~'); // Send resume command
+        console.log('Sent: ~');
+        break;
+      case 'smoothie':
+        addQToStart('M601'); // Send resume command
+        send1Q();
+        console.log('Sent: M601');
+        break;
+    }
+    status.comms.paused = false;
+    status.comms.blocked = false;
+    setTimeout(function() {
+      send1Q(); // restart queue
+    }, 200);
+    status.comms.runStatus = 'Resuming';
+    status.comms.connectionStatus = 3;
+    if (jogWindow && !jogWindow.isFocused()) {
+      if (appIcon) {
+        appIcon.displayBalloon({
+          icon: nativeImage.createFromPath(iconPath),
+          title: "OpenBuilds CONTROL: Job Resumed",
+          content: "OpenBuilds CONTROL resumed the job"
+        })
+      }
+    }
+  } else {
+    console.log('ERROR: Machine connection not open!');
+  }
+}
 
 process.on('exit', () => console.log('exit'))

@@ -127,6 +127,7 @@ $(document).ready(function() {
   })
 
   $('#gotozeroWPos').on('click', function(ev) {
+    sendGcode('G21 G90');
     sendGcode('G0 Z5');
     sendGcode('G0 X0 Y0');
     sendGcode('G0 Z0');
