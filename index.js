@@ -627,6 +627,15 @@ io.on("connection", function(socket) {
     }
   }, 400);
 
+
+
+  socket.on("openbuilds", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://www.openbuilds.com')
+  });
+
   socket.on("opencam", function(data) {
     const {
       shell
@@ -849,6 +858,7 @@ io.on("connection", function(socket) {
         if (data.indexOf("[VER:") === 0) {
           status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
           io.sockets.emit("status", status);
+          io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
         }
 
         // [PRB:0.000,0.000,0.000:0]

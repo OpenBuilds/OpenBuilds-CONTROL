@@ -38,7 +38,7 @@
       <nav data-role="ribbonmenu" class="mt-1">
         <ul class="tabs-holder">
           <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
-          <li id="grblSettings" style="display: none;"><a href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+          <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
           <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
         </ul>
         <div class="content-holder">
@@ -58,7 +58,7 @@
                   <span class="icon">
                     <span class="mif-loop"></span>
                   </span>
-                  <span class="caption">Reset</span>
+                  <span class="caption">Restart</span>
                 </button>
                 <button class="ribbon-icon-button" onclick="sendGcode('$X')">
                   <span class="icon">
@@ -288,6 +288,15 @@
               </button>
               <span class="title">E-Stop</span>
             </div>
+            <div class="group">
+              <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
+                <span class="icon">
+                  <img src="img/openbuilds.svg">
+                </span>
+                <span class="caption">OpenBuilds.com</span>
+              </button>
+              <span class="title">Visit</span>
+            </div>
           </div>
 
           <div class="section" id="section-troubleshooting">
@@ -348,7 +357,7 @@
                     </td>
                     <td>
                       <div class="pos-relative">
-                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                           <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                           <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
@@ -380,7 +389,7 @@
                     </td>
                     <td>
                       <div class="pos-relative">
-                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                           <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                           <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
@@ -412,7 +421,7 @@
                     </td>
                     <td>
                       <div class="pos-relative">
-                        <button class="button light"><i class="fas fa-caret-down fg-grayBlue"></i></button>
+                        <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-grayBlue"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                           <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
                           <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
@@ -453,13 +462,27 @@
                       </div>
                     </td>
                     <td>
-                      <!-- <div class="pos-relative">
-                        <button class="button light disabled"><i class="fas fa-caret-down fg-grayBlue" disabled></i></button>
+                      <div class="pos-relative">
+                        <button class="button light jogbtn" style="width: 42px;"></i>
+                          <span class="fa-layers fa-fw">
+                            <i class="fas fa-layer-group fg-grayBlue" data-fa-transform="shrink-2 up-3"></i>
+                            <i class="fas fa-caret-down fg-grayBlue" data-fa-transform="down-8"></i>
+                            <!-- <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span> -->
+                          </span>
+                        </button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                          <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
-                          <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
-                      </ul>
-                    </div> -->
+                          <li><a href="#" onclick="sendGcode('G28')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G28)</a></li>
+                          <li><a href="#" onclick="sendGcode('G28.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G28.1)</a></li>
+                          <li class="divider"></li>
+                          <li><a href="#" onclick="sendGcode('G30')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G30)</a></li>
+                          <li><a href="#" onclick="sendGcode('G30.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G30.1)</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan='3'>
+                      &nbsp;
                     </td>
                   </tr>
 
@@ -627,8 +650,13 @@
                 </div>
                 <div class="section" id="tab-three">
                   <div id="renderArea"></div>
+                  <div style="position: absolute; top: 10px; right:10px; z-index: 1; max-width: 100px; max-width: 100px;" id="overlayimg">
+                    <!-- <img src="img/mch/acro55.png" style="max-width:100%; max-height:100%;">
+                    <span style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs"></span> -->
+                  </div>
                   <div class="fixed-bottom m-3 mb-9">
-                    <button class="button dark" onclick="simSpeed();"><span class="icon"><span class="fas fa-tachometer-alt"></span></span><span class="caption"><span id="simspeedval">1</span>x</span></button>
+                    <button class="button dark" onclick="simSpeed();"><span class="icon"><span class="fas fa-tachometer-alt"></span></span><span class="caption"><span id="simspeedval">1</span>x</span>
+                    </button>
                     <button id="runSimBtn" title="Run simulation" class="button dark" onclick="sim(0)"><i class="fas fa-fighter-jet"></i> Simulate</button>&nbsp;
                     <button id="stopSimBtn" style="display: none;" title="Stop Sim" class="button dark" onclick="simstop()"><i class="fas fa-stop"></i> Stop Sim</button>&nbsp;
                     <button id="resetViewBtn" title="Stop Sim" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
@@ -655,7 +683,7 @@
             <div class="cell p-0 m-0">
               <div class="card">
                 <div class="card-header p-1 m-0">
-                  <i class="fas fa-fw fa-bolt"></i>Endstops
+                  <i class="fas fa-fw fa-bolt"></i>Inputs / Endstops
                 </div>
                 <div class="card-content">
                   <table class="table striped compact">
@@ -682,6 +710,18 @@
                         <td>Probe</td>
                         <td><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
                       </tr>
+                      <tr>
+                        <td>Door Sensor</td>
+                        <td><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
+                      </tr>
+                      <tr>
+                        <td>Buttons</td>
+                        <td>
+                          <span class="tally alert pinstatus" id="startpin">NOCOMM</span>
+                          <span class="tally alert pinstatus" id="holdpin">NOCOMM</span>
+                          <span class="tally alert pinstatus" id="resetpin">NOCOMM</span>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -702,15 +742,15 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Version</td>
+                        <td>Installed Version</td>
                         <td><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
                       </tr>
                       <tr>
-                        <td>Blocked</td>
+                        <td>Backend Queue Blocked</td>
                         <td><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
                       </tr>
                       <tr>
-                        <td>Conn Status</td>
+                        <td>Connection Status</td>
                         <td><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
                       </tr>
                       <tr>
@@ -746,7 +786,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Version</td>
+                        <td>Installed Firmware Version</td>
                         <td><span class="tally bg-openbuilds fg-white" id="firmwarever">NOCOMM</span></td>
                       </tr>
                       <!-- <tr>

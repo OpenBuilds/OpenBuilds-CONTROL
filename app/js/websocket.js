@@ -163,6 +163,10 @@ function initSocket() {
     }
   }
 
+
+  socket.on("machinename", function(data) {
+    setMachineButton(data)
+  });
   socket.on("queueCount", function(data) {
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
@@ -302,6 +306,9 @@ function initSocket() {
 
     // Grbl Pins Input Status
     $('.pinstatus').removeClass('alert').addClass('success').html('OFF')
+    $('#holdpin').html('HOLD:OFF')
+    $('#resetpin').html('RST:OFF')
+    $('#startpin').html('START:OFF')
     if (status.machine.inputs.length > 0) {
       for (i = 0; i < status.machine.inputs.length; i++) {
         switch (status.machine.inputs[i]) {
@@ -321,19 +328,22 @@ function initSocket() {
             // console.log('PIN: PROBE');
             $('#prbpin').removeClass('success').addClass('alert').html('ON')
             break;
-            // case 'D':
-            //   console.log('PIN: DOOR');
-            //   $('#doorpin').removeClass('success').addClass('alert').html('ON')
-            //   break;
-            // case 'H':
-            //   console.log('PIN: HOLD');
-            //   break;
-            // case 'R':
-            //   console.log('PIN: SOFTRESET');
-            //   break;
-            // case 'S':
-            //   console.log('PIN: CYCLESTART');
-            //   break;
+          case 'D':
+            // console.log('PIN: DOOR');
+            $('#doorpin').removeClass('success').addClass('alert').html('ON')
+            break;
+          case 'H':
+            // console.log('PIN: HOLD');
+            $('#holdpin').removeClass('success').addClass('alert').html('HOLD:ON')
+            break;
+          case 'R':
+            // console.log('PIN: SOFTRESET');
+            $('#resetpin').removeClass('success').addClass('alert').html('RST:ON')
+            break;
+          case 'S':
+            // console.log('PIN: CYCLESTART');
+            $('#startpin').removeClass('success').addClass('alert').html('START:ON')
+            break;
         }
       }
     }

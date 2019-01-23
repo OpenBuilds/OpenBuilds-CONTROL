@@ -82,6 +82,8 @@ function grblPopulate() {
                 <div class="cell-8">
                 <a style="width: 100%;" class="button dropdown-toggle bd-openbuilds secondary outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
                 <ul class="d-menu border bd-gray" data-role="dropdown" data-toggle-element="#context_toggle2">
+                  <li onclick="selectMachine('custom');"><a href="#"><img src="img/mch/custom.png"/>  Custom Machine</a></li>
+                  <li class="divider"></li>
                   <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png"/>  OpenBuilds Acro 55</a></li>
                   <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png"/>  OpenBuilds Acro 510</a></li>
                   <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png"/>  OpenBuilds Acro 1010</a></li>
