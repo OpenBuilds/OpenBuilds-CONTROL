@@ -367,8 +367,8 @@ function init3D() {
     console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     $('#gcodeviewertab').hide()
+    $('#consoletab').click()
     // renderer = new THREE.CanvasRenderer();
-
     return false;
   };
 
