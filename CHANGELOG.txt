@@ -1,3 +1,4 @@
+v.1.0136: Added Confirmation Dialogs to the Grbl Settings reset buttons
 v.1.0136: Added Door and Buttons to Troubleshooting, Added G28/G30 handling, Added Custom machine profile, added Machine Overlay in 3D viewer, added Goto OpenBuilds Button
 v1.0.135: Handle XPROv4 DriverMinder/Grbl-feedhold-resume-abort buttons, add G20/G91 to GOTOZERO moves
 v1.0.134: Added mPOS gotozero, and wPOS GotoZero via mPos Z0

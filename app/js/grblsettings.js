@@ -506,3 +506,96 @@ function displayDirInvert() {
   $('#zdirinvert:checkbox').prop('checked', dir.z);
   checkifchanged();
 }
+
+// <div class="ribbon-group">
+//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=$'); refreshGrblSettings()">
+//     <span class="icon">
+//       <i class="fas fa-sliders-h"></i>
+//     </span>
+//     <span class="caption">Reset&nbsp;Settings</span>
+//   </button><br>
+//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=#'); refreshGrblSettings()">
+//     <span class="icon">
+//       <i class="fas fa-layer-group"></i>
+//     </span>
+//     <span class="caption">Reset&nbsp;WCOs</span>
+//   </button><br>
+//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=*'); refreshGrblSettings()">
+//     <span class="icon">
+//       <i class="fas fa-microchip"></i>
+//     </span>
+//     <span class="caption">Reset&nbsp;EEPROM</span>
+//   </button>
+// </div>
+
+clearWCO
+clearSettings
+
+function clearSettings() {
+  Metro.dialog.create({
+    title: "Are you sure?",
+    content: "<div>Resetting the Grbl Settings will restore all the settings to factory defaults, but will keep other EEPROM settings intact. Would you like to continue?</div>",
+    actions: [{
+        caption: "Yes",
+        cls: "js-dialog-close secondary",
+        onclick: function() {
+          sendGcode('$RST=$');
+          refreshGrblSettings()
+        }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {
+          refreshGrblSettings();
+        }
+      }
+    ]
+  });
+}
+
+function clearWCO() {
+  Metro.dialog.create({
+    title: "Are you sure?",
+    content: "<div>Resetting the Work Coordinate Systems will erase all the coordinate system offsets currently stored in the EEPROM on the controller. Would you like to continue?</div>",
+    actions: [{
+        caption: "Yes",
+        cls: "js-dialog-close secondary",
+        onclick: function() {
+          sendGcode('$RST=#');
+          refreshGrblSettings()
+        }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {
+          refreshGrblSettings();
+        }
+      }
+    ]
+  });
+}
+
+function clearEEPROM() {
+  Metro.dialog.create({
+    title: "Are you sure?",
+    content: "<div>Resetting the EEPROM will erase all the Grbl Firmware settings from your controller, effectively resetting it back to factory defaults. Would you like to continue?</div>",
+    actions: [{
+        caption: "Yes",
+        cls: "js-dialog-close secondary",
+        onclick: function() {
+          sendGcode('$RST=*');
+          refreshGrblSettings()
+        }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {
+          refreshGrblSettings();
+        }
+      }
+    ]
+  });
+}
