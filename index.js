@@ -854,6 +854,8 @@ io.on("connection", function(socket) {
       port.on("data", function(data) {
         var command = sentBuffer[0];
 
+        // console.log('data:', data)
+
         // Grbl $I parser
         if (data.indexOf("[VER:") === 0) {
           status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
@@ -1194,7 +1196,7 @@ io.on("connection", function(socket) {
         console.log('Adding jog commands to queue. Firmw=' + status.machine.firmware.type + ', blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91' + dir + dist + feed);
+            addQToEnd('$J=G91G21' + dir + dist + feed);
             send1Q();
             break;
           case 'smoothie':
@@ -1235,7 +1237,7 @@ io.on("connection", function(socket) {
         console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91 X' + xincrement + " Y" + yincrement + " " + feed);
+            addQToEnd('$J=G91G21X' + xincrement + " Y" + yincrement + " " + feed);
             send1Q();
             break;
           case 'smoothie':
@@ -1268,7 +1270,7 @@ io.on("connection", function(socket) {
         console.log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91' + mode + xVal + yVal + zVal + feed);
+            addQToEnd('$J=G91G21' + mode + xVal + yVal + zVal + feed);
             break;
           case 'smoothie':
             addQToEnd('G91' + mode);

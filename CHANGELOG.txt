@@ -1,6 +1,7 @@
-v.1.0138: Changed size of MiniMill overlay, made 3D viewer the default tab
-v.1.0137: Added Confirmation Dialogs to the Grbl Settings reset buttons
-v.1.0136: Added Door and Buttons to Troubleshooting, Added G28/G30 handling, Added Custom machine profile, added Machine Overlay in 3D viewer, added Goto OpenBuilds Button
+v1.0.139: Fix Jog/Checksize to still move in mm after G20
+v1.0.138: Changed size of MiniMill overlay, made 3D viewer the default tab
+v1.0.137: Added Confirmation Dialogs to the Grbl Settings reset buttons
+v1.0.136: Added Door and Buttons to Troubleshooting, Added G28/G30 handling, Added Custom machine profile, added Machine Overlay in 3D viewer, added Goto OpenBuilds Button
 v1.0.135: Handle XPROv4 DriverMinder/Grbl-feedhold-resume-abort buttons, add G20/G91 to GOTOZERO moves
 v1.0.134: Added mPOS gotozero, and wPOS GotoZero via mPos Z0
 v1.0.133: Fixed MacOS errors, Improved Icons
