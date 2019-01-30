@@ -116,11 +116,14 @@ function setControlBar(val, status) {
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').hide().attr('disabled', true);
-    } else {
-      $('#homeBtn').hide().attr('disabled', true);
+    if (laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').hide().attr('disabled', true);
+      } else {
+        $('#homeBtn').hide().attr('disabled', true);
+      }
     }
+
     $('.estop').hide()
   } else if (val == 1 || val == 2) { // Connected, but not Playing yet
     if (typeof ace !== 'undefined') {
@@ -134,10 +137,12 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', true);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').show().attr('disabled', false);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').show().attr('disabled', false);
+      } else {
+        $('#homeBtn').show().attr('disabled', true);
+      }
     }
     $('.estop').show()
   } else if (val == 3) { // Busy Streaming GCODE
@@ -148,10 +153,12 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').show().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').show().attr('disabled', true);
+      } else {
+        $('#homeBtn').show().attr('disabled', true);
+      }
     }
     $('.estop').show()
   } else if (val == 4) { // Paused
@@ -162,10 +169,12 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').show().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').show().attr('disabled', true);
+      } else {
+        $('#homeBtn').show().attr('disabled', true);
+      }
     }
     $('.estop').show()
   } else if (val == 5) { // Alarm State
@@ -176,10 +185,12 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', true);
     $('#toolBtn2').show().attr('disabled', true);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').show().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').show().attr('disabled', true);
+      } else {
+        $('#homeBtn').show().attr('disabled', true);
+      }
     }
     $('.estop').show()
   } else if (val == 6) { // Firmware Upgrade State
@@ -190,10 +201,12 @@ function setControlBar(val, status) {
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
-      $('#homeBtn').hide().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      if (grblParams['$22'] == 1) {
+        $('#homeBtn').hide().attr('disabled', true);
+      } else {
+        $('#homeBtn').show().attr('disabled', true);
+      }
     }
     $('.estop').hide()
   }

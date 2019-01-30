@@ -50,7 +50,7 @@ function grblSettings(data) {
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
 
-  if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
+  if (grblParams['$22'] == 1) {
     $('#gotozeroMPos').removeClass('disabled')
     $('#homeBtn').attr('disabled', false)
     $('#gotoXzeroMpos').removeClass('disabled')

@@ -175,12 +175,20 @@ $(document).ready(function() {
     jog('Z', jogdist, feedrate);
   })
 
+  $('#homeBtn').on('click', function(ev) {
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
+      sendGcode('$H')
+    } else if (laststatus != undefined && laststatus.machine.firmware.type == 'smoothie') {
+      sendGcode('G28')
+    }
+  })
+
   $('#chkSize').on('click', function() {
     var bbox2 = new THREE.Box3().setFromObject(object);
     console.log('bbox for Draw Bounding Box: ' + object + ' Min X: ', (bbox2.min.x), '  Max X:', (bbox2.max.x), 'Min Y: ', (bbox2.min.y), '  Max Y:', (bbox2.max.y));
     var feedrate = $('#jograte').val();
     if (laststatus.machine.firmware.type === 'grbl') {
-      if object.userData.inch {
+      if (object.userData.inch) {
         var moves = `
         $J=G90G20X` + (bbox2.min.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
         $J=G90G20X` + (bbox2.max.x) + ` Y` + (bbox2.min.y) + ` F` + feedrate + `\n
