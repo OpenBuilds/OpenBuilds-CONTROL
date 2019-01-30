@@ -116,7 +116,7 @@ function setControlBar(val, status) {
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-    if (laststatus.machine.firmware.type == 'grbl') {
+    if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
       if (grblParams['$22'] == 1) {
         $('#homeBtn').hide().attr('disabled', true);
       } else {

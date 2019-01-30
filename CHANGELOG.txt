@@ -1,3 +1,4 @@
+v1.0.142: Fix Bug related to status parser
 v1.0.141: Fix Bug that prevented Jog, fixed bug that disabled homing for Smoothie
 v1.0.140: Fix Jog/Checksize to still move in mm after G20
 v1.0.138: Changed size of MiniMill overlay, made 3D viewer the default tab
