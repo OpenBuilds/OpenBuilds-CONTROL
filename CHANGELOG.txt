@@ -1,3 +1,4 @@
+v1.0.143: Improved stability when XPRO Driverminder is active
 v1.0.142: Fix Bug related to status parser
 v1.0.141: Fix Bug that prevented Jog, fixed bug that disabled homing for Smoothie
 v1.0.140: Fix Jog/Checksize to still move in mm after G20

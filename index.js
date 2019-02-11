@@ -78,15 +78,6 @@ if (isElectron()) {
       'response': string
     }
     io.sockets.emit('updatedata', output);
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
-      }
-    }
   })
   autoUpdater.on('update-available', (ev, info) => {
     updateIsDownloading = true;
@@ -98,15 +89,6 @@ if (isElectron()) {
     }
     io.sockets.emit('updatedata', output);
     console.log(JSON.stringify(ev))
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
-      }
-    }
   })
   autoUpdater.on('update-not-available', (ev, info) => {
     var string = 'Update not available. Installed version: ' + require('./package').version + " / Available version: " + ev.version + ".\n";
@@ -119,15 +101,6 @@ if (isElectron()) {
     }
     io.sockets.emit('updatedata', output);
     console.log(JSON.stringify(ev))
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
-      }
-    }
   })
   autoUpdater.on('error', (ev, err) => {
     if (err) {
@@ -140,15 +113,6 @@ if (isElectron()) {
       'response': string
     }
     io.sockets.emit('updatedata', output);
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
-      }
-    }
   })
   autoUpdater.on('download-progress', (ev, progressObj) => {
     updateIsDownloading = true;
@@ -160,17 +124,6 @@ if (isElectron()) {
     }
     io.sockets.emit('updatedata', output);
     io.sockets.emit('updateprogress', ev.percent.toFixed(0));
-    if (ev.percent % 10 === 0) {
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL",
-            content: string
-          })
-        }
-      }
-    }
   })
 
   autoUpdater.on('update-downloaded', (info) => {
@@ -185,27 +138,11 @@ if (isElectron()) {
     setTimeout(function() {
       io.sockets.emit('updateready', availversion);
     }, 15 * 60 * 1000) // 15 mins
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL",
-          content: string
-        })
-      }
-      // Launch Gui to run Update
-    }
     updateIsDownloading = false;
   });
-
-  // Schedule AutoUpdater to run from Tray
-  // if (process.platform == 'win32') {
-  //   autoUpdater.checkForUpdates();
-  // }
 } else {
   console.log("Running outside Electron: Disabled AutoUpdater")
 }
-
 
 if (isElectron()) {
   var uploadsDir = electronApp.getPath('userData') + '/upload/';
@@ -214,20 +151,19 @@ if (isElectron()) {
 }
 var uploadedgcode = ""; // var to store uploaded gcode
 
-// fs.existsSync(uploadsDir) || fs.mkdirSync(uploadsDir)
 mkdirp(uploadsDir, function(err) {
   if (err) console.error(err)
   else console.log('Created Uploads Temp Directory')
 });
 
 var oldportslist;
+var oldpinslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
 const iconPlay = path.join(__dirname, 'app/icon-play.png');
 const iconStop = path.join(__dirname, 'app/icon-stop.png');
 const iconPause = path.join(__dirname, 'app/icon-pause.png');
 const iconAlarm = path.join(__dirname, 'app/icon-bell.png');
-
 
 var iosocket;
 var lastCommand = false
@@ -475,15 +411,6 @@ var PortCheckinterval = setInterval(function() {
         var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
         if (removedPorts.length > 0) {
           console.log("Unplugged " + removedPorts[0].comName);
-          if (jogWindow && !jogWindow.isFocused()) {
-            if (appIcon) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "OpenBuilds CONTROL Detected a disconnected Port",
-                content: "OpenBuilds CONTROL detected that port: " + removedPorts[0].comName + " was removed"
-              })
-            }
-          }
         }
       }
       oldportslist = ports;
@@ -605,7 +532,21 @@ io.on("connection", function(socket) {
   iosocket = socket;
 
   if (status.machine.firmware.type == 'grbl') {
-    socket.emit('grbl')
+
+    // handle Grbl RESET external input
+    if (status.machine.inputs.length > 0) {
+      for (i = 0; i < status.machine.inputs.length; i++) {
+        switch (status.machine.inputs[i]) {
+          case 'R':
+            // console.log('PIN: SOFTRESET');
+            safetosend = true;
+            break;
+        }
+      }
+    }
+    if (safetosend) {
+      socket.emit('grbl')
+    }
   }
 
   var interval = setInterval(function() {
@@ -722,10 +663,6 @@ io.on("connection", function(socket) {
         status.comms.connectionStatus = 0;
       });
     }, 1000)
-
-
-
-
   })
 
 
@@ -748,15 +685,7 @@ io.on("connection", function(socket) {
             'response': "PORT ERROR: " + err.message
           }
           io.sockets.emit('data', output);
-          if (jogWindow && !jogWindow.isFocused()) {
-            if (appIcon) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "OpenBuilds CONTROL encountered a Port error",
-                content: "OpenBuilds CONTROL received the following error: " + err.message
-              })
-            }
-          }
+
           if (status.comms.connectionStatus > 0) {
             console.log('WARN: Closing Port ' + port.path);
             stopPort();
@@ -881,13 +810,6 @@ io.on("connection", function(socket) {
             io.sockets.emit('data', output);
             addQToEnd('G10 P1 L20 Z' + status.machine.probe.plate);
             send1Q();
-            // if (status.machine.probe.request.direction == 'Z-') {
-            //   console.log('Lifting Z Probe up, off the probe')
-            //   setTimeout(function() {
-            //     addQToEnd('$J=G91Z5F' + parseInt(status.machine.probe.request.feedrate));
-            //     send1Q();
-            //   }, 200);
-            // };
           } else {
             var output = {
               'command': '[ PROBE ]',
@@ -900,35 +822,32 @@ io.on("connection", function(socket) {
 
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
+          console.log(data)
           status.comms.blocked = false;
           status.machine.firmware.type = "grbl";
           status.machine.firmware.version = data.substr(5, 4); // get version
           if (parseFloat(status.machine.firmware.version) < 1.1) { // If version is too old
-            if (status.comms.connectionStatus > 0) {
-              console.log('WARN: Closing Port ' + port.path);
-              stopPort();
+            if (status.machine.firmware.version.length < 3) {
+              console.log('invalid version string, stay connected')
             } else {
-              console.log('ERROR: Machine connection not open!');
+              if (status.comms.connectionStatus > 0) {
+                console.log('WARN: Closing Port ' + port.path + " /  v" + parseFloat(status.machine.firmware.version));
+                // stopPort();
+              } else {
+                console.log('ERROR: Machine connection not open!');
+              }
+              var output = {
+                'command': command,
+                'response': "Detected an unsupported version: Grbl " + status.machine.firmware.version + ". This is sadly outdated. Please upgrade to Grbl 1.1 or newer to use this software.  Go to http://github.com/gnea/grbl"
+              }
+              io.sockets.emit('data', output);
             }
-            var output = {
-              'command': command,
-              'response': "Detected an unsupported version: Grbl " + status.machine.firmware.version + ". This is sadly outdated. Please upgrade to Grbl 1.1 or newer to use this software.  Go to http://github.com/gnea/grbl"
-            }
-            io.sockets.emit('data', output);
           }
           status.machine.firmware.date = "";
           console.log("GRBL detected");
-          socket.emit('grbl')
-          // addQRealtime("$10=2\n"); // force Status Report to WPOS
-          if (jogWindow && !jogWindow.isFocused()) {
-            if (appIcon) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "OpenBuilds CONTROL has established a Connection",
-                content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-              })
-            }
-          }
+          setTimeout(function() {
+            socket.emit('grbl')
+          }, 600)
           // Start interval for status queries
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
@@ -938,15 +857,6 @@ io.on("connection", function(socket) {
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           console.log("Smoothieware detected");
-          if (jogWindow && !jogWindow.isFocused()) {
-            if (appIcon) {
-              appIcon.displayBalloon({
-                icon: nativeImage.createFromPath(iconPath),
-                title: "OpenBuilds CONTROL has established a Connection",
-                content: "OpenBuilds CONTROL is now connected to " + status.comms.interfaces.activePort + " running " + status.machine.firmware.type + " " + status.machine.firmware.version
-              })
-            }
-          }
           status.machine.firmware.type = "smoothie";
           status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
           status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
@@ -1110,15 +1020,6 @@ io.on("connection", function(socket) {
         }
 
       }
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Job Started",
-            content: "OpenBuilds CONTROL started a job: Job Size: " + data.length + " lines of GCODE"
-          })
-        }
-      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1225,7 +1126,6 @@ io.on("connection", function(socket) {
       //   y: yincrement,
       //   feed: feed
       // }
-
       var xincrement = parseFloat(data.x);
       var yincrement = parseFloat(data.y);
       var feed = parseFloat(data.feed)
@@ -1314,15 +1214,6 @@ io.on("connection", function(socket) {
           break;
       }
       send1Q();
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Work Coordinate System Reset",
-            content: "OpenBuilds CONTROL has reset the WCS on the " + data + " axes."
-          })
-        }
-      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1598,15 +1489,6 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
-      if (jogWindow && !jogWindow.isFocused()) {
-        if (appIcon) {
-          appIcon.displayBalloon({
-            icon: nativeImage.createFromPath(iconPath),
-            title: "OpenBuilds CONTROL: Alarm Cleared",
-            content: "OpenBuilds CONTROL has cleared the Alarm Condition, you may continue"
-          })
-        }
-      }
     } else {
       console.log('ERROR: Machine connection not open!');
     }
@@ -1914,42 +1796,42 @@ function parseFeedback(data) {
   if (startPin > 3) {
     var pinsdata = data.replace(">", "").replace("\r", "").substr(startPin).split(/,|\|/, 1);
     var pins = pinsdata[0].split('')
-    console.log("PINS: " + JSON.stringify(pins, null, 2));
     status.machine.inputs = pins;
-    if (pins.includes('H')) {
-      // pause
-      pause();
-      var output = {
-        'command': '[external from hardware]',
-        'response': "OpenBuilds CONTROL received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
-      }
-      io.sockets.emit('data', output);
-    } // end if HOLD
+    if (!_.isEqual(pins, oldpinslist)) {
+      if (pins.includes('H')) {
+        // pause
+        pause();
+        var output = {
+          'command': '[external from hardware]',
+          'response': "OpenBuilds CONTROL received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
+        }
+        io.sockets.emit('data', output);
+      } // end if HOLD
 
-    if (pins.includes('R')) {
-      // abort
-      stop();
-      var output = {
-        'command': '[external from hardware]',
-        'response': "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
-      }
-      io.sockets.emit('data', output);
-    } // end if ABORT
+      if (pins.includes('R')) {
+        // abort
+        stop();
+        var output = {
+          'command': '[external from hardware]',
+          'response': "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
+        }
+        io.sockets.emit('data', output);
+      } // end if ABORT
 
-    if (pins.includes('S')) {
-      // abort
-      unpause();
-      var output = {
-        'command': '[external from hardware]',
-        'response': "OpenBuilds CONTROL received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)"
-      }
-      io.sockets.emit('data', output);
-    } // end if RESUME/START
-
+      if (pins.includes('S')) {
+        // abort
+        unpause();
+        var output = {
+          'command': '[external from hardware]',
+          'response': "OpenBuilds CONTROL received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)"
+        }
+        io.sockets.emit('data', output);
+      } // end if RESUME/START
+    }
   } else {
     status.machine.inputs = [];
   }
-
+  oldpinslist = pins;
   // Extract Buffer Data
   var startBuf = data.search(/Bf:/i) + 3;
   if (startBuf > 3) {
@@ -2312,9 +2194,6 @@ if (isElectron()) {
         jogWindow.focus();
         jogWindow.setAlwaysOnTop(false);
       })
-      // jogWindow.maximize()
-      // jogWindow.webContents.openDevTools()
-
     }
 
     if (!process.platform == 'darwin') {
@@ -2412,16 +2291,6 @@ function stop() {
     status.comms.blocked = false;
     status.comms.paused = false;
     status.comms.runStatus = 'Stopped';
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Aborted",
-          content: "OpenBuilds CONTROL was asked to abort the running job."
-        })
-      }
-    }
-    // status.comms.connectionStatus = 2;
   } else {
     console.log('ERROR: Machine connection not open!');
   }
@@ -2448,15 +2317,6 @@ function pause() {
     }
     status.comms.runStatus = 'Paused';
     status.comms.connectionStatus = 4;
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Paused",
-          content: "OpenBuilds CONTROL paused the job"
-        })
-      }
-    }
   } else {
     console.log('ERROR: Machine connection not open!');
   }
@@ -2483,15 +2343,6 @@ function unpause() {
     }, 200);
     status.comms.runStatus = 'Resuming';
     status.comms.connectionStatus = 3;
-    if (jogWindow && !jogWindow.isFocused()) {
-      if (appIcon) {
-        appIcon.displayBalloon({
-          icon: nativeImage.createFromPath(iconPath),
-          title: "OpenBuilds CONTROL: Job Resumed",
-          content: "OpenBuilds CONTROL resumed the job"
-        })
-      }
-    }
   } else {
     console.log('ERROR: Machine connection not open!');
   }
