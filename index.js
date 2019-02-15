@@ -15,6 +15,7 @@ var https = require('https');
 
 var ioServer = require('socket.io');
 var io = new ioServer();
+var safetosend;
 
 var fs = require('fs');
 var path = require("path");
