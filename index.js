@@ -544,7 +544,7 @@ io.on("connection", function(socket) {
         }
       }
     }
-    if (safetosend) {
+    if (safetosend != undefined && safetosend == true) {
       socket.emit('grbl')
     }
   }
