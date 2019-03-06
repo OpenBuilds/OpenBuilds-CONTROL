@@ -113,16 +113,16 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
   }
   ruler.name = "Rulers"
 
-  var material = new THREE.LineBasicMaterial({
-    color: 0x666666
-  });
-  material.opacity = 0.15;
-  var geometry = new THREE.Geometry();
-  geometry.vertices.push(new THREE.Vector3(xmax, 0, 0));
-  geometry.vertices.push(new THREE.Vector3(xmax, ymax, 0));
-  geometry.vertices.push(new THREE.Vector3(0, ymax, 0));
-  var line = new THREE.Line(geometry, material);
-  ruler.add(line);
+  // var material = new THREE.LineBasicMaterial({
+  //   color: 0x666666
+  // });
+  // material.opacity = 0.15;
+  // var geometry = new THREE.Geometry();
+  // geometry.vertices.push(new THREE.Vector3(xmax, 0, 0));
+  // geometry.vertices.push(new THREE.Vector3(xmax, ymax, 0));
+  // geometry.vertices.push(new THREE.Vector3(0, ymax, 0));
+  // var line = new THREE.Line(geometry, material);
+  // ruler.add(line);
 
   if (inches) {
     ruler.scale.multiplyScalar(25.4);

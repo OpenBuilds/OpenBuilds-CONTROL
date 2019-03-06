@@ -1,3 +1,4 @@
+v1.0.146: Custom Machine profile, Tooltips for Grbl Settings, Alarm Unlock on Alarm Modal, Added Link to Forum on Troubleshooting tab, minor Cosmetics to 3D Viewer, Probe Macros/Console: Only show dialog when probed from Wizard, normal macro/console probes only log to Serial Console now
 v1.0.145: Updated SSL Certificates
 v1.0.144: Fixed bug related to socket.io Connection
 v1.0.143: Improved stability when XPRO Driverminder is active, and removed extraneous Popup notifications (got annoying on Win10 due to the Notification Center involvement)

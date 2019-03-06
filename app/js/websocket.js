@@ -187,6 +187,30 @@ function initSocket() {
     // }
   })
 
+  socket.on('toastErrorAlarm', function(data) {
+    // console.log("toast", data)
+    // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
+    Metro.dialog.create({
+      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
+      actions: [{
+          caption: "Clear Alarm",
+          cls: "js-dialog-close alert",
+          onclick: function() {
+            socket.emit('clearAlarm', 2)
+          }
+        },
+        {
+          caption: "Cancel",
+          cls: "js-dialog-close",
+          onclick: function() {
+            //
+          }
+        }
+      ]
+    });
+    //
+  });
+
   socket.on('toastError', function(data) {
     // console.log("toast", data)
     // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");

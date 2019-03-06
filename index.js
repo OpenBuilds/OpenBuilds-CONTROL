@@ -585,6 +585,13 @@ io.on("connection", function(socket) {
     shell.openExternal('https://cam.openbuilds.com')
   });
 
+  socket.on("openforum", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://openbuilds.com/threads/openbuilds-control-software.13121/')
+  });
+
   socket.on("minimisetotray", function(data) {
     jogWindow.hide();
   });
@@ -795,30 +802,33 @@ io.on("connection", function(socket) {
 
         // [PRB:0.000,0.000,0.000:0]
         if (data.indexOf("[PRB:") === 0) {
-          console.log(data)
-          var prbLen = data.substr(5).search(/\]/);
-          var prbData = data.substr(5, prbLen).split(/,/);
-          var success = data.split(':')[2].split(']')[0];
-          status.machine.probe.x = prbData[0];
-          status.machine.probe.y = prbData[1];
-          status.machine.probe.z = prbData[2];
-          status.machine.probe.state = success;
-          if (success > 0) {
-            var output = {
-              'command': '[ PROBE ]',
-              'response': "Probe Completed.  Setting Z to " + status.machine.probe.plate + 'mm',
+          if (status.machine.probe.request.plate) {
+            console.log(data)
+            var prbLen = data.substr(5).search(/\]/);
+            var prbData = data.substr(5, prbLen).split(/,/);
+            var success = data.split(':')[2].split(']')[0];
+            status.machine.probe.x = prbData[0];
+            status.machine.probe.y = prbData[1];
+            status.machine.probe.z = prbData[2];
+            status.machine.probe.state = success;
+            if (success > 0) {
+              var output = {
+                'command': '[ PROBE ]',
+                'response': "Probe Completed.  Setting Z to " + status.machine.probe.plate + 'mm',
+              }
+              io.sockets.emit('data', output);
+              addQToEnd('G10 P1 L20 Z' + status.machine.probe.plate);
+              send1Q();
+            } else {
+              var output = {
+                'command': '[ PROBE ]',
+                'response': "Probe move aborted - probe did not make contact within specified distance",
+              }
+              io.sockets.emit('data', output);
             }
-            io.sockets.emit('data', output);
-            addQToEnd('G10 P1 L20 Z' + status.machine.probe.plate);
-            send1Q();
-          } else {
-            var output = {
-              'command': '[ PROBE ]',
-              'response': "Probe move aborted - probe did not make contact within specified distance",
-            }
-            io.sockets.emit('data', output);
+            io.sockets.emit('prbResult', status);
+            status.machine.probe.request = "";
           }
-          io.sockets.emit('prbResult', status);
         };
 
         // Machine Identification
@@ -898,7 +908,7 @@ io.on("connection", function(socket) {
               console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
               if (alarmCode != 5) {
-                socket.emit("toastError", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
+                socket.emit("toastErrorAlarm", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
               }
               var output = {
                 'command': '',
