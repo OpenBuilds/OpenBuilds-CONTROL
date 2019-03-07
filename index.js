@@ -628,6 +628,7 @@ io.on("connection", function(socket) {
 
     var port = data.port;
     var file = data.file;
+    var board = data.board
     const Avrgirl = require('avrgirl-arduino');
 
     if (status.comms.connectionStatus > 0) {
@@ -648,13 +649,15 @@ io.on("connection", function(socket) {
 
     setTimeout(function() {
       var avrgirl = new Avrgirl({
-        board: 'uno',
+        board: board,
         port: port,
         debug: function(debugString) {
           var port = this.connection.options.port;
           flashGrblCallback(debugString, port)
         }
       });
+
+      console.log(JSON.stringify(avrgirl));
 
       status.comms.connectionStatus = 6;
       avrgirl.flash(path.join(__dirname, file), function(error) {

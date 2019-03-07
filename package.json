@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.146",
+  "version": "1.0.147",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -11,13 +11,13 @@
     "ncp": "^2.0.0"
   },
   "dependencies": {
-    "avrgirl-arduino": "^3.0.0",
+    "avrgirl-arduino": "noopkat/avrgirl-arduino",
     "directory-tree": "^2.1.0",
     "electron-updater": "^2.23.3",
     "express": "^4.16.2",
     "formidable": "^1.2.1",
     "ip": "^1.1.5",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.2",

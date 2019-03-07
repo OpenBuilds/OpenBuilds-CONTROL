@@ -650,7 +650,15 @@ function selectMachine(type) {
         if (customFirmwareFile == 'acro') {
           Metro.dialog.create({
             title: "Custom Firmware Required",
-            content: "<div>The OpenBuilds Acro is a 2-axes machine.  This requires a custom Grbl installation to allow 2-axes specific homing.  We can flash the new firmware for you right now.  Proceeding will wipe the firmware from your controller and replace it with an Acro specific version of Grbl.  Would you like to proceed?</div>",
+            content: `<div>The OpenBuilds Acro is a 2-axes machine.  This requires a custom Grbl installation to allow 2-axes specific homing.
+            We can flash the new firmware for you right now.  Proceeding will wipe the firmware from your controller and replace it with an Acro
+            specific version of Grbl.  Would you like to proceed?</div><hr>Select your controller type: <br>
+            <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="flashGrblController2">
+            <option value="uno">OpenBuilds BlackBox 4X</option>
+            <option value="xprov4">Spark Concepts xPro v3/4</option>
+            <option value="uno">Arduino Uno</option>
+            <option value="nano">Arduino Nano</option>
+              </select>`,
             actions: [{
                 caption: "No Thank you",
                 cls: "js-dialog-close",
@@ -675,7 +683,8 @@ function selectMachine(type) {
 
                   var data = {
                     port: laststatus.comms.interfaces.activePort,
-                    file: 'grbl1.1f-acro.hex'
+                    file: 'grbl1.1f-acro.hex',
+                    board: $("#flashGrblController2").val()
                   }
                   socket.emit('flashGrbl', data)
                 }
@@ -738,7 +747,8 @@ function setMachineButton(type) {
 function flashGrblfromTroubleshooting() {
   var data = {
     port: $("#portUSB").val(),
-    file: $("#flashGrblHex").val()
+    file: $("#flashGrblHex").val(),
+    board: $("#flashGrblController").val()
   }
   socket.emit('flashGrbl', data)
 }
