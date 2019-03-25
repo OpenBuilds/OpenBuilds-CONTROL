@@ -54,8 +54,8 @@ function edit(i, evt) {
       </div>
       <div class="row mb-2">
           <label class="cell-sm-2">GCODE</label>
-          <div class="cell-sm-10">
-              <input id="macrogcode" type="text" value="` + gcode + `">
+          <div class="cell-sm-10" >
+              <textarea id="macrogcode" type="text" value="` + gcode + `" style="overflow-y: auto; max-height: 100px; resize: none;" rows="4"></textarea>
           </div>
       </div>
       <div class="row mb-2">

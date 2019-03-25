@@ -88,42 +88,52 @@ $(document).ready(function() {
 
   $('#dist01').on('click', function(ev) {
     jogdist = 0.1;
-    $('.jogdist').removeClass('fg-grayBlue')
+    $('.distbtn').removeClass('bd-openbuilds')
+    $('#dist01').addClass('bd-openbuilds')
+    $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist01label').removeClass('fg-gray')
-    $('#dist01label').addClass('fg-grayBlue')
+    $('#dist01label').addClass('fg-openbuilds')
   })
 
   $('#dist1').on('click', function(ev) {
     jogdist = 1;
-    $('.jogdist').removeClass('fg-grayBlue')
+    $('.distbtn').removeClass('bd-openbuilds')
+    $('#dist1').addClass('bd-openbuilds')
+    $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist1label').removeClass('fg-gray')
-    $('#dist1label').addClass('fg-grayBlue')
+    $('#dist1label').addClass('fg-openbuilds')
   })
 
   $('#dist10').on('click', function(ev) {
     jogdist = 10;
-    $('.jogdist').removeClass('fg-grayBlue')
+    $('.distbtn').removeClass('bd-openbuilds')
+    $('#dist10').addClass('bd-openbuilds')
+    $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist10label').removeClass('fg-gray')
-    $('#dist10label').addClass('fg-grayBlue')
+    $('#dist10label').addClass('fg-openbuilds')
   })
 
   $('#dist100').on('click', function(ev) {
     jogdist = 100;
-    $('.jogdist').removeClass('fg-grayBlue')
+    $('.distbtn').removeClass('bd-openbuilds')
+    $('#dist100').addClass('bd-openbuilds')
+    $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist100label').removeClass('fg-gray')
-    $('#dist100label').addClass('fg-grayBlue')
+    $('#dist100label').addClass('fg-openbuilds')
   })
 
   $('#dist500').on('click', function(ev) {
     jogdist = 500;
-    $('.jogdist').removeClass('fg-grayBlue')
+    $('.distbtn').removeClass('bd-openbuilds')
+    $('#dist500').addClass('bd-openbuilds')
+    $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist500label').removeClass('fg-gray')
-    $('#dist500label').addClass('fg-grayBlue')
+    $('#dist500label').addClass('fg-openbuilds')
   })
 
   $('#gotozeroWPos').on('click', function(ev) {

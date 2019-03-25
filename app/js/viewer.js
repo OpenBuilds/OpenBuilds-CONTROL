@@ -40,8 +40,8 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
 
   if (!xmin) xmin = 0;
   if (!ymin) ymin = 0;
-  if (!xmax) xmax = 200
-  if (!ymax) ymax = 200
+  if (!xmax) xmax = 207
+  if (!ymax) ymax = 207
 
   var sceneLights = new THREE.Group();
 

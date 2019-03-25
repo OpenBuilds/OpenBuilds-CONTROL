@@ -514,6 +514,7 @@ function initSocket() {
 };
 
 function selectPort() {
+  $('#consoletab').click();
   socket.emit('connectTo', 'usb,' + $("#portUSB").val() + ',' + '115200');
 };
 

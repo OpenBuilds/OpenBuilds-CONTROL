@@ -1,3 +1,4 @@
+v1.0.148: Multi-line Macros, Grbl Flashing tool: BlackBox added, Switch to Serial Console on-connect to help ease troubleshooting.
 v1.0.147: Updated lodash Dependancy, update AVRgirl Dependency, added Xpro support to the Grbl Flashing tools
 v1.0.146: Custom Machine profile, Tooltips for Grbl Settings, Alarm Unlock on Alarm Modal, Added Link to Forum on Troubleshooting tab, minor Cosmetics to 3D Viewer, Probe Macros/Console: Only show dialog when probed from Wizard, normal macro/console probes only log to Serial Console now
 v1.0.145: Updated SSL Certificates
