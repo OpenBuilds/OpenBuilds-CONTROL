@@ -5,7 +5,7 @@ function populateMacroButtons() {
   $("#macros").empty();
   for (i = 0; i < buttonsarray.length; i++) {
     var button = `
-    <button id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
+    <button id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
         <span class="tag"><span onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs"></span></span>
         <span class="caption">` + buttonsarray[i].title + `</span>
         <span class="` + buttonsarray[i].icon + ` icon"></span>
@@ -131,6 +131,8 @@ function edit(i, evt) {
   // fa iconpicker https://github.com/farbelous/fontawesome-iconpicker
   $('#macroicon').iconpicker(options);
   $("#macrocls").val(cls).trigger("change");
+  $('#macrogcode').val(gcode);
+
 
 }
 
