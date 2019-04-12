@@ -555,12 +555,14 @@ function sendGcode(gcode) {
 function feedOverride(step) {
   if (socket) {
     socket.emit('feedOverride', step);
+    $('#fro').data('slider').buff(((step - 10) * 100) / (200 - 10))
   }
 }
 
 function spindleOverride(step) {
   if (socket) {
     socket.emit('spindleOverride', step);
+    $('#tro').data('slider').buff(((step - 10) * 100) / (200 - 10))
   }
 }
 

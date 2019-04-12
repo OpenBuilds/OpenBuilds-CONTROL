@@ -1320,7 +1320,7 @@ io.on("connection", function(socket) {
           var delta;
 
           if (reqfro == 100) {
-            addQRealtime(String.fromCharCode(144));
+            addQRealtime(String.fromCharCode(0x90));
           } else if (curfro < reqfro) {
             // FRO Increase
             delta = reqfro - curfro
@@ -1328,14 +1328,26 @@ io.on("connection", function(socket) {
             var tens = Math.floor(delta / 10)
 
             console.log("need to send " + tens + " x10s increase")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(145));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(0x91));
+            // }
+            for (let i = 1; i < tens + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(0x91));
+                addQRealtime("?");
+              }, i * 50);
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s increase")
-            for (i = 0; i < ones; i++) {
-              addQRealtime(String.fromCharCode(147));
+            // for (i = 0; i < ones; i++) {
+            //   addQRealtime(String.fromCharCode(0x93));
+            // }
+            for (let i = 1; i < ones + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(0x93));
+                addQRealtime("?");
+              }, i * 50);
             }
           } else if (curfro > reqfro) {
             // FRO Decrease
@@ -1344,15 +1356,29 @@ io.on("connection", function(socket) {
 
             var tens = Math.floor(delta / 10)
             console.log("need to send " + tens + " x10s decrease")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(146));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(0x92));
+            // }
+            for (let i = 1; i < tens + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(0x92));
+                addQRealtime("?");
+              }, i * 50);
             }
+
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s decrease")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(148));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(0x94));
+            // }
+            for (let i = 1; i < ones + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(0x94));
+                addQRealtime("?");
+              }, i * 50);
             }
           }
+          addQRealtime("?");
           status.machine.overrides.feedOverride = reqfro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
           break;
         case 'smoothie':
@@ -1393,14 +1419,26 @@ io.on("connection", function(socket) {
             var tens = Math.floor(delta / 10)
 
             console.log("need to send " + tens + " x10s increase")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(154));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(154));
+            // }
+            for (let i = 1; i < tens + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(154));
+                addQRealtime("?");
+              }, i * 50);
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s increase")
-            for (i = 0; i < ones; i++) {
-              addQRealtime(String.fromCharCode(156));
+            // for (i = 0; i < ones; i++) {
+            //   addQRealtime(String.fromCharCode(156));
+            // }
+            for (let i = 1; i < ones + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(156));
+                addQRealtime("?");
+              }, i * 50);
             }
           } else if (cursro > reqsro) {
             // FRO Decrease
@@ -1409,16 +1447,29 @@ io.on("connection", function(socket) {
 
             var tens = Math.floor(delta / 10)
             console.log("need to send " + tens + " x10s decrease")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(155));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(155));
+            // }
+            for (let i = 1; i < tens + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(155));
+                addQRealtime("?");
+              }, i * 50);
             }
 
             var ones = delta - (10 * tens);
             console.log("need to send " + ones + " x1s decrease")
-            for (i = 0; i < tens; i++) {
-              addQRealtime(String.fromCharCode(157));
+            // for (i = 0; i < tens; i++) {
+            //   addQRealtime(String.fromCharCode(157));
+            // }
+            for (let i = 1; i < ones + 1; i++) {
+              setTimeout(function timer() {
+                addQRealtime(String.fromCharCode(157));
+                addQRealtime("?");
+              }, i * 50);
             }
           }
+          addQRealtime("?");
           status.machine.overrides.spindleOverride = reqsro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
           break;
         case 'smoothie':

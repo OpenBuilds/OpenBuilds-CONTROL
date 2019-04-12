@@ -3,21 +3,30 @@ var safeToUpdateSliders = true;
 
 $(document).ready(function() {
 
-  $("#frocell").hover(function() {
+  $(document).mousedown(function(e) {
     safeToUpdateSliders = false;
-    // console.log(safeToUpdateSliders)
-  }, function() {
+  }).mouseup(function(e) {
     safeToUpdateSliders = true;
-    // console.log(safeToUpdateSliders)
+  }).mouseleave(function(e) {
+    safeToUpdateSliders = true;
   });
 
-  $("#trocell").hover(function() {
-    safeToUpdateSliders = false;
-    // console.log(safeToUpdateSliders)
-  }, function() {
-    safeToUpdateSliders = true;
-    // console.log(safeToUpdateSliders)
-  });
+
+  // $("#frocell").hover(function() {
+  //   safeToUpdateSliders = false;
+  //   // console.log(safeToUpdateSliders)
+  // }, function() {
+  //   safeToUpdateSliders = true;
+  //   // console.log(safeToUpdateSliders)
+  // });
+  //
+  // $("#trocell").hover(function() {
+  //   safeToUpdateSliders = false;
+  //   // console.log(safeToUpdateSliders)
+  // }, function() {
+  //   safeToUpdateSliders = true;
+  //   // console.log(safeToUpdateSliders)
+  // });
 
   $("#xPos").click(function() {
     $("#xPos").hide()
