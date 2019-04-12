@@ -699,6 +699,7 @@ io.on("connection", function(socket) {
 
           if (status.comms.connectionStatus > 0) {
             console.log('WARN: Closing Port ' + port.path);
+            status.comms.connectionStatus = 0;
             stopPort();
           } else {
             console.log('ERROR: Machine connection not open!');
@@ -789,6 +790,7 @@ io.on("connection", function(socket) {
           'response': "PORT INFO: Port closed"
         }
         io.sockets.emit('data', output);
+        status.comms.connectionStatus = 0;
       }); // end port.onclose
 
       port.on("data", function(data) {
