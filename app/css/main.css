@@ -174,3 +174,7 @@ select{
   padding: 1000px;
   background-color: #fff
 }
+
+.macroedit:hover {
+    color: #CE352C !important;
+}

@@ -6,7 +6,7 @@ function populateMacroButtons() {
   for (i = 0; i < buttonsarray.length; i++) {
     var button = `
     <button id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
-        <span class="tag"><span onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs"></span></span>
+        <span class="tag"><span onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span></span>
         <span class="caption">` + buttonsarray[i].title + `</span>
         <span class="` + buttonsarray[i].icon + ` icon"></span>
     </button>`
