@@ -4,8 +4,12 @@ function populateMacroButtons() {
 
   $("#macros").empty();
   for (i = 0; i < buttonsarray.length; i++) {
+    // Handle old created buttons that didnt have a tooltip
+    if (!buttonsarray[i].tooltip) {
+      buttonsarray[i].tooltip = ""
+    };
     var button = `
-    <button id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
+    <button title="` + buttonsarray[i].tooltip + `" id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
         <span class="tag"><span onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span></span>
         <span class="caption">` + buttonsarray[i].title + `</span>
         <span class="` + buttonsarray[i].icon + ` icon"></span>
@@ -32,11 +36,13 @@ function edit(i, evt) {
     var title = buttonsarray[i].title;
     var gcode = buttonsarray[i].gcode;
     var cls = buttonsarray[i].class;
+    var tooltip = buttonsarray[i].tooltip;
   } else {
     var icon = "far fa-question-circle";
     var title = "";
     var gcode = "";
     var cls = "";
+    var tooltip = "";
   }
 
   var macroTemplate = `<form>
@@ -50,6 +56,12 @@ function edit(i, evt) {
           <label class="cell-sm-2">Label</label>
           <div class="cell-sm-10">
               <input id="macrotitle" type="text" value="` + title + `">
+          </div>
+      </div>
+      <div class="row mb-2">
+          <label class="cell-sm-2">Tooltip</label>
+          <div class="cell-sm-10">
+              <input id="macrotooltip" type="text" value="` + tooltip + `">
           </div>
       </div>
       <div class="row mb-2">
@@ -106,13 +118,15 @@ function edit(i, evt) {
             buttonsarray[seq].title = $('#macrotitle').val();
             buttonsarray[seq].gcode = $('#macrogcode').val();
             buttonsarray[seq].class = $('#macrocls').val();
+            buttonsarray[seq].tooltip = $('#macrotooltip').val();
             populateMacroButtons();
           } else {
             buttonsarray.push({
               title: $('#macrotitle').val(),
               icon: $('#macroicon').val(),
               gcode: $('#macrogcode').val(),
-              class: $('#macrocls').val()
+              class: $('#macrocls').val(),
+              tooltip: $('#macrotooltip').val()
             })
             populateMacroButtons();
           }
