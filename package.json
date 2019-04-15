@@ -51,9 +51,19 @@
       "installerSidebar": "build/installerSidebar.bmp",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
-    "fileAssociations":
-      [{"name":"GCODE File","ext":"gcode"}, {"name":"GCODE File","ext":"gc"}, {"name":"GCODE File","ext":"tap"}, {"name":"GCODE File","ext":"nc"}, {"name":"GCODE File","ext":"cnc"}]
-    ,
+    "fileAssociations": [
+      {
+        "ext": [
+          "gcode",
+          "gc",
+          "tap",
+          "nc",
+          "cnc"
+        ],
+        "description": "GCODE File",
+        "role": "none"
+      }
+    ],
     "files": [
       "**/*",
       "ssl/**/*",
