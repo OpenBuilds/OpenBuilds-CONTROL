@@ -54,15 +54,23 @@
     "fileAssociations": [
       {
         "ext": [
-          "gcode",
-          "gc",
-          "tap",
-          "nc",
+          "gcode"
+        ],
+        "ext": [
+          "gc"
+        ],
+        "ext": [
+          "tap"
+        ],
+        "ext": [
+          "nc"
+        ],
+        "ext": [
           "cnc"
         ],
         "description": "GCODE File",
         "role": "none"
-      }
+      },
     ],
     "files": [
       "**/*",
