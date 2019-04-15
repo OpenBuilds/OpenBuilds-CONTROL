@@ -741,7 +741,7 @@ function setMachineButton(type) {
     template = `<img src="img/mch/sphinx55.png"/>  Select Machine`
   }
   $('#context_toggle2').html(template);
-  $('#overlayimg').html(`<img src="img/mch/` + type + `.png" style="max-width:100%; max-height:100%;"/><span onclick="$('#grblTab').click()" style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs" style="text-shadow: 2px 2px 4px #cccccc;"></span>`)
+  $('#overlayimg').html(`<img src="img/mch/` + type + `.png" style="max-width:100%; max-height:100%;"/><span onclick="$('#grblTab').click()" style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs machineicon" style="text-shadow: 2px 2px 4px #cccccc;"></span>`)
 };
 
 function flashGrblfromTroubleshooting() {

@@ -1,3 +1,4 @@
+//v1.0.152
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 console.log("Starting OpenBuilds CONTROL v" + require('./package').version)
@@ -43,6 +44,7 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 const serialport = require('serialport');
 var SerialPort = serialport;
+const Readline = SerialPort.parsers.Readline;
 var md5 = require('md5');
 var ip = require("ip");
 var _ = require('lodash');
@@ -684,9 +686,12 @@ io.on("connection", function(socket) {
       console.log("Connecting via " + data[0] + " to " + data[1] + " at baud " + data[2]);
 
       port = new SerialPort(data[1], {
-        parser: serialport.parsers.readline('\n'),
         baudRate: parseInt(data[2])
       });
+
+      parser = port.pipe(new Readline({
+        delimiter: '\r\n'
+      }));
 
       port.on("error", function(err) {
         if (err.message != "Port is not open") {
@@ -708,7 +713,7 @@ io.on("connection", function(socket) {
 
       });
       port.on("open", function() {
-        console.log("PORT INFO: Connected to " + port.path + " at " + port.options.baudRate);
+        console.log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
           'command': 'connect',
           'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware"
@@ -780,7 +785,7 @@ io.on("connection", function(socket) {
 
         status.comms.connectionStatus = 2;
         status.comms.interfaces.activePort = port.path;
-        status.comms.interfaces.activeBaud = port.options.baudRate;
+        status.comms.interfaces.activeBaud = port.baudRate;
       }); // end port .onopen
 
       port.on("close", function() { // open errors will be emitted as an error event
@@ -793,7 +798,7 @@ io.on("connection", function(socket) {
         status.comms.connectionStatus = 0;
       }); // end port.onclose
 
-      port.on("data", function(data) {
+      parser.on("data", function(data) {
         var command = sentBuffer[0];
 
         // console.log('data:', data)
@@ -2065,34 +2070,65 @@ function isElectron() {
 }
 
 if (isElectron()) {
-  const shouldQuit = electronApp.makeSingleInstance((commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (jogWindow === null) {
-      createJogWindow();
-      jogWindow.show()
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    } else {
-      jogWindow.show()
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    }
-    // console.log('SingleInstance')
-    // console.log(commandLine)
-    var openFilePath = commandLine[1];
-    if (openFilePath !== "") {
-      // console.log(openFilePath);
-      readFile(openFilePath);
-    }
-  });
-
-  if (shouldQuit) {
+  const gotTheLock = electronApp.requestSingleInstanceLock()
+  if (!gotTheLock) {
     console.log("Already running! Check the System Tray")
     electronApp.exit(0);
     electronApp.quit();
+  } else {
+    electronApp.on('second-instance', (event, commandLine, workingDirectory) => {
+      //Someone tried to run a second instance, we should focus our window.
+      if (jogWindow === null) {
+        createJogWindow();
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      } else {
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      }
+      // console.log('SingleInstance')
+      // console.log(commandLine)
+      var openFilePath = commandLine[1];
+      if (openFilePath !== "") {
+        // console.log(openFilePath);
+        readFile(openFilePath);
+      }
+    })
+    // Create myWindow, load the rest of the app, etc...
+    app.on('ready', () => {})
   }
+
+  // Someone tried to run a second instance, we should focus our window.
+  // if (jogWindow === null) {
+  //   createJogWindow();
+  //   jogWindow.show()
+  //   jogWindow.setAlwaysOnTop(true);
+  //   jogWindow.focus();
+  //   jogWindow.setAlwaysOnTop(false);
+  // } else {
+  //   jogWindow.show()
+  //   jogWindow.setAlwaysOnTop(true);
+  //   jogWindow.focus();
+  //   jogWindow.setAlwaysOnTop(false);
+  // }
+  // // console.log('SingleInstance')
+  // // console.log(commandLine)
+  // var openFilePath = commandLine[1];
+  // if (openFilePath !== "") {
+  //   // console.log(openFilePath);
+  //   readFile(openFilePath);
+  // }
+
+
+  // if (shouldQuit) {
+  //   console.log("Already running! Check the System Tray")
+  //   electronApp.exit(0);
+  //   electronApp.quit();
+  // }
 
   if (electronApp) {
     // Module to create native browser window.

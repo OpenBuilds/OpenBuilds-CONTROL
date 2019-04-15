@@ -173,7 +173,7 @@ function initSocket() {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
       }
     }
-    $('#gcodesent').html("Queue: " + parseInt(data[0]));
+    $('#gcodesent').html("Job Queue: " + parseInt(data[0]));
 
     // calc percentage
     var left = parseInt(data[0])
