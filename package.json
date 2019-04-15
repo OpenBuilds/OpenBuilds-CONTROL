@@ -53,24 +53,35 @@
     },
     "fileAssociations": [
       {
-        "ext": [
-          "gcode"
-        ],
-        "ext": [
-          "gc"
-        ],
-        "ext": [
-          "tap"
-        ],
-        "ext": [
-          "nc"
-        ],
-        "ext": [
-          "cnc"
-        ],
+        "ext": "gcode",
+        "name": "GCODE File",
         "description": "GCODE File",
-        "role": "none"
+        "role": "Viewer"
       },
+      {
+        "ext": "gc",
+        "name": "GCODE File",
+        "description": "GCODE File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "tap",
+        "name": "GCODE File",
+        "description": "GCODE File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "nc",
+        "name": "GCODE File",
+        "description": "GCODE File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "cnc",
+        "name": "GCODE File",
+        "description": "GCODE File",
+        "role": "Viewer"
+      }
     ],
     "files": [
       "**/*",
