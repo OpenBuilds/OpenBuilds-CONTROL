@@ -69,23 +69,6 @@ $(document).ready(function() {
     // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
   }, false);
 
-  document.addEventListener('keydown', function(evt) {
-    if (evt.which === 123) {
-      try {
-        var focusedWindow = require('electron').remote.getCurrentWindow();
-        if (focusedWindow.isDevToolsOpened()) {
-          focusedWindow.closeDevTools();
-        } else {
-          focusedWindow.openDevTools();
-        }
-      } catch (error) {
-        console.warn(error);
-      }
-    } else if (evt.which === 116) {
-      location.reload();
-    }
-  });
-
   var fileOpen = document.getElementById('file');
   if (fileOpen) {
     fileOpen.addEventListener('change', readFile, false);

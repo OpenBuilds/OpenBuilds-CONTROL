@@ -11,23 +11,6 @@ $(document).ready(function() {
     safeToUpdateSliders = true;
   });
 
-
-  // $("#frocell").hover(function() {
-  //   safeToUpdateSliders = false;
-  //   // console.log(safeToUpdateSliders)
-  // }, function() {
-  //   safeToUpdateSliders = true;
-  //   // console.log(safeToUpdateSliders)
-  // });
-  //
-  // $("#trocell").hover(function() {
-  //   safeToUpdateSliders = false;
-  //   // console.log(safeToUpdateSliders)
-  // }, function() {
-  //   safeToUpdateSliders = true;
-  //   // console.log(safeToUpdateSliders)
-  // });
-
   $("#xPos").click(function() {
     $("#xPos").hide()
     $("#xPosInput").show().focus().val(laststatus.machine.position.work.x)
@@ -239,6 +222,75 @@ $(document).ready(function() {
   });
 
 });
+
+function changeStepSize(dir) {
+  if (jogdist == 0.1) {
+    if (dir == 1) {
+      jogdist = 1;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist1').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist1label').removeClass('fg-gray')
+      $('#dist1label').addClass('fg-openbuilds')
+    }
+    if (dir == -1) {
+      // do nothing
+    }
+  } else if (jogdist == 1) {
+    if (dir == 1) {
+      jogdist = 10;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist10').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist10label').removeClass('fg-gray')
+      $('#dist10label').addClass('fg-openbuilds')
+    }
+    if (dir == -1) {
+      jogdist = 0.1;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist01').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist01label').removeClass('fg-gray')
+      $('#dist01label').addClass('fg-openbuilds')
+    }
+  } else if (jogdist == 10) {
+    if (dir == 1) {
+      jogdist = 100;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist100').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist100label').removeClass('fg-gray')
+      $('#dist100label').addClass('fg-openbuilds')
+    }
+    if (dir == -1) {
+      jogdist = 1;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist1').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist1label').removeClass('fg-gray')
+      $('#dist1label').addClass('fg-openbuilds')
+    }
+  } else if (jogdist == 100) {
+    if (dir == 1) {
+      // do nothing
+    }
+    if (dir == -1) {
+      jogdist = 10;
+      $('.distbtn').removeClass('bd-openbuilds')
+      $('#dist10').addClass('bd-openbuilds')
+      $('.jogdist').removeClass('fg-openbuilds')
+      $('.jogdist').addClass('fg-gray')
+      $('#dist10label').removeClass('fg-gray')
+      $('#dist10label').addClass('fg-openbuilds')
+    }
+  }
+
+}
 
 function jog(dir, dist, feed = null) {
   if (feed) {
