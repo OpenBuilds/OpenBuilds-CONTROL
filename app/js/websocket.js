@@ -260,6 +260,10 @@ function initSocket() {
         for (i = 0; i < status.comms.interfaces.ports.length; i++) {
           string += "[" + status.comms.interfaces.ports[i].comName + "]"
         }
+
+        if (!status.comms.interfaces.ports.length) {
+          string += "[ No devices connected ]"
+        }
         printLog(string)
         laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
         populatePortsMenu();
@@ -530,6 +534,9 @@ function populatePortsMenu() {
     var port = friendlyPort(i)
     response += `<option value="` + laststatus.comms.interfaces.ports[i].comName + `">` + laststatus.comms.interfaces.ports[i].comName + " " + port.note + `</option>`;
   };
+  if (!laststatus.comms.interfaces.ports.length) {
+    response += `<option value="">Waiting for USB</option`
+  }
   response += `</optgroup></select>`
   var select = $("#portUSB").data("select");
   select.data(response);
