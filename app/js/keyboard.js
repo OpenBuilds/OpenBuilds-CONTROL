@@ -11,9 +11,13 @@ $(document).ready(function() {
       yM: "down", //Y-
       zP: "pageup", //Z+
       zM: "pagedown", //Z-
-      stepP: "+",
-      stepM: "-",
-      estop: 'esc'
+      stepP: "+", // Increase Step Size
+      stepM: "-", // Decrease Step Size
+      estop: "esc", // Abort / Emergency
+      playpause: "space", // Start, Pause, Resume
+      unlockAlarm: "end", // Clear Alarm
+      home: "home", // Home All
+      setzeroxyz: "insert" // Set ZERO XYZ
     }
   }
   bindKeys()
@@ -87,77 +91,128 @@ function bindKeys() {
       socket.emit('stop', true)
     });
   }
+  if (keyboardShortcuts.playpause.length) {
+    $(document).bind('keydown', keyboardShortcuts.playpause, function() {
+      if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
+        socket.emit('runJob', editor.getValue());
+      } else if (laststatus.comms.connectionStatus == 3) {
+        socket.emit('pause', true);
+      } else if (laststatus.comms.connectionStatus == 4) {
+        socket.emit('resume', true);
+      }
+    });
+  }
+  if (keyboardShortcuts.unlockAlarm.length) {
+    $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function() {
+      socket.emit('clearAlarm', 2);
+    });
+  }
+  if (keyboardShortcuts.home.length) {
+    $(document).bind('keydown', keyboardShortcuts.home, function() {
+      home();
+    });
+  }
+  if (keyboardShortcuts.setzeroxyz.length) {
+    $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function() {
+      sendGcode('G10 P1 L20 X0 Y0 Z0')
+    });
+  }
   localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
 }
 
 function keyboardShortcutsEditor() {
 
   var template = `
-  <form id="keyboardAssignmentForm">
-    <div class="row mb-1">
-      <label class="cell-sm-4">Instructions</label>
-      <div class="cell-sm-8">
-        Click below to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.
+  <div class="p-0 m-0" style="overflow-y: auto; height: calc(100vh - 430px);">
+    <form id="keyboardAssignmentForm">
+      <div class="row mb-1 ml-1 mr-1">
+        <div class="cell-sm-12">
+          <span class="text-small">Click below to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.</span>
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">E-Stop / Abort</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="stopnewKey" value="` + keyboardShortcuts.estop + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stopnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-stop fg-openbuilds fa-fw"></i> Stop / Abort</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="stopnewKey" value="` + keyboardShortcuts.estop + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stopnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog X-</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="xMnewKey" value="` + keyboardShortcuts.xM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#xMnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-play fg-openbuilds fa-fw"></i> Run / <i class="fas fa-pause fg-openbuilds fa-fw"></i> Pause</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="playPausenewKey" value="` + keyboardShortcuts.playpause + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#playPausenewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog X+</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="xPnewKey" value="` + keyboardShortcuts.xP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#xPnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-crosshairs fg-openbuilds fa-fw"></i> Setzero XYZ</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="setzeroxyznewKey" value="` + keyboardShortcuts.setzeroxyz + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#setzeroxyznewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog Y-</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="yMnewKey" value="` + keyboardShortcuts.yM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#yMnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-bell fg-openbuilds fa-fw"></i> Unlock Alarm</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="unlocknewKey" value="` + keyboardShortcuts.unlockAlarm + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#unlocknewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog Y+</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="yPnewKey" value="` + keyboardShortcuts.yP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#yPnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-home fg-openbuilds fa-fw"></i> Home</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="homenewKey" value="` + keyboardShortcuts.home + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#homenewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog Z-</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="zMnewKey" value="` + keyboardShortcuts.zM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#zMnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-left fg-red fa-fw"></i> Jog X-</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="xMnewKey" value="` + keyboardShortcuts.xM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#xMnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Jog Z+</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="zPnewKey" value="` + keyboardShortcuts.zP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#zPnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-right fg-red fa-fw"></i> Jog X+</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="xPnewKey" value="` + keyboardShortcuts.xP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#xPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Decrease Step Size</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="stepMnewKey" value="` + keyboardShortcuts.stepM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepMnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-down fg-green fa-fw"></i> Jog Y-</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="yMnewKey" value="` + keyboardShortcuts.yM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#yMnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-    <div class="row mb-1">
-      <label class="cell-sm-4">Increase Step Size</label>
-      <div class="cell-sm-5">
-        <input type="text" class="keyboardshortcutinput" readonly id="stepPnewKey" value="` + keyboardShortcuts.stepP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-up fg-green fa-fw"></i> Jog Y+</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="yPnewKey" value="` + keyboardShortcuts.yP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#yPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
       </div>
-    </div>
-  </form>`
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-down fg-blue fa-fw"></i>Jog Z-</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="zMnewKey" value="` + keyboardShortcuts.zM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#zMnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-arrow-up fg-blue fa-fw"></i> Jog Z+</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="zPnewKey" value="` + keyboardShortcuts.zP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#zPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="stepMnewKey" value="` + keyboardShortcuts.stepM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepMnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-plus fg-openbuilds fa-fw"></i> Increase Step Size</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="stepPnewKey" value="` + keyboardShortcuts.stepP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+    </form>
+  </div>`
 
   Metro.dialog.create({
-    title: "Customise Keyboard Shortcuts",
+    title: "<i class='far fa-keyboard fa-fw'></i> Customise Keyboard Shortcuts",
     content: template,
     width: 600,
     actions: [{
@@ -174,6 +229,10 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.stepP = $('#stepPnewKey').val()
           keyboardShortcuts.stepM = $('#stepMnewKey').val()
           keyboardShortcuts.estop = $('#stopnewKey').val()
+          keyboardShortcuts.playpause = $('#playPausenewKey').val()
+          keyboardShortcuts.unlockAlarm = $('#unlocknewKey').val()
+          keyboardShortcuts.home = $('#homenewKey').val()
+          keyboardShortcuts.setzeroxyz = $('#setzeroxyznewKey').val()
           bindKeys()
         }
       },
@@ -187,6 +246,7 @@ function keyboardShortcutsEditor() {
     ]
   });
   $('#keyboardAssignmentForm').bind('keydown', null, function(e) {
+    e.preventDefault();
     console.log(e)
     var newVal = "";
     if (e.altKey) {

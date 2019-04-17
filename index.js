@@ -52,6 +52,9 @@ var fs = require("fs");
 var formidable = require('formidable')
 var lastsentuploadprogress = 0;
 
+// interval for jog
+var realTimeJog
+
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
@@ -1620,7 +1623,7 @@ function readFile(path) {
 }
 
 function machineSend(gcode) {
-  // console.log("SENDING: " + gcode)
+  console.log("SENDING: " + gcode)
   if (port.isOpen) {
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length
