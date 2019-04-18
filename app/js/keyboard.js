@@ -1,6 +1,19 @@
-var keyboardShortcuts;
+var keyboardShortcuts = false;
+var allowContinuousJog;
 
 $(document).ready(function() {
+  if (localStorage.getItem('continuousJog')) {
+    if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
+      $('#continuousJogMenu').addClass('checked')
+      allowContinuousJog = true;
+      $('.distbtn').hide()
+    } else {
+      $('#continuousJogMenu').removeClass('checked')
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    }
+  }
+
   if (localStorage.getItem('keyboardShortcuts')) {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));
   } else {
@@ -21,11 +34,29 @@ $(document).ready(function() {
     }
   }
   bindKeys()
+
+
+  $('#continuousJogMenu').bind('click', function() {
+    if ($('#continuousJogMenu').hasClass('checked')) {
+      $('#continuousJogMenu').removeClass('checked')
+      localStorage.setItem('continuousJog', false);
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    } else {
+      $('#continuousJogMenu').addClass('checked')
+      localStorage.setItem('continuousJog', true);
+      allowContinuousJog = true;
+      $('.distbtn').hide();
+    }
+
+  })
 });
+
 
 function bindKeys() {
   // Clear all current binds
   $(document).unbind('keydown');
+  console.log("Refreshing Keybindings")
 
   // Bind for Electron Devtools
   document.addEventListener('keydown', function(evt) {
@@ -47,33 +78,125 @@ function bindKeys() {
 
   // Bind for Jog and Control Buttons
   if (keyboardShortcuts.xM.length) {
-    $(document).bind('keydown', keyboardShortcuts.xM, function() {
-      $('#xM').click()
+    $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "X-";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#xM').click();
+        }
+      } else {
+        $('#xM').click();
+      }
+    });
+    $(document).bind('keyup', keyboardShortcuts.xM, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.xP.length) {
-    $(document).bind('keydown', keyboardShortcuts.xP, function() {
-      $('#xP').click()
+    $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "X";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#xP').click();
+        }
+      } else {
+        $('#xP').click();
+      }
+
+    });
+    $(document).bind('keyup', keyboardShortcuts.xP, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.yM.length) {
-    $(document).bind('keydown', keyboardShortcuts.yM, function() {
-      $('#yM').click()
+    $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "Y-";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#yM').click();
+        }
+      } else {
+        $('#yM').click();
+      }
+
+    });
+    $(document).bind('keyup', keyboardShortcuts.yM, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.yP.length) {
-    $(document).bind('keydown', keyboardShortcuts.yP, function() {
-      $('#yP').click()
+    $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "Y";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#yP').click();
+        }
+      } else {
+        $('#yP').click();
+      }
+    });
+    $(document).bind('keyup', keyboardShortcuts.yP, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.zM.length) {
-    $(document).bind('keydown', keyboardShortcuts.zM, function() {
-      $('#zM').click()
+    $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "Z-";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#zM').click();
+        }
+      } else {
+        $('#zM').click();
+      }
+    });
+    $(document).bind('keyup', keyboardShortcuts.zM, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.zP.length) {
-    $(document).bind('keydown', keyboardShortcuts.zP, function() {
-      $('#zP').click()
+    $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
+      if (allowContinuousJog) {
+        if (!event.originalEvent.repeat) {
+          // startJog();
+          var direction = "Z";
+          var feed = $('#jograte').val();
+          socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+          $('#zP').click();
+        }
+      } else {
+        $('#zP').click();
+      }
+    });
+    $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
+      if (allowContinuousJog) {
+        cancelJog()
+      }
     });
   }
   if (keyboardShortcuts.stepM.length) {
@@ -197,13 +320,13 @@ function keyboardShortcutsEditor() {
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
-        <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size</label>
+        <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size<br><span class="text-small">For non-continious Jogging</span></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="stepMnewKey" value="` + keyboardShortcuts.stepM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepMnewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
-        <label class="cell-sm-6"><i class="fas fa-plus fg-openbuilds fa-fw"></i> Increase Step Size</label>
+        <label class="cell-sm-6"><i class="fas fa-plus fg-openbuilds fa-fw"></i> Increase Step Size<br><span class="text-small">For non-continious Jogging</span></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="stepPnewKey" value="` + keyboardShortcuts.stepP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>

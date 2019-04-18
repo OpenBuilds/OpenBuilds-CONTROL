@@ -142,40 +142,136 @@ $(document).ready(function() {
   });
 
   $('#xM').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('X', '-' + jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('X', '-' + jogdist, feedrate);
+    }
   })
 
   $('#xP').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('X', jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('X', jogdist, feedrate);
+    }
   })
 
   $('#yM').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('Y', '-' + jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Y', '-' + jogdist, feedrate);
+    }
   })
 
   $('#yP').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('Y', jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Y', jogdist, feedrate);
+    }
   })
 
   $('#zM').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('Z', '-' + jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Z', '-' + jogdist, feedrate);
+    }
   })
 
   $('#zP').on('click', function(ev) {
-    var dir = 'X-';
-    var feedrate = $('#jograte').val();
-    jog('Z', jogdist, feedrate);
+    if (!allowContinuousJog) {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Z', jogdist, feedrate);
+    }
   })
+
+  $('#xP').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "X";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#xP').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('#yM').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "Y-";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#yM').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('#yP').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "Y";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#yP').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('#zM').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "Z-";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#zM').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('#zP').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "Z";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#zP').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('#xM').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "X-";
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#xM').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
 
   $('#homeBtn').on('click', function(ev) {
     home();

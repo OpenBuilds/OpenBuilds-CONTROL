@@ -163,8 +163,8 @@
                   <span class="caption">Open<br>G-CODE</span>
                 </button>
                 <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                  <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" />Open GCODE from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a></li>
-                  <li class=""><a href="#" onclick="socket.emit('opencam', true);">Open browser to https://cam.openbuilds.com</a></li>
+                  <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> Open GCODE from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a></li>
+                  <li class=""><a href="#" onclick="socket.emit('opencam', true);"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.openbuilds.com</a></li>
                 </ul>
               </div>
 
@@ -265,13 +265,20 @@
                 <span class="caption grblmode">Jog<br>Widget</span>
               </button>
 
-              <button id="mobileBtn" class="ribbon-button" onclick="keyboardShortcutsEditor();">
-                <span class="icon">
-                  <i class="far fa-keyboard"></i>
-                </span>
-                <span class="caption grblmode">Keyboard<br>Shortcuts</span>
-              </button>
 
+              <div>
+                <button class="ribbon-button dropdown-toggle">
+                      <span class="icon">
+                            <i class="far fa-keyboard"></i>
+                      </span>
+                        <span class="caption grblmode">Keyboard<br>Shortcuts</span>
+                  </button>
+                <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                  <li id="continuousJogMenu"><a href="#"><i class="fas fa-running fa-fw"></i> Continuous Jogging Mode</a></li>
+                  <li class="divider"></li>
+                  <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customise Key Assignments</a></li>
+                </ul>
+              </div>
               <span class="title">Control</span>
             </div>
             <div class="group estop" style="width: 100px;">
@@ -499,15 +506,9 @@
                       </div>
                     </td>
                   </tr>
-                  <tr>
-                    <td colspan='3'>
-                      &nbsp;
-                    </td>
-                  </tr>
-
                 </table>
               </div>
-              <div class="cell">
+              <div class="cell border-left bd-lightGray">
                 <table class="jogtable">
                   <tr>
                     <td>
@@ -572,9 +573,6 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="4" style="height: 10px;"></td>
-                  </tr>
-                  <tr>
                     <td>
                       <button class="button light jogbtn distbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
@@ -605,20 +603,18 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="4">
-                      <div style="margin: 2px;">
-                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog Feedrate:" data-clear-button="false" value="5000" style="text-align: right;" />
-                      </div>
+                    <td colspan='4'>
+                      <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
                     </td>
                   </tr>
                 </table>
               </div>
-              <div class="cell" id="frocell">
+              <div class="cell border-left bd-lightGray" id="frocell">
                 <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="170" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%"
                   data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
               </div>
-              <div class="cell" id="trocell">
+              <div class="cell border-left bd-lightGray" id="trocell">
                 <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-vertical="true" data-size="170" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom" data-hint-mask="Tool: $1%"
                   data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
@@ -873,6 +869,7 @@
                   <i id="navbell" class="fas fa-bell fg-red" style="display: none;"></i>
                   <i class="far fa-bell"></i>
                 </span>
+              <span id="timeRemaining"></span>
               </span>
             </div>
           </div>
@@ -984,6 +981,9 @@
 <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
 
 <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
+<script>
+    METRO_HOTKEYS_FILTER_INPUT_ACCEPTING_ELEMENTS = false;
+</script>
 <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
 
 <script type="text/javascript" src="/lib/lodash.core.js"></script>

@@ -52,9 +52,6 @@ var fs = require("fs");
 var formidable = require('formidable')
 var lastsentuploadprogress = 0;
 
-// interval for jog
-var realTimeJog
-
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
@@ -1513,8 +1510,8 @@ io.on("connection", function(socket) {
     unpause();
   });
 
-  socket.on('stop', function() {
-    stop();
+  socket.on('stop', function(data) {
+    stop(data);
   });
 
   socket.on('clearAlarm', function(data) { // Clear Alarm
@@ -1623,7 +1620,7 @@ function readFile(path) {
 }
 
 function machineSend(gcode) {
-  console.log("SENDING: " + gcode)
+  // console.log("SENDING: " + gcode)
   if (port.isOpen) {
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length
@@ -1885,7 +1882,7 @@ function parseFeedback(data) {
 
       if (pins.includes('R')) {
         // abort
-        stop();
+        stop(true);
         var output = {
           'command': '[external from hardware]',
           'response': "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected), or DriverMinder on the xPROv4 detected a driver fault"
@@ -2359,7 +2356,7 @@ if (isElectron()) {
 }
 
 
-function stop() {
+function stop(hardstop) {
   if (status.comms.connectionStatus > 0) {
     status.comms.paused = true;
     console.log('STOP');
@@ -2372,8 +2369,10 @@ function stop() {
           console.log('Sent: Code(0x9E)');
         }
         console.log('Cleaning Queue');
-        addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-        console.log('Sent: Code(0x18)');
+        if (hardstop) {
+          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+          console.log('Sent: Code(0x18)');
+        }
         status.comms.connectionStatus = 2;
         break;
       case 'smoothie':

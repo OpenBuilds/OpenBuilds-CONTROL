@@ -168,13 +168,6 @@ function initSocket() {
     setMachineButton(data)
   });
   socket.on("queueCount", function(data) {
-    if (laststatus) {
-      if (laststatus.comms.connectionStatus == 3) {
-        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
-      }
-    }
-    $('#gcodesent').html("Job Queue: " + parseInt(data[0]));
-
     // calc percentage
     var left = parseInt(data[0])
     var total = parseInt(data[1])
@@ -184,7 +177,38 @@ function initSocket() {
     if (progressbar) {
       progressbar.val(donepercent);
     }
-    // }
+    if (laststatus) {
+      if (laststatus.comms.connectionStatus == 3) {
+        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
+      }
+      if (object && done > 0) {
+        var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
+        if (!isNaN(timeremain)) {
+          var mins_num = parseFloat(timeremain, 10); // don't forget the second param
+          var hours = Math.floor(mins_num / 60);
+          var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
+          var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
+
+          // Appends 0 when unit is less than 10
+          if (hours < 10) {
+            hours = "0" + hours;
+          }
+          if (minutes < 10) {
+            minutes = "0" + minutes;
+          }
+          if (seconds < 10) {
+            seconds = "0" + seconds;
+          }
+          var formattedTime = hours + ':' + minutes + ':' + seconds;
+          console.log('Remaining time: ', formattedTime)
+          // output formattedTime to UI here
+          $('#timeRemaining').html(" / " + formattedTime);
+        }
+      } else {
+        $('#timeRemaining').empty();
+      }
+    }
+    $('#gcodesent').html("Job Queue: " + parseInt(data[0]));
   })
 
   socket.on('toastErrorAlarm', function(data) {

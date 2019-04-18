@@ -1,4 +1,7 @@
-v1.0.153: Improved UI behavior on unplug all devices, added Keyboard Shortcuts
+v1.0.156: Added Job Time Remaining functionality
+v1.0.155: Added Continuous Jog Functionality (Enable from the Keyboard Shortcuts icon on the top toolbar) (BETA)
+v1.0.154: added Keyboard Shortcuts Frontend
+v1.0.153: Improved UI behavior on unplug all devices, added Keyboard Shortcuts Backend
 v1.0.152: Updated backend to node-serialPort 7.1.3, Updated Backend to Electron 4.0.5.
 v1.0.151: Macros: Added customizable tooltip, Macros: Edit button hover color, Fix UI for USB Unplug while connected.
 v1.0.150: Improvements to the Feedrate Override and Tool/Spindle/Laser Override Sliders
