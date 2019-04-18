@@ -56,7 +56,7 @@ $(document).ready(function() {
 function bindKeys() {
   // Clear all current binds
   $(document).unbind('keydown');
-  console.log("Refreshing Keybindings")
+  // console.log("Refreshing Keybindings")
 
   // Bind for Electron Devtools
   document.addEventListener('keydown', function(evt) {

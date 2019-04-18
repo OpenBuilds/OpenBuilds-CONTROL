@@ -141,8 +141,8 @@ function grblPopulate() {
               <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
               <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
               <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
-              <option value="3">[3] X:&#9898; Y:&#9898; Z:&#9899;</option>
-              <option value="4">[4] X:&#9899; Y:&#9899; Z:&#9898;</option>
+              <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
+              <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
               <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
               <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
               <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
@@ -174,8 +174,8 @@ function grblPopulate() {
             <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
             <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
             <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
-            <option value="3">[3] X:&#9898; Y:&#9898; Z:&#9899;</option>
-            <option value="4">[4] X:&#9899; Y:&#9899; Z:&#9898;</option>
+            <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
+            <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
             <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
             <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
             <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>

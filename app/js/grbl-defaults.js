@@ -705,43 +705,61 @@ function selectMachine(type) {
 };
 
 function setMachineButton(type) {
+  var overlaytype = "custom";
   if (type == "sphinx55") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Sphinx 55`
+    overlaytype = type;
   } else if (type == "sphinx1050") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Sphinx 1050`
+    overlaytype = type;
   } else if (type == "workbee1050") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Workbee 1050`
+    overlaytype = type;
   } else if (type == "workbee1010") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Workbee 1010`
+    overlaytype = type;
   } else if (type == "workbee1510") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Workbee 1510`
+    overlaytype = type;
   } else if (type == "acro55") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Acro 55`
+    overlaytype = type;
   } else if (type == "acro510") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Acro 510`
+    overlaytype = type;
   } else if (type == "acro1010") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Acro 1010`
+    overlaytype = type;
   } else if (type == "acro1510") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Acro 1510`
+    overlaytype = type;
   } else if (type == "acro1515") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Acro 1515`
+    overlaytype = type;
   } else if (type == "minimill") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds MiniMill`
+    overlaytype = type;
   } else if (type == "cbeam") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds C-Beam Machine`
+    overlaytype = type;
   } else if (type == "cbeamxl") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds C-Beam XL`
+    overlaytype = type;
   } else if (type == "leadmachine55") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Lead Machine 55`
+    overlaytype = type;
   } else if (type == "leadmachine1010") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Lead Machine 1010`
+    overlaytype = type;
   } else if (type == "custom") {
     template = `<img src="img/mch/` + type + `.png"/>  Custom Machine`
+    overlaytype = type;
   } else {
     template = `<img src="img/mch/sphinx55.png"/>  Select Machine`
+    overlaytype = "custom"
   }
   $('#context_toggle2').html(template);
-  $('#overlayimg').html(`<img src="img/mch/` + type + `.png" style="max-width:100%; max-height:100%;"/><span onclick="$('#grblTab').click()" style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs machineicon" style="text-shadow: 2px 2px 4px #cccccc;"></span>`)
+  $('#overlayimg').html(`<img src="img/mch/` + overlaytype + `.png" style="max-width:100%; max-height:100%;"/><span onclick="$('#grblTab').click()" style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs machineicon" style="text-shadow: 2px 2px 4px #cccccc;"></span>`)
 };
 
 function flashGrblfromTroubleshooting() {

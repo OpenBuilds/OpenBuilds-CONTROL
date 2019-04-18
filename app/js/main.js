@@ -20,9 +20,9 @@ function getChangelog() {
     $("#changelog").html(template2);
   });
 
-  if (!Metro.dialog.isOpen('#settingsmodal')) {
-    Metro.dialog.open('#splashModal')
-  }
+  // if (!Metro.dialog.isOpen('#settingsmodal')) {
+  //   Metro.dialog.open('#splashModal')
+  // }
 }
 
 $(document).ready(function() {
@@ -76,7 +76,7 @@ $(document).ready(function() {
 
 
   $.get("/gcode").done(function(data) {
-    console.log(data.length)
+    // console.log(data.length)
     if (data.length > 2) {
       editor.session.setValue(data);
       parseGcodeInWebWorker(data)
