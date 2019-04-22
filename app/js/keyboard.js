@@ -1,5 +1,4 @@
 var keyboardShortcuts = false;
-var allowContinuousJog;
 
 $(document).ready(function() {
   if (localStorage.getItem('continuousJog')) {
@@ -227,6 +226,7 @@ function bindKeys() {
   }
   if (keyboardShortcuts.unlockAlarm.length) {
     $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function() {
+      Metro.dialog.close($('.closeAlarmBtn').parent().parent());
       socket.emit('clearAlarm', 2);
     });
   }

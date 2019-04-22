@@ -165,7 +165,9 @@ function initSocket() {
 
 
   socket.on("machinename", function(data) {
-    setMachineButton(data)
+    if (setMachineButton) {
+      setMachineButton(data)
+    }
   });
   socket.on("queueCount", function(data) {
     // calc percentage
@@ -181,7 +183,7 @@ function initSocket() {
       if (laststatus.comms.connectionStatus == 3) {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
       }
-      if (object && done > 0) {
+      if (typeof object !== 'undefined' && done > 0) {
         var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
         if (!isNaN(timeremain)) {
           var mins_num = parseFloat(timeremain, 10); // don't forget the second param
@@ -212,13 +214,13 @@ function initSocket() {
   })
 
   socket.on('toastErrorAlarm', function(data) {
-    // console.log("toast", data)
+    console.log("toast", data)
     // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
     Metro.dialog.create({
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
       actions: [{
           caption: "Clear Alarm",
-          cls: "js-dialog-close alert",
+          cls: "js-dialog-close alert closeAlarmBtn",
           onclick: function() {
             socket.emit('clearAlarm', 2)
           }
@@ -565,7 +567,9 @@ function populatePortsMenu() {
   var select = $("#portUSB").data("select");
   select.data(response);
   var select2 = $("#portUSB2").data("select");
-  select2.data(response);
+  if (select2) {
+    select2.data(response);
+  }
   $('#portUSB').parent(".select").removeClass('disabled')
   $('#portUSB2').parent(".select").removeClass('disabled')
   $("#connectBtn").attr('disabled', false);

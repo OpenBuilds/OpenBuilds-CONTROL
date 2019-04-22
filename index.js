@@ -548,7 +548,7 @@ io.on("connection", function(socket) {
       }
     }
     if (safetosend != undefined && safetosend == true) {
-      socket.emit('grbl')
+      io.sockets.emit('grbl')
     }
   }
 
@@ -867,7 +867,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           console.log("GRBL detected");
           setTimeout(function() {
-            socket.emit('grbl')
+            io.sockets.emit('grbl')
           }, 600)
           // Start interval for status queries
           statusLoop = setInterval(function() {
@@ -909,7 +909,7 @@ io.on("connection", function(socket) {
           status.comms.blocked = false;
           send1Q();
         } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
-          // console.log("ALARM:  " + data)
+          console.log("ALARM:  " + data)
           status.comms.connectionStatus = 5;
           switch (status.machine.firmware.type) {
             case 'grbl':
@@ -918,7 +918,7 @@ io.on("connection", function(socket) {
               console.log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
               if (alarmCode != 5) {
-                socket.emit("toastErrorAlarm", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
+                io.sockets.emit("toastErrorAlarm", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
               }
               var output = {
                 'command': '',
@@ -949,7 +949,7 @@ io.on("connection", function(socket) {
                 'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]"
               }
               io.sockets.emit('data', output);
-              socket.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
+              io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
               break;
             case 'smoothie':
               var output = {

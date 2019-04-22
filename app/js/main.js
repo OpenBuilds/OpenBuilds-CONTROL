@@ -61,13 +61,16 @@ $(document).ready(function() {
     console.log(e.pageX, e.pageY)
   }
 
-  editor.container.addEventListener("contextmenu", function(e) {
-    console.log("context", e)
-    setposition(e);
-    e.preventDefault();
-    $('#linenumber').html((editor.getSelectionRange().start.row + 1));
-    // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
-  }, false);
+  if (editor) {
+    editor.container.addEventListener("contextmenu", function(e) {
+      console.log("context", e)
+      setposition(e);
+      e.preventDefault();
+      $('#linenumber').html((editor.getSelectionRange().start.row + 1));
+      // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
+    }, false);
+  }
+
 
   var fileOpen = document.getElementById('file');
   if (fileOpen) {

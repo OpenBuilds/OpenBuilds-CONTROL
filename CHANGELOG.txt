@@ -1,4 +1,4 @@
-v1.0.157: Fix Grbl settings invert display: Bug #66,
+v1.0.157: Fix Bug#66 -Grbl settings invert display: , Fix Bug#68 - Machine Image for Custom, Fix Bug#69 - Keyboard: disable bindings in Macro Inputs, Improvement: Keyboard Binding for UNLOCK will also close Alarm Dialog now. 
 v1.0.156: Added Job Time Remaining functionality
 v1.0.155: Added Continuous Jog Functionality (Enable from the Keyboard Shortcuts icon on the top toolbar) (BETA)
 v1.0.154: added Keyboard Shortcuts Frontend

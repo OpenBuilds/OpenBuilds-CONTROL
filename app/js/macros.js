@@ -49,31 +49,31 @@ function edit(i, evt) {
       <div class="row mb-2">
           <label class="cell-sm-2">Icon</label>
           <div class="cell-sm-10">
-              <input id="macroicon" type="text" value="` + icon + `">
+              <input id="macroicon" type="text" value="` + icon + `" data-editable="true">
           </div>
       </div>
       <div class="row mb-2">
           <label class="cell-sm-2">Label</label>
           <div class="cell-sm-10">
-              <input id="macrotitle" type="text" value="` + title + `">
+              <input id="macrotitle" type="text" value="` + title + `" data-editable="true">
           </div>
       </div>
       <div class="row mb-2">
           <label class="cell-sm-2">Tooltip</label>
           <div class="cell-sm-10">
-              <input id="macrotooltip" type="text" value="` + tooltip + `">
+              <input id="macrotooltip" type="text" value="` + tooltip + `" data-editable="true">
           </div>
       </div>
       <div class="row mb-2">
           <label class="cell-sm-2">GCODE</label>
           <div class="cell-sm-10" >
-              <textarea id="macrogcode" type="text" value="` + gcode + `" style="overflow-y: auto; max-height: 100px; resize: none;" rows="4"></textarea>
+              <textarea id="macrogcode" type="text" value="` + gcode + `" style="overflow-y: auto; max-height: 100px; resize: none;" rows="4"  data-editable="true"></textarea>
           </div>
       </div>
       <div class="row mb-2">
           <label class="cell-sm-2">Color</label>
           <div class="cell-sm-10">
-            <select data-role="select" id="macrocls">
+            <select data-role="select" id="macrocls"  data-editable="true">
               <option value="" selected>Default</option>
               <option value="primary">Blue</option>
               <option value="info">Light Blue</option>

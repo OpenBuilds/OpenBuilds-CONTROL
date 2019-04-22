@@ -1,3 +1,4 @@
+var allowContinuousJog;
 var jogdist = 10;
 var safeToUpdateSliders = true;
 
