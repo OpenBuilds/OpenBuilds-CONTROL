@@ -36,7 +36,6 @@
   <link rel="stylesheet" href="../lib/metro4/css/metro-all.css" />
   <link rel="stylesheet" href="../css/buttons.css" />
   <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="../css/mobilejog.css" />
 </head>
 
 <body>
@@ -44,32 +43,31 @@
 
   <div class="window" style="height: 100vh;">
     <div class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
-      <!-- <span class="icon mif-cog"></span> -->
       <span class="icon"><img src="../icon-transparent.png"/></span>
       <span class="title" id="windowtitle">OpenBuilds CONTROL</span>
       <div class="buttons" style="-webkit-app-region: no-drag">
-        <!-- <span class="btn-min" onclick="socket.emit('minimize')"></span>
-        <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimisetotray')"></span> -->
-        <!-- <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span> -->
       </div>
     </div>
     <div class="window-content" style="height: 100%; overflow: hidden  !important;">
 
-      <!-- <nav data-role="ribbonmenu" class="mt-1">
-        <ul class="tabs-holder">
-          <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
+      <nav data-role="ribbonmenu" class="mt-1">
+        <ul class="tabs-holder" style="display:none;">
+          <li><a href="#section-two"><i class="fas fa-fw fa-play"></i> Jog</a></li>
         </ul>
         <div class="content-holder">
           <div class="section" id="section-two">
             <div class="group">
-              <div class="form-group">
-
-
+              <div class="form-group inline-form">
+                <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
+                    <option value="">Waiting for USB</option>
+                </select>
+                <button class="button success mb-2 " onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
+                <button class="button alert mb-2" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
               </div>
               <span class="title">Machine Interface</span>
             </div>
             <div class="group estop">
-              <button class="ribbon-icon-button" onclick="socket.emit('clearAlarm', 2)">
+              <button class="button mb-2" onclick="socket.emit('clearAlarm', 2)">
                 <span class="icon">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
                     <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
@@ -78,159 +76,127 @@
                 </span>
                 <span class="caption">Unlock</span>
               </button>
-              <button class="ribbon-icon-button" onclick="socket.emit('stop', true)">
+              <button class="button mb-2" onclick="socket.emit('stop', true)">
                 <span class="icon">
                   <span class="fa-layers fa-fw">
                     <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
                     <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
                   </span>
                 </span>
-                <span class="caption">Stop</span>
+                <span class="caption">Abort</span>
               </button>
               <span class="title">E-Stop</span>
             </div>
           </div>
         </div>
-      </nav> -->
+      </nav>
 
+      <div style="overflow-y: auto; height: calc(100vh - 180px);">
 
-
-      <form class="inline-form bg-openbuilds p-1">
-        <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
-          <option value="">Waiting for USB</option>
-        </select>
-        <button class="button success" onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
-        <button class="button" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
-
-        <div class="estop">
-
-          <button class="button light ml-1" onclick="socket.emit('clearAlarm', 2)">
-            <span class="icon">
-              <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
-                <i class="far fa-bell"></i>
-              </span>
-            </span>
-            <span class="caption">Unlock</span>
-          </button>
-
-          <button class="button alert" onclick="socket.emit('stop', true)">
-            <span class="icon">
-              <span class="fa-layers fa-fw">
-                <!-- <i class="fas fa-circle fg-white" data-fa-transform="grow-8"></i> -->
-                <i class="far fa-hand-paper fg-white" data-fa-transform="grow-8 left-0.5"></i>
-              </span>
-            </span>
-            <span class="caption">Stop</span>
-          </button>
-        </div>
-      </form>
-
-
-      <center>
-        <table class="drotable">
-          <tr>
-            <td>
-              <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
+        <center>
+          <table class="drotable mt-2">
+            <tr>
+              <td>
+                <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
                 <span class="fa-layers fa-fw">
                   <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                   <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
                   <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                 </span>
               </button>
-            </td>
-            <td>
-              <div class="dro">
-                <div class="float-left fg-red" data-fa-transform="right-15">
-                  <span class="fa-layers fa-fw">
+              </td>
+              <td>
+                <div class="dro">
+                  <div class="float-left fg-red" data-fa-transform="right-15">
+                    <span class="fa-layers fa-fw">
                     <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
-                  <span class="fa-layers-text fg-red" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
-                  <!-- <span class="fa-layers-text fg-red" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
-                  </span>
+                    <span class="fa-layers-text fg-red" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
+                    <!-- <span class="fa-layers-text fg-red" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
+                    </span>
+                  </div>
+                  <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
+                  <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
                 </div>
-                <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
-                <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
-              </div>
-            </td>
-            <td>
-              <div class="pos-relative">
-                <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
-                <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                  <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
-                  <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Y0')" style="width: 60px;" data-role="ripple" data-ripple-color="#5de21b">
+              </td>
+              <td>
+                <div class="pos-relative">
+                  <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
+                  <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
+                    <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
+                    <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Y0')" style="width: 60px;" data-role="ripple" data-ripple-color="#5de21b">
                 <span class="fa-layers fa-fw">
                   <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                   <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
                   <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                 </span>
               </button>
-            </td>
-            <td>
-              <div class="dro">
-                <div class="float-left fg-green">
-                  <span class="fa-layers fa-fw">
+              </td>
+              <td>
+                <div class="dro">
+                  <div class="float-left fg-green">
+                    <span class="fa-layers fa-fw">
                     <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
-                  <span class="fa-layers-text fg-green" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
-                  </span>
+                    <span class="fa-layers-text fg-green" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
+                    </span>
+                  </div>
+                  <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
+                  <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
                 </div>
-                <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
-                <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
-              </div>
-            </td>
-            <td>
-              <div class="pos-relative">
-                <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
-                <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                  <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
-                  <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2">
+              </td>
+              <td>
+                <div class="pos-relative">
+                  <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
+                  <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
+                    <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
+                    <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2">
                 <span class="fa-layers fa-fw">
                   <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-8"></i>
                   <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
                   <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                 </span>
               </button>
-            </td>
-            <td>
-              <div class="dro">
-                <div class="float-left fg-blue">
-                  <span class="fa-layers fa-fw">
+              </td>
+              <td>
+                <div class="dro">
+                  <div class="float-left fg-blue">
+                    <span class="fa-layers fa-fw">
                     <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
-                  <span class="fa-layers-text fg-blue" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
-                  </span>
+                    <span class="fa-layers-text fg-blue" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
+                    </span>
+                  </div>
+                  <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
+                  <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
                 </div>
-                <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
-                <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
-              </div>
-            </td>
-            <td>
-              <div class="pos-relative">
-                <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
-                <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                  <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
-                  <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
-                  <li class="divider"></li>
-                  <!-- <li><a href="#" onclick="z0probe()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z0 Wizard</a></li> -->
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')" style="width: 60px;" data-role="ripple">
+              </td>
+              <td>
+                <div class="pos-relative">
+                  <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
+                  <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
+                    <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
+                    <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#" onclick="z0probe()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z0 Wizard</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0 Y0 Z0')" style="width: 60px;" data-role="ripple">
                 <span class="fa-layers fa-fw">
                   <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-18"></i>
                   <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-2" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -239,10 +205,10 @@
                   <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                 </span>
               </button>
-            </td>
-            <td>
-              <div class="pos-relative">
-                <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
+              </td>
+              <td>
+                <div class="pos-relative">
+                  <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
                   <span class="fa-layers fa-fw">
                     <i class="fas fa-chart-line fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                     <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-2 right-70"></i>
@@ -253,170 +219,149 @@
                   </span>
                 </button>
 
-                <ul class="d-menu context drop-shadow" data-role="dropdown">
-                  <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
-                  <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
-                </ul>
+                  <ul class="d-menu context drop-shadow" data-role="dropdown">
+                    <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
+                    <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
+                  </ul>
 
-              </div>
-            </td>
-            <td>
-              <div class="pos-relative">
-                <button class="button light jogbtn" style="width: 42px;"></i>
+                </div>
+              </td>
+              <td>
+                <div class="pos-relative">
+                  <button class="button light jogbtn" style="width: 42px;"></i>
                   <span class="fa-layers fa-fw">
                     <i class="fas fa-layer-group fg-openbuilds" data-fa-transform="shrink-2 up-3"></i>
                     <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="down-8"></i>
-                    <!-- <span class="fa-layers-text fg-grayBlue" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span> -->
+                    <!-- <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span> -->
                   </span>
                 </button>
-                <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                  <li><a href="#" onclick="sendGcode('G28')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G28)</a></li>
-                  <li><a href="#" onclick="sendGcode('G28.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G28.1)</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#" onclick="sendGcode('G30')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G30)</a></li>
-                  <li><a href="#" onclick="sendGcode('G30.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G30.1)</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </center>
+                  <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
+                    <li><a href="#" onclick="sendGcode('G28')"><span class="fas fa-layer-group fg-openbuilds icon"></span>Go to Pre-Defined Position (G28)</a></li>
+                    <li><a href="#" onclick="sendGcode('G28.1')"><span class="fas fa-tasks fg-openbuilds icon"></span>Set Pre-Defined Position (G28.1)</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#" onclick="sendGcode('G30')"><span class="fas fa-layer-group fg-openbuilds icon"></span>Go to Pre-Defined Position (G30)</a></li>
+                    <li><a href="#" onclick="sendGcode('G30.1')"><span class="fas fa-tasks fg-openbuilds icon"></span>Set Pre-Defined Position (G30.1)</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </center>
 
-      <nav data-role="ribbonmenu">
-        <ul class="tabs-holder">
-          <li><a href="#tab-buttons">Jog Buttons</a></li>
-          <li><a href="#tab-pad">Touchpad</a></li>
-        </ul>
+        <hr class="border-bottom bd-lightGray ml-4 mr-4" />
 
-        <div class="content-holder">
-          <div class="section" id="tab-buttons">
-            <div id="buttonview">
-              <center>
-                <table class="jogtable">
-                  <tr>
-                    <td>
-                    </td>
+        <div id="buttonview">
+          <center>
+            <table class="jogtable">
+              <tr>
+                <td>
+                </td>
 
-                    <td>
-                      <button class="button light square large jogbtn" id="yP">
+                <td>
+                  <button class="button light square large jogbtn" id="yP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
                     </span>
                   </button>
-                    </td>
+                </td>
 
-                    <td>
-                    </td>
+                <td>
+                </td>
 
 
-                    <td>
-                      <button class="button light square large jogbtn" id="zP">
+                <td>
+                  <button class="button light square large jogbtn" id="zP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
                     </span>
                   </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <button class="button light square large jogbtn" id="xM">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button class="button light square large jogbtn" id="xM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
                     </span>
                   </button>
-                    </td>
+                </td>
 
-                    <td>
-                      <button class="button light square large jogbtn" id="yM">
+                <td>
+                  <button class="button light square large jogbtn" id="yM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
                     </span>
                   </button>
-                    </td>
+                </td>
 
-                    <td>
-                      <button class="button light square large jogbtn" id="xP">
+                <td>
+                  <button class="button light square large jogbtn" id="xP">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
                     </span>
                   </button>
-                    </td>
-                    <td>
-                      <button class="button light square large jogbtn" id="zM">
+                </td>
+                <td>
+                  <button class="button light square large jogbtn" id="zM">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
                     </span>
                   </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <button class="button light jogbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button class="button light jogbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
                     <span class=" fa-layers fa-fw">
                       <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
                     </span>
                   </button>
-                    </td>
-                    <td>
-                      <button class="button light jogbtn" id="dist1" style="width: 100%; height: 30px; line-height: 28px;">
+                </td>
+                <td>
+                  <button class="button light jogbtn" id="dist1" style="width: 100%; height: 30px; line-height: 28px;">
                     <span class=" fa-layers fa-fw">
                       <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
                     </span>
                   </button>
-                    </td>
-                    <td>
-                      <button class="button light jogbtn" id="dist10" style="width: 100%; height: 30px; line-height: 28px;">
+                </td>
+                <td>
+                  <button class="button light jogbtn" id="dist10" style="width: 100%; height: 30px; line-height: 28px;">
                     <span class=" fa-layers fa-fw">
-                      <span id="dist10label" class="fa-layers-text fg-grayBlue jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
+                      <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
                     </span>
                   </button>
-                    </td>
-                    <td>
-                      <button class="button light jogbtn" id="dist100" style="width: 100%; height: 30px; line-height: 28px;">
+                </td>
+                <td>
+                  <button class="button light jogbtn" id="dist100" style="width: 100%; height: 30px; line-height: 28px;">
                     <span class=" fa-layers fa-fw">
                       <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
                     </span>
                   </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="4">
-                      <div style="margin: 2px;">
-                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog Feedrate:" data-clear-button="false" value="5000" style="text-align: right;" />
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </center>
-            </div>
-
-          </div>
-          <div class="section" id="tab-pad">
-            <div class="title_box" id="bill_to">
-              <div id="title"><small>Jog Touchpad</small></div>
-              <div id="svgview">
-              </div>
-            </div>
-          </div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <div style="margin: 2px;">
+                    <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog Feedrate:" data-clear-button="false" value="5000" style="text-align: right;" />
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </center>
         </div>
-      </nav>
-
-
-
-
-
+      </div>
 
       <div class="fixed-bottom">
         <div class="row">
           <div class="cell-3 p-1">
             <div>
-              <span class="badge inline bg-grayBlue fg-white" style="width: 100%;">
+              <span class="badge inline bg-openbuilds fg-white" style="width: 100%; font-size: 0.5em;">
                 <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
                   <i id="navbell" class="fas fa-bell fg-red" style="display: none;"></i>
                   <i class="far fa-bell"></i>
@@ -426,17 +371,17 @@
           </div>
           <div class="cell-3 p-1">
             <div>
-              <span class="badge inline bg-grayBlue fg-white" id="connectStatus" style="width: 100%;">Not Connected</span>
+              <span class="badge inline bg-openbuilds fg-white" id="connectStatus" style="width: 100%; font-size: 0.5em;">Not Connected</span>
             </div>
           </div>
           <div class="cell-3 p-1">
             <div>
-              <span class="badge inline bg-grayBlue fg-white" id="runStatus" style="width: 100%;">Not Connected</span>
+              <span class="badge inline bg-openbuilds fg-white" id="runStatus" style="width: 100%; font-size: 0.5em;">Not Connected</span>
             </div>
           </div>
           <div class="cell-3 p-1">
             <div>
-              <span class="badge inline bg-grayBlue fg-white" id="gcodesent" style="width: 100%;">Job Queue: 0</span>
+              <span class="badge inline bg-openbuilds fg-white" id="gcodesent" style="width: 100%; font-size: 0.5em;">Job Queue: 0</span>
             </div>
           </div>
         </div>

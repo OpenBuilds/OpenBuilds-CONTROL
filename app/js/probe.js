@@ -12,13 +12,18 @@ function z0probe() {
   }
 
   var z0probetemplate = `
+  <div class="p-0 m-0" style="overflow-y: auto; height: calc(100vh - 280px);">
    <table class="table">
-          <tr>
-            <td>
-              <img src="https://image.ibb.co/mPunnf/probe-info.png" alt="probe-info" height="300" style="border: 1px solid #f1f2f3;">
-            </td>
+          <tr>`
 
-            <td style="max-width: 300px;">
+  if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
+    z0probetemplate += `<td>
+                              <img src="https://image.ibb.co/mPunnf/probe-info.png" alt="probe-info" height="300" style="border: 1px solid #f1f2f3;">
+                            </td>
+                            `
+  }
+
+  z0probetemplate += `<td style="max-width: 300px;">
               <label>Travel Distance</label>
               <input id="z0traveldist" type="number" value="` + data.dist + `" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-v'></i>" data-clear-button="false">
               <small class="text-muted">This is how far (maximum) the Z-Probe will move downward</small>
@@ -40,6 +45,7 @@ function z0probe() {
             </td>
           </tr>
         </table>
+        </div>
   `
 
 

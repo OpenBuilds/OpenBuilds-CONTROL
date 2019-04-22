@@ -165,7 +165,7 @@ function initSocket() {
 
 
   socket.on("machinename", function(data) {
-    if (setMachineButton) {
+    if (typeof setMachineButton !== 'undefined') {
       setMachineButton(data)
     }
   });

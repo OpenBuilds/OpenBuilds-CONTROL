@@ -1,4 +1,4 @@
-#svgview {
+/* #svgview {
     /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
     height: 200px;
     width: calc(100vw - 30px);
@@ -50,4 +50,4 @@
 #qrcode canvas {
     display: block;
     margin: 0 auto;
-}
+} */
