@@ -355,7 +355,7 @@
       <div id="manualControlPanel">
         <center>
           <div id="jogcontrols" class="mt-1">
-            <div class="row flex-justify-center flex-align-center" style="width: 100%;">
+            <div class="row flex-justify-center flex-align-center" style="width: 100%; height: 100%;">
               <div class="cell">
                 <table class="drotable">
                   <tr>
@@ -509,6 +509,7 @@
                 </table>
               </div>
               <div class="cell border-left bd-lightGray">
+
                 <table class="jogtable">
                   <tr>
                     <td>
@@ -607,15 +608,23 @@
                       <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+
+                    </td>
+                  </tr>
                 </table>
               </div>
+
               <div class="cell border-left bd-lightGray" id="frocell">
-                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="170" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                <button class="button light mini mb-1" onclick="feedOverride(100);">reset</button>
+                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="150" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
                   data-hint-mask="Feed: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
               </div>
               <div class="cell border-left bd-lightGray" id="trocell">
-                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="170" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                <button class="button light mini  mb-1" onclick="spindleOverride(100);">reset</button>
+                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="150" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
                   data-hint-mask="Tool: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
               </div>
@@ -849,7 +858,7 @@
                 <div class="card-header  p-1 m-0">
                   <i class="fas fa-fw fa-history"></i> Changelog
                 </div>
-                <div class="card-content" style="height: calc(100vh - 780px); overflow-x: auto;">
+                <div class="card-content" style="height: calc(100vh - 680px); overflow-x: auto;">
                   <div id="changelog" class="text-small"></div>
                 </div>
               </div>

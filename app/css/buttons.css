@@ -11,6 +11,14 @@
   border: 1px solid lightgray;
 }
 
+#frocell button {
+  border: 1px solid lightgray;
+}
+
+#trocell button {
+  border: 1px solid lightgray;
+}
+
 .jogbtn:disabled {
   pointer-events:none;
 }
