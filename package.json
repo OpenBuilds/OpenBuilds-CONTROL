@@ -30,7 +30,8 @@
     "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
     "test": "echo \"Error: no test specified\" && exit 0",
     "dist": "build --ia32",
-    "distpi": "build --linux deb --armv7l"
+    "distpi": "build --linux deb --armv7l",
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
     "usb"
