@@ -1,3 +1,4 @@
+v1.0.160: Update MiniMill Grbl-defaults Profile to match New Video
 v1.0.159: Added Feedrate/Spindle Override Reset Buttons
 v1.0.158: Improvements to the Mobile Jog UI
 v1.0.157: Fix Bug#66 -Grbl settings invert display: , Fix Bug#68 - Machine Image for Custom, Fix Bug#69 - Keyboard: disable bindings in Macro Inputs, Improvement: Keyboard Binding for UNLOCK will also close Alarm Dialog now.
