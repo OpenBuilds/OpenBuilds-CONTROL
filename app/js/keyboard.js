@@ -80,7 +80,6 @@ function bindKeys() {
     $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
       if (allowContinuousJog) {
         if (!event.originalEvent.repeat) {
-          // startJog();
           var direction = "X-";
           var feed = $('#jograte').val();
           socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
@@ -100,7 +99,6 @@ function bindKeys() {
     $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
       if (allowContinuousJog) {
         if (!event.originalEvent.repeat) {
-          // startJog();
           var direction = "X";
           var feed = $('#jograte').val();
           socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
@@ -121,7 +119,6 @@ function bindKeys() {
     $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
       if (allowContinuousJog) {
         if (!event.originalEvent.repeat) {
-          // startJog();
           var direction = "Y-";
           var feed = $('#jograte').val();
           socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
@@ -210,7 +207,7 @@ function bindKeys() {
   }
   if (keyboardShortcuts.estop.length) {
     $(document).bind('keydown', keyboardShortcuts.estop, function() {
-      socket.emit('stop', true)
+      socket.emit('stop', false)
     });
   }
   if (keyboardShortcuts.playpause.length) {

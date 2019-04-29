@@ -429,7 +429,6 @@ function initSocket() {
 
     }
     $('#commstatus').html(string);
-    $('#runstatus').html(status.comms.runStatus);
     $('#drvqueue').html(status.comms.queue);
     // if (status.machine.firmware.buffer.length > 0) {
     //   $('#buffstatus').html(status.machine.firmware.buffer[0] + " blocks / " + status.machine.firmware.buffer[1] + " bytes");

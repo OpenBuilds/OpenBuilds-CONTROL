@@ -153,6 +153,7 @@ if (isElectron()) {
   var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local')
 }
 var uploadedgcode = ""; // var to store uploaded gcode
+var uploadedworkspace = ""; // var to store uploaded OpenBuildsCAM Workspace
 
 mkdirp(uploadsDir, function(err) {
   if (err) console.error(err)
@@ -195,6 +196,7 @@ var has4thAxis = false;
 
 var feedOverride = 100,
   spindleOverride = 100;
+
 
 //regex to identify MD5hash on sdupload later
 var re = new RegExp("^[a-f0-9]{32}");
@@ -470,7 +472,12 @@ app.get('/gcode', (req, res) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.send(uploadedgcode);
   }
+})
 
+app.get('/workspace', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.send(uploadedworkspace);
 })
 
 // File Post
@@ -1610,9 +1617,17 @@ function readFile(path) {
             uploadedgcode = "";
           }
           if (data) {
-            io.sockets.emit('gcodeupload', data);
-            uploadedgcode = data;
-            return data
+            if (path.endsWith('.obc')) { // OpenBuildsCAM Workspace
+              uploadedworkspace = data;
+              const {
+                shell
+              } = require('electron')
+              shell.openExternal('https://cam.openbuilds.com')
+            } else { // GCODE
+              io.sockets.emit('gcodeupload', data);
+              uploadedgcode = data;
+              return data
+            }
           }
         });
     }
@@ -2078,24 +2093,30 @@ if (isElectron()) {
   } else {
     electronApp.on('second-instance', (event, commandLine, workingDirectory) => {
       //Someone tried to run a second instance, we should focus our window.
-      if (jogWindow === null) {
-        createJogWindow();
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      } else {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
-      }
       // console.log('SingleInstance')
       // console.log(commandLine)
+
       var openFilePath = commandLine[1];
       if (openFilePath !== "") {
         // console.log(openFilePath);
         readFile(openFilePath);
+      }
+
+      if (openFilePath.endsWith('.obc')) {
+        //
+      } else {
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
       }
     })
     // Create myWindow, load the rest of the app, etc...
@@ -2356,20 +2377,25 @@ if (isElectron()) {
 }
 
 
-function stop(hardstop) {
+function stop(jog) {
   if (status.comms.connectionStatus > 0) {
     status.comms.paused = true;
     console.log('STOP');
     switch (status.machine.firmware.type) {
       case 'grbl':
-        addQRealtime('!'); // hold
-        console.log('Sent: !');
+        if (jog) {
+          addQRealtime(String.fromCharCode(0x85)); // canceljog
+          console.log('Sent: 0x85 Jog Cancel');
+        } else {
+          addQRealtime('!'); // hold
+          console.log('Sent: !');
+        }
         if (status.machine.firmware.version === '1.1d') {
           addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
           console.log('Sent: Code(0x9E)');
         }
         console.log('Cleaning Queue');
-        if (hardstop) {
+        if (!jog) {
           addQRealtime(String.fromCharCode(0x18)); // ctrl-x
           console.log('Sent: Code(0x18)');
         }
@@ -2451,6 +2477,24 @@ function unpause() {
   } else {
     console.log('ERROR: Machine connection not open!');
   }
+}
+
+function isJson(item) {
+  item = typeof item !== "string" ?
+    JSON.stringify(item) :
+    item;
+
+  try {
+    item = JSON.parse(item);
+  } catch (e) {
+    return false;
+  }
+
+  if (typeof item === "object" && item !== null) {
+    return true;
+  }
+
+  return false;
 }
 
 process.on('exit', () => console.log('exit'))

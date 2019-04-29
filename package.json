@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.160",
+  "version": "1.0.161",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -53,6 +53,12 @@
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "fileAssociations": [
+      {
+        "ext": "obc",
+        "name": "OpenBuilds CAM Workspace",
+        "description": "OpenBuilds CAM Workspace",
+        "role": "Viewer"
+      },
       {
         "ext": "gcode",
         "name": "GCODE File",
