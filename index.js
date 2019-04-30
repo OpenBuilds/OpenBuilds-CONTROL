@@ -2100,22 +2100,21 @@ if (isElectron()) {
       if (openFilePath !== "") {
         // console.log(openFilePath);
         readFile(openFilePath);
-      }
-
-      if (openFilePath.endsWith('.obc')) {
-        //
-      } else {
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
+        if (openFilePath.endsWith('.obc')) {
+          //
         } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
+          if (jogWindow === null) {
+            createJogWindow();
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          } else {
+            jogWindow.show()
+            jogWindow.setAlwaysOnTop(true);
+            jogWindow.focus();
+            jogWindow.setAlwaysOnTop(false);
+          }
         }
       }
     })
