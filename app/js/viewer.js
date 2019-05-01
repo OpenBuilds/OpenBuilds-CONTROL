@@ -614,6 +614,8 @@ function resetView(object) {
       viewExtents(helper);
     }
   } else {
-    viewExtents(object);
+    if (object.userData.lines.length > 1) {
+      viewExtents(object);
+    }
   }
 }

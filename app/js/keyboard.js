@@ -1,17 +1,30 @@
 var keyboardShortcuts = false;
-
+//
 $(document).ready(function() {
   if (localStorage.getItem('continuousJog')) {
     if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
-      $('#continuousJogMenu').addClass('checked')
+      $('#jogTypeContinuous').prop('checked', true)
       allowContinuousJog = true;
       $('.distbtn').hide()
     } else {
-      $('#continuousJogMenu').removeClass('checked')
+      $('#jogTypeContinuous').prop('checked', false)
       allowContinuousJog = false;
       $('.distbtn').show();
     }
   }
+
+  $('#jogTypeContinuous').on('click', function() {
+    if ($(this).is(':checked')) {
+      localStorage.setItem('continuousJog', true);
+      allowContinuousJog = true;
+      $('.distbtn').hide();
+    } else {
+      localStorage.setItem('continuousJog', false);
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    }
+  });
+
 
   if (localStorage.getItem('keyboardShortcuts')) {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));
@@ -34,21 +47,6 @@ $(document).ready(function() {
   }
   bindKeys()
 
-
-  $('#continuousJogMenu').bind('click', function() {
-    if ($('#continuousJogMenu').hasClass('checked')) {
-      $('#continuousJogMenu').removeClass('checked')
-      localStorage.setItem('continuousJog', false);
-      allowContinuousJog = false;
-      $('.distbtn').show();
-    } else {
-      $('#continuousJogMenu').addClass('checked')
-      localStorage.setItem('continuousJog', true);
-      allowContinuousJog = true;
-      $('.distbtn').hide();
-    }
-
-  })
 });
 
 
@@ -317,13 +315,13 @@ function keyboardShortcutsEditor() {
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
-        <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size<br><span class="text-small">For non-continious Jogging</span></label>
+        <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size<br><span class="text-small">For Incremental Jogging</span></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="stepMnewKey" value="` + keyboardShortcuts.stepM + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepMnewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
-        <label class="cell-sm-6"><i class="fas fa-plus fg-openbuilds fa-fw"></i> Increase Step Size<br><span class="text-small">For non-continious Jogging</span></label>
+        <label class="cell-sm-6"><i class="fas fa-plus fg-openbuilds fa-fw"></i> Increase Step Size<br><span class="text-small">For Incremental Jogging</span></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="stepPnewKey" value="` + keyboardShortcuts.stepP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>

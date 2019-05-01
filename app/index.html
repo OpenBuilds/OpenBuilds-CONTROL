@@ -11,8 +11,8 @@
   <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
   <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
   <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" />
-  <link rel="stylesheet" href="css/buttons.css" />
   <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
 </head>
 
 <body>
@@ -258,27 +258,26 @@
                 <span class="caption grblmode">Home<br>All</span>
               </button>
 
-              <button id="mobileBtn" class="ribbon-button" onclick="jogWidget();">
-                <span class="icon">
-                  <i class="fas fa-mobile-alt"></i>
-                </span>
-                <span class="caption grblmode">Jog<br>Widget</span>
-              </button>
-
 
               <div>
-                <button class="ribbon-button dropdown-toggle">
-                      <span class="icon">
-                            <i class="far fa-keyboard"></i>
+                <button id="" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-hat-wizard"></i>
                       </span>
-                        <span class="caption grblmode">Keyboard<br>Shortcuts</span>
-                  </button>
-                <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                  <li id="continuousJogMenu"><a href="#"><i class="fas fa-running fa-fw"></i> Continuous Jogging Mode</a></li>
-                  <li class="divider"></li>
-                  <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customise Key Assignments</a></li>
+                    </span>
+                    <span class="caption">Wizards<br>& Tools</span>
+                     <span class="badge  bg-red fg-white">New!</span>
+                </button>
+                <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
+                  <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
+                  <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
+                  <li class="divider fg-lightGray"></li>
+                  <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customise Shortcut Key Assignments</a></li>
                 </ul>
               </div>
+
+
               <span class="title">Control</span>
             </div>
             <div class="group estop" style="width: 100px;">
@@ -354,10 +353,17 @@
 
       <div id="manualControlPanel">
         <center>
-          <div id="jogcontrols" class="mt-1">
-            <div class="row flex-justify-center flex-align-center" style="width: 100%; height: 100%;">
+          <div id="jogcontrols" class="mt-2">
+            <div class="row flex-justify-center flex-align-start" style="width: 100%; height: 100%;">
               <div class="cell">
-                <table class="drotable">
+                <!-- <nav data-role="ribbonmenu" class="mt-2">
+                  <ul class="tabs-holder ml-17">
+                    <li><a href="#tab-mm">mm-mode</a></li>
+                    <li><a href="#tab-inch">inch-mode</a></li>
+
+                  </ul>
+                </nav> -->
+                <table class="drotable mt-0">
                   <tr>
                     <td>
                       <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
@@ -427,7 +433,7 @@
                     <td>
                       <button class="button light jogbtn" onclick="sendGcode( 'G10 P1 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2">
                         <span class="fa-layers fa-fw">
-                          <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-8"></i>
+                          <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                           <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
                           <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                         </span>
@@ -483,7 +489,7 @@
                         </button>
                         <ul class="d-menu context drop-shadow" data-role="dropdown">
                           <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
-                          <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
+                          <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Machine Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
                         </ul>
                       </div>
                     </td>
@@ -508,11 +514,12 @@
                   </tr>
                 </table>
               </div>
-              <div class="cell border-left bd-lightGray">
+              <div class="cell border-left bd-lightGray ">
 
                 <table class="jogtable">
                   <tr>
                     <td>
+
                     </td>
 
                     <td>
@@ -574,6 +581,24 @@
                     </td>
                   </tr>
                   <tr>
+                    <td colspan='4'>
+                      <table style="width: 100%;">
+                        <tr>
+                          <td><span class="text-small">Incremental Jog</span>
+                          </td>
+                          <td class="pb-1">
+                            <label class="toggle">
+                              <input type="checkbox" id="jogTypeContinuous"/>
+                              <div>app-notifition</div>
+                            </label>
+                          </td>
+                          <td><span class="text-small">Continuous Jog</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>
                       <button class="button light jogbtn distbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
                         <span class=" fa-layers fa-fw">
@@ -608,23 +633,18 @@
                       <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-
-                    </td>
-                  </tr>
                 </table>
               </div>
 
               <div class="cell border-left bd-lightGray" id="frocell">
                 <button class="button light mini mb-1" onclick="feedOverride(100);">reset</button>
-                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="150" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="190" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
                   data-hint-mask="Feed: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
               </div>
               <div class="cell border-left bd-lightGray" id="trocell">
                 <button class="button light mini  mb-1" onclick="spindleOverride(100);">reset</button>
-                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="150" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
+                <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="190" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true" data-hint-always="true" data-hint-position="bottom"
                   data-hint-mask="Tool: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
               </div>
@@ -632,7 +652,7 @@
           </div>
 
 
-          <div id="controlLogs" class="mt-1">
+          <div id="controlLogs" class="mt-0">
 
             <nav data-role="ribbonmenu">
               <ul class="tabs-holder">
@@ -662,13 +682,15 @@
 
                   <div class="fixed-bottom m-3 mb-9">
                     <!-- <form class="inline-form"> -->
+                    <button title="Update the 3D View with the edited GCODE" class="button success" onclick="parseGcodeInWebWorker(editor.getValue())"><i class="mif-3d-rotation fa-fw"></i> Update 3D View</button>&nbsp;
+                    <button title="Save GCODE to file" class="button primary" onclick="saveGcode();"><i class="fa fa-save icon"></i></button>&nbsp;
                     <button title="Find and Replace" class="button dark" onclick="editor.execCommand('replace')"><i class="fas fa-search"></i> Find/Replace</button>&nbsp;
                     <button title="Select All" class="button dark" onclick="editor.execCommand('selectall')"><i class="far fa-check-square"></i> Select All</button>&nbsp;
                     <button title="Undo" class="button dark" onclick="editor.execCommand('undo')"><i class="fas fa-undo"></i> Undo</button>&nbsp;
                     <button title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i> Redo</button>&nbsp;
                     <button title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>&nbsp;
                     <button title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>&nbsp;
-                    <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del');"><i class="fas fa-eraser"></i> Clear</button>&nbsp;
+                    <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del'); parseGcodeInWebWorker(editor.getValue());"><i class="fas fa-eraser"></i> Clear</button>&nbsp;
                     <!-- </form> -->
                   </div>
                 </div>
@@ -917,6 +939,86 @@
   <!--  -->
 
   <div id="hiddendivs" style="display:none;">
+
+    <div class="dialog" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
+      <div class="dialog-title">Flattening / Surfacing Tool</div>
+      <div class="dialog-content" style="height: calc(100% - 100px);">
+        <form>
+          <div class="row mb-2">
+
+            <div class="cell-sm-6">
+              <div class="row mb-2">
+                <label class="cell-sm-6">Router Bit Diameter</label>
+                <div class="cell-sm-6">
+                  <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="22" value="22">
+                  <small class="text-muted">Diameter of your bit / endmill</small>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="cell-sm-6">Stepover</label>
+                <div class="cell-sm-6">
+                  <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" placeholder="40" value="40">
+                  <small class="text-muted">Stepover between passes </small>
+                </div>
+              </div>
+
+              <div class="row mb-2 border-bottom bd-lightGray">
+                <label class="cell-sm-6">Feedrate</label>
+                <div class="cell-sm-6">
+                  <input id="surfaceFeedrate" type="number" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800">
+                  <small class="text-muted">Cutting speed</small>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="cell-sm-6">Width<br> <small class="text-muted">X-Axis</small></label>
+                <div class="cell-sm-6">
+                  <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="200" value="200">
+                </div>
+              </div>
+
+              <div class="row mb-2 border-bottom bd-lightGray">
+                <label class="cell-sm-6">Length<br> <small class="text-muted">Y-Axis</small></label>
+                <div class="cell-sm-6">
+                  <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="300" value="300">
+                  <small class="text-muted">Width and Length of the area to machine flat</small>
+                </div>
+              </div>
+
+              <div class="row mb-2 border-bottom bd-lightGray">
+                <label class="cell-sm-6">Skim Depth</label>
+                <div class="cell-sm-6">
+                  <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="2" value="2">
+                  <small class="text-muted">How much material to remove</small>
+                </div>
+              </div>
+
+            </div>
+            <div class="cell-sm-6">
+              <small class="text-muted">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation.  Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and uneven surface finish
+						</small>
+              <hr>
+
+              <small class="text-muted">You can use the Surfacing Tool to
+							<ul class="text-muted">
+								<li>Prepare / flatten your spoilboard</li>
+								<li>Level off stock</li>
+							</ul></small>
+              <hr>
+              <center>
+                <img src="https://i.ibb.co/Wfks2ry/diameter.png" alt="diameter" border="0" style="max-width: calc(100% - 10px); ">
+              </center>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="dialog-actions">
+        <button class="button success js-dialog-close" onclick="createSurfaceGcode()">Proceed</button>
+        <button class="button js-dialog-close">Cancel</button>
+      </div>
+    </div>
+
     <div class="dialog" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
       <div class="dialog-title">Update Ready</div>
       <div class="dialog-content">
@@ -1032,7 +1134,8 @@
 <script type="text/javascript" src="js/calibrate-y.js"></script>
 <script type="text/javascript" src="js/calibrate-z.js"></script>
 
-
 <script type="text/javascript" src="js/probe.js"></script>
+
+<script type="text/javascript" src="wizards/surfacing.js"></script>
 
 </html>

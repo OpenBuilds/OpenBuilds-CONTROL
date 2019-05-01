@@ -88,3 +88,74 @@
   background: rgba(164,206,249, 0.2);
   border: 1px solid rgb(164,206,249);
 }​
+
+
+/* CSS Mini SwitchCheckbox */
+/* <label class="toggle">
+        <input type="checkbox"/>
+        <div>app-notifition</div>
+      </label> */
+.disappear-from-screen, .toggle input {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.toggle-component {
+  margin-bottom: 3rem;
+}
+.toggle-component p {
+  margin: 0.7rem 0;
+}
+.toggle {
+  display: table;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  margin-bottom: 0px;
+}
+.toggle input:focus + div {
+  text-decoration: underline;
+}
+.toggle > div {
+  cursor: pointer;
+  border-radius: 14px;
+  width: 36px;
+  height: 17px;
+  background: white;
+  border: 1px solid lightgray;
+  user-select: none;
+  position: relative;
+  transition: 150ms ease-out;
+  font-size: 0;
+}
+.toggle > div:hover {
+  box-shadow: 0 0 4px #4a4e51;
+}
+.toggle > div:before {
+  will-change: translate;
+  display: block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  content: '';
+  width: 0.7rem;
+  height: 0.7rem;
+  background: #4a4e51;
+  border-radius: 50%;
+  transition: 150ms;
+}
+.toggle input:checked + div {
+  background: #fff;
+  border-color: #lightgray;
+}
+.toggle input:checked + div:before {
+  color: #4a4e51;
+  transform: translateX(19px);
+  background: #4a4e51;
+}
+
+
+/* End CSS mini Switch */

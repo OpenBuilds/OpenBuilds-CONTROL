@@ -3,7 +3,6 @@ var editor;
 var isJogWidget = false;
 
 function getChangelog() {
-
   $("#changelog").empty()
   var template2 = `<ul>`
   $.get("https://raw.githubusercontent.com/OpenBuilds/SW-Machine-Drivers/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
@@ -19,7 +18,6 @@ function getChangelog() {
     template2 += `</ul>`
     $("#changelog").html(template2);
   });
-
   // if (!Metro.dialog.isOpen('#settingsmodal')) {
   //   Metro.dialog.open('#splashModal')
   // }
@@ -188,3 +186,60 @@ var webgl = (function() {
     return false;
   }
 })();
+
+function saveGcode() {
+  var blob = new Blob([editor.getValue()], {
+    type: "plain/text"
+  });
+  invokeSaveAsDialog(blob, 'edited-gcode.gcode');
+}
+
+function invokeSaveAsDialog(file, fileName) {
+  if (!file) {
+    throw 'Blob object is required.';
+  }
+
+  if (!file.type) {
+    file.type = 'text/plain';
+  }
+
+  var fileExtension = file.type.split('/')[1];
+
+  if (fileName && fileName.indexOf('.') !== -1) {
+    var splitted = fileName.split('.');
+    fileName = splitted[0];
+    fileExtension = splitted[1];
+  }
+
+  var fileFullName = (fileName || (Math.round(Math.random() * 9999999999) + 888888888)) + '.' + fileExtension;
+
+  if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+    return navigator.msSaveOrOpenBlob(file, fileFullName);
+  } else if (typeof navigator.msSaveBlob !== 'undefined') {
+    return navigator.msSaveBlob(file, fileFullName);
+  }
+
+  var hyperlink = document.createElement('a');
+  hyperlink.href = URL.createObjectURL(file);
+  // hyperlink.target = '_blank';
+  hyperlink.download = fileFullName;
+
+  if (!!navigator.mozGetUserMedia) {
+    hyperlink.onclick = function() {
+      (document.body || document.documentElement).removeChild(hyperlink);
+    };
+    (document.body || document.documentElement).appendChild(hyperlink);
+  }
+
+  var evt = new MouseEvent('click', {
+    view: window,
+    bubbles: true,
+    cancelable: true
+  });
+
+  hyperlink.dispatchEvent(evt);
+
+  if (!navigator.mozGetUserMedia) {
+    URL.revokeObjectURL(hyperlink.href);
+  }
+}
