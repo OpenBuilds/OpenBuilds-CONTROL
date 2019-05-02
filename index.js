@@ -2101,7 +2101,7 @@ if (isElectron()) {
 
         // console.log(openFilePath);
         readFile(openFilePath);
-        if (openFilePath.length > 1) {
+        if (openFilePath !== undefined) {
           if (openFilePath.endsWith('.obc')) {
             //
           } else {
