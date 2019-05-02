@@ -2098,22 +2098,25 @@ if (isElectron()) {
 
       var openFilePath = commandLine[1];
       if (openFilePath !== "") {
+
         // console.log(openFilePath);
         readFile(openFilePath);
-        if (openFilePath.endsWith('.obc')) {
-          //
-        } else {
-          if (jogWindow === null) {
-            createJogWindow();
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
+        if (openFilePath.length > 1) {
+          if (openFilePath.endsWith('.obc')) {
+            //
           } else {
-            jogWindow.show()
-            jogWindow.setAlwaysOnTop(true);
-            jogWindow.focus();
-            jogWindow.setAlwaysOnTop(false);
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            }
           }
         }
       }

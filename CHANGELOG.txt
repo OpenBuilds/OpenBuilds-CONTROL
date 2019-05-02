@@ -1,3 +1,4 @@
+v1.0.164: BETA fix for odd JS bug that affected 1% of users
 v1.0.163: Surfacing Wizard, Move Switch for Incr/Conti Jog, Improvements to GCODE Editor and 3D view
 v1.0.162: Improved .OBC (OpenBuilds CAM) Handling
 v1.0.161: Associate .OBC (OpenBuilds CAM files)
