@@ -26,8 +26,8 @@ before_install:
 install:
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux deb AppImage; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install && build --mac ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  npm install && build --linux deb AppImage --publish always; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install && build --mac --publish always ; fi
 
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
