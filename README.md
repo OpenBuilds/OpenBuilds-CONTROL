@@ -1,13 +1,13 @@
 # SW-Machine-Drivers
 OpenBuilds CONTROL - Interface Driver for all CNC style machines (Grbl, Smoothieware)
 
-### Latest Version
-[![Latest Version]https://img.shields.io/github/package-json/v/openbuilds/sw-machine-drivers.svg)](https://github.com/OpenBuilds/SW-Machine-Drivers/releases/latest)]
-
-
 ## Download
 
-[![Downloads]https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)]
+#### Latest Version
+[![Latest Version](https://img.shields.io/github/package-json/v/openbuilds/sw-machine-drivers.svg)](https://github.com/OpenBuilds/SW-Machine-Drivers/releases/latest)
+
+#### Older Versions
+[![Downloads](https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)
 
 Download from [Github releases](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)
 
