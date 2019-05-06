@@ -16,3 +16,5 @@ Click to see all past releases:  [![Downloads](https://img.shields.io/github/dow
 
 ### TravisCI Build Status (Linux and Mac):
 [![Build status](https://travis-ci.org/OpenBuilds/SW-Machine-Drivers.svg?branch=master)](https://travis-ci.org/OpenBuilds/SW-Machine-Drivers)
+
+![Screenshot](https://raw.githubusercontent.com/OpenBuilds/OpenBuildsCONTROL/master/docs/control.PNG)
