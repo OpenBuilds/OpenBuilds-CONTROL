@@ -12,9 +12,9 @@ Click to see all past releases:  [![Downloads](https://img.shields.io/github/dow
 # Development:
 
 ### Appveyor Build Status (Windows):
-[![Build status](https://ci.appveyor.com/api/projects/status/xykahsa94sj2vdwl/branch/master?svg=true)](https://ci.appveyor.com/project/openbuilds-engineer/openBuilds-control/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/xykahsa94sj2vdwl/branch/master?svg=true)](https://ci.appveyor.com/project/openbuilds-engineer/sw-machine-drivers/branch/master)
 
 ### TravisCI Build Status (Linux and Mac):
-[![Build status](https://travis-ci.org/OpenBuilds/SW-Machine-Drivers.svg?branch=master)](https://travis-ci.org/OpenBuilds/sw-machine-drivers)
+[![Build status](https://travis-ci.org/OpenBuilds/OpenBuilds-CONTROL.svg?branch=master)](https://travis-ci.org/OpenBuilds/openbuilds-control)
 
 ![Screenshot](https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/docs/control.PNG)
