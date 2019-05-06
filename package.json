@@ -35,7 +35,7 @@
   "keywords": [
     "usb"
   ],
-  "repository": "https://github.com/OpenBuilds/SW-Machine-Drivers",
+  "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
   "build": {
     "icon": "build/icon.icns",
     "appId": "openbuilds.projectmakr",

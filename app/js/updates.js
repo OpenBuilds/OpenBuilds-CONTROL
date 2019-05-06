@@ -8,7 +8,7 @@ function checkUpdate() {
     setTimeout(function() {
       // console.log('checking for update')
       printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>Checking for Updates</span>")
-      $.getJSON("https://api.github.com/repos/OpenBuilds/SW-Machine-Drivers/releases/latest?client_id=fbbb80debc1197222169&client_secret=7dc6e463422e933448f9a3a4150c8d2bbdd0f87c").done(function(release) {
+      $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest?client_id=fbbb80debc1197222169&client_secret=7dc6e463422e933448f9a3a4150c8d2bbdd0f87c").done(function(release) {
         var availVersion = release.name.substr(1)
         var currentVersion = laststatus.driver.version
         // console.log(versionCompare(availVersion, currentVersion), availVersion, currentVersion);
