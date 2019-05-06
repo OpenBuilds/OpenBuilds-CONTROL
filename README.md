@@ -3,9 +3,7 @@ OpenBuilds CONTROL - Interface Driver for all CNC style machines (Grbl, Smoothie
 
 ## Download
 
-
-![Github All Releases](https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)
-
+[![Downloads](https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)
 
 Download from [Github releases](https://github.com/OpenBuilds/SW-Machine-Drivers/releases)
 
