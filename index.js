@@ -2086,6 +2086,7 @@ function isElectron() {
 
 if (isElectron()) {
   const gotTheLock = electronApp.requestSingleInstanceLock()
+  var lauchGUI = true;
   if (!gotTheLock) {
     console.log("Already running! Check the System Tray")
     electronApp.exit(0);
@@ -2095,31 +2096,36 @@ if (isElectron()) {
       //Someone tried to run a second instance, we should focus our window.
       // console.log('SingleInstance')
       // console.log(commandLine)
-
+      lauchGUI = true;
       var openFilePath = commandLine[1];
       if (openFilePath !== "") {
-
-        // console.log(openFilePath);
         readFile(openFilePath);
         if (openFilePath !== undefined) {
           if (openFilePath.endsWith('.obc')) {
-            //
+            lauchGUI = false;
           } else {
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            lauchGUI = true;
           }
         }
       }
+
+      if (lauchGUI) {
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      }
+
+
+
     })
     // Create myWindow, load the rest of the app, etc...
     app.on('ready', () => {})

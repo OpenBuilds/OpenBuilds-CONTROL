@@ -1,5 +1,7 @@
-v1.0.164: BETA fix for odd JS bug that affected 1% of users
-v1.0.163: Surfacing Wizard, Move Switch for Incr/Conti Jog, Improvements to GCODE Editor and 3D view
+v1.0.166: Fix for ElectronSecondInstance Behaviour and Updated SSL Certificates
+v1.0.165: Surfacing Wizard
+v1.0.164: Fix for odd JS bug that affected users in v1.0.161 and 10.0.162
+v1.0.163: Move Switch for Incr/Conti Jog, Improvements to GCODE Editor and 3D view
 v1.0.162: Improved .OBC (OpenBuilds CAM) Handling
 v1.0.161: Associate .OBC (OpenBuilds CAM files)
 v1.0.160: Update MiniMill Grbl-defaults Profile to match New Video
