@@ -9,6 +9,18 @@ function mmMode() {
   $('#dist1label').html('1mm')
   $('#dist10label').html('10mm')
   $('#dist100label').html('100mm')
+  if (jogdist == 0.254) {
+    jogdist = 0.1
+  }
+  if (jogdist == 2.54) {
+    jogdist = 1
+  }
+  if (jogdist == 25.4) {
+    jogdist = 10
+  }
+  if (jogdist == 254) {
+    jogdist = 100
+  }
 }
 
 function inMode() {
@@ -18,7 +30,7 @@ function inMode() {
   $('#dist10label').html('1"')
   $('#dist100label').html('10"')
   if (jogdist == 0.1) {
-    jogdist = .254
+    jogdist = 0.254
   }
   if (jogdist == 1) {
     jogdist = 2.54
