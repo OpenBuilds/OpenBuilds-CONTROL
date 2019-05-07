@@ -49,6 +49,8 @@ function grblSettings(data) {
   // $('#grblSaveBtn').removeAttr('disabled');
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
+  $('.grblCalibrationMenu').removeClass("disabled")
+
 
   if (grblParams['$22'] == 1) {
     $('#gotozeroMPos').removeClass('disabled')
@@ -506,30 +508,6 @@ function displayDirInvert() {
   $('#zdirinvert:checkbox').prop('checked', dir.z);
   checkifchanged();
 }
-
-// <div class="ribbon-group">
-//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=$'); refreshGrblSettings()">
-//     <span class="icon">
-//       <i class="fas fa-sliders-h"></i>
-//     </span>
-//     <span class="caption">Reset&nbsp;Settings</span>
-//   </button><br>
-//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=#'); refreshGrblSettings()">
-//     <span class="icon">
-//       <i class="fas fa-layer-group"></i>
-//     </span>
-//     <span class="caption">Reset&nbsp;WCOs</span>
-//   </button><br>
-//   <button class="ribbon-icon-button" onclick="sendGcode('$RST=*'); refreshGrblSettings()">
-//     <span class="icon">
-//       <i class="fas fa-microchip"></i>
-//     </span>
-//     <span class="caption">Reset&nbsp;EEPROM</span>
-//   </button>
-// </div>
-
-clearWCO
-clearSettings
 
 function clearSettings() {
   Metro.dialog.create({

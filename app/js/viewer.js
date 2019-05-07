@@ -117,12 +117,6 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
     side: THREE.DoubleSide
   });
 
-  // var skyMat = new THREE.MeshPhongMaterial({
-  //   color: 0x0000ff,
-  //   specular: 0x0000ff,
-  //   shininess: 00
-  // });
-
   sky = new THREE.Mesh(skyGeo, skyMat);
   sky.name = "Skydome"
   workspace.add(sky);

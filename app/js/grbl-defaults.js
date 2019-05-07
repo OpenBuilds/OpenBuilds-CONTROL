@@ -680,6 +680,7 @@ function selectMachine(type) {
                   $('#controlTab').click();
                   $('#consoletab').click();
                   $('#grblSettings').hide();
+                  $('.grblCalibrationMenu').addClass("disabled")
 
                   var data = {
                     port: laststatus.comms.interfaces.activePort,

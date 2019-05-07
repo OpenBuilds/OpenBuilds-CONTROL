@@ -1,5 +1,9 @@
 var keyboardShortcuts = false;
-//
+
+function cancelJog() {
+  socket.emit('stop', true)
+}
+
 $(document).ready(function() {
   if (localStorage.getItem('continuousJog')) {
     if (JSON.parse(localStorage.getItem('continuousJog')) == true) {

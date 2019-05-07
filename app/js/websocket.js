@@ -9,6 +9,7 @@ var laststatus
 var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
+var unit = " mm"
 
 $(document).ready(function() {
   initSocket();
@@ -46,25 +47,6 @@ function printLog(string) {
     $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
   }
 }
-
-// function printUpdateLog(string) {
-//   if (string.isString) {
-//     // split(/\r\n|\n|\r/);
-//     string = string.replace(/\r\n|\n|\r/, "<br />");
-//   }
-//   if ($('#console p').length > 100) {
-//     // remove oldest if already at 300 lines
-//     $('#console p').first().remove();
-//   }
-//   var template = '<p class="pf">';
-//   var time = new Date();
-//
-//   template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-//   template += string;
-//   $('#updateconsole').append(template);
-//   $('#updateconsole').scrollTop($("#updateconsole")[0].scrollHeight - $("#updateconsole").height());
-// }
-
 
 function initSocket() {
   socket = io.connect(server); // socket.io init
@@ -116,8 +98,6 @@ function initSocket() {
   socket.on('updateready', function(data) {
     $('#availVersion').html(data)
     Metro.dialog.open('#downloadUpdate')
-
-    // $('#applyupdatesbtn').prop('disabled', false);
   });
 
   socket.on('updateprogress', function(data) {
@@ -298,15 +278,6 @@ function initSocket() {
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-
-    // if (status.machine.firmware.state.units == "G20") {
-    //   var unit = " in"
-    // } else if (status.machine.firmware.state.units == "G21") {
-    //   var unit = " mm"
-    // } else {
-    var unit = " mm"
-    // }
-
     if (unit == " mm") {
       var xpos = status.machine.position.work.x + unit;
       var ypos = status.machine.position.work.y + unit;
@@ -345,11 +316,6 @@ function initSocket() {
         }
       }
     }
-
-    // $('#T0CurTemp').html(status.machine.temperature.actual.t0.toFixed(1) + " / " + status.machine.temperature.setpoint.t0.toFixed(1));
-    // $('#T1CurTemp').html(status.machine.temperature.actual.t1.toFixed(1) + " / " + status.machine.temperature.setpoint.t1.toFixed(1));
-    // $('#B0CurTemp').html(status.machine.temperature.actual.b.toFixed(1) + " / " + status.machine.temperature.setpoint.b.toFixed(1));
-    // setTemp(status.machine.temperature.actual.t0, status.machine.temperature.actual.t1, status.machine.temperature.actual.b)
 
     if (safeToUpdateSliders) {
       if ($('#fro').data('slider') && $('#tro').data('slider')) {
@@ -430,57 +396,12 @@ function initSocket() {
     }
     $('#commstatus').html(string);
     $('#drvqueue').html(status.comms.queue);
-    // if (status.machine.firmware.buffer.length > 0) {
-    //   $('#buffstatus').html(status.machine.firmware.buffer[0] + " blocks / " + status.machine.firmware.buffer[1] + " bytes");
-    // } else {
-    //   $('#buffstatus').html("NOCOMM");
-    // }
 
-    // if (status.machine.firmware.state) {
-    //   if (status.machine.firmware.state.workoffset.length) {
-    //     $('#wcostatus').html(status.machine.firmware.state.workoffset);
-    //   } else {
-    //     $('#wcostatus').html("NOCOMM");
-    //   }
-    //   if (status.machine.firmware.state.plane.length) {
-    //     $('#planestatus').html(status.machine.firmware.state.plane);
-    //   } else {
-    //     $('#planestatus').html("NOCOMM");
-    //   }
-    //   if (status.machine.firmware.state.absrel.length) {
-    //     if (status.machine.firmware.state.absrel == "G90") {
-    //       $('#absrel').html(status.machine.firmware.state.absrel + " (absolute)");
-    //     } else if (status.machine.firmware.state.absrel == "G91") {
-    //       $('#absrel').html(status.machine.firmware.state.absrel + " (relative)");
-    //     }
-    //   } else {
-    //     $('#absrel').html("NOCOMM");
-    //   }
-    //   if (status.machine.firmware.state.units.length) {
-    //     if (status.machine.firmware.state.units == "G20") {
-    //       $('#units').html(status.machine.firmware.state.units + " (inches)");
-    //       $('#dist01label').html("0.1in");
-    //       $('#dist1label').html("1in");
-    //       $('#dist10label').html("10in");
-    //       $('#dist100label').html("100in");
-    //     } else if (status.machine.firmware.state.units == "G21") {
-    //       $('#units').html(status.machine.firmware.state.units + " (mm)");
-    //       $('#dist01label').html("0.1mm");
-    //       $('#dist1label').html("1mm");
-    //       $('#dist10label').html("10mm");
-    //       $('#dist100label').html("100mm");
-    //     }
-    //   } else {
-    //     $('#units').html("NOCOMM");
-    //   }
-    //
     if (status.comms.interfaces.activePort) {
       $('#activeportstatus').html(status.comms.interfaces.activePort)
     } else {
       $('#activeportstatus').html("none")
     }
-    //
-    // }
 
     // Set the Connection Toolbar option
     setConnectBar(status.comms.connectionStatus, status);
@@ -579,12 +500,6 @@ function sendGcode(gcode) {
     socket.emit('runCommand', gcode);
   }
 }
-
-// function ContextLineRun() { //Rightclick Contextmenu in Ace editor: Send single line of gcode
-//   sendGcode(editor.session.getLine(editor.getSelectionRange().start.row));
-//   $('#editorContextMenu').hide();
-// }
-
 
 function feedOverride(step) {
   if (socket) {

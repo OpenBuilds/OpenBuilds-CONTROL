@@ -18,9 +18,6 @@ function getChangelog() {
     template2 += `</ul>`
     $("#changelog").html(template2);
   });
-  // if (!Metro.dialog.isOpen('#settingsmodal')) {
-  //   Metro.dialog.open('#splashModal')
-  // }
 }
 
 $(document).ready(function() {
