@@ -76,17 +76,22 @@ function applycalibrationy() {
   // newstepsval = currentsteps * (intended distance  / actual distance)
   var newsteps = currentstepspermm * (100 / actualdist);
   // alert("New Steps Per MM Value:  " + newsteps);
-  $('#val-101-input').val(newsteps)
-  checkifchanged();
+  // $('#val-101-input').val(newsteps)
+  // checkifchanged();
+  sendGcode("$101=" + newsteps.toFixed(3));
+  setTimeout(function() {
+    sendGcode(String.fromCharCode(0x18));
+  }, 500);
 }
 
 
 
 function ystepscalibrate() {
   Metro.dialog.create({
-    title: "Calibrate Steps per mm for Y-Axis ($101)",
+    title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for Y-Axis ($101)",
     content: ycaltemplate,
     width: 750,
+    clsDialog: 'dark',
     actions: [{
       caption: "Cancel",
       cls: "js-dialog-close",

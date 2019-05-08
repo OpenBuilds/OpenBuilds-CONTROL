@@ -1,3 +1,4 @@
+v1.0.167 (Coming soon): Improved Memory management for 3D Viewer, Added Inch Mode (Issue#59), Moved Steps/mm Calibration Tools to "Wizards and Tools" menu, Improved Grbl Flashing Tool and Moved to "Wizards and Tools"
 v1.0.166: Fix for ElectronSecondInstance Behaviour and Updated SSL Certificates
 v1.0.165: Surfacing Wizard
 v1.0.164: Fix for odd JS bug that affected users in v1.0.161 and 10.0.162

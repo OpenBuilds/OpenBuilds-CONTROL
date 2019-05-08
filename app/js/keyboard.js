@@ -362,6 +362,7 @@ function keyboardShortcutsEditor() {
     title: "<i class='far fa-keyboard fa-fw'></i> Customise Keyboard Shortcuts",
     content: template,
     width: 600,
+    clsDialog: 'dark',
     actions: [{
         caption: "Save and apply",
         cls: "js-dialog-close success",

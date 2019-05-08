@@ -75,15 +75,20 @@ function applycalibrationz() {
   // newstepsval = currentsteps * (intended distance  / actual distance)
   var newsteps = currentstepspermm * (50 / actualdist);
   // alert("New Steps Per MM Value:  " + newsteps);
-  $('#val-102-input').val(newsteps)
-  checkifchanged();
+  // $('#val-102-input').val(newsteps)
+  // checkifchanged();
+  sendGcode("$102=" + newsteps.toFixed(3));
+  setTimeout(function() {
+    sendGcode(String.fromCharCode(0x18));
+  }, 500);
 }
 
 function zstepscalibrate() {
   Metro.dialog.create({
-    title: "Calibrate Steps per mm for Z-Axis ($102)",
+    title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for Z-Axis ($102)",
     content: zcaltemplate,
     width: 750,
+    clsDialog: 'dark',
     actions: [{
       caption: "Cancel",
       cls: "js-dialog-close",

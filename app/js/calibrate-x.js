@@ -76,16 +76,21 @@ function applycalibrationx() {
   // newstepsval = currentsteps * (intended distance  / actual distance)
   var newsteps = currentstepspermm * (100 / actualdist);
   // alert("New Steps Per MM Value:  " + newsteps);
-  $('#val-100-input').val(newsteps)
-  checkifchanged();
+  // $('#val-100-input').val(newsteps)
+  // checkifchanged();
+  sendGcode("$100=" + newsteps.toFixed(3));
+  setTimeout(function() {
+    sendGcode(String.fromCharCode(0x18));
+  }, 500);
 }
 
 
 function xstepscalibrate() {
   Metro.dialog.create({
-    title: "Calibrate Steps per mm for X-Axis ($100)",
+    title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for X-Axis ($100)",
     content: xcaltemplate,
     width: 750,
+    clsDialog: 'dark',
     actions: [{
       caption: "Cancel",
       cls: "js-dialog-close",

@@ -24,6 +24,8 @@ worker.addEventListener('message', function(e) {
       resetView();
       // animate();
     }, 200);
+    $('#3dviewicon').removeClass('fa-pulse')
+    $('#3dviewlabel').html(' 3D View')
   }
 }, false);
 
@@ -34,6 +36,9 @@ function parseGcodeInWebWorker(gcode) {
   worker.postMessage({
     'data': gcode
   });
+  $('#3dviewicon').addClass('fa-pulse')
+  $('#3dviewlabel').html(' 3D View (rendering, please wait...)')
+
 };
 
 function simSpeed() {

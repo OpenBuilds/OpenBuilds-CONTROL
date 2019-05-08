@@ -560,6 +560,8 @@ io.on("connection", function(socket) {
             break;
         }
       }
+    } else {
+      io.sockets.emit('grbl')
     }
     if (safetosend != undefined && safetosend == true) {
       io.sockets.emit('grbl')

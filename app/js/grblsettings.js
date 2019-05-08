@@ -203,13 +203,6 @@ function grblPopulate() {
                   <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
                 </span>
               </button>
-              <button title="Fine Tune X-Axis Steps per mm" class="button " type="button" onclick="xstepscalibrate()">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-wrench" data-fa-transform="shrink-2"></i>
-                  <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Fine</span>
-                  <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Tune</span>
-                </span>
-              </button>
             </td>
           </tr>
 
@@ -225,13 +218,6 @@ function grblPopulate() {
                   <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
                 </span>
               </button>
-              <button title="Fine Tune Y-Axis Steps per mm" class="button " type="button" onclick="ystepscalibrate()">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-wrench" data-fa-transform="shrink-2"></i>
-                  <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Fine</span>
-                  <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Tune</span>
-                </span>
-              </button>
             </td>
           </tr>
 
@@ -245,13 +231,6 @@ function grblPopulate() {
                   <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
                   <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
                   <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
-                </span>
-              </button>
-              <button title="Fine Tune Z-Axis Steps per mm" class="button " type="button" onclick="zstepscalibrate()">
-                <span class="fa-layers fa-fw">
-                  <i class="fas fa-wrench" data-fa-transform="shrink-2"></i>
-                  <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Fine</span>
-                  <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Tune</span>
                 </span>
               </button>
             </td>

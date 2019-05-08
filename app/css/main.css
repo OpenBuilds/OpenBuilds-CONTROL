@@ -45,6 +45,10 @@ body {
     box-shadow: 0 0 2px 2px #ddd;
 }
 
+#console > p {
+  margin-top: 5px;
+}
+
 #console {
     /*font-family: "Courier New", Courier, monospace;*/
     font-family: "Lucida Console", Monaco, monospace;

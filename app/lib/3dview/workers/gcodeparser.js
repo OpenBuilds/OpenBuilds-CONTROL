@@ -15,15 +15,6 @@ self.addEventListener('message', function(e) {
 // Updated by PvdW in 2017 - Parse GCODE to find starting temperatures (preheat machine)
 // Updated by PvdW in 2018 - Webworker Version
 
-
-var colorG0 = 0x00cc00;
-var colorG1 = 0xcc0000;
-var colorG2 = 0x0000cc;
-var materialg0;
-var materialg1;
-var materialg2;
-var materialg3;
-
 var smaxvalue = 0;
 var lastLine = {
   x: 0,
@@ -98,24 +89,6 @@ function findmaxs(gcode) {
 }
 
 function openGCodeFromText(gcode) {
-
-  materialg0 = new THREE.LineBasicMaterial({
-    color: color = new THREE.Color(colorG0),
-    opacity: 0.5,
-    transparent: true
-  });
-  materialg1 = new THREE.LineBasicMaterial({
-    color: color = new THREE.Color(colorG0),
-    opacity: 0.5,
-    transparent: true
-  });
-  materialg2 = new THREE.LineBasicMaterial({
-    color: color = new THREE.Color(colorG0),
-    opacity: 0.5,
-    transparent: true
-  });
-
-
   smaxvalue = findmaxs(gcode);
   var object2 = new THREE.Group();
   // object = new THREE.Group();
@@ -777,17 +750,19 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
         if (p2.extruding) {
           //  color = 0xff00ff;
-          var material = materialg1
         } else if (p2.g0) {
           //  color = 0x00ff00;
-          var material = materialg0
         } else if (p2.g2) {
           //color = 0x999900;
-          var material = materialg2
         } else if (p2.arc) {
           //  color = 0x0033ff;
-          var material = materialg2
         }
+
+        var material = new THREE.LineBasicMaterial({
+          color: color,
+          opacity: 0.5,
+          transparent: true
+        });
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(
@@ -868,7 +843,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
       //  console.log("calculating distance. dist:", dist, "totalDist:", this.totalDist, "feedrate:", args.feedrate, "timeMinsToExecute:", timeMinutes, "totalTime:", this.totalTime, "p1:", p1, "p2:", p2, "args:", args);
 
-    } // End of AddSegment
+    }
     this.totalDist = 0;
     this.totalTime = 0;
 
