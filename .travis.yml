@@ -47,3 +47,4 @@ deploy:
     - "dist/*.dmg"
   on:
     tags: true
+  overwrite: true
