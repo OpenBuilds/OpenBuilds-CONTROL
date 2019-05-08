@@ -3,8 +3,22 @@ var jogdist = 10;
 var safeToUpdateSliders = true;
 
 
+
+$(document).ready(function() {
+  if (localStorage.getItem('unitsMode')) {
+    if (localStorage.getItem('unitsMode') == ' mm') {
+      mmMode()
+      $('#mmMode').click()
+    } else if (localStorage.getItem('unitsMode') == ' in') {
+      inMode();
+      $('#inMode').click()
+    }
+  }
+});
+
 function mmMode() {
   unit = ' mm';
+  localStorage.setItem('unitsMode', unit);
   $('#dist01label').html('0.1mm')
   $('#dist1label').html('1mm')
   $('#dist10label').html('10mm')
@@ -25,6 +39,7 @@ function mmMode() {
 
 function inMode() {
   unit = ' in';
+  localStorage.setItem('unitsMode', unit);
   $('#dist01label').html('0.01"')
   $('#dist1label').html('0.1"')
   $('#dist10label').html('1"')
