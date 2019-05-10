@@ -1,22 +1,31 @@
 function drawRuler(xmin, xmax, ymin, ymax, inches) {
 
+  var length1 = 4
+  var length5 = 6
+  var length10 = 7
+  var unitsval = ""
   if (inches) {
     xmin = Math.floor(xmin * 0.0393701);
     xmax = Math.ceil(xmax * 0.0393701);
     ymin = Math.floor(ymin * 0.0393701);
     ymax = Math.ceil(ymax * 0.0393701);
+    length1 = 1.4;
+    length5 = 1.6;
+    length10 = 1.7;
+    var unitsval = "in"
   }
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
     color: 0x888888
   });
+
   material.opacity = 0.15;
 
   // x axis
   for (i = xmin; i <= xmax; i++) {
     var geometry = new THREE.Geometry();
     geometry.vertices.push(new THREE.Vector3(i, -1, 0));
-    geometry.vertices.push(new THREE.Vector3(i, -4, 0));
+    geometry.vertices.push(new THREE.Vector3(i, -length1, 0));
     var line = new THREE.Line(geometry, material);
     // line.translateX(-xmax / 2)
     // line.translateY(-ymax / 2)
@@ -27,7 +36,7 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
     if (i % 5 == 0) {
       var geometry = new THREE.Geometry();
       geometry.vertices.push(new THREE.Vector3(i, -1, 0));
-      geometry.vertices.push(new THREE.Vector3(i, -6, 0));
+      geometry.vertices.push(new THREE.Vector3(i, -length5, 0));
       var line = new THREE.Line(geometry, material);
       // line.translateX(-xmax / 2)
       // line.translateY(-ymax / 2)
@@ -39,7 +48,7 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
     if (i % 10 == 0) {
       var geometry = new THREE.Geometry();
       geometry.vertices.push(new THREE.Vector3(i, -1, 0));
-      geometry.vertices.push(new THREE.Vector3(i, -7, 0));
+      geometry.vertices.push(new THREE.Vector3(i, -length10, 0));
       var line = new THREE.Line(geometry, material);
       // line.translateX(-xmax / 2)
       // line.translateY(-ymax / 2)
@@ -52,7 +61,7 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
     if (i % 5 == 0) {
       var geometry = new THREE.Geometry();
       geometry.vertices.push(new THREE.Vector3(-1, i, 0));
-      geometry.vertices.push(new THREE.Vector3(-6, i, 0));
+      geometry.vertices.push(new THREE.Vector3(-length5, i, 0));
       var line = new THREE.Line(geometry, material);
       // line.translateX(-ymax / 2)
       // line.translateY(-ymax / 2)
@@ -64,7 +73,7 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
     if (i % 10 == 0) {
       var geometry = new THREE.Geometry();
       geometry.vertices.push(new THREE.Vector3(-1, i, 0));
-      geometry.vertices.push(new THREE.Vector3(-7, i, 0));
+      geometry.vertices.push(new THREE.Vector3(-length10, i, 0));
       var line = new THREE.Line(geometry, material);
       // line.translateX(-ymax / 2)
       // line.translateY(-ymax / 2)
@@ -75,11 +84,21 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
   for (i = ymin; i <= ymax; i++) {
     var geometry = new THREE.Geometry();
     geometry.vertices.push(new THREE.Vector3(-1, i, 0));
-    geometry.vertices.push(new THREE.Vector3(-4, i, 0));
+    geometry.vertices.push(new THREE.Vector3(-length1, i, 0));
     var line = new THREE.Line(geometry, material);
     // line.translateX(-ymax / 2)
     // line.translateY(-ymax / 2)
     ruler.add(line);
+  }
+
+  var fontsize = 4
+  if (inches) {
+    fontsize = Math.ceil(4 * 0.0393701);
+  }
+
+  var spacing = -10
+  if (inches) {
+    spacing = -3;
   }
 
   var x = [];
@@ -88,11 +107,11 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
     if (i % 10 == 0) {
       x[i] = this.makeSprite(this.scene, "webgl", {
         x: i,
-        y: -10,
+        y: spacing,
         z: 0,
-        text: i,
+        text: i + unitsval,
         color: "#cc0000",
-        size: 4
+        size: fontsize
       });
       ruler.add(x[i]);
     }
@@ -101,12 +120,12 @@ function drawRuler(xmin, xmax, ymin, ymax, inches) {
   for (var i = ymin; i <= ymax; i++) {
     if (i % 10 == 0) {
       y[i] = this.makeSprite(this.scene, "webgl", {
-        x: -10,
+        x: spacing,
         y: i,
         z: 0,
-        text: i,
+        text: i + unitsval,
         color: "#006600",
-        size: 4
+        size: fontsize
       });
       ruler.add(y[i]);
     }

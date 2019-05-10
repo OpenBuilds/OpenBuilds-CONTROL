@@ -144,13 +144,13 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
 }
 
 function redrawGrid(xmin, xmax, ymin, ymax, inches) {
-
   if (inches) {
     xmin = Math.floor(xmin * 25.4);
     xmax = Math.ceil(xmax * 25.4);
     ymin = Math.floor(ymin * 25.4);
     ymax = Math.ceil(ymax * 25.4);
   }
+  console.log(xmin, xmax, ymin, ymax, inches)
 
   sizexmax = xmax;
   sizeymax = ymax;
@@ -200,15 +200,15 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   axesgrp.add(xlbl);
   axesgrp.add(ylbl);
 
-  var unitslabel = this.makeSprite(this.scene, "webgl", {
-    x: xmin - offset,
-    y: ymin - offset,
-    z: 0,
-    text: unitsval,
-    color: "#888888",
-    size: size
-  });
-  axesgrp.add(unitslabel);
+  // var unitslabel = this.makeSprite(this.scene, "webgl", {
+  //   x: xmin - offset,
+  //   y: ymin - offset,
+  //   z: 0,
+  //   text: unitsval,
+  //   color: "#888888",
+  //   size: size
+  // });
+  // axesgrp.add(unitslabel);
   //axesgrp.add(zlbl); Laser don't have Z - but CNCs do
 
   var materialX = new THREE.LineBasicMaterial({
@@ -273,10 +273,6 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   var ruler = drawRuler(xmin, xmax, ymin, ymax, inches)
   gridsystem.add(grid);
   gridsystem.add(ruler);
-
-  if (inches) {
-    gridsystem.scale.multiplyScalar(0.0393701);
-  }
 
 }
 

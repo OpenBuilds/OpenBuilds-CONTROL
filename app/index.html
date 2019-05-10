@@ -635,7 +635,12 @@
                   </tr>
                   <tr>
                     <td colspan='4'>
-                      <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
+                      <div id="jogratemmdiv">
+                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
+                      </div>
+                      <div id="jograteinchdiv">
+                        <input id="jograteinch" type="number" min="1" max="5000" step="10" placeholder="196" data-role="input" data-prepend="Jog:" data-append="in/min" data-clear-button="false" value="196" style="text-align: right;" />
+                      </div>
                     </td>
                   </tr>
                 </table>

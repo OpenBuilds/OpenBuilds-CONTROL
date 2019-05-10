@@ -81,7 +81,7 @@ function bindKeys() {
   if (keyboardShortcuts.xM.length) {
     $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
       if (allowContinuousJog) {
-        if (e.target.tagName == 'TEXTAREA')
+        if (event.target.tagName == 'TEXTAREA')
           return;
         if (!event.originalEvent.repeat) {
           var direction = "X-";
@@ -102,7 +102,7 @@ function bindKeys() {
   if (keyboardShortcuts.xP.length) {
     $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
       if (allowContinuousJog) {
-        if (e.target.tagName == 'TEXTAREA')
+        if (event.target.tagName == 'TEXTAREA')
           return;
         if (!event.originalEvent.repeat) {
           var direction = "X";
@@ -124,7 +124,7 @@ function bindKeys() {
   if (keyboardShortcuts.yM.length) {
     $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
       if (allowContinuousJog) {
-        if (e.target.tagName == 'TEXTAREA')
+        if (event.target.tagName == 'TEXTAREA')
           return;
         if (!event.originalEvent.repeat) {
           var direction = "Y-";

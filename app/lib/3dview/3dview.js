@@ -14,6 +14,11 @@ worker.addEventListener('message', function(e) {
   object = loader.parse(JSON.parse(e.data));
   if (object && object.userData.lines.length > 1) {
     scene.add(object);
+    if (object.userData.inch) {
+      object.scale.x = 25.4
+      object.scale.y = 25.4
+      object.scale.z = 25.4
+    }
     redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
     // animate();
     setTimeout(function() {

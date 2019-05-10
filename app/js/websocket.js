@@ -9,7 +9,7 @@ var laststatus
 var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
-var unit = " mm"
+var unit = "mm"
 
 $(document).ready(function() {
   initSocket();
@@ -164,7 +164,9 @@ function initSocket() {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
       }
       if (typeof object !== 'undefined' && done > 0) {
-        var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
+        if (object.userData !== 'undefined') {
+          var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
+        }
         if (!isNaN(timeremain)) {
           var mins_num = parseFloat(timeremain, 10); // don't forget the second param
           var hours = Math.floor(mins_num / 60);
@@ -278,11 +280,11 @@ function initSocket() {
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-    if (unit == " mm") {
+    if (unit == "mm") {
       var xpos = status.machine.position.work.x + unit;
       var ypos = status.machine.position.work.y + unit;
       var zpos = status.machine.position.work.z + unit;
-    } else if (unit == " in") {
+    } else if (unit == "in") {
       var xpos = (status.machine.position.work.x / 25.4).toFixed(2) + unit;
       var ypos = (status.machine.position.work.y / 25.4).toFixed(2) + unit;
       var zpos = (status.machine.position.work.z / 25.4).toFixed(2) + unit;

@@ -77,7 +77,7 @@ var C9SearchHighlightRules = function() {
                         value: "'" + parts[i++],
                         type: "text"
                     }];
-                    if (parts[2] !== " in") {
+                    if (parts[2] !== "in") {
                         replace = parts[i];
                         tokens.push({
                             value: "'" + parts[i++] + "'",
