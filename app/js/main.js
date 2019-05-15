@@ -125,7 +125,7 @@ function loadFile(f) {
       // gcode = this.result;
       editor.session.setValue(this.result);
       parseGcodeInWebWorker(this.result)
-      printLog('GCODE Opened: ');
+      printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
     };
     // }
   }
