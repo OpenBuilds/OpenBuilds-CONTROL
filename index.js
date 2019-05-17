@@ -62,7 +62,8 @@ if (isElectron()) {
   electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
   electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
   electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
-  electronApp.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192')
+  // Removing max-old-space-size switch (Introduced in 1.0.168 and removed in 1.0.169) due it causing High CPU load on some PCs. 
+  //electronApp.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192')
   console.log('Command Line Arguments for Electron: Set OK')
 }
 const BrowserWindow = electron.BrowserWindow;
