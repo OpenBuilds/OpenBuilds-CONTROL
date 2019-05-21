@@ -55,6 +55,8 @@ var lastsentuploadprogress = 0;
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
+
+
 if (isElectron()) {
   console.log("Local User Data: " + electronApp.getPath('userData'))
   electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
@@ -62,7 +64,7 @@ if (isElectron()) {
   electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
   electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
   electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
-  // Removing max-old-space-size switch (Introduced in 1.0.168 and removed in 1.0.169) due it causing High CPU load on some PCs. 
+  // Removing max-old-space-size switch (Introduced in 1.0.168 and removed in 1.0.169) due it causing High CPU load on some PCs.
   //electronApp.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192')
   console.log('Command Line Arguments for Electron: Set OK')
 }
@@ -492,10 +494,12 @@ app.get('/workspace', (req, res) => {
 app.post('/upload', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  // console.log(req)
+  //console.log(req)
   uploadprogress = 0
   var form = new formidable.IncomingForm();
-  form.parse(req, function(err, fields, files) {});
+  form.parse(req, function(err, fields, files) {
+    // console.log(files);
+  });
 
   form.on('fileBegin', function(name, file) {
     console.log('Uploading ' + file.name);
@@ -2174,6 +2178,10 @@ if (isElectron()) {
 
     function createApp() {
       createTrayIcon();
+      if (process.platform == 'darwin') {
+        console.log("Creating MacOS Menu")
+        createMenu()
+      }
       if (process.platform == 'win32' && process.argv.length >= 2) {
         var openFilePath = process.argv[1];
         if (openFilePath !== "") {
@@ -2197,6 +2205,48 @@ if (isElectron()) {
         }
       }
 
+    }
+
+    function createMenu() {
+
+      var template = [{
+        label: "Application",
+        submenu: [{
+          label: "Quit",
+          accelerator: "Command+Q",
+          click: function() {
+            if (appIcon) {
+              appIcon.destroy();
+            }
+            electronApp.exit(0);
+          }
+        }]
+      }, {
+        label: "Edit",
+        submenu: [{
+            label: "Cut",
+            accelerator: "CmdOrCtrl+X",
+            selector: "cut:"
+          },
+          {
+            label: "Copy",
+            accelerator: "CmdOrCtrl+C",
+            selector: "copy:"
+          },
+          {
+            label: "Paste",
+            accelerator: "CmdOrCtrl+V",
+            selector: "paste:"
+          },
+          {
+            label: "Select All",
+            accelerator: "CmdOrCtrl+A",
+            selector: "selectAll:"
+          }
+        ]
+      }];
+
+      Menu.setApplicationMenu(Menu.buildFromTemplate(template));
     }
 
     function createTrayIcon() {

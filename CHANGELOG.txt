@@ -1,3 +1,4 @@
+v1.0.169: MacOS: Top Menu and Copy/Paste fixes
 v1.0.169: Added Estimated Time to Serial Log on GCODE Load.
 v1.0.168: Improved Grbl Flashing Tool and Moved to "Wizards and Tools", Improved Inch Mode 3D viewer, fix bug in Continious Jog
 v1.0.167: Improved Memory management for 3D Viewer, Added Inch Mode (Issue#59), Moved Steps/mm Calibration Tools to "Wizards and Tools" menu,
