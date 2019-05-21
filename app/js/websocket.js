@@ -480,7 +480,7 @@ function populatePortsMenu() {
   var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Ports">`
   for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
     var port = friendlyPort(i)
-    response += `<option value="` + laststatus.comms.interfaces.ports[i].comName + `">` + laststatus.comms.interfaces.ports[i].comName + " " + port.note + `</option>`;
+    response += `<option value="` + laststatus.comms.interfaces.ports[i].comName + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].comName.replace("/dev/tty.", "") + `</option>`;
   };
   if (!laststatus.comms.interfaces.ports.length) {
     response += `<option value="">Waiting for USB</option`
