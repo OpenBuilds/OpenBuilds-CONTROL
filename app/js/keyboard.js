@@ -359,7 +359,7 @@ function keyboardShortcutsEditor() {
   </div>`
 
   Metro.dialog.create({
-    title: "<i class='far fa-keyboard fa-fw'></i> Customise Keyboard Shortcuts",
+    title: "<i class='far fa-keyboard fa-fw'></i> Customize Keyboard Shortcuts",
     content: template,
     width: 600,
     clsDialog: 'dark',
