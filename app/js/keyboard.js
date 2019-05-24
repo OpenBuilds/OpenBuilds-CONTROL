@@ -34,7 +34,7 @@ $(document).ready(function() {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));
   } else {
     keyboardShortcuts = {
-      xP: "arrowright", //X+
+      xP: "right", //X+
       xM: "left", //X-
       yP: "up", //Y+
       yM: "down", //Y-
