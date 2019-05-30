@@ -120,6 +120,7 @@ function sim(startindex) {
     // timefactor = 1;
     $('#simspeedval').text(timefactor);
     var simIdx = startindex;
+    var arcIdx = 0;
     $('#simstartbtn').attr('disabled', true);
     $('#simstopbtn').attr('disabled', false);
     $('#editorContextMenu').hide() // sometimes we launch sim(linenum) from the context menu... close it once running
@@ -133,12 +134,23 @@ function runSim() {
   // $('#simgcode').html(object.userData.lines[simIdx].args.origtext);
 
   if (object.userData.lines[simIdx].p2.arc) {
-    console.log(object.userData.lines[simIdx])
+    //console.log(object.userData.lines[simIdx])
+    // not running arcs yet!
+    arcIdx = 0;
+    runSimArc()
+    // lets move on
+    // simIdx++;
+    // if (simIdx < object.userData.lines.length) {
+    //   runSim();
+    // } else {
+    //   simstop();
+    // }
   } else {
-
     var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
     var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
     var posz = object.userData.lines[simIdx].p2.z;
+
+    //console.log(posx, posy, posz, object.userData.lines[simIdx])
 
     if (object.userData.lines[simIdx].args.isFake) {
       if (object.userData.lines[simIdx].args.text.length < 1) {
@@ -219,13 +231,16 @@ function runSim() {
 };
 
 function runSimArc() {
+
+  //var object = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx]
+
   // editor.gotoLine(simIdx + 1)
   $('#gcodesent').html(simIdx + 1);
   // $('#simgcode').html(object.userData.lines[simIdx].args.origtext);
-  var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
-  var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
-  var posz = object.userData.lines[simIdx].p2.z;
-
+  var posx = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].x; //- (sizexmax/2);
+  var posy = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].y; //- (sizeymax/2);
+  var posz = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].z;
+  console.log(posx, posy, posz)
   if (object.userData.lines[simIdx].args.isFake) {
     if (object.userData.lines[simIdx].args.text.length < 1) {
       var text = "empty line"
@@ -235,7 +250,7 @@ function runSimArc() {
     var simTime = 0.01 / timefactor;
   } else {
     var text = object.userData.lines[simIdx].args.cmd
-    var simTime = object.userData.lines[simIdx].p2.timeMins / timefactor;
+    var simTime = (object.userData.lines[simIdx].p2.timeMins / timefactor) / object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length;
 
   }
   if (object.userData.lines[simIdx].p2.feedrate == null) {
@@ -265,6 +280,7 @@ function runSimArc() {
     `);
   var simTimeInSec = simTime * 60;
   // console.log(simTimeInSec)
+
   if (!object.userData.lines[simIdx].args.isFake) {
     TweenMax.to(cone.position, simTimeInSec, {
       x: posx,
@@ -275,11 +291,12 @@ function runSimArc() {
           //return
           simstop();
         } else {
-          simIdx++;
-          if (simIdx < object.userData.lines.length) {
-            runSim();
+          arcIdx++;
+          if (simIdx < object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length) {
+            runSimArc();
           } else {
-            simstop();
+            simIdx++;
+            runSim();
           }
         }
       }

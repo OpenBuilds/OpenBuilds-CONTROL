@@ -429,13 +429,20 @@ GCodeParser = function(handlers, modecmdhandlers) {
       var acgeo = new THREE.Geometry();
       var ctr = 0;
       var z = aZ;
+      var points = []
       ac.getPoints(20).forEach(function(v) {
         //console.log(v);
         z = (((endaZ - aZ) / 20) * ctr) + aZ;
         acgeo.vertices.push(new THREE.Vector3(v.x, v.y, z));
         ctr++;
+        points.push({
+          'x': v.x,
+          'y': v.y,
+          'z': z,
+        })
       });
       var aco = new THREE.Line(acgeo, acmat);
+      aco.userData.points = points;
       //aco.position.set(pArc.x, pArc.y, pArc.z);
       //console.log("aco:", aco);
       this.extraObjects[plane].push(aco);
