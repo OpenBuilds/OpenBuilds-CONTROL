@@ -1,3 +1,4 @@
+v1.0.174: Added Inch/MM mode to Mobile Jog
 v1.0.173: Added support (beta) for G2/3 to the Simulator
 v1.0.172: Fix spelling error (US vs UK English)
 v1.0.171: Fix Keyboard-Jog Default Assignment bug
