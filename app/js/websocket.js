@@ -164,7 +164,7 @@ function initSocket() {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
       }
       if (typeof object !== 'undefined' && done > 0) {
-        if (object.userData !== 'undefined') {
+        if (object.userData !== 'undefined' && object.userData.lines.length > 2) {
           var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
         }
         if (!isNaN(timeremain)) {
@@ -199,6 +199,8 @@ function initSocket() {
     console.log("toast", data)
     // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
     Metro.dialog.create({
+      clsDialog: 'dark',
+      title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
       actions: [{
           caption: "Clear Alarm",
@@ -223,7 +225,9 @@ function initSocket() {
     // console.log("toast", data)
     // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
     Metro.dialog.create({
-      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data
+      title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
+      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
+      clsDialog: 'dark'
     });
     //
   });

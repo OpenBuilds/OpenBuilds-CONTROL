@@ -81,8 +81,6 @@ function bindKeys() {
   if (keyboardShortcuts.xM.length) {
     $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           var direction = "X-";
           var feed = $('#jograte').val();
@@ -102,8 +100,6 @@ function bindKeys() {
   if (keyboardShortcuts.xP.length) {
     $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           var direction = "X";
           var feed = $('#jograte').val();
@@ -124,8 +120,6 @@ function bindKeys() {
   if (keyboardShortcuts.yM.length) {
     $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           var direction = "Y-";
           var feed = $('#jograte').val();
@@ -146,8 +140,6 @@ function bindKeys() {
   if (keyboardShortcuts.yP.length) {
     $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           // startJog();
           var direction = "Y";
@@ -168,8 +160,6 @@ function bindKeys() {
   if (keyboardShortcuts.zM.length) {
     $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           // startJog();
           var direction = "Z-";
@@ -190,8 +180,6 @@ function bindKeys() {
   if (keyboardShortcuts.zP.length) {
     $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
       if (allowContinuousJog) {
-        if (event.target.tagName == 'TEXTAREA')
-          return;
         if (!event.originalEvent.repeat) {
           // startJog();
           var direction = "Z";
@@ -211,15 +199,11 @@ function bindKeys() {
   }
   if (keyboardShortcuts.stepM.length) {
     $(document).bind('keydown', keyboardShortcuts.stepM, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       changeStepSize(-1)
     });
   }
   if (keyboardShortcuts.stepP.length) {
     $(document).bind('keydown', keyboardShortcuts.stepP, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       changeStepSize(1)
     });
   }
@@ -230,8 +214,6 @@ function bindKeys() {
   }
   if (keyboardShortcuts.playpause.length) {
     $(document).bind('keydown', keyboardShortcuts.playpause, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
         socket.emit('runJob', editor.getValue());
       } else if (laststatus.comms.connectionStatus == 3) {
@@ -243,23 +225,17 @@ function bindKeys() {
   }
   if (keyboardShortcuts.unlockAlarm.length) {
     $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       Metro.dialog.close($('.closeAlarmBtn').parent().parent());
       socket.emit('clearAlarm', 2);
     });
   }
   if (keyboardShortcuts.home.length) {
     $(document).bind('keydown', keyboardShortcuts.home, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       home();
     });
   }
   if (keyboardShortcuts.setzeroxyz.length) {
     $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function(e) {
-      if (e.target.tagName == 'TEXTAREA')
-        return;
       sendGcode('G10 P1 L20 X0 Y0 Z0')
     });
   }

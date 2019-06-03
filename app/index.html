@@ -389,7 +389,7 @@
                           </span>
                         </div>
                         <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
-                        <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
+                        <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" data-editable="true" />
                       </div>
                     </td>
                     <td>
@@ -421,7 +421,7 @@
                           </span>
                         </div>
                         <div class="float-right fg-green" id="yPos" data-editable>0.000</div>
-                        <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
+                        <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" data-editable="true" />
                       </div>
                     </td>
                     <td>
@@ -453,7 +453,7 @@
                           </span>
                         </div>
                         <div class="float-right fg-blue" id="zPos" data-editable>0.000</div>
-                        <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
+                        <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" data-editable="true" />
                       </div>
                     </td>
                     <td>
@@ -636,10 +636,10 @@
                   <tr>
                     <td colspan='4'>
                       <div id="jogratemmdiv">
-                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" />
+                        <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" data-editable="true" />
                       </div>
                       <div id="jograteinchdiv">
-                        <input id="jograteinch" type="number" min="1" max="5000" step="10" placeholder="196" data-role="input" data-prepend="Jog:" data-append="in/min" data-clear-button="false" value="196" style="text-align: right;" />
+                        <input id="jograteinch" type="number" min="1" max="5000" step="10" placeholder="196" data-role="input" data-prepend="Jog:" data-append="in/min" data-clear-button="false" value="196" style="text-align: right;" data-editable="true" />
                       </div>
                     </td>
                   </tr>
@@ -677,7 +677,8 @@
                   <div id="console"></div>
                   <div class="fixed-bottom m-3 mb-9">
                     <form class="inline-form" id="commandform" autocomplete="off">
-                      <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" />
+                      <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" data-editable="true"
+                      />
                       <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
                           <i class="fa fa-play" style="margin-right: 10px;"></i> Send
                         </button>
@@ -960,7 +961,7 @@
               Machine Style
             </div>
             <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount">
+              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
         			<option value=3axes>3 Axes</option>
     							<option value=2axes>2 Axes</option>
     							<option value=servo>2 Axes + RC Servo</option>
@@ -972,7 +973,7 @@
               Door Interlock
             </div>
             <div class="cell-md-8 mb-1">
-              <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable">
+              <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable" data-editable="true">
     							<option value="nodoor">Disable Door Interlock</option>
           	<option value="opendoor">Door Interlock (Normally Open Switch)</option>
     							<option value="closeddoor">Door Interlock (Normally Closed Switch)</option>
@@ -984,7 +985,7 @@
               Controller Type
             </div>
             <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashGrblController">
+              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashGrblController" data-editable="true">
                                 <option value="uno">OpenBuilds BlackBox 4X</option>
                                 <option value="xprov4">Spark Concepts xPro v3/4</option>
                                 <option value="uno">Arduino Uno</option>
@@ -997,7 +998,7 @@
               Port
             </div>
             <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled>
+              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled data-editable="true">
                                 <option value="">Waiting for USB</option>
                               </select>
             </div>
@@ -1019,7 +1020,7 @@
               <div class="row mb-2">
                 <label class="cell-sm-6">Router Bit Diameter</label>
                 <div class="cell-sm-6">
-                  <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="22" value="22">
+                  <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="22" value="22" data-editable="true">
                   <small class="text-muted">Diameter of your bit / endmill</small>
                 </div>
               </div>
@@ -1027,7 +1028,7 @@
               <div class="row mb-2">
                 <label class="cell-sm-6">Stepover</label>
                 <div class="cell-sm-6">
-                  <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" placeholder="40" value="40">
+                  <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" placeholder="40" value="40" data-editable="true">
                   <small class="text-muted">Stepover between passes </small>
                 </div>
               </div>
@@ -1035,7 +1036,7 @@
               <div class="row mb-2 border-bottom bd-lightGray">
                 <label class="cell-sm-6">Feedrate</label>
                 <div class="cell-sm-6">
-                  <input id="surfaceFeedrate" type="number" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800">
+                  <input id="surfaceFeedrate" type="number" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800" data-editable="true">
                   <small class="text-muted">Cutting speed</small>
                 </div>
               </div>
@@ -1043,14 +1044,14 @@
               <div class="row mb-2">
                 <label class="cell-sm-6">Width<br> <small class="text-muted">X-Axis</small></label>
                 <div class="cell-sm-6">
-                  <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="200" value="200">
+                  <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="200" value="200" data-editable="true">
                 </div>
               </div>
 
               <div class="row mb-2 border-bottom bd-lightGray">
                 <label class="cell-sm-6">Length<br> <small class="text-muted">Y-Axis</small></label>
                 <div class="cell-sm-6">
-                  <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="300" value="300">
+                  <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="300" value="300" data-editable="true">
                   <small class="text-muted">Width and Length of the area to machine flat</small>
                 </div>
               </div>
@@ -1058,7 +1059,7 @@
               <div class="row mb-2 border-bottom bd-lightGray">
                 <label class="cell-sm-6">Skim Depth</label>
                 <div class="cell-sm-6">
-                  <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="2" value="2">
+                  <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="2" value="2" data-editable="true">
                   <small class="text-muted">How much material to remove</small>
                 </div>
               </div>
@@ -1162,7 +1163,9 @@
 
 <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
 <script>
-    METRO_HOTKEYS_FILTER_INPUT_ACCEPTING_ELEMENTS = false;
+    METRO_HOTKEYS_FILTER_CONTENT_EDITABLE = false;
+    METRO_HOTKEYS_FILTER_INPUT_ACCEPTING_ELEMENTS = true;
+    METRO_HOTKEYS_FILTER_TEXT_INPUTS = true;
 </script>
 <script type="text/javascript" src="lib/metro4/js/metro.min.js"></script>
 
