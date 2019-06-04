@@ -98,7 +98,7 @@
       "ssl"
     ],
     "linux": {
-      "icon": "./icons/"
+      "icon": "build/"
     },
     "mac": {
       "icon": "build/icon.icns",
