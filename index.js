@@ -2581,6 +2581,8 @@ function startChrome(callback) {
       ]);
       callback(chrome);
     });
+  } else {
+    console.log('Not a rpi');
   }
 }
 
