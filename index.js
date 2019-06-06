@@ -2569,6 +2569,7 @@ function isJson(item) {
 
 function startChrome(callback) {
   if (status.driver.operatingsystem == 'rpi') {
+    var cp = require('child_process');
     var terminal = cp.spawn('bash');
     var chrome = {};
 
