@@ -2569,13 +2569,14 @@ function isJson(item) {
 
 function startChrome(callback) {
   if (status.driver.operatingsystem == 'rpi') {
+    console.log('Starting chrome: Phase 1: /bin/bash');
     var cp = require('child_process');
     var terminal = cp.spawn('bash');
     var chrome = {};
 
     terminal.on('exit', function(code) {
       console.log('child process exited with code ' + code);
-      console.log('Starting chrome');
+      console.log('Starting chrome: Phase 2: /usr/bin/chromium-browser');
       chrome = cp.spawn('/usr/bin/chromium-browser', [
         '--app=http://127.0.0.1:3000'
       ]);
