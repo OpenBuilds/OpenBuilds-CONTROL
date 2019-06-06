@@ -215,6 +215,7 @@ var status = {
   driver: {
     version: require('./package').version,
     ipaddress: ip.address(),
+    operatingsystem: false
   },
   machine: {
     name: '',
@@ -2179,8 +2180,9 @@ if (isElectron()) {
     function createApp() {
       createTrayIcon();
       if (process.platform == 'darwin') {
-        console.log("Creating MacOS Menu")
-        createMenu()
+        console.log("Creating MacOS Menu");
+        createMenu();
+        status.driver.operatingsystem = 'macos';
       }
       if (process.platform == 'win32' && process.argv.length >= 2) {
         var openFilePath = process.argv[1];
@@ -2437,6 +2439,8 @@ if (isElectron()) {
   var isPi = require('detect-rpi');
   if (isPi()) {
     console.log('Running on Raspberry Pi!');
+    status.driver.operatingsystem = 'rpi'
+    startChrome();
   } else {
     console.log("Running under NodeJS...");
   }
@@ -2561,6 +2565,22 @@ function isJson(item) {
   }
 
   return false;
+}
+
+function startChrome(callback) {
+  if (status.driver.operatingsystem == 'rpi') {
+    var terminal = cp.spawn('bash');
+    var chrome = {};
+
+    terminal.on('exit', function(code) {
+      console.log('child process exited with code ' + code);
+      console.log('Starting chrome');
+      chrome = cp.spawn('`which chromium-browser`', [
+        '--app=http://127.0.0.1:3000'
+      ]);
+      callback(chrome);
+    });
+  }
 }
 
 process.on('exit', () => console.log('exit'))
