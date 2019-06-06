@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.176",
+  "version": "1.0.177",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "avrgirl-arduino": "^3.0.0",
+    "detect-rpi": "^1.3.0",
     "directory-tree": "^2.2.1",
     "electron-updater": "^4.0.6",
     "express": "^4.16.4",
