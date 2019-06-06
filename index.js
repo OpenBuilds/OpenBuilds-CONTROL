@@ -2567,20 +2567,14 @@ function isJson(item) {
   return false;
 }
 
-function startChrome(callback) {
+function startChrome() {
   if (status.driver.operatingsystem == 'rpi') {
-    console.log('Starting chrome: Phase 1: /bin/bash');
-    var cp = require('child_process');
-    var terminal = cp.spawn('bash');
-    var chrome = {};
-
-    terminal.on('exit', function(code) {
-      console.log('child process exited with code ' + code);
-      console.log('Starting chrome: Phase 2: /usr/bin/chromium-browser');
-      chrome = cp.spawn('/usr/bin/chromium-browser', [
-        '--app=http://127.0.0.1:3000'
-      ]);
-      callback(chrome);
+    exec("chromium-browser --app=http://127.0.0.1:3000", function(error, stdout, stderr) {
+      console.log("stdout: " + stdout);
+      console.log("stderr: " + stderr);
+      if (error !== null) {
+        console.log("exec errror: " + error);
+      }
     });
   } else {
     console.log('Not a rpi');
