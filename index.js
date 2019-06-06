@@ -2576,7 +2576,7 @@ function startChrome(callback) {
     terminal.on('exit', function(code) {
       console.log('child process exited with code ' + code);
       console.log('Starting chrome');
-      chrome = cp.spawn('`which chromium-browser`', [
+      chrome = cp.spawn('/usr/bin/chromium-browser', [
         '--app=http://127.0.0.1:3000'
       ]);
       callback(chrome);
