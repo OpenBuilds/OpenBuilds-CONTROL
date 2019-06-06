@@ -2573,6 +2573,10 @@ function startChrome() {
       spawn
     } = require('child_process');
     const chrome = spawn('chromium-browser', ['-app=http://127.0.0.1:3000']);
+    chrome.on('close', (code) => {
+      console.log(`Chromium process exited with code ${code}`);
+      console.log(`If you want to continue using OpenBuildsCONTROL, please open Chromium Browser to http://` + ip.address() + `:3000`);
+    });
   } else {
     console.log('Not a Raspberry Pi. Please use Electron Instead');
   }
