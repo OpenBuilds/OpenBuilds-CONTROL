@@ -2569,15 +2569,12 @@ function isJson(item) {
 
 function startChrome() {
   if (status.driver.operatingsystem == 'rpi') {
-    exec("chromium-browser --app=http://127.0.0.1:3000", function(error, stdout, stderr) {
-      console.log("stdout: " + stdout);
-      console.log("stderr: " + stderr);
-      if (error !== null) {
-        console.log("exec errror: " + error);
-      }
-    });
+    const {
+      spawn
+    } = require('child_process');
+    const chrome = spawn('chromium-browser', ['-app=http://127.0.0.1:3000']);
   } else {
-    console.log('Not a rpi');
+    console.log('Not a Raspberry Pi. Please use Electron Instead');
   }
 }
 
