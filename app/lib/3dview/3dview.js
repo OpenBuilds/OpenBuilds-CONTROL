@@ -4,64 +4,69 @@ var draw, line, timefactor = 1,
 
 var loader = new THREE.ObjectLoader();
 
-var worker = new Worker('lib/3dview/workers/gcodeparser.js');
-worker.addEventListener('message', function(e) {
-  // console.log('webworker message')
-  if (scene.getObjectByName('gcodeobject')) {
-    scene.remove(scene.getObjectByName('gcodeobject'))
-    object = false;
-  }
-  object = loader.parse(JSON.parse(e.data));
-  if (object && object.userData.lines.length > 1) {
-    scene.add(object);
-    if (object.userData.inch) {
-      object.scale.x = 25.4
-      object.scale.y = 25.4
-      object.scale.z = 25.4
-    }
-    redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
-    // animate();
-    setTimeout(function() {
-      if (webgl) {
-        $('#gcodeviewertab').click();
-      }
-      clearSceneFlag = true;
-      resetView();
-      // animate();
-      var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum;
 
-      if (!isNaN(timeremain)) {
-        var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-        var hours = Math.floor(mins_num / 60);
-        var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
-        var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
-
-        // Appends 0 when unit is less than 10
-        if (hours < 10) {
-          hours = "0" + hours;
-        }
-        if (minutes < 10) {
-          minutes = "0" + minutes;
-        }
-        if (seconds < 10) {
-          seconds = "0" + seconds;
-        }
-        var formattedTime = hours + ':' + minutes + ':' + seconds;
-        console.log('Remaining time: ', formattedTime)
-        // output formattedTime to UI here
-        $('#timeRemaining').html(" / " + formattedTime);
-        printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
-      }
-    }, 200);
-    $('#3dviewicon').removeClass('fa-pulse')
-    $('#3dviewlabel').html(' 3D View')
-  }
-}, false);
 
 function parseGcodeInWebWorker(gcode) {
   simstop()
   scene.remove(object)
   object = false;
+
+  // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
+  var worker = new Worker('lib/3dview/workers/litegcodeviewer.js');
+  worker.addEventListener('message', function(e) {
+    // console.log('webworker message')
+    if (scene.getObjectByName('gcodeobject')) {
+      scene.remove(scene.getObjectByName('gcodeobject'))
+      object = false;
+    }
+    object = loader.parse(JSON.parse(e.data));
+    if (object && object.userData.lines.length > 1) {
+      worker.terminate();
+      scene.add(object);
+      if (object.userData.inch) {
+        object.scale.x = 25.4
+        object.scale.y = 25.4
+        object.scale.z = 25.4
+      }
+      redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
+      // animate();
+      setTimeout(function() {
+        if (webgl) {
+          $('#gcodeviewertab').click();
+        }
+        clearSceneFlag = true;
+        resetView();
+        // animate();
+        var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum;
+
+        if (!isNaN(timeremain)) {
+          var mins_num = parseFloat(timeremain, 10); // don't forget the second param
+          var hours = Math.floor(mins_num / 60);
+          var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
+          var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
+
+          // Appends 0 when unit is less than 10
+          if (hours < 10) {
+            hours = "0" + hours;
+          }
+          if (minutes < 10) {
+            minutes = "0" + minutes;
+          }
+          if (seconds < 10) {
+            seconds = "0" + seconds;
+          }
+          var formattedTime = hours + ':' + minutes + ':' + seconds;
+          console.log('Remaining time: ', formattedTime)
+          // output formattedTime to UI here
+          $('#timeRemaining').html(" / " + formattedTime);
+          printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
+        }
+      }, 200);
+      $('#3dviewicon').removeClass('fa-pulse')
+      $('#3dviewlabel').html(' 3D View')
+    }
+  }, false);
+
   worker.postMessage({
     'data': gcode
   });

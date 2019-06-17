@@ -1,4 +1,5 @@
-v1.0.176: Test Fix Linux Application Icons Size
+v1.0.178: New 3D Viewer backend with support for Large Gcode Files, massively faster rendering
+v1.0.176/7: Rpi Unofficial Support https://github.com/OpenBuilds/OpenBuilds-CONTROL/wiki/Run-on-a-Raspberry-Pi-(No-Compile-Method)
 v1.0.175: Fixed Accidental keybindings on some more Input fields, improved ERROR and ALARM dialogs
 v1.0.174: Added Inch/MM mode to Mobile Jog
 v1.0.173: Added support (beta) for G2/3 to the Simulator
