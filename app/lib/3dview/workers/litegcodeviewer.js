@@ -48,16 +48,16 @@ function openGCodeFromText(gcode) {
         colors.push( 0 );
   			colors.push( 200 );
   			colors.push( 0 );
-      }
-
-      if (parsedData.lines[i].p2.g1) {
+      } else if (parsedData.lines[i].p2.g1) {
         colors.push( 200 );
   			colors.push( 0 );
   			colors.push( 0 );
-      }
-
-      if (parsedData.lines[i].p2.g2) {
+      } else if (parsedData.lines[i].p2.g2) {
         colors.push( 0 );
+  			colors.push( 0 );
+  			colors.push( 200 );
+      } else {
+        colors.push( 200 );
   			colors.push( 0 );
   			colors.push( 200 );
       }
@@ -587,10 +587,25 @@ GCodeParser = function(handlers, modecmdhandlers) {
         */
         // end of if p2.arc
         // console.log( p2.threeObjArc.userData.points)
-        lines.push({
-          p2: p2,
-          'args': args
-        });
+
+console.log(threeObjArc.userData.points.length)
+
+        for (i=0; i<threeObjArc.userData.points.length; i++) {
+          var p2 = {
+            x: threeObjArc.userData.points[i].x,
+            y:threeObjArc.userData.points[i].y,
+            z:threeObjArc.userData.points[i].z,
+            e: p2.e,
+            f: p2.f,
+            g2: true
+          }
+          lines.push({
+            p2: p2,
+            'args': args
+          });
+        }
+
+
 
       } else { // not an arc
         lines.push({
