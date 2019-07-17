@@ -131,7 +131,20 @@ G1 X` +
   }
 
   gcode += `G0 Z10\n`;
-  gcode += `G0 X0 Y0\n`;
+
+  // Framing Pass
+  gcode += `; Framing pass\n`;
+   gcode += `G0 X` + startpointX + ` Y` + startpointY + `Z10\n`; // position at start point
+   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
+   gcode += `G1 X` + startpointX + ` Y` + endpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+   gcode += `G0 Z10\n`;
+   gcode += `G0 X` + endpointX + ` Y` + endpointY +`\n`; // position at start point
+   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
+   gcode += `G0 X` + endpointX + ` Y` + startpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+   gcode += `G0 Z10\n`;
+   gcode += `G0 X0 Y0\n`;
+
+
   gcode += `M5 S0\n`;
 
   editor.session.setValue(gcode);

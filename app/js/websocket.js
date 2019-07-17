@@ -96,8 +96,18 @@ function initSocket() {
   });
 
   socket.on('updateready', function(data) {
-    $('#availVersion').html(data)
-    Metro.dialog.open('#downloadUpdate')
+    // 0 = not connected
+    // 1 = Connected, but not Playing yet
+    // 2 = Connected, but not Playing yet
+    // 3 = Busy Streaming GCODE
+    // 4 = Paused
+    // 5 = Alarm State
+    // 6 = Firmware Upgrade State
+    if (laststatus.comms.connectionStatus < 3) {
+      $('#availVersion').html(data)
+      Metro.dialog.open('#downloadUpdate')
+    }
+
   });
 
   socket.on('updateprogress', function(data) {
