@@ -775,7 +775,7 @@ io.on("connection", function(socket) {
             console.log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
             var output = {
               'command': 'connect',
-              'response': "Detecting Firmware: Method 3 (Smoothieware)"
+              'response': "Detecting Firmware: Method 3 (Unsupported firmware: Smoothie)"
             }
             io.sockets.emit('data', output);
             addQRealtime("version\n"); // Check if it's Smoothieware?
@@ -904,11 +904,17 @@ io.on("connection", function(socket) {
           status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
           status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
           // Start interval for status queries
-          statusLoop = setInterval(function() {
-            if (status.comms.connectionStatus > 0) {
-              addQRealtime("?");
-            }
-          }, 200);
+          // statusLoop = setInterval(function() {
+          //   if (status.comms.connectionStatus > 0) {
+          //     addQRealtime("?");
+          //   }
+          // }, 200);
+          var output = {
+            'command': "FIRMWARE ERROR",
+            'response': "Detected an unsupported version: Smoothieware " + status.machine.firmware.version + ". This software no longer support Smoothieware. \nLuckilly there is an alternative firmware you can install on your controller to make it work with this software. Check out Grbl-LPC at https://github.com/cprezzi/grbl-LPC - Grbl-LPC is a Grbl port for controllers using the NXP LPC176x chips, for example Smoothieboards"
+          }
+          io.sockets.emit('data', output);
+          stopPort();
         } // end of machine identification
 
         // Machine Feedback: Temperature and Position
