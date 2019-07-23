@@ -198,8 +198,7 @@ function selectMachine(type) {
     }
   } else if (type == "acro55") {
     // Acro 55
-    var customFirmware = true;
-    var customFirmwareFile = 'acro';
+    var customFirmware = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //Step idle delay, milliseconds
@@ -238,8 +237,7 @@ function selectMachine(type) {
     }
   } else if (type == "acro510") {
     // Acro 510
-    var customFirmware = true;
-    var customFirmwareFile = 'acro';
+    var customFirmware = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //Step idle delay, milliseconds
@@ -278,8 +276,7 @@ function selectMachine(type) {
     }
   } else if (type == "acro1010") {
     // Acro 1010
-    var customFirmware = true;
-    var customFirmwareFile = 'acro';
+    var customFirmware = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //Step idle delay, milliseconds
@@ -318,8 +315,7 @@ function selectMachine(type) {
     }
   } else if (type == "acro1510") {
     // Acro 1510
-    var customFirmware = true;
-    var customFirmwareFile = 'acro';
+    var customFirmware = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //Step idle delay, milliseconds
@@ -358,8 +354,7 @@ function selectMachine(type) {
     }
   } else if (type == "acro1515") {
     // Acro 1515
-    var customFirmware = true;
-    var customFirmwareFile = 'acro';
+    var customFirmware = 'acro';
     var grblParams_def = {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //Step idle delay, milliseconds
@@ -383,6 +378,201 @@ function selectMachine(type) {
       $30: "1000", //Maximum spindle speed, RPM
       $31: "0", //Minimum spindle speed, RPM
       $32: "1", //Laser-mode enable, boolean
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "500.000", //X-axis acceleration, mm/sec^2
+      $121: "500.000", //Y-axis acceleration, mm/sec^2
+      $122: "500.000", //Z-axis acceleration, mm/sec^2
+      $130: "1300.000", //X-axis maximum travel, millimeters
+      $131: "1300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
+    }
+  } else if (type == "acro55pen") {
+    // Acro 55
+    var customFirmware = 'acropen';
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "255", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "0", //Laser-mode enable, boolean
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "500.000", //X-axis acceleration, mm/sec^2
+      $121: "500.000", //Y-axis acceleration, mm/sec^2
+      $122: "500.000", //Z-axis acceleration, mm/sec^2
+      $130: "300.000", //X-axis maximum travel, millimeters
+      $131: "300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
+    }
+  } else if (type == "acro510pen") {
+    // Acro 510
+    var customFirmware = 'acropen';
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "255", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "0", //Laser-mode enable, boolean
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "500.000", //X-axis acceleration, mm/sec^2
+      $121: "500.000", //Y-axis acceleration, mm/sec^2
+      $122: "500.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
+    }
+  } else if (type == "acro1010pen") {
+    // Acro 1010
+    var customFirmware = 'acropen';
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "255", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "0", //Laser-mode enable, boolean
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "500.000", //X-axis acceleration, mm/sec^2
+      $121: "500.000", //Y-axis acceleration, mm/sec^2
+      $122: "500.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "800.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
+    }
+  } else if (type == "acro1510pen") {
+    // Acro 1510
+    var customFirmware = 'acropen';
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "255", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "0", //Laser-mode enable, boolean
+      $100: "57.143", //X-axis steps per millimeter-1/16 step
+      $101: "57.143", //Y-axis steps per millimeter-1/16 step
+      $102: "57.143", //Z-axis steps per millimeter-1/16 step
+      $110: "5000.000", //X-axis maximum rate, mm/min
+      $111: "5000.000", //Y-axis maximum rate, mm/min
+      $112: "5000.000", //Z-axis maximum rate, mm/min
+      $120: "500.000", //X-axis acceleration, mm/sec^2
+      $121: "500.000", //Y-axis acceleration, mm/sec^2
+      $122: "500.000", //Z-axis acceleration, mm/sec^2
+      $130: "800.000", //X-axis maximum travel, millimeters
+      $131: "1300.000", //Y-axis maximum travel, millimeters
+      $132: "70.000", //Z-axis maximum travel, millimeters
+    }
+  } else if (type == "acro1515pen") {
+    // Acro 1515
+    var customFirmware = 'acropen';
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //Step idle delay, milliseconds
+      $2: "0", //Step pulse invert, mask
+      $3: "1", //Step direction invert, mask
+      $4: "1", //Invert step enable pin, boolean
+      $5: "0", //Invert limit pins, boolean
+      $6: "0", //Invert probe pin, boolean
+      $10: "1", //Status report options, mask
+      $11: "0.020", //Junction deviation, millimeters
+      $12: "0.002", //Arc tolerance, millimeters
+      $13: "0", //Report in inches, boolean
+      $20: "0", //Soft limits enable, boolean
+      $21: "1", //Hard limits enable, boolean
+      $22: "1", //Homing cycle enable, boolean
+      $23: "7", //Homing direction invert, mask
+      $24: "100.000", //Homing locate feed rate, mm/min
+      $25: "1000.000", //Homing search seek rate, mm/min
+      $26: "250", //Homing switch debounce delay, milliseconds
+      $27: "5.000", //Homing switch pull-off distance, millimeters
+      $30: "255", //Maximum spindle speed, RPM
+      $31: "0", //Minimum spindle speed, RPM
+      $32: "0", //Laser-mode enable, boolean
       $100: "57.143", //X-axis steps per millimeter-1/16 step
       $101: "57.143", //Y-axis steps per millimeter-1/16 step
       $102: "57.143", //Z-axis steps per millimeter-1/16 step
@@ -646,19 +836,10 @@ function selectMachine(type) {
 
   if (lastSelectedMachine != type) {
     if (lastSelectedMachine.substr(0, 4) != type.substr(0, 4)) {
-      if (customFirmware) {
-        if (customFirmwareFile == 'acro') {
+      if (customFirmware == "acro") {
           Metro.dialog.create({
             title: "Custom Firmware Required",
-            content: `<div>The OpenBuilds Acro is a 2-axes machine.  This requires a custom Grbl installation to allow 2-axes specific homing.
-            We can flash the new firmware for you right now.  Proceeding will wipe the firmware from your controller and replace it with an Acro
-            specific version of Grbl.  Would you like to proceed?</div><hr>Select your controller type: <br>
-            <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="flashGrblController2">
-            <option value="uno">OpenBuilds BlackBox 4X</option>
-            <option value="xprov4">Spark Concepts xPro v3/4</option>
-            <option value="uno">Arduino Uno</option>
-            <option value="nano">Arduino Nano</option>
-              </select>`,
+            content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
             actions: [{
                 caption: "No Thank you",
                 cls: "js-dialog-close",
@@ -667,33 +848,46 @@ function selectMachine(type) {
                 }
               },
               {
-                caption: "I already flashed it",
+                caption: "Launch the Flashing Wizard",
+                cls: "js-dialog-close success",
+                onclick: function() {
+                  populateGrblBuilderToolForm();
+                  setTimeout(function(){
+                    $('#grblAxesCount').data('select').val('2axes')
+                  }, 500)
+                }
+              },
+
+            ]
+          });
+
+        console.log('This machine needs a custom firmware')
+      }
+      if (customFirmware == "acropen") {
+          Metro.dialog.create({
+            title: "Custom Firmware Required",
+            content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
+            actions: [{
+                caption: "No Thank you",
                 cls: "js-dialog-close",
                 onclick: function() {
                   console.log("Do nothing")
                 }
               },
               {
-                caption: "Yes!",
+                caption: "Launch the Flashing Wizard",
                 cls: "js-dialog-close success",
                 onclick: function() {
-                  $('#controlTab').click();
-                  $('#consoletab').click();
-                  $('#grblSettings').hide();
-                  $('.grblCalibrationMenu').addClass("disabled")
-
-                  var data = {
-                    port: laststatus.comms.interfaces.activePort,
-                    file: 'grbl1.1f-acro.hex',
-                    board: $("#flashGrblController2").val()
-                  }
-                  socket.emit('flashGrbl', data)
+                  populateGrblBuilderToolForm();
+                  setTimeout(function(){
+                    $('#grblAxesCount').data('select').val('servo')
+                  }, 500)
                 }
               },
 
             ]
           });
-        }
+
         console.log('This machine needs a custom firmware')
       }
     }

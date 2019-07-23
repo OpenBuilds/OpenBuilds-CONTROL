@@ -192,7 +192,6 @@ var sentBuffer = [];
 
 var SMOOTHIE_RX_BUFFER_SIZE = 64; // max. length of one command line
 var smoothie_buffer = false;
-var lastMode;
 
 var xPos = 0.00;
 var yPos = 0.00;
@@ -220,13 +219,6 @@ var status = {
   machine: {
     name: '',
     inputs: [],
-    tools: {
-      hotend1: false,
-      hotend2: false,
-      heatbed: false,
-      laser: false,
-      spindle: false
-    },
     overrides: {
       feedOverride: 100, //
       spindleOverride: 100, //
@@ -259,138 +251,15 @@ var status = {
       }
 
     },
-    temperature: {
-      setpoint: {
-        t0: 0,
-        t1: 0,
-        b: 0
-      },
-      actual: {
-        t0: 0,
-        t1: 0,
-        b: 0
-      }
-    },
     firmware: {
       type: "",
       version: "",
       date: "",
       buffer: [],
+      features: [],
+      blockBufferSize: "",
+      rxBufferSize: "",
     },
-    drivers: {
-      x: {
-        type: "",
-        axis: "",
-        microstep: 0,
-        currentSetting: 0,
-        enabled: 0,
-        stallGuard: {
-          stallGuardReading: 1023,
-          stallGuardThreshold: 0,
-          stallGuardFilter: 0
-        },
-        coolStep: {
-          coolStepEnabled: 0,
-          coolStepCurrent: 0,
-          coolStepLowerThreshold: 0,
-          coolStepUpperThreshold: 0,
-          coolStepNumberOfReadings: 0,
-          coolStepCurrentIncrement: 0,
-          coolStepLowerCurrentLimit: 0
-        },
-        troubleshooting: {
-          shortGndA: 0,
-          shortGndB: 0,
-          openLoadA: 0,
-          openLoadB: 0,
-          overTemp: 0
-        }
-      },
-      y: {
-        type: "",
-        axis: "",
-        microstep: 0,
-        currentSetting: 0,
-        enabled: 0,
-        stallGuard: {
-          stallGuardReading: 1023,
-          stallGuardThreshold: 0,
-          stallGuardFilter: 0
-        },
-        coolStep: {
-          coolStepEnabled: 0,
-          coolStepCurrent: 0,
-          coolStepLowerThreshold: 0,
-          coolStepUpperThreshold: 0,
-          coolStepNumberOfReadings: 0,
-          coolStepCurrentIncrement: 0,
-          coolStepLowerCurrentLimit: 0
-        },
-        troubleshooting: {
-          shortGndA: 0,
-          shortGndB: 0,
-          openLoadA: 0,
-          openLoadB: 0,
-          overTemp: 0
-        }
-      },
-      z: {
-        type: "",
-        axis: "",
-        microstep: 0,
-        currentSetting: 0,
-        enabled: 0,
-        stallGuard: {
-          stallGuardReading: 1023,
-          stallGuardThreshold: 0,
-          stallGuardFilter: 0
-        },
-        coolStep: {
-          coolStepEnabled: 0,
-          coolStepCurrent: 0,
-          coolStepLowerThreshold: 0,
-          coolStepUpperThreshold: 0,
-          coolStepNumberOfReadings: 0,
-          coolStepCurrentIncrement: 0,
-          coolStepLowerCurrentLimit: 0
-        },
-        troubleshooting: {
-          shortGndA: 0,
-          shortGndB: 0,
-          openLoadA: 0,
-          openLoadB: 0,
-          overTemp: 0
-        }
-      },
-      a: {
-        type: "",
-        axis: "",
-        microstep: 0,
-        currentSetting: 0,
-        enabled: 0,
-        stallGuard: {
-          stallGuardReading: 1023,
-          stallGuardThreshold: 0,
-          stallGuardFilter: 0
-        },
-        coolStep: {
-          coolStepEnabled: 0,
-          coolStepCurrent: 0,
-          coolStepLowerThreshold: 0,
-          coolStepUpperThreshold: 0,
-          coolStepNumberOfReadings: 0,
-          coolStepCurrentIncrement: 0,
-          coolStepLowerCurrentLimit: 0
-        },
-        troubleshooting: {
-          shortGndA: 0,
-          shortGndB: 0,
-          openLoadA: 0,
-          openLoadB: 0,
-          overTemp: 0
-        }
-      },
-    }
   },
   comms: {
     connectionStatus: 0, //0 = not connected, 1 = opening, 2 = connected, 3 = playing, 4 = paused
@@ -832,6 +701,94 @@ io.on("connection", function(socket) {
           io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
         }
 
+        if (data.indexOf("[OPT:") === 0) {
+
+          var startOpt = data.search(/opt:/i) + 4;
+          var grblOpt;
+          if (startOpt > 4) {
+            var grblOptLen = data.substr(startOpt).search(/]/);
+            grblOpts = data.substr(startOpt, grblOptLen).split(/,/);
+
+            status.machine.firmware.blockBufferSize = grblOpts[1];
+            status.machine.firmware.rxBufferSize = grblOpts[2];
+
+            var features = []
+
+            var i = grblOpts[0].length;
+            while (i--) {
+              features.push(grblOpts[0].charAt(i))
+              switch(grblOpts[0].charAt(i)) {
+                case 'Q':
+                  console.log('SPINDLE_IS_SERVO Enabled')
+                  //
+                  break;
+                case 'V': //	Variable spindle enabled
+                  console.log('Variable spindle enabled')
+                  //
+                  break;
+                case 'N': //	Line numbers enabled
+                  console.log('Line numbers enabled')
+                  //
+                  break;
+                case 'M': //	Mist coolant enabled
+                  console.log('Mist coolant enabled')
+                  //
+                  break;
+                case 'C': //	CoreXY enabled
+                  console.log('CoreXY enabled')
+                  //
+                  break;
+                case 'P': //	Parking motion enabled
+                  console.log('Parking motion enabled')
+                  //
+                  break;
+                case 'Z': //	Homing force origin enabled
+                  console.log('Homing force origin enabled')
+                  //
+                  break;
+                case 'H': //	Homing single axis enabled
+                  console.log('Homing single axis enabled')
+                  //
+                  break;
+                case 'T': //	Two limit switches on axis enabled
+                  console.log('Two limit switches on axis enabled')
+                  //
+                  break;
+                case 'A': //	Allow feed rate overrides in probe cycles
+                  console.log('Allow feed rate overrides in probe cycles')
+                  //
+                  break;
+                case '$': //	Restore EEPROM $ settings disabled
+                  console.log('Restore EEPROM $ settings disabled')
+                  //
+                  break;
+                case '#': //	Restore EEPROM parameter data disabled
+                  console.log('Restore EEPROM parameter data disabled')
+                  //
+                  break;
+                case 'I': //	Build info write user string disabled
+                  console.log('Build info write user string disabled')
+                  //
+                  break;
+                case 'E': //	Force sync upon EEPROM write disabled
+                  console.log('Force sync upon EEPROM write disabled')
+                  //
+                  break;
+                case 'W': //	Force sync upon work coordinate offset change disabled
+                  console.log('Force sync upon work coordinate offset change disabled')
+                  //
+                  break;
+                case 'L': //	Homing init lock sets Grbl into an alarm state upon power up
+                  console.log('Homing init lock sets Grbl into an alarm state upon power up')
+                  //
+                  break;
+              }
+            }
+            status.machine.firmware.features = features;
+            io.sockets.emit("features", features);
+          }
+        }
+
         // [PRB:0.000,0.000,0.000:0]
         if (data.indexOf("[PRB:") === 0) {
           if (status.machine.probe.request.plate) {
@@ -917,7 +874,7 @@ io.on("connection", function(socket) {
           stopPort();
         } // end of machine identification
 
-        // Machine Feedback: Temperature and Position
+        // Machine Feedback: Position
         if (data.indexOf("<") === 0) {
           // console.log(' Got statusReport (Grbl & Smoothieware)')
           // statusfeedback func
@@ -2196,6 +2153,7 @@ if (isElectron()) {
           console.log("path" + openFilePath);
           readFile(openFilePath);
         }
+        status.driver.operatingsystem = 'windows';
       }
 
       if (process.platform == 'darwin' || uploadedgcode.length > 1) {
@@ -2447,6 +2405,7 @@ if (isElectron()) {
     console.log('Running on Raspberry Pi!');
     status.driver.operatingsystem = 'rpi'
     startChrome();
+    status.driver.operatingsystem = 'raspberrypi';
   } else {
     console.log("Running under NodeJS...");
   }

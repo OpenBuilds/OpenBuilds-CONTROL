@@ -226,6 +226,7 @@
                   <!-- <li class="divider"></li> -->
                   <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Plasma On (M3 S1000)</a></li>
                   <li class="divider fg-lightGray"></li>
+                  <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Misting On (M7)</a></li>
                   <li><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Coolant On (M8)</a></li>
                   <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
 
@@ -276,6 +277,7 @@
                   <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                   <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
                   <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
+                  <li class="disabled grblCalibrationMenu" onclick="servocalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
                   <li class="divider fg-lightGray"></li>
                   <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Shortcut Key Assignments</a></li>
                   <li class="divider fg-lightGray"></li>
@@ -548,6 +550,16 @@
                         </span>
                       </button>
                     </td>
+                    <td class="servo-active">
+                      <button class="button light square large jogbtn" id="pP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
+                          <i class="fas fa-ban fg-red" data-fa-transform="shrink-0.5 down-8.5"></i>
+                          <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-12" style="font-weight:600">PEN</span>
+                          <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-6" style="font-weight:600">UP</span>
+                        </span>
+                      </button>
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -584,9 +596,18 @@
                         </span>
                       </button>
                     </td>
+                    <td class="servo-active">
+                      <button class="button light square large jogbtn" id="pM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-12" style="font-weight:600">PEN</span>
+                          <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-6" style="font-weight:600">DOWN</span>
+                        </span>
+                      </button>
+                    </td>
                   </tr>
                   <tr>
-                    <td colspan='4'>
+                    <td colspan='5'>
                       <table style="width: 100%;">
                         <tr>
                           <td><span class="text-small">Incremental Jog</span>
@@ -634,7 +655,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan='4'>
+                    <td colspan='5'>
                       <div id="jogratemmdiv">
                         <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;" data-editable="true" />
                       </div>
@@ -822,10 +843,6 @@
                         <td>Websocket Status</td>
                         <td><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
                       </tr>
-                      <tr>
-                        <td>Installed Firmware Version</td>
-                        <td><span class="tally bg-openbuilds fg-white" id="firmwarever">NOCOMM</span></td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -834,58 +851,92 @@
             </div>
             <div class="cell p-0 m-0">
 
-
-              <!--div class="card">
+              <div class="card">
                 <div class="card-header  p-1 m-0">
-                  <img src="img/grbl.png" /> Flashing tool
+                  <i class="fas fa-fw fa-microchip"></i>Firmware Parameters
                 </div>
-                <div class="card-content">
-                  <p class="text-small ml-2">You can use this section to flash Grbl onto a compatible controller<br>Careful, use with care, or when instructed by Support</p>
+                <div class="card-content" style="height: calc(100vh - 680px); overflow-x: auto;">
                   <table class="table striped compact">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%;">Value</th>
+                        <th style="width: 50%;">Status</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <tr>
-                        <td>Controller</td>
-                        <td>
-                          <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="flashGrblController">
-                            <option value="uno">OpenBuilds BlackBox 4X</option>
-                            <option value="xprov4">Spark Concepts xPro v3/4</option>
-                            <option value="uno">Arduino Uno</option>
-                            <option value="nano">Arduino Nano</option>
-                          </select>
-                        </td>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Variable Spindle</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enVariableSpindle">OFF</span></td>
                       </tr>
                       <tr>
-                        <td>Port</td>
-                        <td>
-                          <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled>
-                            <option value="">Waiting for USB</option>
-                          </select>
-                        </td>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Laser Mode Enabled ($32 Setting)</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enLaser">OFF</span></td>
                       </tr>
                       <tr>
-                        <td>Firmware</td>
-                        <td>
-                          <select data-prepend="&nbsp;<i class='fas fa-layer-group'></i>" data-role="select" id="flashGrblHex" data-filter="false">
-                            <optgroup label="Default Grbl">
-                              <option value="grbl1.1f.hex">Grbl 1.1f (default, standard)</option>
-                            </optgroup>
-                            <optgroup label="Customised">
-                              <option value="grbl1.1f-acro.hex">Grbl 1.1g for ACRO</option>
-                              <option value="grbl1.1g-blackbox.hex">Grbl 1.1g for BlackBox 4X / XPRO (Inverted Drivers)</option>
-                            </optgroup>
-                        </select>
-                        </td>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Grbl-Servo Installed</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enServo">OFF</span></td>
                       </tr>
                       <tr>
-                        <td></td>
-                        <td>
-                          <center><button class="button bg-openbuilds fg-white" onclick="flashGrblfromTroubleshooting();">Flash</button></center>
-                        </td>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Line Numbers Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enLineNumbers">OFF</span></td>
                       </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Mist Cooling Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enMisting">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">CoreXY Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enCoreXY">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Parking Motion Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enParking">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Homing Force Origin Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enHomingOrigin">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Single Axis Homing</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enSingleAxisHome">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Two Limit Switches on Axis Enabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enTwoLimits">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Allow Feed Override in Probe</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enFeedOVProbe">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Restore EEPROM $-settings Disabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enEepromSettingsDisable">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Restore EEPROM parameter Disabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enEepromParamsDisable">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Build Info Write Disabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enBuildInfoDisabled">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Force Sync on EEPROM write Disabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enForceSyncEeprom">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Force Sync on WCO Disabled</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enForceSyncWco">OFF</span></td>
+                      </tr>
+                      <tr>
+                        <td class="pt-1 mt-0 pb-0 pt-0">Homing Init Lock</td>
+                        <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enHomingInitLock">OFF</span></td>
+                      </tr>
+
                     </tbody>
                   </table>
                 </div>
-              </div-->
+              </div>
 
               <div class="card">
                 <div class="card-header  p-1 m-0">
@@ -1193,6 +1244,7 @@
 <script type="text/javascript" src="js/grblsettings.js"></script>
 <script type="text/javascript" src="js/metroactions.js"></script>
 <script type="text/javascript" src="js/jog.js"></script>
+<script type="text/javascript" src="js/servo.js"></script>
 <script type="text/javascript" src="js/keyboard.js"></script>
 <script type="text/javascript" src="js/calibrate.js"></script>
 <script type="text/javascript" src="js/widget.js"></script>
@@ -1204,6 +1256,7 @@
 <script type="text/javascript" src="js/calibrate-x.js"></script>
 <script type="text/javascript" src="js/calibrate-y.js"></script>
 <script type="text/javascript" src="js/calibrate-z.js"></script>
+<script type="text/javascript" src="js/calibrate-servo.js"></script>
 
 <script type="text/javascript" src="js/probe.js"></script>
 

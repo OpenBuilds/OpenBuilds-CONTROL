@@ -65,6 +65,13 @@ function grblSettings(data) {
     $('#gotoYzeroMpos').addClass('disabled')
     $('#gotoZzeroMpos').addClass('disabled')
   }
+
+  if (grblParams['$32'] == 1) {
+    console.log('Laser Mode Enabled')
+    $('#enLaser').removeClass('alert').addClass('success').html('ON')
+  } else {
+    $('#enLaser').removeClass('success').addClass('alert').html('OFF')
+  }
 }
 
 function grblPopulate() {
@@ -75,38 +82,70 @@ function grblPopulate() {
         <ul class="step-list">
 
           <li id="installDriversOnSettingspage">
-            <h6 class="fg-openbuilds">Load Default Settings<br><small>Populate Grbl parameters from machine-type defaults. You can customize values as needed below</small></h6>
+            <h6 class="fg-openbuilds">Load Default Settings<br><small>Populate Grbl parameters from machine-type defaults. You can customize values as needed below. Remember to click Save above to apply</small></h6>
             <hr class="bg-openbuilds">
             <div>
 
             <div class="grid">
               <div class="row">
                 <div class="cell-8">
-                <a style="width: 100%;" class="button dropdown-toggle bd-openbuilds secondary outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
-                <ul class="d-menu border bd-gray" data-role="dropdown" data-toggle-element="#context_toggle2">
-                  <li onclick="selectMachine('custom');"><a href="#"><img src="img/mch/custom.png"/>  Custom Machine</a></li>
-                  <li class="divider"></li>
-                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png"/>  OpenBuilds Acro 55</a></li>
-                  <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png"/>  OpenBuilds Acro 510</a></li>
-                  <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png"/>  OpenBuilds Acro 1010</a></li>
-                  <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png"/>  OpenBuilds Acro 1510</a></li>
-                  <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png"/>  OpenBuilds Acro 1515</a></li>
-                  <li class="divider"></li>
-                  <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png"/>  OpenBuilds C-Beam Machine</a></li>
-                  <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png"/>  OpenBuilds C-Beam XL </a></li>
-                  <li class="divider"></li>
-                  <!--li onclick="selectMachine('leadmachine55');"><a href="#"><img src="img/mch/leadmachine55.png"/>  OpenBuilds Lead Machine 55 </a></li -->
-                  <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png"/>  OpenBuilds Lead Machine 1010 </a></li>
-                  <li class="divider"></li>
-                  <li onclick="selectMachine('minimill');"><a href="#"><img src="img/mch/minimill.png"/>  OpenBuilds MiniMill</a></li>
-                  <li class="divider"></li>
-                  <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png"/>  OpenBuilds Sphinx 55</a></li>
-                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png"/>  OpenBuilds Sphinx 1050</a></li>
-                  <li class="divider"></li>
-                  <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png"/>  OpenBuilds Workbee 1010</a></li>
-                  <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png"/>  OpenBuilds Workbee 1050</a></li>
-                  <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png"/>  OpenBuilds Workbee 1510</a></li>
-                </ul>
+                  <a style="width: 100%;" class="button dropdown-toggle bd-openbuilds secondary outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                    <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  Custom Machine</a></li>
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55</a></li>
+                        <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510</a></li>
+                        <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010</a></li>
+                        <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510</a></li>
+                        <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro with Servo Pen Attachment</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('acro55pen');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55  with Servo Pen Attachment</a></li>
+                        <li onclick="selectMachine('acro510pen');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510  with Servo Pen Attachment</a></li>
+                        <li onclick="selectMachine('acro1010pen');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010  with Servo Pen Attachment</a></li>
+                        <li onclick="selectMachine('acro1510pen');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510  with Servo Pen Attachment</a></li>
+                        <li onclick="selectMachine('acro1515pen');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515  with Servo Pen Attachment</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a></li>
+                        <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png" width="16px"/>  OpenBuilds C-Beam XL</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds Lead Machine</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('leadmachine55');"><a href="#"><img src="img/mch/leadmachine55.png" width="16px"/>  OpenBuilds Lead 55</a></li>
+                        <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds Lead 1010</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#" onclick="selectMachine('minimill');"><img src="img/mch/minimill.png" width="16px"/>  OpenBuilds MiniMill</a></li>
+
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx 55</a></li>
+                        <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png" width="16px"/>  OpenBuilds Sphinx 1050</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee 1010</a></li>
+                        <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png" width="16px"/>  OpenBuilds WorkBee 1050</a></li>
+                        <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png" width="16px"/>  OpenBuilds WorkBee 1510</a></li>
+                      </ul>
+                    </li>
+
+                  </ul>
+
                 </div>
                 <div class="cell-4">
                   <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">

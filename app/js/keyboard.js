@@ -27,6 +27,8 @@ $(document).ready(function() {
       allowContinuousJog = false;
       $('.distbtn').show();
     }
+    // console.log(document.activeElement)
+    document.activeElement.blur();
   });
 
 
