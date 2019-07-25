@@ -444,7 +444,6 @@ function initSocket() {
         case 'Q':
           console.log('SPINDLE_IS_SERVO Enabled')
           $('#enServo').removeClass('alert').addClass('success').html('ON')
-           $(".z-active").hide()
            $(".servo-active").show()
           break;
         case 'V': //	Variable spindle enabled
