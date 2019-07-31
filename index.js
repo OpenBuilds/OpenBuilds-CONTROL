@@ -1068,6 +1068,7 @@ io.on("connection", function(socket) {
     status.machine.probe.plate = data.plate;
     switch (status.machine.firmware.type) {
       case 'grbl':
+        addQToEnd('G21');
         addQToEnd('G10 P1 L20 Z0');
         addQToEnd('G38.2 Z-' + data.dist + ' F' + data.feedrate);
         send1Q();
