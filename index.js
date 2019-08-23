@@ -663,7 +663,7 @@ io.on("connection", function(socket) {
               console.log("No supported firmware detected. Closing port " + port.path);
               var output = {
                 'command': 'connect',
-                'response': "No supported firmware detected. Closing port " + port.path
+                'response': "ERROR!:  No supported firmware detected - you need a controller with Grbl 1.1x on it, or there is a problem with your controller. Closing port " + port.path
               }
               io.sockets.emit('data', output);
               stopPort();
