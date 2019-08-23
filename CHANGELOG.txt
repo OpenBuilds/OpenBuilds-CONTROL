@@ -1,3 +1,5 @@
+v1.0.185: Changed wording on Firmware Detection to avoid confusion
+v1.0.184: Improved unhandled exceptions to hide unimportant errors from users
 v1.0.183: Removed LEAD55 and fixed capatilization of LEAD1010, testing Probing with forced G21 before probe
 v1.0.182: Updated SSL Certificates, Hide Pen Buttons until an instance of Grbl-Servo is detected
 v1.0.181: Fixed bug #88 re Incremental/Continous jog focus, Revamped Grbl Predefined Profiles to use submenus and added Pen options, Integrated Servo Pen Up/Down.

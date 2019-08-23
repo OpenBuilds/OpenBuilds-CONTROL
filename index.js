@@ -1,6 +1,10 @@
 //v1.0.152
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
+process.on("uncaughtException", (err) => {
+  console.log(err)
+});
+
 console.log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
@@ -644,7 +648,7 @@ io.on("connection", function(socket) {
             console.log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
             var output = {
               'command': 'connect',
-              'response': "Detecting Firmware: Method 3 (Unsupported firmware: Smoothie)"
+              'response': "Detecting Firmware: Method 3 (others that are not supported)"
             }
             io.sockets.emit('data', output);
             addQRealtime("version\n"); // Check if it's Smoothieware?
@@ -717,7 +721,7 @@ io.on("connection", function(socket) {
             var i = grblOpts[0].length;
             while (i--) {
               features.push(grblOpts[0].charAt(i))
-              switch(grblOpts[0].charAt(i)) {
+              switch (grblOpts[0].charAt(i)) {
                 case 'Q':
                   console.log('SPINDLE_IS_SERVO Enabled')
                   //
@@ -2109,34 +2113,6 @@ if (isElectron()) {
     // Create myWindow, load the rest of the app, etc...
     app.on('ready', () => {})
   }
-
-  // Someone tried to run a second instance, we should focus our window.
-  // if (jogWindow === null) {
-  //   createJogWindow();
-  //   jogWindow.show()
-  //   jogWindow.setAlwaysOnTop(true);
-  //   jogWindow.focus();
-  //   jogWindow.setAlwaysOnTop(false);
-  // } else {
-  //   jogWindow.show()
-  //   jogWindow.setAlwaysOnTop(true);
-  //   jogWindow.focus();
-  //   jogWindow.setAlwaysOnTop(false);
-  // }
-  // // console.log('SingleInstance')
-  // // console.log(commandLine)
-  // var openFilePath = commandLine[1];
-  // if (openFilePath !== "") {
-  //   // console.log(openFilePath);
-  //   readFile(openFilePath);
-  // }
-
-
-  // if (shouldQuit) {
-  //   console.log("Already running! Check the System Tray")
-  //   electronApp.exit(0);
-  //   electronApp.quit();
-  // }
 
   if (electronApp) {
     // Module to create native browser window.
