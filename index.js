@@ -229,7 +229,13 @@ var status = {
       realFeed: 0, //
       realSpindle: 0 //
     },
-    // status.machine.probe.
+    //
+    tool: {
+      nexttool: {
+        number: 0,
+        line: ""
+      }
+    },
     probe: {
       x: 0.00,
       y: 0.00,
@@ -1620,6 +1626,11 @@ function readFile(path) {
 function machineSend(gcode) {
   // console.log("SENDING: " + gcode)
   if (port.isOpen) {
+    if (gcode.match(/T([\d.]+)/i)) {
+      var tool = parseFloat(RegExp.$1);
+      status.machine.tool.nexttool.number = tool
+      status.machine.tool.nexttool.line = gcode
+    }
     var queueLeft = (gcodeQueue.length - queuePointer)
     var queueTotal = gcodeQueue.length
     // console.log("Q: " + queueLeft)

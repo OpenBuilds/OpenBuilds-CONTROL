@@ -20,13 +20,25 @@ $(document).ready(function() {
     }
   });
 
-
   $("form").submit(function() {
     return false;
   });
-
-
 });
+
+// endline can be Blank
+function runGcodeSection(startline, endline) {
+  var gcode = editor.getValue()
+  gcodeLines = gcode.split("\n")
+  if (endline) {
+    var newgcode = gcodeLines.slice(startline, endline)
+  } else {
+    var newgcode = gcodeLines.slice(startline)
+  }
+
+  var newGcodeString = newgcode.join("\n").replace(/M6|M06|M006/i, "");
+
+  socket.emit('runJob', newGcodeString);
+}
 
 function printLog(string) {
   if (document.getElementById("console") !== null) {
@@ -439,12 +451,12 @@ function initSocket() {
 
   socket.on('features', function(data) {
     console.log('FEATURES', data)
-    for (i=0; i<data.length; i++) {
-      switch(data[i]) {
+    for (i = 0; i < data.length; i++) {
+      switch (data[i]) {
         case 'Q':
           console.log('SPINDLE_IS_SERVO Enabled')
           $('#enServo').removeClass('alert').addClass('success').html('ON')
-           $(".servo-active").show()
+          $(".servo-active").show()
           break;
         case 'V': //	Variable spindle enabled
           console.log('Variable spindle enabled')

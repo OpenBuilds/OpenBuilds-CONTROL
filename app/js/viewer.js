@@ -35,6 +35,7 @@ var ground;
 containerWidth = window.innerWidth;
 containerHeight = window.innerHeight;
 
+var animationLoopTimeout;
 
 function drawWorkspace(xmin, xmax, ymin, ymax) {
 
@@ -416,7 +417,7 @@ function animate() {
     } // end clearSceneFlag
 
     // Limited FPS https://stackoverflow.com/questions/11285065/limiting-framerate-in-three-js-to-increase-performance-requestanimationframe
-    setTimeout(function() {
+    animationLoopTimeout = setTimeout(function() {
       requestAnimationFrame(animate);
     }, 40);
 

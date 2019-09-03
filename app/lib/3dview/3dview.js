@@ -1,4 +1,4 @@
-var object
+var object;
 var draw, line, timefactor = 1,
   object, simRunning = false;
 
@@ -72,6 +72,43 @@ function parseGcodeInWebWorker(gcode) {
   });
   $('#3dviewicon').addClass('fa-pulse')
   $('#3dviewlabel').html(' 3D View (rendering, please wait...)')
+
+
+  // toolChanges
+  toolchanges = setupToolChanges(gcode);
+
+  if (toolchanges.length) {
+    $('#runBtn').hide()
+    $('#runToolsBtn').show()
+    $('#toolChangesMenu').empty();
+    var dropdownTemplate = ``;
+    if (toolchanges[0].lineNum > 0) {
+      dropdownTemplate += `<li onclick="runGcodeSection(` + 0 + `,` + toolchanges[0].lineNum + `)"><a href="#" onclick=""><i class="fas fa-play"></i> Run Header (lines 1-` + toolchanges[0].lineNum + `)</a></li>`
+    }
+    for (i = 0; i < toolchanges.length; i++) {
+      var endline = false;
+      if (toolchanges[i + 1]) {
+        endline = toolchanges[i + 1].lineNum
+      }
+      dropdownTemplate += `<li onclick="runGcodeSection(` + toolchanges[i].lineNum + `,` + endline + `)">`
+      dropdownTemplate += `<a href="#" onclick=""><i class="fas fa-play"></i> Run Tool `
+      if (toolchanges[i].toolNum) {
+        dropdownTemplate += toolchanges[i].toolNum + ` `
+      }
+      if (toolchanges[i].toolComment) {
+        dropdownTemplate += toolchanges[i].toolComment + ` `
+      }
+      if (toolchanges[i].sectionComment) {
+        dropdownTemplate += toolchanges[i].sectionComment + ` `
+      }
+      dropdownTemplate += ` from line ` + toolchanges[i].lineNum + ` `
+      dropdownTemplate += `</a></li>`
+    }
+    $('#toolChangesMenu').html(dropdownTemplate)
+  } else {
+    $('#runBtn').show()
+    $('#runToolsBtn').hide()
+  }
 
 };
 

@@ -109,7 +109,13 @@ function setConnectBar(val, status) {
 // Toolbar with play/pause/stop
 function setControlBar(val, status) {
   if (val == 0) { // Not Connected Yet
-    $('#runBtn').hide().attr('disabled', true);
+    if (toolchanges.length) {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    } else {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    }
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -127,10 +133,19 @@ function setControlBar(val, status) {
     $('.estop').hide()
   } else if (val == 1 || val == 2) { // Connected, but not Playing yet
     if (typeof ace !== 'undefined') {
-      $('#runBtn').show().attr('disabled', editor.session.getLength() < 2);
-      $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+      if (toolchanges.length) {
+        $('#runToolsBtn').show().attr('disabled', editor.session.getLength() < 2);
+        $('#runBtn').hide().attr('disabled', editor.session.getLength() < 2);
+        $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+      } else {
+        $('#runToolsBtn').hide().attr('disabled', editor.session.getLength() < 2);
+        $('#runBtn').show().attr('disabled', editor.session.getLength() < 2);
+        $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+      }
+
     } else {
       $('#runBtn').show().attr('disabled', false);
+      $('#runToolsBtn').hide().attr('disabled', false);
     }
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -146,7 +161,13 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 3) { // Busy Streaming GCODE
-    $('#runBtn').hide().attr('disabled', true);
+    if (toolchanges.length) {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    } else {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    }
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').show().attr('disabled', false);
@@ -162,7 +183,13 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 4) { // Paused
-    $('#runBtn').hide().attr('disabled', true);
+    if (toolchanges.length) {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    } else {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    }
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').show().attr('disabled', false);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -178,7 +205,14 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 5) { // Alarm State
-    $('#runBtn').show().attr('disabled', true);
+    if (toolchanges.length) {
+      $('#runToolsBtn').show().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    } else {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').show().attr('disabled', true);
+    }
+    // $('#runBtn').show().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -194,7 +228,13 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 6) { // Firmware Upgrade State
-    $('#runBtn').hide().attr('disabled', true);
+    if (toolchanges.length) {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    } else {
+      $('#runToolsBtn').hide().attr('disabled', true);
+      $('#runBtn').hide().attr('disabled', true);
+    }
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);

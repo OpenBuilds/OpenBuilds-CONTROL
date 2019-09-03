@@ -121,11 +121,10 @@ function loadFile(f) {
     // if (f.name.match(/.gcode$/i)) {
     r.readAsText(f);
     r.onload = function(event) {
-      // cleanupThree();
-      // gcode = this.result;
       editor.session.setValue(this.result);
-      parseGcodeInWebWorker(this.result)
       printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
+      parseGcodeInWebWorker(this.result)
+
     };
     // }
   }

@@ -22,8 +22,10 @@ var lastLine = {
   z: 0,
   e: 0,
   f: 0,
+  t: false,
   feedrate: null,
-  extruding: false
+  extruding: false,
+  tool: false
 };
 
 function openGCodeFromText(gcode) {
@@ -33,44 +35,46 @@ function openGCodeFromText(gcode) {
   console.log(parsedData)
 
   var geometry = new THREE.BufferGeometry();
-	var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
+  var material = new THREE.LineBasicMaterial({
+    vertexColors: THREE.VertexColors
+  });
   var positions = [];
-	var colors = [];
+  var colors = [];
 
-  for (i=0; i< parsedData.lines.length; i++) {
+  for (i = 0; i < parsedData.lines.length; i++) {
     if (!parsedData.lines[i].args.isFake) {
       var x = parsedData.lines[i].p2.x;
-			var y = parsedData.lines[i].p2.y;
-			var z = parsedData.lines[i].p2.z;
-			positions.push( x, y, z );
+      var y = parsedData.lines[i].p2.y;
+      var z = parsedData.lines[i].p2.z;
+      positions.push(x, y, z);
 
       if (parsedData.lines[i].p2.g0) {
-        colors.push( 0 );
-  			colors.push( 200 );
-  			colors.push( 0 );
+        colors.push(0);
+        colors.push(200);
+        colors.push(0);
       } else if (parsedData.lines[i].p2.g1) {
-        colors.push( 200 );
-  			colors.push( 0 );
-  			colors.push( 0 );
+        colors.push(200);
+        colors.push(0);
+        colors.push(0);
       } else if (parsedData.lines[i].p2.g2) {
-        colors.push( 0 );
-  			colors.push( 0 );
-  			colors.push( 200 );
+        colors.push(0);
+        colors.push(0);
+        colors.push(200);
       } else {
-        colors.push( 200 );
-  			colors.push( 0 );
-  			colors.push( 200 );
+        colors.push(200);
+        colors.push(0);
+        colors.push(200);
       }
 
     }
   }
 
-  geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-	geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+  geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-	geometry.computeBoundingSphere();
+  geometry.computeBoundingSphere();
 
-	var line = new THREE.Line( geometry, material );
+  var line = new THREE.Line(geometry, material);
   line.geometry.computeBoundingBox();
   var box = line.geometry.boundingBox.clone();
   line.userData.lines = parsedData.lines
@@ -202,6 +206,17 @@ GCodeParser = function(handlers, modecmdhandlers) {
               // use feedrate from prior lines
               args.svalue = this.lastsvalue;
             }
+
+            if (args.text.match(/T([\d.]+)/i)) {
+              console.log("New Tool: ", args.text)
+              // we have a new S-Value
+              var tool = parseFloat(RegExp.$1);
+              args.tool = tool;
+              this.lasttool = tool;
+            } else {
+              // use tool from prior lines
+              args.tool = this.lasttool;
+            }
             //console.log("about to call handler. args:", args, "info:", info, "this:", this);
             return handler(args, info, this);
           } else {
@@ -245,18 +260,20 @@ GCodeParser = function(handlers, modecmdhandlers) {
   colorG1 = 0xcc0000,
   colorG2 = 0x0000cc,
   createObjectFromGCode = function(gcode) {
-  // console.log(gcode)
+    // console.log(gcode)
 
-  // Reset Starting Point
-  lastLine = {
-    x: 0,
-    y: 0,
-    z: 0,
-    e: 0,
-    f: 0,
-    feedrate: null,
-    extruding: false
-  };
+    // Reset Starting Point
+    lastLine = {
+      x: 0,
+      y: 0,
+      z: 0,
+      e: 0,
+      f: 0,
+      s: 0,
+      t: false,
+      feedrate: null,
+      extruding: false
+    };
 
 
     setUnits = function(units) {
@@ -588,13 +605,13 @@ GCodeParser = function(handlers, modecmdhandlers) {
         // end of if p2.arc
         // console.log( p2.threeObjArc.userData.points)
 
-console.log(threeObjArc.userData.points.length)
+        console.log(threeObjArc.userData.points.length)
 
-        for (i=0; i<threeObjArc.userData.points.length; i++) {
+        for (i = 0; i < threeObjArc.userData.points.length; i++) {
           var p2 = {
             x: threeObjArc.userData.points[i].x,
-            y:threeObjArc.userData.points[i].y,
-            z:threeObjArc.userData.points[i].z,
+            y: threeObjArc.userData.points[i].y,
+            z: threeObjArc.userData.points[i].z,
             e: p2.e,
             f: p2.f,
             g2: true
@@ -730,6 +747,7 @@ console.log(threeObjArc.userData.points.length)
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
           newLine.g0 = true;
           //cofg.newLayer(newLine);
@@ -752,6 +770,7 @@ console.log(threeObjArc.userData.points.length)
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
           /* layer change detection is or made by watching Z, it's made by
                   watching when we extrude at a new Z position */
@@ -774,6 +793,8 @@ console.log(threeObjArc.userData.points.length)
             z: args.z !== undefined ? cofg.absolute(lastLine.z, args.z) + cofg.offsetG92.z : lastLine.z,
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
+            s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
             arci: args.i !== undefined ? cofg.ijkabsolute(lastLine.x, args.i) : lastLine.x,
             arcj: args.j !== undefined ? cofg.ijkabsolute(lastLine.y, args.j) : lastLine.y,
             arck: args.k !== undefined ? cofg.ijkabsolute(lastLine.z, args.k) : lastLine.z,
@@ -925,6 +946,7 @@ console.log(threeObjArc.userData.points.length)
         },
 
         // No-op modal macros that do not affect the viewer
+        M6: function(args) {}, // Pause for Toolchange
         M07: function() {}, // Coolant on (mist)
         M08: function() {}, // Coolant on (flood)
         M09: function() {}, // Coolant off
