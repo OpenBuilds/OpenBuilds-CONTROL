@@ -140,11 +140,12 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   workspace.add(cone)
   gridsystem.name = "Grid System"
   workspace.add(gridsystem)
-  redrawGrid(xmin, xmax, ymin, ymax);
+  redrawGrid(xmin, xmax, ymin, ymax, false);
   scene.add(workspace)
 }
 
 function redrawGrid(xmin, xmax, ymin, ymax, inches) {
+  console.log(xmin, xmax, ymin, ymax, inches)
   if (inches) {
     xmin = Math.floor(xmin * 25.4);
     xmax = Math.ceil(xmax * 25.4);
@@ -171,8 +172,7 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
 
   if (inches) {
     var unitsval = "in"
-    var offset = 5 * 25.4
-    var size = 5 * 25.4
+    var offset = 5 * 2.54
   } else {
     var unitsval = "mm"
     var offset = 5
@@ -200,17 +200,6 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
 
   axesgrp.add(xlbl);
   axesgrp.add(ylbl);
-
-  // var unitslabel = this.makeSprite(this.scene, "webgl", {
-  //   x: xmin - offset,
-  //   y: ymin - offset,
-  //   z: 0,
-  //   text: unitsval,
-  //   color: "#888888",
-  //   size: size
-  // });
-  // axesgrp.add(unitslabel);
-  //axesgrp.add(zlbl); Laser don't have Z - but CNCs do
 
   var materialX = new THREE.LineBasicMaterial({
     color: 0xcc0000
@@ -246,11 +235,10 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   var step10 = 10;
   var step100 = 100;
   if (inches) {
-    step10 = 25.4;
-    step100 = 254;
+    step10 = 2.54;
+    step100 = 25.4;
   }
-
-  helper = new THREE.GridHelper(xmax, ymax, step10, 0x888888);
+  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step10, 0x888888);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
@@ -259,7 +247,7 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   helper.receiveShadow = false;
   helper.name = "GridHelper10mm"
   grid.add(helper);
-  helper = new THREE.GridHelper(xmax, ymax, step100, 0x666666);
+  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step100, 0x666666);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
@@ -271,7 +259,11 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   grid.name = "Grid"
 
   gridsystem.children.length = 0
-  var ruler = drawRuler(xmin, xmax, ymin, ymax, inches)
+  if (inches) {
+    var ruler = drawRulerInches(xmin, xmax, ymin, ymax, inches)
+  } else {
+    var ruler = drawRuler(xmin, xmax, ymin, ymax, inches)
+  }
   gridsystem.add(grid);
   gridsystem.add(ruler);
 

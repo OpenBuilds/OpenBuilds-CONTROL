@@ -1,5 +1,21 @@
 var toolchanges = [];
 
+// endline can be Blank
+function runGcodeSection(startline, endline) {
+  var gcode = editor.getValue()
+  gcodeLines = gcode.split("\n")
+  if (endline) {
+    var newgcode = gcodeLines.slice(startline, endline)
+  } else {
+    var newgcode = gcodeLines.slice(startline)
+  }
+
+  var newGcodeString = newgcode.join("\n").replace(/M6|M06|M006/i, "");
+
+  socket.emit('runJob', newGcodeString);
+}
+
+
 function setupToolChanges(gcode) {
   // scan gcode for tool change info
   var fileLines = gcode
@@ -20,7 +36,14 @@ function setupToolChanges(gcode) {
     // T0 ; 1/4 inch flat bottom endmill
     if (line.match(/\(T(\d+)\s+(.*)\)/i) || line.match(/\;T(\d+)\s+(.*)\)/i) || line.match(/\T(\d+)/i)) {
       var toolNum = parseInt(RegExp.$1);
-      var toolComment = "T" + toolNum + " " + RegExp.$2;
+      if (toolComments[toolNum] && !toolComments[toolNum].toolComment) {
+        // var toolComment = "T" + toolNum + " " + RegExp.$2;
+      } else if (toolComments[toolNum] && toolComments[toolNum].toolComment) {
+        var toolComment = toolComments[toolNum].toolComment + " " + RegExp.$2;
+      } else {
+        var toolComment = "T" + toolNum + " " + RegExp.$2;
+      }
+      // var toolComment = "T" + toolNum + " " + RegExp.$2;
       console.log("found tool comment. lineNum:", i, "toolNum:", toolNum, "comment:", toolComment, "line:", line);
       toolComments[toolNum] = {
         lineNum: i + 1,

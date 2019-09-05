@@ -164,7 +164,7 @@ function selectMachine(type) {
       $0: "10", //"Step pulse time, microseconds"
       $1: "255", //"Step idle delay, milliseconds"
       $2: "0", //"Step pulse invert, mask"
-      $3: "6", //"Step direction invert, mask"
+      $3: "1", //"Step direction invert, mask"
       $4: "1", //"Invert step enable pin, boolean"
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
@@ -837,56 +837,56 @@ function selectMachine(type) {
   if (lastSelectedMachine != type) {
     if (lastSelectedMachine.substr(0, 4) != type.substr(0, 4)) {
       if (customFirmware == "acro") {
-          Metro.dialog.create({
-            title: "Custom Firmware Required",
-            content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
-            actions: [{
-                caption: "No Thank you",
-                cls: "js-dialog-close",
-                onclick: function() {
-                  console.log("Do nothing")
-                }
-              },
-              {
-                caption: "Launch the Flashing Wizard",
-                cls: "js-dialog-close success",
-                onclick: function() {
-                  populateGrblBuilderToolForm();
-                  setTimeout(function(){
-                    $('#grblAxesCount').data('select').val('2axes')
-                  }, 500)
-                }
-              },
+        Metro.dialog.create({
+          title: "Custom Firmware Required",
+          content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
+          actions: [{
+              caption: "No Thank you",
+              cls: "js-dialog-close",
+              onclick: function() {
+                console.log("Do nothing")
+              }
+            },
+            {
+              caption: "Launch the Flashing Wizard",
+              cls: "js-dialog-close success",
+              onclick: function() {
+                populateGrblBuilderToolForm();
+                setTimeout(function() {
+                  $('#grblAxesCount').data('select').val('2axes')
+                }, 500)
+              }
+            },
 
-            ]
-          });
+          ]
+        });
 
         console.log('This machine needs a custom firmware')
       }
       if (customFirmware == "acropen") {
-          Metro.dialog.create({
-            title: "Custom Firmware Required",
-            content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
-            actions: [{
-                caption: "No Thank you",
-                cls: "js-dialog-close",
-                onclick: function() {
-                  console.log("Do nothing")
-                }
-              },
-              {
-                caption: "Launch the Flashing Wizard",
-                cls: "js-dialog-close success",
-                onclick: function() {
-                  populateGrblBuilderToolForm();
-                  setTimeout(function(){
-                    $('#grblAxesCount').data('select').val('servo')
-                  }, 500)
-                }
-              },
+        Metro.dialog.create({
+          title: "Custom Firmware Required",
+          content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
+          actions: [{
+              caption: "No Thank you",
+              cls: "js-dialog-close",
+              onclick: function() {
+                console.log("Do nothing")
+              }
+            },
+            {
+              caption: "Launch the Flashing Wizard",
+              cls: "js-dialog-close success",
+              onclick: function() {
+                populateGrblBuilderToolForm();
+                setTimeout(function() {
+                  $('#grblAxesCount').data('select').val('servo')
+                }, 500)
+              }
+            },
 
-            ]
-          });
+          ]
+        });
 
         console.log('This machine needs a custom firmware')
       }

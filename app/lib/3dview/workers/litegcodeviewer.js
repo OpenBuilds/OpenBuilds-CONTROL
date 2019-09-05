@@ -79,6 +79,7 @@ function openGCodeFromText(gcode) {
   var box = line.geometry.boundingBox.clone();
   line.userData.lines = parsedData.lines
   line.userData.bbbox2 = box
+  line.userData.inch = parsedData.inch
   line.name = 'gcodeobject'
   return line;
 }

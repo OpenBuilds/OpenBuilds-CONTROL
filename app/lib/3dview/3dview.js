@@ -24,11 +24,12 @@ function parseGcodeInWebWorker(gcode) {
       worker.terminate();
       scene.add(object);
       if (object.userData.inch) {
+        // console.log(scaling)
         object.scale.x = 25.4
         object.scale.y = 25.4
         object.scale.z = 25.4
       }
-      redrawGrid(parseInt(object.userData.bbbox2.min.x), parseInt(object.userData.bbbox2.max.x), parseInt(object.userData.bbbox2.min.y), parseInt(object.userData.bbbox2.max.y), object.userData.inch)
+      redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
       // animate();
       setTimeout(function() {
         if (webgl) {
@@ -75,40 +76,43 @@ function parseGcodeInWebWorker(gcode) {
 
 
   // toolChanges
-  toolchanges = setupToolChanges(gcode);
-
-  if (toolchanges.length) {
-    $('#runBtn').hide()
-    $('#runToolsBtn').show()
-    $('#toolChangesMenu').empty();
-    var dropdownTemplate = ``;
-    if (toolchanges[0].lineNum > 0) {
-      dropdownTemplate += `<li onclick="runGcodeSection(` + 0 + `,` + toolchanges[0].lineNum + `)"><a href="#" onclick=""><i class="fas fa-play"></i> Run Header (lines 1-` + toolchanges[0].lineNum + `)</a></li>`
-    }
-    for (i = 0; i < toolchanges.length; i++) {
-      var endline = false;
-      if (toolchanges[i + 1]) {
-        endline = toolchanges[i + 1].lineNum
-      }
-      dropdownTemplate += `<li onclick="runGcodeSection(` + toolchanges[i].lineNum + `,` + endline + `)">`
-      dropdownTemplate += `<a href="#" onclick=""><i class="fas fa-play"></i> Run Tool `
-      if (toolchanges[i].toolNum) {
-        dropdownTemplate += toolchanges[i].toolNum + ` `
-      }
-      if (toolchanges[i].toolComment) {
-        dropdownTemplate += toolchanges[i].toolComment + ` `
-      }
-      if (toolchanges[i].sectionComment) {
-        dropdownTemplate += toolchanges[i].sectionComment + ` `
-      }
-      dropdownTemplate += ` from line ` + toolchanges[i].lineNum + ` `
-      dropdownTemplate += `</a></li>`
-    }
-    $('#toolChangesMenu').html(dropdownTemplate)
-  } else {
-    $('#runBtn').show()
-    $('#runToolsBtn').hide()
-  }
+  // toolchanges = setupToolChanges(gcode);
+  //
+  // if (toolchanges.length) {
+  //   $('#runBtn').hide()
+  //   $('#runToolsBtn').show()
+  //   $('#toolChangesMenu').empty();
+  //   var dropdownTemplate = ``;
+  //   if (toolchanges[0].lineNum > 0) {
+  //     dropdownTemplate += `<li onclick="runGcodeSection(` + 0 + `,` + toolchanges[0].lineNum + `)"><a href="#" onclick=""><i class="fas fa-play"></i> Run Complete Job</a></li>`
+  //     dropdownTemplate += `<li class="divider"></li>`
+  //     dropdownTemplate += `<li onclick="runGcodeSection(` + 0 + `,` + toolchanges[0].lineNum + `)"><a href="#" onclick=""><i class="fas fa-play"></i> Run Header (lines 1-` + toolchanges[0].lineNum + `)</a></li>`
+  //
+  //   }
+  //   for (i = 0; i < toolchanges.length; i++) {
+  //     var endline = false;
+  //     if (toolchanges[i + 1]) {
+  //       endline = toolchanges[i + 1].lineNum
+  //     }
+  //     dropdownTemplate += `<li onclick="runGcodeSection(` + toolchanges[i].lineNum + `,` + endline + `)">`
+  //     dropdownTemplate += `<a href="#" onclick=""><i class="fas fa-play"></i> Run Tool `
+  //     if (toolchanges[i].toolNum) {
+  //       dropdownTemplate += toolchanges[i].toolNum + ` `
+  //     }
+  //     dropdownTemplate += ` from line ` + (toolchanges[i].lineNum + 1) + ` `
+  //     if (toolchanges[i].toolComment) {
+  //       dropdownTemplate += `/ Tool Details: ` + toolchanges[i].toolComment + ` `
+  //     }
+  //     if (toolchanges[i].sectionComment) {
+  //       dropdownTemplate += `/ Section ` + toolchanges[i].sectionComment + ` `
+  //     }
+  //     dropdownTemplate += `</a></li>`
+  //   }
+  //   $('#toolChangesMenu').html(dropdownTemplate)
+  // } else {
+  //   $('#runBtn').show()
+  //   $('#runToolsBtn').hide()
+  // }
 
 };
 
@@ -188,9 +192,17 @@ function runSim() {
     //   simstop();
     // }
   } else {
-    var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
-    var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
-    var posz = object.userData.lines[simIdx].p2.z;
+    if (object.userData.inch) {
+      var posx = object.userData.lines[simIdx].p2.x * 25.4; //- (sizexmax/2);
+      var posy = object.userData.lines[simIdx].p2.y * 25.4; //- (sizeymax/2);
+      var posz = object.userData.lines[simIdx].p2.z * 25.4;
+
+    } else {
+      var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
+      var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
+      var posz = object.userData.lines[simIdx].p2.z;
+
+    }
 
     //console.log(posx, posy, posz, object.userData.lines[simIdx])
 

@@ -2,7 +2,7 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-THREE.GridHelper = function(sizeX, sizeY, step, colorval) {
+THREE.GridHelper = function(minX, maxX, minY, maxY, step, colorval) {
 
   var geometry = new THREE.Geometry();
   var material = new THREE.LineBasicMaterial({
@@ -12,16 +12,16 @@ THREE.GridHelper = function(sizeX, sizeY, step, colorval) {
   this.color = new THREE.Color(colorval);
 
 
-  for (var i = 0; i <= (sizeX); i += step) {
+  for (var i = minX; i <= (maxX); i += step) {
     geometry.vertices.push(
-      new THREE.Vector3(i, 0, 0), new THREE.Vector3(i, sizeY, 0)
+      new THREE.Vector3(i, minY, 0), new THREE.Vector3(i, maxY, 0)
     );
     geometry.colors.push(this.color, this.color, this.color, this.color);
   }
 
-  for (var i = 0; i <= (sizeY); i += step) {
+  for (var i = minY; i <= (maxY); i += step) {
     geometry.vertices.push(
-      new THREE.Vector3(0, i, 0), new THREE.Vector3(sizeX, i, 0)
+      new THREE.Vector3(minX, i, 0), new THREE.Vector3(maxX, i, 0)
 
     );
     geometry.colors.push(this.color, this.color, this.color, this.color);

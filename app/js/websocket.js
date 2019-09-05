@@ -25,20 +25,6 @@ $(document).ready(function() {
   });
 });
 
-// endline can be Blank
-function runGcodeSection(startline, endline) {
-  var gcode = editor.getValue()
-  gcodeLines = gcode.split("\n")
-  if (endline) {
-    var newgcode = gcodeLines.slice(startline, endline)
-  } else {
-    var newgcode = gcodeLines.slice(startline)
-  }
-
-  var newGcodeString = newgcode.join("\n").replace(/M6|M06|M006/i, "");
-
-  socket.emit('runJob', newGcodeString);
-}
 
 function printLog(string) {
   if (document.getElementById("console") !== null) {

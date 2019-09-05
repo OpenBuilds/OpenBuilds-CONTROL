@@ -1,3 +1,5 @@
+v1.0.187: Fixed Workbee1510 profile for new BlackBox wiring video
+v1.0.186: Fixes for 3D viewer in Inch mode
 v1.0.185: Changed wording on Firmware Detection to avoid confusion
 v1.0.184: Improved unhandled exceptions to hide unimportant errors from users
 v1.0.183: Removed LEAD55 and fixed capitalization of LEAD1010, testing Probing with forced G21 before probe
