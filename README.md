@@ -1,5 +1,5 @@
 # OpenBuilds CONTROL
-OpenBuilds CONTROL - Interface Driver for all CNC style machines (Grbl, Smoothieware)
+OpenBuilds CONTROL - Interface Driver for all CNC style machines running Grbl
 
 ## Download
 
