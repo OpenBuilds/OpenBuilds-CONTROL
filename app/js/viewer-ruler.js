@@ -139,7 +139,7 @@ function drawRulerInches(xmin, xmax, ymin, ymax) {
   length10 = 1.7;
   var unitsval = "in"
 
-  console.log(xmin, xmax, ymin, ymax)
+  // console.log(xmin, xmax, ymin, ymax)
 
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
@@ -225,7 +225,7 @@ function drawRulerInches(xmin, xmax, ymin, ymax) {
   ymin = Math.floor(ymin * 0.0393701);
   ymax = Math.ceil(ymax * 0.0393701);
 
-  console.log(xmin, xmax, ymin, ymax)
+  // console.log(xmin, xmax, ymin, ymax)
 
   var x = [];
   var y = [];

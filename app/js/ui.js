@@ -109,7 +109,7 @@ function setConnectBar(val, status) {
 // Toolbar with play/pause/stop
 function setControlBar(val, status) {
   if (val == 0) { // Not Connected Yet
-    if (toolchanges.length) {
+    if (toolchanges && toolchanges.length) {
       $('#runToolsBtn').hide().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);
     } else {

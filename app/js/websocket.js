@@ -25,6 +25,17 @@ $(document).ready(function() {
   });
 });
 
+function showGrbl(bool) {
+  if (bool) {
+    sendGcode('$$')
+    sendGcode('$I')
+    $("#grblButtons").show()
+    $("#firmwarename").html('Grbl')
+  } else {
+    $("#grblButtons").hide()
+    $("#firmwarename").html('')
+  }
+}
 
 function printLog(string) {
   if (document.getElementById("console") !== null) {
@@ -139,24 +150,16 @@ function initSocket() {
     z0proberesult(data)
   });
 
-  function showGrbl(bool) {
-    if (bool) {
-      sendGcode('$$')
-      sendGcode('$I')
-      $("#grblButtons").show()
-      $("#firmwarename").html('Grbl')
-    } else {
-      $("#grblButtons").hide()
-      $("#firmwarename").html('')
-    }
-  }
-
+  socket.on("jobComplete", function(data) {
+    console.log("Job Complete", data)
+  });
 
   socket.on("machinename", function(data) {
     if (typeof setMachineButton !== 'undefined') {
       setMachineButton(data)
     }
   });
+
   socket.on("queueCount", function(data) {
     // calc percentage
     var left = parseInt(data[0])
@@ -172,7 +175,7 @@ function initSocket() {
         editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
       }
       if (typeof object !== 'undefined' && done > 0) {
-        if (object.userData !== 'undefined' && object.userData.lines.length > 2) {
+        if (object.userData !== 'undefined' && object.userData && object.userData.lines.length > 2) {
           var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
         }
         if (!isNaN(timeremain)) {

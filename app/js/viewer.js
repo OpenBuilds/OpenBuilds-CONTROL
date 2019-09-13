@@ -145,14 +145,14 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
 }
 
 function redrawGrid(xmin, xmax, ymin, ymax, inches) {
-  console.log(xmin, xmax, ymin, ymax, inches)
+  // console.log(xmin, xmax, ymin, ymax, inches)
   if (inches) {
     xmin = Math.floor(xmin * 25.4);
     xmax = Math.ceil(xmax * 25.4);
     ymin = Math.floor(ymin * 25.4);
     ymax = Math.ceil(ymax * 25.4);
   }
-  console.log(xmin, xmax, ymin, ymax, inches)
+  // console.log(xmin, xmax, ymin, ymax, inches)
 
   sizexmax = xmax;
   sizeymax = ymax;

@@ -272,7 +272,7 @@ var status = {
     },
   },
   comms: {
-    connectionStatus: 0, //0 = not connected, 1 = opening, 2 = connected, 3 = playing, 4 = paused
+    connectionStatus: 0, //0 = not connected, 1 = opening, 2 = connected, 3 = playing, 4 = paused, 5 = alarm, 6 = firmware upgrade
     connectedTo: "none",
     runStatus: "Pending", // 0 = init, 1 = idle, 2 = alarm, 3 = stop, 4 = run, etc?
     queue: 0,
@@ -2040,13 +2040,12 @@ function send1Q() {
         break;
     }
     if (queuePointer >= gcodeQueue.length) {
-      if (!status.comms.connectionStatus == 5) {
-        status.comms.connectionStatus = 2; // finished
-      }
+      status.comms.connectionStatus = 2; // finished
       clearInterval(queueCounter);
       gcodeQueue.length = 0; // Dump the Queye
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
+      io.sockets.emit('jobComplete', true);
     }
   } else {
     console.log('Not Connected')

@@ -1,4 +1,106 @@
+var sectionNum = 0;
 var toolchanges = [];
+
+function populateToolChanges(gcode) {
+
+  // toolChanges
+  toolchanges = setupToolChanges(gcode);
+
+  if (toolchanges.length) {
+    $('#runBtn').hide()
+    $('#runToolsBtn').show()
+    $('#toolChangesMenu').empty();
+    var dropdownTemplate = ``;
+    if (toolchanges[0].lineNum > 0) {
+      dropdownTemplate += `<li onclick="runGcodeAllTools()"><a href="#" onclick=""><i class="fas fa-play"></i> Run Complete Job</a></li>`
+      dropdownTemplate += `<li class="divider"></li>`
+      dropdownTemplate += `<li onclick="runGcodeSection(` + 0 + `,` + toolchanges[0].lineNum + `)"><a href="#" onclick=""><i class="fas fa-play"></i> Run Header (lines 1-` + toolchanges[0].lineNum + `)</a></li>`
+
+    }
+    for (i = 0; i < toolchanges.length; i++) {
+      var endline = false;
+      if (toolchanges[i + 1]) {
+        endline = toolchanges[i + 1].lineNum
+      }
+      dropdownTemplate += `<li onclick="runGcodeSection(` + toolchanges[i].lineNum + `,` + endline + `)">`
+      dropdownTemplate += `<a href="#" onclick=""><i class="fas fa-play"></i> Run Tool `
+      if (toolchanges[i].toolNum) {
+        dropdownTemplate += toolchanges[i].toolNum + ` `
+      }
+      dropdownTemplate += ` from line ` + (toolchanges[i].lineNum + 1) + ` `
+      if (toolchanges[i].toolComment) {
+        dropdownTemplate += `/ Tool Details: ` + toolchanges[i].toolComment + ` `
+      }
+      if (toolchanges[i].sectionComment) {
+        dropdownTemplate += `/ Section ` + toolchanges[i].sectionComment + ` `
+      }
+      dropdownTemplate += `</a></li>`
+    }
+    $('#toolChangesMenu').html(dropdownTemplate)
+  } else {
+    $('#runBtn').show()
+    $('#runToolsBtn').hide()
+  }
+}
+
+function runGcodeAllTools() {
+
+  var gcode = editor.getValue()
+  gcodeLines = gcode.split("\n")
+
+  var multiToolJob = [];
+
+  // Header
+  if (toolchanges[0].lineNum > 0) {
+    var headergcode = gcodeLines.slice(0, toolchanges[0].lineNum).join("\n").replace(/M6|M06|M006/i, "");
+    var section = {
+      gcode: headergcode,
+      toolNum: false,
+      toolComment: false,
+      sectionComment: sectionComment,
+      startLine: 0,
+      endLine: toolchanges[0].lineNum,
+      completed: false
+    }
+    multiToolJob.push(section)
+  }
+
+  // Toolchanges
+  for (i = 0; i < toolchanges.length; i++) {
+    var startLine = toolchanges[i].lineNum + 1
+    if (toolchanges[i + 1]) {
+      var endLine = toolchanges[i + 1].lineNum
+    } else {
+      endLine = false;
+    }
+    if (toolchanges[i].toolNum) {
+      var toolNum = toolchanges[i].toolNum
+    }
+    if (toolchanges[i].toolComment) {
+      var toolComment = toolchanges[i].toolComment
+    }
+    if (toolchanges[i].sectionComment) {
+      var sectionComment = toolchanges[i].sectionComment
+    }
+    if (endLine) {
+      var newgcode = gcodeLines.slice(startLine, endLine).join("\n").replace(/M6|M06|M006/i, "");
+    } else {
+      var newgcode = gcodeLines.slice(startLine).join("\n").replace(/M6|M06|M006/i, "");
+    }
+    var section = {
+      gcode: newgcode,
+      toolNum: toolNum,
+      toolComment: toolComment,
+      sectionComment: sectionComment,
+      startLine: startLine,
+      endLine: endLine,
+      completed: false
+    }
+    multiToolJob.push(section)
+  }
+  // Now run this array one by one
+  console.log(JSON.stringify(multiToolJob))
+}
 
 // endline can be Blank
 function runGcodeSection(startline, endline) {
@@ -12,9 +114,9 @@ function runGcodeSection(startline, endline) {
 
   var newGcodeString = newgcode.join("\n").replace(/M6|M06|M006/i, "");
 
+  console.log(newGcodeString)
   socket.emit('runJob', newGcodeString);
 }
-
 
 function setupToolChanges(gcode) {
   // scan gcode for tool change info
