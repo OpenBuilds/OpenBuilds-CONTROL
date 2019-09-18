@@ -1,3 +1,4 @@
+v1.0.189: Fixed Sphinx55 and Sphinx1050 profile for new BlackBox wiring video
 v1.0.189: Fixed Workbee1010 and Workbee1050 profile for new BlackBox wiring video
 v1.0.188: Improved 3D Viewer for Inch mode files
 v1.0.187: Fixed Workbee1510 profile for new BlackBox wiring video
