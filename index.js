@@ -27,6 +27,8 @@ var path = require("path");
 const join = require('path').join;
 var mkdirp = require('mkdirp');
 
+let parser;
+
 app.use(express.static(path.join(__dirname, "app")));
 
 var httpsOptions = {
@@ -396,7 +398,7 @@ app.post('/upload', function(req, res) {
   form.on('file', function(name, file) {
     console.log('Uploaded ' + file.path);
 
-    if (jogWindow === null) {
+    /*if (jogWindow === null) {
       createJogWindow();
       jogWindow.show()
       // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
@@ -408,7 +410,7 @@ app.post('/upload', function(req, res) {
       jogWindow.setAlwaysOnTop(true);
       jogWindow.focus();
       jogWindow.setAlwaysOnTop(false);
-    }
+    }*/
     readFile(file.path)
   });
 
@@ -1097,6 +1099,21 @@ io.on("connection", function(socket) {
     }
   });
 
+
+  socket.on("surfaceLevelCalibration", async function(params) {
+/*    if (status.machine.firmware.type !== "grbl") {
+      console.log('ERROR: Unsupported firmware!');
+      return;
+    }*/
+    const {surfaceLevelCalibration} = require("./surface-level-calibration");
+    let calibrationData = await surfaceLevelCalibration(
+        params,
+        parser,
+        (gcode) => machineSend(gcode+"\n"),
+        uploadsDir
+    );
+  });
+
   socket.on('jog', function(data) {
     console.log('Jog ' + data);
     if (status.comms.connectionStatus > 0) {
@@ -1613,6 +1630,8 @@ function readFile(path) {
               } = require('electron')
               shell.openExternal('https://cam.openbuilds.com')
             } else { // GCODE
+              const {adjustGCodeLevel} = require("./surface-level-calibration");
+              data = adjustGCodeLevel(uploadsDir, data);
               io.sockets.emit('gcodeupload', data);
               uploadedgcode = data;
               return data

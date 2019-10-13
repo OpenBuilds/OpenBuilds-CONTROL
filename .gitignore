@@ -46,6 +46,7 @@ ehthumbs.db
 Thumbs.db
 *~
 node_modules
+.idea
 
 # Local settings #
 ##################

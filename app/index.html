@@ -285,6 +285,7 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
+                    <li><a href="#" onclick="surfaceLevelCalibrationWizard();"><i class="fas fa-arrow-down"></i> Surface level calibration</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
@@ -1155,6 +1156,87 @@
         </div>
       </div>
 
+      <div class="dialog dark" data-role="dialog" id="surfaceLevelCalibration" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
+        <div class="dialog-title"><i class="fas fa-arrow-down"></i> Surface level calibration</div>
+        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
+          <form>
+            <div class="row mb-2">
+              <div class="cell-sm-6">
+                <div class="row mb-2">
+                  <label class="cell-sm-6">delta X</label>
+                  <div class="cell-sm-6">
+                    <input name="deltaX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="50" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">delta Y</label>
+                  <div class="cell-sm-6">
+                    <input name="deltaY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="50" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">X axis probe points</label>
+                  <div class="cell-sm-6">
+                    <input name="pointsX" type="number" data-role="input" data-append="points" data-clear-button="false" value="50" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Y axis probe points</label>
+                  <div class="cell-sm-6">
+                    <input name="pointsY" type="number" data-role="input" data-append="points" data-clear-button="false" value="50" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Z probe travel distance</label>
+                  <div class="cell-sm-6">
+                    <input name="zTravelProbeDistance" type="number" data-role="input" data-append="mm" data-clear-button="false" value="10" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Number of measurements per point</label>
+                  <div class="cell-sm-6">
+                    <input name="probesPerPoint" type="number" data-role="input" data-clear-button="false" value="1" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">XY moving speed</label>
+                  <div class="cell-sm-6">
+                    <input name="movingSpeedXY" type="number" data-role="input" data-append="mm/min" data-clear-button="false" value="1000" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Z moving speed</label>
+                  <div class="cell-sm-6">
+                    <input name="movingSpeedZ" type="number" data-role="input" data-append="mm/min" data-clear-button="false" value="50" data-editable="true">
+                  </div>
+                </div>
+
+
+              </div>
+              <div class="cell-sm-6">
+                <h3>Before you proceed:</h3>
+                <ul>
+                  <li>Make sure you have Z Probe sensor attached</li>
+                  <li>Set zero for X,Y at the starting point. </li>
+                  <li>Set zero for Z at the minimally safe distance above the surface</li>
+                </ul>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="dialog-actions">
+          <button class="button success js-dialog-close" onclick="surfaceLevelCalibrationProceed()">Proceed</button>
+          <button class="button js-dialog-close">Cancel</button>
+        </div>
+      </div>
+
       <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
         <div class="dialog-title">Update Ready</div>
         <div class="dialog-content">
@@ -1277,6 +1359,7 @@
   <script type="text/javascript" src="js/probe.js"></script>
 
   <script type="text/javascript" src="wizards/surfacing.js"></script>
+  <script type="text/javascript" src="wizards/surface-level-calibration.js"></script>
 
   <script type="text/javascript" src="js/grbl-flashing.js"></script>
 
