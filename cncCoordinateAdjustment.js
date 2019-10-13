@@ -78,21 +78,10 @@ function cross(a, b) {
 	return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]];
 }
 
-function parse(gcodeStr) {
-	return new Promise((resolve, reject) => {
-		try {
-			parser.parseString(gcodeStr, function (err, res) {
-				if (err) reject(err);
-				else resolve(res);
-			});
-		} catch (e) {
-			reject(e);
-		}
-	});
-}
 
-async function levelGcode(strGcode, refDepths) {
-	let parsed = await parse(strGcode);
+function levelGcode(strGcode, refDepths) {
+
+	let parsed = parser.parseStringSync(strGcode);
 
 	let x;
 	let y;
@@ -143,7 +132,14 @@ async function levelGcode(strGcode, refDepths) {
 		processed.push(processedCommand);
 	}
 
-	return processed;
+	processed.splice(0,0,{
+		line: "; Surface leveling applied to this GCODE"
+	});
+
+	return processed
+		.map(command => command.line)
+		.join("\r\n");
+
 }
 
 module.exports = {levelGcode};

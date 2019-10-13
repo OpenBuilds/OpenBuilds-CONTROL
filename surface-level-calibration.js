@@ -1,4 +1,5 @@
 const fs = require('fs');
+const {levelGcode} = require("./cncCoordinateAdjustment");
 
 const median = arr => {
     const mid = Math.floor(arr.length / 2),
@@ -108,7 +109,6 @@ async function surfaceLevelCalibration (params, parser, send, configPath) {
         console.log("Calibration completed:");
         console.log(rows);
 
-
         let calibrationData = {
             params,
             surface: rows
@@ -126,8 +126,7 @@ async function surfaceLevelCalibration (params, parser, send, configPath) {
 function adjustGCodeLevel(configPath, gcode){
     let calibrationData = JSON.parse(fs.readFileSync(configPath+"/calibration.json").toString());
 
-    let processed = "; super processed g-code: "+ JSON.stringify(calibrationData) + "\r\n" + gcode;
-    return processed;
+    return levelGcode(gcode,calibrationData);
 }
 
 module.exports = {
