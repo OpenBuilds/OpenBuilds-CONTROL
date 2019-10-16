@@ -79,7 +79,7 @@ function initSocket() {
     editor.session.setValue(data);
     parseGcodeInWebWorker(data)
     $('#controlTab').click()
-    if (webgl) {
+    if (!setViewerDisableUI() || !webgl) {
       $('#gcodeviewertab').click();
     } else {
       $('#gcodeeditortab').click()

@@ -1011,6 +1011,11 @@ io.on("connection", function(socket) {
   });
 
 
+  socket.on('setqueuePointer', function(data) {
+    console.log('Setting queuePointer to ' + data)
+    queuePointer = data
+  });
+
   socket.on('runJob', function(data) {
     // console.log(data)
     uploadedgcode = data;
@@ -1624,6 +1629,7 @@ function readFile(path) {
 }
 
 function machineSend(gcode) {
+  // console.time('MachineSend');
   // console.log("SENDING: " + gcode)
   if (port.isOpen) {
     if (gcode.match(/T([\d.]+)/i)) {
@@ -1643,6 +1649,7 @@ function machineSend(gcode) {
   } else {
     console.log("PORT NOT OPEN")
   }
+  // console.timeEnd('MachineSend');
 }
 
 function stopPort() {
@@ -2009,6 +2016,7 @@ function BufferSpace(firmware) {
 
 
 function send1Q() {
+  // console.time('send1Q');
   var gcode;
   var gcodeLen = 0;
   var spaceLeft = 0;
@@ -2050,6 +2058,7 @@ function send1Q() {
   } else {
     console.log('Not Connected')
   }
+  // console.timeEnd('send1Q');
 }
 
 function addQToEnd(gcode) {

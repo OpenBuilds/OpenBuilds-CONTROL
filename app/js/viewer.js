@@ -283,77 +283,75 @@ function setBullseyePosition(x, y, z) {
 }
 
 function init3D() {
+  if (!setViewerDisableUI()) {
+    if (webgl) {
+      console.log('WebGL Support found! success: this application will work optimally on this device!');
+      printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
+      renderer = new THREE.WebGLRenderer({
+        autoClearColor: true,
+        antialias: false,
+        preserveDrawingBuffer: true
+      });
+      // ThreeJS Render/Control/Camera
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
+      camera.position.z = 295;
 
-  var webgl = (function() {
-    try {
-      return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
-    } catch (e) {
+      $('#renderArea').append(renderer.domElement);
+      renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
+      // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
+      renderer.clear();
+
+      sceneWidth = document.getElementById("renderArea").offsetWidth,
+        sceneHeight = document.getElementById("renderArea").offsetHeight;
+      camera.aspect = sceneWidth / sceneHeight;
+      renderer.setSize(sceneWidth, sceneHeight)
+      camera.updateProjectionMatrix();
+
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 0, 0); // view direction perpendicular to XY-plane
+
+      if (!isMac) {
+        controls.mouseButtons = {
+          ORBIT: THREE.MOUSE.MIDDLE,
+          ZOOM: false,
+          PAN: THREE.MOUSE.RIGHT
+        };
+      }
+      controls.enableRotate = true;
+      controls.enableZoom = true; // optional
+      controls.maxDistance = 8000; // limit max zoom out
+      controls.enableKeys = false; // Disable Keyboard on canvas
+
+
+      drawWorkspace();
+
+      // Picking stuff
+      projector = new THREE.Projector();
+      mouseVector = new THREE.Vector3();
+      raycaster.linePrecision = 1
+
+      setTimeout(function() {
+        resetView()
+        animate();
+      }, 200)
+
+    } else {
+      console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
+      printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
+      $('#gcodeviewertab').hide()
+      $('#consoletab').click()
       return false;
-    }
-  })();
-
-
-  if (webgl) {
-    console.log('WebGL Support found! success: this application will work optimally on this device!');
-    printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
-    renderer = new THREE.WebGLRenderer({
-      autoClearColor: true,
-      antialias: false,
-      preserveDrawingBuffer: true
-    });
-    // ThreeJS Render/Control/Camera
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-    camera.position.z = 295;
-
-    $('#renderArea').append(renderer.domElement);
-    renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
-    // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
-    renderer.clear();
-
-    sceneWidth = document.getElementById("renderArea").offsetWidth,
-      sceneHeight = document.getElementById("renderArea").offsetHeight;
-    camera.aspect = sceneWidth / sceneHeight;
-    renderer.setSize(sceneWidth, sceneHeight)
-    camera.updateProjectionMatrix();
-
-
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 0); // view direction perpendicular to XY-plane
-
-    if (!isMac) {
-      controls.mouseButtons = {
-        ORBIT: THREE.MOUSE.MIDDLE,
-        ZOOM: false,
-        PAN: THREE.MOUSE.RIGHT
-      };
-    }
-    controls.enableRotate = true;
-    controls.enableZoom = true; // optional
-    controls.maxDistance = 8000; // limit max zoom out
-    controls.enableKeys = false; // Disable Keyboard on canvas
-
-
-    drawWorkspace();
-
-    // Picking stuff
-    projector = new THREE.Projector();
-    mouseVector = new THREE.Vector3();
-    raycaster.linePrecision = 1
-
-    setTimeout(function() {
-      resetView()
-      animate();
-    }, 200)
-
+    };
   } else {
-    console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
-    printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
+    console.log('3D Viewer Disabled from the Tools and Wizards menu');
+    printLog('3D Viewer Disabled from the Tools and Wizards menu');
     $('#gcodeviewertab').hide()
     $('#consoletab').click()
-    // renderer = new THREE.CanvasRenderer();
     return false;
-  };
+  }
+
 
 
 
@@ -411,7 +409,7 @@ function animate() {
     // Limited FPS https://stackoverflow.com/questions/11285065/limiting-framerate-in-three-js-to-increase-performance-requestanimationframe
     animationLoopTimeout = setTimeout(function() {
       requestAnimationFrame(animate);
-    }, 40);
+    }, 60);
 
     renderer.render(scene, camera);
   }

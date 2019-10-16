@@ -79,7 +79,7 @@ $(document).ready(function() {
       editor.session.setValue(data);
       parseGcodeInWebWorker(data)
       $('#controlTab').click()
-      if (webgl) {
+      if (!setViewerDisableUI() || !webgl) {
         $('#gcodeviewertab').click();
       } else {
         $('#gcodeeditortab').click()
@@ -122,7 +122,11 @@ function loadFile(f) {
     r.readAsText(f);
     r.onload = function(event) {
       editor.session.setValue(this.result);
-      printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
+      if (!setViewerDisableUI() || !webgl) {
+        printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
+      } else {
+        printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded </span>');
+      }
       parseGcodeInWebWorker(this.result)
 
     };
@@ -176,6 +180,7 @@ function versionCompare(v1, v2, options) {
 }
 
 var webgl = (function() {
+  // console.log("Testing WebGL")
   try {
     return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
   } catch (e) {
@@ -238,4 +243,37 @@ function invokeSaveAsDialog(file, fileName) {
   if (!navigator.mozGetUserMedia) {
     URL.revokeObjectURL(hyperlink.href);
   }
+}
+
+function setViewerDisableUI() {
+  if (localStorage.getItem('viewerDisable')) {
+    if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
+      $('#viewerdisabled').removeClass("checked");
+    } else {
+      $('#viewerdisabled').addClass("checked");
+    }
+  } else {
+    $('#viewerdisabled').addClass("checked");
+  }
+  return (!JSON.parse(localStorage.getItem('viewerDisable')))
+}
+
+function viewerdisable() {
+  console.log("viewerdisable")
+  if (localStorage.getItem('viewerDisable')) {
+    if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
+      console.log("viewerdisable disabled")
+      localStorage.setItem('viewerDisable', false);
+      location.reload();
+    } else {
+      console.log("viewerdisable enabled")
+      localStorage.setItem('viewerDisable', true);
+      location.reload();
+    }
+  } else {
+    console.log("viewerdisable defaulted")
+    localStorage.setItem('viewerDisable', true);
+    location.reload();
+  }
+  setViewerDisableUI()
 }

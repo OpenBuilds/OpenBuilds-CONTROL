@@ -2,8 +2,9 @@ self.addEventListener('message', function(e) {
   console.log("New message received by worker", e.data.data.length)
   importScripts("/lib/threejs/three.min.js");
   var data = e.data;
-  var result = openGCodeFromText(e.data.data)
-  self.postMessage(JSON.stringify(result));
+  var result = createObjectFromGCode(e.data.data)
+  result = result;
+  self.postMessage(result);
 }, false);
 
 // This is a simplified and updated version of http://gcode.joewalnes.com/
@@ -27,62 +28,6 @@ var lastLine = {
   extruding: false,
   tool: false
 };
-
-function openGCodeFromText(gcode) {
-  // Reset start points
-
-  var parsedData = createObjectFromGCode(gcode);
-  console.log(parsedData)
-
-  var geometry = new THREE.BufferGeometry();
-  var material = new THREE.LineBasicMaterial({
-    vertexColors: THREE.VertexColors
-  });
-  var positions = [];
-  var colors = [];
-
-  for (i = 0; i < parsedData.lines.length; i++) {
-    if (!parsedData.lines[i].args.isFake) {
-      var x = parsedData.lines[i].p2.x;
-      var y = parsedData.lines[i].p2.y;
-      var z = parsedData.lines[i].p2.z;
-      positions.push(x, y, z);
-
-      if (parsedData.lines[i].p2.g0) {
-        colors.push(0);
-        colors.push(200);
-        colors.push(0);
-      } else if (parsedData.lines[i].p2.g1) {
-        colors.push(200);
-        colors.push(0);
-        colors.push(0);
-      } else if (parsedData.lines[i].p2.g2) {
-        colors.push(0);
-        colors.push(0);
-        colors.push(200);
-      } else {
-        colors.push(200);
-        colors.push(0);
-        colors.push(200);
-      }
-
-    }
-  }
-
-  geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-  geometry.computeBoundingSphere();
-
-  var line = new THREE.Line(geometry, material);
-  line.geometry.computeBoundingBox();
-  var box = line.geometry.boundingBox.clone();
-  line.userData.lines = parsedData.lines
-  line.userData.bbbox2 = box
-  line.userData.inch = parsedData.inch
-  line.name = 'gcodeobject'
-  return line;
-}
 
 GCodeParser = function(handlers, modecmdhandlers) {
     this.handlers = handlers || {};
@@ -250,11 +195,14 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
       var lines = gcode.split(/\r{0,1}\n/);
       // var lines = gcode
+
       for (var i = 0; i < lines.length; i++) {
         if (this.parseLine(lines[i], i) === false) {
           break;
         }
       }
+
+
     }
   },
   colorG0 = 0x00cc00, //bootstrap color

@@ -273,7 +273,9 @@ function setJogPanel(val, status) {
     $('#zPos').html('0.00');
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        cone.visible = false;
+        if (!setViewerDisableUI() || !webgl) {
+          cone.visible = false;
+        }
       }
     }
 
@@ -315,7 +317,9 @@ function setJogPanel(val, status) {
     }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        cone.visible = true;
+        if (!setViewerDisableUI() || !webgl) {
+          cone.visible = true;
+        }
       }
     }
   } else if (val == 4) { // Paused
@@ -352,7 +356,9 @@ function setJogPanel(val, status) {
     }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        cone.visible = false;
+        if (!setViewerDisableUI() || !webgl) {
+          cone.visible = false;
+        }
       }
     }
   } else if (val == 6) { // Firmware Upgrade State
