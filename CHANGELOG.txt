@@ -1,3 +1,4 @@
+v1.0.195: Fixed bug related to default state of 3D viewer
 v1.0.194: Added option to disable 3D Viewer for slow machines
 v1.0.193: Improved 3D viewer loading speed
 v1.0.192: Fixed C-Beam Machine profile for new BlackBox wiring video

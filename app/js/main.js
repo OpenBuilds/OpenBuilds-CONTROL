@@ -253,7 +253,8 @@ function setViewerDisableUI() {
       $('#viewerdisabled').addClass("checked");
     }
   } else {
-    $('#viewerdisabled').addClass("checked");
+    $('#viewerdisabled').removeClass("checked");
+    return false;
   }
   return (!JSON.parse(localStorage.getItem('viewerDisable')))
 }
@@ -272,7 +273,7 @@ function viewerdisable() {
     }
   } else {
     console.log("viewerdisable defaulted")
-    localStorage.setItem('viewerDisable', true);
+    localStorage.setItem('viewerDisable', false);
     location.reload();
   }
   setViewerDisableUI()
