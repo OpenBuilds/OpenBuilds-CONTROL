@@ -273,8 +273,10 @@ function setJogPanel(val, status) {
     $('#zPos').html('0.00');
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        if (!setViewerDisableUI() || !webgl) {
-          cone.visible = false;
+        if (webgl) {
+          if (!disable3Drealtimepos) {
+            cone.visible = false;
+          }
         }
       }
     }
@@ -296,7 +298,9 @@ function setJogPanel(val, status) {
     if (!isJogWidget && webgl) {
       if (object) {
         if (!simRunning) {
-          cone.visible = false;
+          if (!disable3Drealtimepos) {
+            cone.visible = false;
+          }
           // update3Dprogress(object.children.length)
         }
       }
@@ -317,8 +321,10 @@ function setJogPanel(val, status) {
     }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        if (!setViewerDisableUI() || !webgl) {
-          cone.visible = true;
+        if (webgl) {
+          if (!disable3Drealtimepos) {
+            cone.visible = true;
+          }
         }
       }
     }
@@ -337,7 +343,9 @@ function setJogPanel(val, status) {
     }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        cone.visible = true;
+        if (!disable3Drealtimepos) {
+          cone.visible = true;
+        }
       }
     }
   } else if (val == 5) { // Alarm State
@@ -356,8 +364,10 @@ function setJogPanel(val, status) {
     }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        if (!setViewerDisableUI() || !webgl) {
-          cone.visible = false;
+        if (webgl) {
+          if (!disable3Drealtimepos) {
+            cone.visible = false;
+          }
         }
       }
     }
@@ -381,7 +391,9 @@ function setJogPanel(val, status) {
     $('#zPos').html('0.00');
     if (!isJogWidget && webgl) {
       if (!simRunning) {
-        cone.visible = false;
+        if (!disable3Drealtimepos) {
+          cone.visible = false;
+        }
       }
     }
   }

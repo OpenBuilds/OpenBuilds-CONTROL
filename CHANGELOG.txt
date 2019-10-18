@@ -1,3 +1,4 @@
+v1.0.196: Added menu to troubleshooting tab to selectively disable frontend features for debugging
 v1.0.195: Fixed bug related to default state of 3D viewer
 v1.0.194: Added option to disable 3D Viewer for slow machines
 v1.0.193: Improved 3D viewer loading speed

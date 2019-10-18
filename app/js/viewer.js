@@ -89,55 +89,59 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   scene.fog = new THREE.Fog(0xffffff, 1, 20000);
 
   // SKYDOME
-  var uniforms = {
-    topColor: {
-      value: new THREE.Color(0x0077ff)
-    },
-    bottomColor: {
-      value: new THREE.Color(0xffffff)
-    },
-    offset: {
-      value: -63
-    },
-    exponent: {
-      value: 0.71
-    }
-  };
-  uniforms.topColor.value.copy(hemiLight.color);
+  if (!disable3Dskybox) {
+    var uniforms = {
+      topColor: {
+        value: new THREE.Color(0x0077ff)
+      },
+      bottomColor: {
+        value: new THREE.Color(0xffffff)
+      },
+      offset: {
+        value: -63
+      },
+      exponent: {
+        value: 0.71
+      }
+    };
+    uniforms.topColor.value.copy(hemiLight.color);
 
-  scene.fog.color.copy(uniforms.bottomColor.value);
+    scene.fog.color.copy(uniforms.bottomColor.value);
 
-  var vertexShader = document.getElementById('vertexShader').textContent;
-  var fragmentShader = document.getElementById('fragmentShader').textContent;
+    var vertexShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('fragmentShader').textContent;
 
-  var skyGeo = new THREE.SphereGeometry(9900, 64, 15);
-  var skyMat = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
-    uniforms: uniforms,
-    side: THREE.DoubleSide
-  });
+    var skyGeo = new THREE.SphereGeometry(9900, 64, 15);
+    var skyMat = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      uniforms: uniforms,
+      side: THREE.DoubleSide
+    });
 
-  sky = new THREE.Mesh(skyGeo, skyMat);
-  sky.name = "Skydome"
-  workspace.add(sky);
+    sky = new THREE.Mesh(skyGeo, skyMat);
+    sky.name = "Skydome"
+    workspace.add(sky);
+  }
 
-  cone = new THREE.Mesh(new THREE.CylinderGeometry(0, 5, 40, 15, 1, false), new THREE.MeshPhongMaterial({
-    color: 0x0000ff,
-    specular: 0x0000ff,
-    shininess: 00
-  }));
-  cone.overdraw = true;
-  cone.rotation.x = -90 * Math.PI / 180;
-  cone.position.x = 20;
-  cone.position.y = 0;
-  cone.position.z = 0;
-  cone.material.opacity = 0.6;
-  cone.material.transparent = true;
-  cone.castShadow = false;
-  cone.visible = false;
-  cone.name = "Simulation Marker"
-  workspace.add(cone)
+  if (!disable3Drealtimepos) {
+    cone = new THREE.Mesh(new THREE.CylinderGeometry(0, 5, 40, 15, 1, false), new THREE.MeshPhongMaterial({
+      color: 0x0000ff,
+      specular: 0x0000ff,
+      shininess: 00
+    }));
+    cone.overdraw = true;
+    cone.rotation.x = -90 * Math.PI / 180;
+    cone.position.x = 20;
+    cone.position.y = 0;
+    cone.position.z = 0;
+    cone.material.opacity = 0.6;
+    cone.material.transparent = true;
+    cone.castShadow = false;
+    cone.visible = false;
+    cone.name = "Simulation Marker"
+    workspace.add(cone)
+  }
   gridsystem.name = "Grid System"
   workspace.add(gridsystem)
   redrawGrid(xmin, xmax, ymin, ymax, false);
@@ -283,32 +287,33 @@ function setBullseyePosition(x, y, z) {
 }
 
 function init3D() {
-  if (!setViewerDisableUI()) {
-    if (webgl) {
-      console.log('WebGL Support found! success: this application will work optimally on this device!');
-      printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
-      renderer = new THREE.WebGLRenderer({
-        autoClearColor: true,
-        antialias: false,
-        preserveDrawingBuffer: true
-      });
-      // ThreeJS Render/Control/Camera
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-      camera.position.z = 295;
 
-      $('#renderArea').append(renderer.domElement);
-      renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
-      // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
-      renderer.clear();
+  if (webgl) {
+    console.log('WebGL Support found! success: this application will work optimally on this device!');
+    printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
+    renderer = new THREE.WebGLRenderer({
+      autoClearColor: true,
+      antialias: false,
+      preserveDrawingBuffer: true
+    });
+    // ThreeJS Render/Control/Camera
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
+    camera.position.z = 295;
 
-      sceneWidth = document.getElementById("renderArea").offsetWidth,
-        sceneHeight = document.getElementById("renderArea").offsetHeight;
-      camera.aspect = sceneWidth / sceneHeight;
-      renderer.setSize(sceneWidth, sceneHeight)
-      camera.updateProjectionMatrix();
+    $('#renderArea').append(renderer.domElement);
+    renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
+    // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
+    renderer.clear();
+
+    sceneWidth = document.getElementById("renderArea").offsetWidth,
+      sceneHeight = document.getElementById("renderArea").offsetHeight;
+    camera.aspect = sceneWidth / sceneHeight;
+    renderer.setSize(sceneWidth, sceneHeight)
+    camera.updateProjectionMatrix();
 
 
+    if (!disable3Dcontrols) {
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.target.set(0, 0, 0); // view direction perpendicular to XY-plane
 
@@ -323,37 +328,29 @@ function init3D() {
       controls.enableZoom = true; // optional
       controls.maxDistance = 8000; // limit max zoom out
       controls.enableKeys = false; // Disable Keyboard on canvas
+    }
 
 
-      drawWorkspace();
 
-      // Picking stuff
-      projector = new THREE.Projector();
-      mouseVector = new THREE.Vector3();
-      raycaster.linePrecision = 1
+    drawWorkspace();
 
-      setTimeout(function() {
-        resetView()
-        animate();
-      }, 200)
+    // Picking stuff
+    projector = new THREE.Projector();
+    mouseVector = new THREE.Vector3();
+    raycaster.linePrecision = 1
 
-    } else {
-      console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
-      printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
-      $('#gcodeviewertab').hide()
-      $('#consoletab').click()
-      return false;
-    };
+    setTimeout(function() {
+      resetView()
+      animate();
+    }, 200)
+
   } else {
-    console.log('3D Viewer Disabled from the Tools and Wizards menu');
-    printLog('3D Viewer Disabled from the Tools and Wizards menu');
+    console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
+    printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     $('#gcodeviewertab').hide()
     $('#consoletab').click()
     return false;
-  }
-
-
-
+  };
 
 }
 
@@ -366,42 +363,9 @@ function animate() {
         scene.remove(scene.children[1])
       }
 
-      // var documents = new THREE.Group();
-      // documents.name = "Documents";
-      // for (i = 0; i < objectsInScene.length; i++) {
-      //   documents.add(objectsInScene[i])
-      // }
-      // scene.add(documents)
-      //
-      // var toolpaths = new THREE.Group();
-      // toolpaths.name = "Toolpaths";
-      // for (i = 0; i < toolpathsInScene.length; i++) {
-      //
-      //   if (toolpathsInScene[i].userData.visible) {
-      //     if (toolpathsInScene[i].userData.inflated) {
-      //       if (toolpathsInScene[i].userData.inflated.userData.pretty) {
-      //         if (toolpathsInScene[i].userData.inflated.userData.pretty.children.length > 0) {
-      //           toolpaths.add(toolpathsInScene[i].userData.inflated.userData.pretty);
-      //         } else {
-      //           toolpaths.add(toolpathsInScene[i].userData.inflated);
-      //         }
-      //       } else {
-      //         toolpaths.add(toolpathsInScene[i].userData.inflated);
-      //       }
-      //     };
-      //   }
-      // }
-      // scene.add(toolpaths)
-
-      // if (fancysim == true) {
-      //   scene.add(simgcodeobj)
-      // } else {
       if (object) {
         scene.add(object)
       }
-
-      // }
-
 
       clearSceneFlag = false;
     } // end clearSceneFlag
@@ -415,84 +379,84 @@ function animate() {
   }
 }
 
-
-
 function viewExtents(objecttosee) {
-  // console.log("viewExtents. object:", objecttosee);
-  // console.log("controls:", controls);
-  //wakeAnimate();
+  if (!disable3Dcontrols) {
+    // console.log("viewExtents. object:", objecttosee);
+    // console.log("controls:", controls);
+    //wakeAnimate();
 
-  // lets override the bounding box with a newly
-  // generated one
-  // get its bounding box
-  if (objecttosee) {
-    // console.log(objecttosee)
-    var helper = new THREE.BoxHelper(objecttosee);
-    helper.update();
-    var box3 = new THREE.Box3();
-    box3.setFromObject(helper);
-    var minx = box3.min.x;
-    var miny = box3.min.y;
-    var maxx = box3.max.x;
-    var maxy = box3.max.y;
-    var minz = box3.min.z;
-    var maxz = box3.max.z;
+    // lets override the bounding box with a newly
+    // generated one
+    // get its bounding box
+    if (objecttosee) {
+      // console.log(objecttosee)
+      var helper = new THREE.BoxHelper(objecttosee);
+      helper.update();
+      var box3 = new THREE.Box3();
+      box3.setFromObject(helper);
+      var minx = box3.min.x;
+      var miny = box3.min.y;
+      var maxx = box3.max.x;
+      var maxy = box3.max.y;
+      var minz = box3.min.z;
+      var maxz = box3.max.z;
 
 
-    controls.reset();
+      controls.reset();
 
-    var lenx = maxx - minx;
-    var leny = maxy - miny;
-    var lenz = maxz - minz;
-    var centerx = minx + (lenx / 2);
-    var centery = miny + (leny / 2);
-    var centerz = minz + (lenz / 2);
+      var lenx = maxx - minx;
+      var leny = maxy - miny;
+      var lenz = maxz - minz;
+      var centerx = minx + (lenx / 2);
+      var centery = miny + (leny / 2);
+      var centerz = minz + (lenz / 2);
 
-    // console.log("lenx:", lenx, "leny:", leny, "lenz:", lenz);
-    var maxlen = Math.max(lenx, leny, lenz);
-    var dist = 2 * maxlen;
-    // center camera on gcode objects center pos, but twice the maxlen
-    controls.object.position.x = centerx;
-    controls.object.position.y = centery;
-    controls.object.position.z = centerz + dist;
-    controls.target.x = centerx;
-    controls.target.y = centery;
-    controls.target.z = centerz;
-    // console.log("maxlen:", maxlen, "dist:", dist);
-    var fov = 2.2 * Math.atan(maxlen / (2 * dist)) * (180 / Math.PI);
-    // console.log("new fov:", fov, " old fov:", controls.object.fov);
-    if (isNaN(fov)) {
-      // console.log("giving up on viewing extents because fov could not be calculated");
-      return;
-    } else {
-      // console.log("fov: ", fov);
-      controls.object.fov = fov;
-      var L = dist;
-      var camera2 = controls.object;
-      var vector = controls.target.clone();
-      var l = (new THREE.Vector3()).subVectors(camera2.position, vector).length();
-      var up = camera.up.clone();
-      var quaternion = new THREE.Quaternion();
+      // console.log("lenx:", lenx, "leny:", leny, "lenz:", lenz);
+      var maxlen = Math.max(lenx, leny, lenz);
+      var dist = 2 * maxlen;
+      // center camera on gcode objects center pos, but twice the maxlen
+      controls.object.position.x = centerx;
+      controls.object.position.y = centery;
+      controls.object.position.z = centerz + dist;
+      controls.target.x = centerx;
+      controls.target.y = centery;
+      controls.target.z = centerz;
+      // console.log("maxlen:", maxlen, "dist:", dist);
+      var fov = 2.2 * Math.atan(maxlen / (2 * dist)) * (180 / Math.PI);
+      // console.log("new fov:", fov, " old fov:", controls.object.fov);
+      if (isNaN(fov)) {
+        // console.log("giving up on viewing extents because fov could not be calculated");
+        return;
+      } else {
+        // console.log("fov: ", fov);
+        controls.object.fov = fov;
+        var L = dist;
+        var camera2 = controls.object;
+        var vector = controls.target.clone();
+        var l = (new THREE.Vector3()).subVectors(camera2.position, vector).length();
+        var up = camera.up.clone();
+        var quaternion = new THREE.Quaternion();
 
-      // Zoom correction
-      camera2.translateZ(L - l);
-      // console.log("up:", up);
-      up.y = 1;
-      up.x = 0;
-      up.z = 0;
-      quaternion.setFromAxisAngle(up, 0);
-      camera2.position.applyQuaternion(quaternion);
-      up.y = 0;
-      up.x = 1;
-      up.z = 0;
-      quaternion.setFromAxisAngle(up, 0);
-      camera2.position.applyQuaternion(quaternion);
-      up.y = 0;
-      up.x = 0;
-      up.z = 1;
-      quaternion.setFromAxisAngle(up, 0);
-      camera2.lookAt(vector);
-      controls.object.updateProjectionMatrix();
+        // Zoom correction
+        camera2.translateZ(L - l);
+        // console.log("up:", up);
+        up.y = 1;
+        up.x = 0;
+        up.z = 0;
+        quaternion.setFromAxisAngle(up, 0);
+        camera2.position.applyQuaternion(quaternion);
+        up.y = 0;
+        up.x = 1;
+        up.z = 0;
+        quaternion.setFromAxisAngle(up, 0);
+        camera2.position.applyQuaternion(quaternion);
+        up.y = 0;
+        up.x = 0;
+        up.z = 1;
+        quaternion.setFromAxisAngle(up, 0);
+        camera2.lookAt(vector);
+        controls.object.updateProjectionMatrix();
+      }
     }
   }
 };
@@ -564,7 +528,9 @@ function fixRenderSize() {
       //renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = sceneWidth / sceneHeight;
       camera.updateProjectionMatrix();
-      controls.reset();
+      if (!disable3Dcontrols) {
+        controls.reset();
+      }
       setTimeout(function() {
         resetView();
       }, 10);

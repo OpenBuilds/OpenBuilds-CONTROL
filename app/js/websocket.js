@@ -38,24 +38,26 @@ function showGrbl(bool) {
 }
 
 function printLog(string) {
-  if (document.getElementById("console") !== null) {
-    if (string.isString) {
-      // split(/\r\n|\n|\r/);
-      string = string.replace(/\r\n|\n|\r/, "<br />");
-    }
-    if ($('#console p').length > 100) {
-      // remove oldest if already at 300 lines
-      $('#console p').first().remove();
-    }
-    var template = '<p class="pf">';
-    var time = new Date();
+  if (!disableSerialLog) {
+    if (document.getElementById("console") !== null) {
+      if (string.isString) {
+        // split(/\r\n|\n|\r/);
+        string = string.replace(/\r\n|\n|\r/, "<br />");
+      }
+      if ($('#console p').length > 100) {
+        // remove oldest if already at 300 lines
+        $('#console p').first().remove();
+      }
+      var template = '<p class="pf">';
+      var time = new Date();
 
-    template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-    template += string;
-    $('#console').append(template);
-    $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
+      template += '<span class="fg-brandColor1">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
+      template += string;
+      $('#console').append(template);
+      $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
+    }
   }
-}
+};
 
 function initSocket() {
   socket = io.connect(server); // socket.io init
@@ -79,7 +81,7 @@ function initSocket() {
     editor.session.setValue(data);
     parseGcodeInWebWorker(data)
     $('#controlTab').click()
-    if (!setViewerDisableUI() || !webgl) {
+    if (webgl) {
       $('#gcodeviewertab').click();
     } else {
       $('#gcodeeditortab').click()
@@ -298,41 +300,49 @@ function initSocket() {
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
 
-    if (unit == "mm") {
-      var xpos = status.machine.position.work.x + unit;
-      var ypos = status.machine.position.work.y + unit;
-      var zpos = status.machine.position.work.z + unit;
-    } else if (unit == "in") {
-      var xpos = (status.machine.position.work.x / 25.4).toFixed(2) + unit;
-      var ypos = (status.machine.position.work.y / 25.4).toFixed(2) + unit;
-      var zpos = (status.machine.position.work.z / 25.4).toFixed(2) + unit;
-    }
+    if (!disableDROupdates) {
+      if (unit == "mm") {
+        var xpos = status.machine.position.work.x + unit;
+        var ypos = status.machine.position.work.y + unit;
+        var zpos = status.machine.position.work.z + unit;
+      } else if (unit == "in") {
+        var xpos = (status.machine.position.work.x / 25.4).toFixed(2) + unit;
+        var ypos = (status.machine.position.work.y / 25.4).toFixed(2) + unit;
+        var zpos = (status.machine.position.work.z / 25.4).toFixed(2) + unit;
+      }
 
-    if ($('#xPos').html() != xpos) {
-      $('#xPos').html(xpos);
-    }
-    if ($('#yPos').html() != ypos) {
-      $('#yPos').html(ypos);
-    }
-    if ($('#zPos').html() != zpos) {
-      $('#zPos').html(zpos);
+      if ($('#xPos').html() != xpos) {
+        $('#xPos').html(xpos);
+      }
+      if ($('#yPos').html() != ypos) {
+        $('#yPos').html(ypos);
+      }
+      if ($('#zPos').html() != zpos) {
+        $('#zPos').html(zpos);
+      }
+    } else {
+      $('#xPos').html('disabled');
+      $('#yPos').html('disabled');
+      $('#zPos').html('disabled');
     }
 
     if (webgl) {
-      if (!isJogWidget) {
-        if (!simRunning) {
-          if (object) {
-            if (object.userData.inch) {
-              cone.position.x = status.machine.position.work.x * 0.0393701
-              cone.position.y = status.machine.position.work.y * 0.0393701
-              cone.position.z = (parseFloat(status.machine.position.work.z * 0.0393701) + 20)
-            } else {
+      if (!disable3Drealtimepos) {
+        if (!isJogWidget) {
+          if (!simRunning) {
+            if (object) {
+              // if (object.userData.inch) {
+              //   cone.position.x = status.machine.position.work.x * 0.0393701
+              //   cone.position.y = status.machine.position.work.y * 0.0393701
+              //   cone.position.z = (parseFloat(status.machine.position.work.z * 0.0393701) + 20)
+              // } else {
               cone.position.x = status.machine.position.work.x
               cone.position.y = status.machine.position.work.y
               cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+              // }
             }
-          }
 
+          }
         }
       }
     }

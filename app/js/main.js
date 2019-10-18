@@ -21,6 +21,9 @@ function getChangelog() {
 }
 
 $(document).ready(function() {
+
+  initDiagnostics(); // run second time to ensure checkboxes are ticked
+
   if (!isJogWidget) {
     init3D();
   }
@@ -79,7 +82,7 @@ $(document).ready(function() {
       editor.session.setValue(data);
       parseGcodeInWebWorker(data)
       $('#controlTab').click()
-      if (!setViewerDisableUI() || !webgl) {
+      if (!webgl) {
         $('#gcodeviewertab').click();
       } else {
         $('#gcodeeditortab').click()
@@ -122,7 +125,7 @@ function loadFile(f) {
     r.readAsText(f);
     r.onload = function(event) {
       editor.session.setValue(this.result);
-      if (!setViewerDisableUI() || !webgl) {
+      if (webgl) {
         printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
       } else {
         printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded </span>');
@@ -180,12 +183,17 @@ function versionCompare(v1, v2, options) {
 }
 
 var webgl = (function() {
-  // console.log("Testing WebGL")
-  try {
-    return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
-  } catch (e) {
+  if (disable3Dviewer) {
     return false;
+  } else {
+    // console.log("Testing WebGL")
+    try {
+      return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+    } catch (e) {
+      return false;
+    }
   }
+
 })();
 
 function saveGcode() {
@@ -245,36 +253,36 @@ function invokeSaveAsDialog(file, fileName) {
   }
 }
 
-function setViewerDisableUI() {
-  if (localStorage.getItem('viewerDisable')) {
-    if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
-      $('#viewerdisabled').removeClass("checked");
-    } else {
-      $('#viewerdisabled').addClass("checked");
-    }
-  } else {
-    $('#viewerdisabled').removeClass("checked");
-    return false;
-  }
-  return (!JSON.parse(localStorage.getItem('viewerDisable')))
-}
-
-function viewerdisable() {
-  console.log("viewerdisable")
-  if (localStorage.getItem('viewerDisable')) {
-    if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
-      console.log("viewerdisable disabled")
-      localStorage.setItem('viewerDisable', false);
-      location.reload();
-    } else {
-      console.log("viewerdisable enabled")
-      localStorage.setItem('viewerDisable', true);
-      location.reload();
-    }
-  } else {
-    console.log("viewerdisable defaulted")
-    localStorage.setItem('viewerDisable', false);
-    location.reload();
-  }
-  setViewerDisableUI()
-}
+// function setViewerDisableUI() {
+//   if (localStorage.getItem('viewerDisable')) {
+//     if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
+//       $('#viewerdisabled').removeClass("checked");
+//     } else {
+//       $('#viewerdisabled').addClass("checked");
+//     }
+//   } else {
+//     $('#viewerdisabled').removeClass("checked");
+//     return false;
+//   }
+//   return (!JSON.parse(localStorage.getItem('viewerDisable')))
+// }
+//
+// function viewerdisable() {
+//   console.log("viewerdisable")
+//   if (localStorage.getItem('viewerDisable')) {
+//     if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
+//       console.log("viewerdisable disabled")
+//       localStorage.setItem('viewerDisable', false);
+//       location.reload();
+//     } else {
+//       console.log("viewerdisable enabled")
+//       localStorage.setItem('viewerDisable', true);
+//       location.reload();
+//     }
+//   } else {
+//     console.log("viewerdisable defaulted")
+//     localStorage.setItem('viewerDisable', false);
+//     location.reload();
+//   }
+//   setViewerDisableUI()
+// }

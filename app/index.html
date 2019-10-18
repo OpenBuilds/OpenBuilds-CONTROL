@@ -295,8 +295,6 @@
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Shortcut Key Assignments</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li onclick="populateGrblBuilderToolForm();"><a href="#"><img src="img/grbl.png" /> Flashing Tool</a></li>
-                    <li class="divider fg-lightGray"></li>
-                    <li onclick="viewerdisable()" id="viewerdisabled" class=""><a href="#"><i class="mif-3d-rotation fa-fw" id="3dviewicon"></i> Disable 3D Viewer (For slower computers)</a></li>
                   </ul>
                 </div>
 
@@ -335,6 +333,31 @@
             </div>
 
             <div class="section" id="section-troubleshooting">
+              <div class="group">
+                <div>
+                  <button id="diagbtn" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-stethoscope"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Application<br>Diagnostics</span>
+                  </button>
+                  <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
+                    <li onclick="disable3Dviewer = !disable3Dviewer; saveDiagnostics(); location.reload();" id="disable3DviewerTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer System (For slower computers)</a></li>
+                    <li class="divider"></li>
+                    <li onclick="disable3Dcontrols = !disable3Dcontrols; saveDiagnostics(); location.reload();" id="disable3DcontrolsTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Interactions</a></li>
+                    <li onclick="disable3Dskybox = !disable3Dskybox; saveDiagnostics(); location.reload();" id="disable3DskyboxTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Skybox/Fog</a></li>
+                    <li onclick="disable3Drealtimepos = !disable3Drealtimepos; saveDiagnostics(); location.reload();" id="disable3DrealtimeposTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Realtime Job Position
+                        Indicator</a></li>
+                    <li onclick="disable3Dgcodepreview = !disable3Dgcodepreview; saveDiagnostics(); location.reload();" id="disable3DgcodepreviewTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer GCODE Preview</a></li>
+                    <li class="divider"></li>
+                    <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
+                    <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
+                  </ul>
+                </div>
+                <span class="title">Settings</span>
+              </div>
               <div class="group" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -1222,11 +1245,14 @@
 
 </script>
 
+
   <script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery-swipe.js"></script>
+
+  <script type="text/javascript" src="js/diagnostics.js"></script>
 
   <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
 

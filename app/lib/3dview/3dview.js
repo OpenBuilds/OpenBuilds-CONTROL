@@ -59,74 +59,76 @@ function convertParsedDataToObject(parsedData) {
 
 
 function parseGcodeInWebWorker(gcode) {
-  if (!setViewerDisableUI() || !webgl) {
-    simstop()
-    scene.remove(object)
-    object = false;
+  if (webgl) {
+    if (!disable3Dgcodepreview) {
+      simstop()
+      scene.remove(object)
+      object = false;
 
-    // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
-    var worker = new Worker('lib/3dview/workers/litegcodeviewer.js');
-    worker.addEventListener('message', function(e) {
-      console.log('webworker message', e)
-      if (scene.getObjectByName('gcodeobject')) {
-        scene.remove(scene.getObjectByName('gcodeobject'))
-        object = false;
-      }
-      object = convertParsedDataToObject(e.data);
-      if (object && object.userData.lines.length > 1) {
-        worker.terminate();
-        scene.add(object);
-        if (object.userData.inch) {
-          // console.log(scaling)
-          object.scale.x = 25.4
-          object.scale.y = 25.4
-          object.scale.z = 25.4
+      // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
+      var worker = new Worker('lib/3dview/workers/litegcodeviewer.js');
+      worker.addEventListener('message', function(e) {
+        console.log('webworker message', e)
+        if (scene.getObjectByName('gcodeobject')) {
+          scene.remove(scene.getObjectByName('gcodeobject'))
+          object = false;
         }
-        redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
-        // animate();
-        setTimeout(function() {
-          if (webgl) {
-            $('#gcodeviewertab').click();
+        object = convertParsedDataToObject(e.data);
+        if (object && object.userData.lines.length > 1) {
+          worker.terminate();
+          scene.add(object);
+          if (object.userData.inch) {
+            // console.log(scaling)
+            object.scale.x = 25.4
+            object.scale.y = 25.4
+            object.scale.z = 25.4
           }
-          clearSceneFlag = true;
-          resetView();
+          redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
           // animate();
-          var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum;
-
-          if (!isNaN(timeremain)) {
-            var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-            var hours = Math.floor(mins_num / 60);
-            var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
-            var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
-
-            // Appends 0 when unit is less than 10
-            if (hours < 10) {
-              hours = "0" + hours;
+          setTimeout(function() {
+            if (webgl) {
+              $('#gcodeviewertab').click();
             }
-            if (minutes < 10) {
-              minutes = "0" + minutes;
-            }
-            if (seconds < 10) {
-              seconds = "0" + seconds;
-            }
-            var formattedTime = hours + ':' + minutes + ':' + seconds;
-            console.log('Remaining time: ', formattedTime)
-            // output formattedTime to UI here
-            $('#timeRemaining').html(" / " + formattedTime);
-            printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
-          }
-        }, 200);
-        $('#3dviewicon').removeClass('fa-pulse')
-        $('#3dviewlabel').html(' 3D View')
-      }
-    }, false);
+            clearSceneFlag = true;
+            resetView();
+            // animate();
+            var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum;
 
-    worker.postMessage({
-      'data': gcode
-    });
-    $('#3dviewicon').addClass('fa-pulse')
-    $('#3dviewlabel').html(' 3D View (rendering, please wait...)')
-    // populateToolChanges(gcode)
+            if (!isNaN(timeremain)) {
+              var mins_num = parseFloat(timeremain, 10); // don't forget the second param
+              var hours = Math.floor(mins_num / 60);
+              var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
+              var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
+
+              // Appends 0 when unit is less than 10
+              if (hours < 10) {
+                hours = "0" + hours;
+              }
+              if (minutes < 10) {
+                minutes = "0" + minutes;
+              }
+              if (seconds < 10) {
+                seconds = "0" + seconds;
+              }
+              var formattedTime = hours + ':' + minutes + ':' + seconds;
+              console.log('Remaining time: ', formattedTime)
+              // output formattedTime to UI here
+              $('#timeRemaining').html(" / " + formattedTime);
+              printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
+            }
+          }, 200);
+          $('#3dviewicon').removeClass('fa-pulse');
+          $('#3dviewlabel').html(' 3D View')
+        }
+      }, false);
+
+      worker.postMessage({
+        'data': gcode
+      });
+      $('#3dviewicon').addClass('fa-pulse');
+      $('#3dviewlabel').html(' 3D View (rendering, please wait...)')
+      // populateToolChanges(gcode)
+    }
   }
 };
 
@@ -160,22 +162,23 @@ function sim(startindex) {
     $('#runSimBtn').hide()
     $('#stopSimBtn').show()
     clearSceneFlag = true;
-    $("#conetext").show();
-    cone.visible = true
-    var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
-    var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
-    var posz = object.userData.lines[0].p2.z + 20;
-    cone.position.x = posx;
-    cone.position.y = posy;
-    cone.position.z = posz;
-    cone.material = new THREE.MeshPhongMaterial({
-      color: 0x28a745,
-      specular: 0x0000ff,
-      shininess: 100,
-      opacity: 0.9,
-      transparent: true
-    })
-
+    if (!disable3Drealtimepos) {
+      $("#conetext").show();
+      cone.visible = true
+      var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
+      var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
+      var posz = object.userData.lines[0].p2.z + 20;
+      cone.position.x = posx;
+      cone.position.y = posy;
+      cone.position.z = posz;
+      cone.material = new THREE.MeshPhongMaterial({
+        color: 0x28a745,
+        specular: 0x0000ff,
+        shininess: 100,
+        opacity: 0.9,
+        transparent: true
+      })
+    }
     simRunning = true;
     // timefactor = 1;
     $('#simspeedval').text(timefactor);
@@ -260,24 +263,26 @@ function runSim() {
     var simTimeInSec = simTime * 60;
     // console.log(simTimeInSec)
     if (!object.userData.lines[simIdx].args.isFake) {
-      TweenMax.to(cone.position, simTimeInSec, {
-        x: posx,
-        y: posy,
-        z: posz + 20,
-        onComplete: function() {
-          if (simRunning == false) {
-            //return
-            simstop();
-          } else {
-            simIdx++;
-            if (simIdx < object.userData.lines.length) {
-              runSim();
-            } else {
+      if (!disable3Drealtimepos) {
+        TweenMax.to(cone.position, simTimeInSec, {
+          x: posx,
+          y: posy,
+          z: posz + 20,
+          onComplete: function() {
+            if (simRunning == false) {
+              //return
               simstop();
+            } else {
+              simIdx++;
+              if (simIdx < object.userData.lines.length) {
+                runSim();
+              } else {
+                simstop();
+              }
             }
           }
-        }
-      })
+        })
+      }
     } else {
       if (simRunning == false) {
         //return
@@ -350,25 +355,27 @@ function runSimArc() {
   // console.log(simTimeInSec)
 
   if (!object.userData.lines[simIdx].args.isFake) {
-    TweenMax.to(cone.position, simTimeInSec, {
-      x: posx,
-      y: posy,
-      z: posz + 20,
-      onComplete: function() {
-        if (simRunning == false) {
-          //return
-          simstop();
-        } else {
-          arcIdx++;
-          if (simIdx < object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length) {
-            runSimArc();
+    if (!disable3Drealtimepos) {
+      TweenMax.to(cone.position, simTimeInSec, {
+        x: posx,
+        y: posy,
+        z: posz + 20,
+        onComplete: function() {
+          if (simRunning == false) {
+            //return
+            simstop();
           } else {
-            simIdx++;
-            runSim();
+            arcIdx++;
+            if (simIdx < object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length) {
+              runSimArc();
+            } else {
+              simIdx++;
+              runSim();
+            }
           }
         }
-      }
-    })
+      })
+    }
   } else {
     if (simRunning == false) {
       //return
@@ -393,6 +400,8 @@ function simstop() {
   // timefactor = 1;
   $('#simspeedval').text(timefactor);
   editor.gotoLine(0)
-  cone.visible = false;
+  if (!disable3Drealtimepos) {
+    cone.visible = false;
+  }
   clearSceneFlag = true;
 }
