@@ -4,7 +4,8 @@ self.addEventListener('message', function(e) {
   var data = e.data;
   var result = createObjectFromGCode(e.data.data)
   result = result;
-  self.postMessage(result);
+  // console.log(result)
+  self.postMessage(JSON.stringify(result));
 }, false);
 
 // This is a simplified and updated version of http://gcode.joewalnes.com/

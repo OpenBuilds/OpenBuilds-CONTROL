@@ -7,6 +7,7 @@ var loader = new THREE.ObjectLoader();
 
 
 function convertParsedDataToObject(parsedData) {
+  parsedData = JSON.parse(parsedData)
   var geometry = new THREE.BufferGeometry();
   var material = new THREE.LineBasicMaterial({
     vertexColors: THREE.VertexColors

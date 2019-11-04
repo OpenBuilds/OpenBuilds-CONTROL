@@ -1,3 +1,4 @@
+v1.0.199: Improvd handling of Helican G2/G3 preview
 v1.0.198: Fixed bug in Mobile Jog
 v1.0.197: Renewed SSL Certificates
 v1.0.196: Added menu to troubleshooting tab to selectively disable frontend features for debugging
