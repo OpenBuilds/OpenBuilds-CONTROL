@@ -320,11 +320,46 @@ $(document).ready(function() {
     }
   })
 
+  $('#xM').on('mousedown', function(ev) {
+    if (allowContinuousJog) { // startJog();
+      var direction = "X-";
+      var distance = 1000;
+
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$130)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+        }
+      }
+      var feed = $('#jograte').val();
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      $('#xM').click();
+    }
+  });
+  $('#xM').on('mouseup', function(ev) {
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
   $('#xP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "X";
+      var distance = 1000;
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$130)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+        }
+      }
       var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       $('#xM').click();
     }
   });
@@ -337,8 +372,20 @@ $(document).ready(function() {
   $('#yM').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Y-";
+      var distance = 1000;
+
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$131)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+        }
+      }
+
       var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       $('#xM').click();
     }
   });
@@ -351,8 +398,20 @@ $(document).ready(function() {
   $('#yP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Y";
+      var distance = 1000;
+
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$131)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+        }
+      }
+
       var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       $('#xM').click();
     }
   });
@@ -365,8 +424,20 @@ $(document).ready(function() {
   $('#zM').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Z-";
+      var distance = 1000;
+
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$132)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+        }
+      }
+
       var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       $('#xM').click();
     }
   });
@@ -379,8 +450,20 @@ $(document).ready(function() {
   $('#zP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Z";
+      var distance = 1000;
+
+      if (Object.keys(grblParams).length > 0) {
+        if (parseInt(grblParams.$20) == 1) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$132)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+        }
+      }
+
       var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
+      socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       $('#xM').click();
     }
   });
@@ -390,19 +473,6 @@ $(document).ready(function() {
     }
   });
 
-  $('#xM').on('mousedown', function(ev) {
-    if (allowContinuousJog) { // startJog();
-      var direction = "X-";
-      var feed = $('#jograte').val();
-      socket.emit('runCommand', "$J=G91 G21 " + direction + "1000 F" + feed + "\n");
-      $('#xM').click();
-    }
-  });
-  $('#xM').on('mouseup', function(ev) {
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
 
   $('#homeBtn').on('click', function(ev) {
     home();

@@ -1,3 +1,6 @@
+v1.0.202: Soft-Limits support in Continuous Jogging
+v1.0.201: Updated SSL Certificates
+v1.0.200: Fixed naming of Abort Button
 v1.0.199: Improvd handling of Helican G2/G3 preview
 v1.0.198: Fixed bug in Mobile Jog
 v1.0.197: Renewed SSL Certificates

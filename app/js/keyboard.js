@@ -34,6 +34,9 @@ $(document).ready(function() {
 
   if (localStorage.getItem('keyboardShortcuts')) {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));
+    if (keyboardShortcuts.xP == "arrowright") {
+      keyboardShortcuts.xP == "right"
+    }
   } else {
     keyboardShortcuts = {
       xP: "right", //X+

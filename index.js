@@ -702,7 +702,9 @@ io.on("connection", function(socket) {
       parser.on("data", function(data) {
         var command = sentBuffer[0];
 
-        // console.log('data:', data)
+        if (data.indexOf("<") != 0) {
+          console.log('data:', data)
+        }
 
         // Grbl $I parser
         if (data.indexOf("[VER:") === 0) {
@@ -975,6 +977,10 @@ io.on("connection", function(socket) {
               //   break;
           }
         }
+
+
+
+
 
         if (command) {
           command = command.replace(/(\r\n|\n|\r)/gm, "");

@@ -251,6 +251,7 @@ function initSocket() {
     //
   });
 
+
   socket.on('progStatus', function(data) {
     $('#controlTab').click();
     $('#consoletab').click();
