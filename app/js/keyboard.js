@@ -2,6 +2,7 @@ var keyboardShortcuts = false;
 
 function cancelJog() {
   socket.emit('stop', true)
+  continuousJogRunning = false;
 }
 
 $(document).ready(function() {

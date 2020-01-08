@@ -114,7 +114,7 @@ function initSocket() {
     // 4 = Paused
     // 5 = Alarm State
     // 6 = Firmware Upgrade State
-    if (laststatus.comms.connectionStatus < 3) {
+    if (laststatus.comms.connectionStatus < 3 && !continuousJogRunning) {
       $('#availVersion').html(data)
       Metro.dialog.open('#downloadUpdate')
     }

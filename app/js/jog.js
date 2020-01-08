@@ -1,4 +1,5 @@
 var allowContinuousJog = false;
+var continuousJogRunning = false;
 var jogdist = 10;
 var safeToUpdateSliders = true;
 
@@ -336,6 +337,7 @@ $(document).ready(function() {
       }
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
@@ -360,6 +362,7 @@ $(document).ready(function() {
       }
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
@@ -386,6 +389,7 @@ $(document).ready(function() {
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
@@ -412,6 +416,7 @@ $(document).ready(function() {
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
@@ -438,6 +443,7 @@ $(document).ready(function() {
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
@@ -464,6 +470,7 @@ $(document).ready(function() {
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+      continuousJogRunning = true;
       $('#xM').click();
     }
   });
