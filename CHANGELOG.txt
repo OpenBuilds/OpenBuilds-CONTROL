@@ -1,3 +1,4 @@
+v1.0.204: Soft-Limits support in Keyboard Continuous Jogging
 v1.0.203: Fixed bug where update popup appears during continuous Jog, now it waits
 v1.0.202: Soft-Limits support in Continuous Jogging
 v1.0.201: Updated SSL Certificates

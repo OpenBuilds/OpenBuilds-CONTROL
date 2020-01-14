@@ -363,7 +363,7 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('#xP').click();
     }
   });
   $('#xP').on('mouseup', function(ev) {
@@ -390,7 +390,7 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('#yM').click();
     }
   });
   $('#yM').on('mouseup', function(ev) {
@@ -417,7 +417,7 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('#yP').click();
     }
   });
   $('#yP').on('mouseup', function(ev) {
@@ -444,7 +444,7 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('#zM').click();
     }
   });
   $('#zM').on('mouseup', function(ev) {
@@ -471,7 +471,7 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('#zP').click();
     }
   });
   $('#zP').on('mouseup', function(ev) {
