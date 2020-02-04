@@ -1,3 +1,4 @@
+v1.0.206: Fixed update check to comply with Github deprecations: https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/
 v1.0.205: Updated version of avrgirl backend for Firmware flashing, fixes to CI
 v1.0.204: Soft-Limits support in Keyboard Continuous Jogging
 v1.0.203: Fixed bug where update popup appears during continuous Jog, now it waits

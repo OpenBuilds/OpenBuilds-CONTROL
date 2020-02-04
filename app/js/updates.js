@@ -3,12 +3,19 @@ $(document).ready(function() {
   checkUpdate()
 });
 
+var githubPAtoken = `3b27c3e69c7731e237687c46693a33df6ee4df29`;
+
 function checkUpdate() {
   if (!isMac && webgl) {
     setTimeout(function() {
       // console.log('checking for update')
       printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>Checking for Updates</span>")
-      $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest?client_id=fbbb80debc1197222169&client_secret=7dc6e463422e933448f9a3a4150c8d2bbdd0f87c").done(function(release) {
+      $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
+        crossDomain: true,
+        headers: {
+          'Authorization': githubPAtoken
+        }
+      }).done(function(release) {
         var availVersion = release.name.substr(1)
         var currentVersion = laststatus.driver.version
         // console.log(versionCompare(availVersion, currentVersion), availVersion, currentVersion);
