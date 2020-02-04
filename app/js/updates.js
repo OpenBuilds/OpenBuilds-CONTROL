@@ -3,7 +3,6 @@ $(document).ready(function() {
   checkUpdate()
 });
 
-var githubPAtoken = `3b27c3e69c7731e237687c46693a33df6ee4df29`;
 
 function checkUpdate() {
   if (!isMac && webgl) {
@@ -11,10 +10,7 @@ function checkUpdate() {
       // console.log('checking for update')
       printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>Checking for Updates</span>")
       $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
-        crossDomain: true,
-        headers: {
-          'Authorization': githubPAtoken
-        }
+        crossDomain: true
       }).done(function(release) {
         var availVersion = release.name.substr(1)
         var currentVersion = laststatus.driver.version
@@ -32,7 +28,7 @@ function checkUpdate() {
           printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds CONTROL " + currentVersion + "</span>")
           setTimeout(function() {
             checkUpdate()
-          }, 15 * 60 * 1000) // 15 mins
+          }, 60 * 60 * 1000) // 15 mins
         }
       });
     }, 1000)
