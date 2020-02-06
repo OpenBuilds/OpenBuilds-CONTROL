@@ -742,7 +742,7 @@ function selectMachine(type) {
       $131: "730", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
-  } else if (type == "leadmachine55") {
+  } else if (type == "leadmachine1010laser") {
     // Leadmachine 55
     var customFirmware = false;
     var grblParams_def = {
@@ -765,21 +765,21 @@ function selectMachine(type) {
       $25: "1000.000", //"Homing search seek rate, mm/min"
       $26: "250", //"Homing switch debounce delay, milliseconds"
       $27: "5.000", //"Homing switch pull-off distance, millimeters"
-      $30: "1000", //"Maximum spindle speed, RPM"
+      $30: "255", //"Maximum spindle speed, RPM"
       $31: "0", //"Minimum spindle speed, RPM"
-      $32: "0", //"Maximum spindle speed, RPM"
+      $32: "1", //"Maximum spindle speed, RPM"
       $100: "199.100", //"X-axis steps per millimeter"
       $101: "199.100", //"Y-axis steps per millimeter"
       $102: "199.100", //"Z-axis steps per millimeter"
-      $110: "2500.000", //"X-axis maximum rate, mm/min"
-      $111: "2500.000", //"Y-axis maximum rate, mm/min"
-      $112: "2500.000", //"Z-axis maximum rate, mm/min"
+      $110: "4000.000", //"X-axis maximum rate, mm/min"
+      $111: "4000.000", //"Y-axis maximum rate, mm/min"
+      $112: "4000.000", //"Z-axis maximum rate, mm/min"
       $120: "150.000", //"X-axis acceleration, mm/sec^2"
       $121: "150.000", //"Y-axis acceleration, mm/sec^2"
       $122: "150.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "333", //"X-axis maximum travel, millimeters"
-      $131: "325", //"Y-axis maximum travel, millimeters"
-      $132: "85", //"Z-axis maximum travel, millimeters"
+      $130: "810", //"X-axis maximum travel, millimeters"
+      $131: "730", //"Y-axis maximum travel, millimeters"
+      $132: "90", //"Z-axis maximum travel, millimeters"
     }
   } else if (type == "custom") {
     // Leadmachine 55
@@ -940,11 +940,11 @@ function setMachineButton(type) {
   } else if (type == "cbeamxl") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds C-Beam XL`
     overlaytype = type;
-  } else if (type == "leadmachine55") {
-    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Lead Machine 55`
+  } else if (type == "leadmachine1010laser") {
+    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010 with Laser Module`
     overlaytype = type;
   } else if (type == "leadmachine1010") {
-    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds Lead Machine 1010`
+    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010`
     overlaytype = type;
   } else if (type == "custom") {
     template = `<img src="img/mch/` + type + `.png"/>  Custom Machine`

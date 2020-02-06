@@ -115,7 +115,10 @@ function runGcodeSection(startline, endline) {
   var newGcodeString = newgcode.join("\n").replace(/M6|M06|M006/i, "");
 
   console.log(newGcodeString)
-  socket.emit('runJob', newGcodeString);
+  socket.emit('runJob', {
+    data: newGcodeString,
+    isJob: true
+  });
 }
 
 function setupToolChanges(gcode) {

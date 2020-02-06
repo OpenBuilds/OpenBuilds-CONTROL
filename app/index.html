@@ -168,7 +168,7 @@
                   </ul>
                 </div>
 
-                <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', editor.getValue());" title="Run a Job">
+                <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', {data: editor.getValue(), isJob: true});" title="Run a Job">
                   <span class="icon">
                     <i class="fas fa-play"></i>
                   </span>

@@ -1022,9 +1022,13 @@ io.on("connection", function(socket) {
     queuePointer = data
   });
 
-  socket.on('runJob', function(data) {
+  socket.on('runJob', function(object) {
     // console.log(data)
-    uploadedgcode = data;
+    var data = object.data
+    if (object.isJob) {
+      uploadedgcode = data;
+    }
+
     // console.log('Run Job (' + data.length + ')');
     if (status.comms.connectionStatus > 0) {
       if (data) {

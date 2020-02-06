@@ -136,11 +136,20 @@ function setControlBar(val, status) {
       if (toolchanges.length) {
         $('#runToolsBtn').show().attr('disabled', editor.session.getLength() < 2);
         $('#runBtn').hide().attr('disabled', editor.session.getLength() < 2);
-        $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+        if (webgl) {
+          $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+        } else {
+          $('#chkSize').show().attr('disabled', true);
+        }
+
       } else {
         $('#runToolsBtn').hide().attr('disabled', editor.session.getLength() < 2);
         $('#runBtn').show().attr('disabled', editor.session.getLength() < 2);
-        $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+        if (webgl) {
+          $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
+        } else {
+          $('#chkSize').show().attr('disabled', true);
+        }
       }
 
     } else {

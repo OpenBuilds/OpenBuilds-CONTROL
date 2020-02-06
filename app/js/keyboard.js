@@ -293,7 +293,10 @@ function bindKeys() {
   if (keyboardShortcuts.playpause.length) {
     $(document).bind('keydown', keyboardShortcuts.playpause, function(e) {
       if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
-        socket.emit('runJob', editor.getValue());
+        socket.emit('runJob', {
+          data: editor.getValue(),
+          isJob: true
+        });
       } else if (laststatus.comms.connectionStatus == 3) {
         socket.emit('pause', true);
       } else if (laststatus.comms.connectionStatus == 4) {

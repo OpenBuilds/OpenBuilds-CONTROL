@@ -1,3 +1,4 @@
+v1.0.207: Added LEAD1010 Laser Profile, fix bug #107 (Disable CheckSize button on PC's that doesnt support WebGL), fix bug with inch-mode Check Size
 v1.0.206: Fixed update check to comply with Github deprecations: https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/
 v1.0.205: Updated version of avrgirl backend for Firmware flashing, fixes to CI
 v1.0.204: Soft-Limits support in Keyboard Continuous Jogging

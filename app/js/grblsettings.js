@@ -120,10 +120,10 @@ function grblPopulate() {
                       </ul>
                     </li>
                     <li>
-                      <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds Lead Machine</a>
+                      <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds LEAD Machine</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="selectMachine('leadmachine55');"><a href="#"><img src="img/mch/leadmachine55.png" width="16px"/>  OpenBuilds Lead 55</a></li>
-                        <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds Lead 1010</a></li>
+                        <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010</a></li>
+                        <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010 with Laser Module</a></li>
                       </ul>
                     </li>
                     <li><a href="#" onclick="selectMachine('minimill');"><img src="img/mch/minimill.png" width="16px"/>  OpenBuilds MiniMill</a></li>
@@ -414,7 +414,10 @@ function grblSaveSettings() {
     }
   }
   console.log("commands", commands)
-  socket.emit('runJob', commands);
+  socket.emit('runJob', {
+    data: commands,
+    isJob: false
+  });
   grblParams = {};
 
   Metro.dialog.create({
