@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/buttons.css" />
+    <link rel="stylesheet" href="css/probev2.css" />
   </head>
 
   <body>
@@ -128,9 +129,11 @@
                     <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" data-filter="false" id="portUSB" disabled>
                       <option value="">Waiting for USB</option>
                     </select>
-                    <button class="button success float-right" onclick="selectPort()" id="connectBtn" type="button" disabled>Connect</button>
-                    <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
-                    <button class="button secondary disabled" disabled style="display:none;" id="flashBtn" type="button">please wait...</button>
+                    <button class="button small success float-right" onclick="selectPort()" id="connectBtn" type="button" style="margin: 5px;" disabled>Connect</button>
+                    <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button" style="margin: 5px;">Disconnect</button>
+                    <button class="button small secondary disabled" disabled style="display:none;" id="flashBtn" type="button" style="margin: 5px;">please wait...</button>
+                    <button class="button small primary float-right" onclick="socket.emit('opendriverspage', true);" id="driverBtn" type="button" style="margin: 5px;">Install Drivers</button>
+
                   </form>
 
                 </div>
@@ -239,8 +242,8 @@
                     <!-- <li class="divider"></li> -->
                     <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Plasma On (M3 S1000)</a></li>
                     <li class="divider fg-lightGray"></li>
-                    <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Misting On (M7)</a></li>
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M8 S1000')">Coolant On (M8)</a></li>
+                    <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
                     <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
 
                   </ul>
@@ -260,7 +263,7 @@
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Spindle / Laser / Plasma Off (M5)</a></li>
                     <li class="divider fg-lightGray"></li>
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M9')">Coolant Off (M9)</a></li>
 
                   </ul>
                 </div>
@@ -286,6 +289,7 @@
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
+                    <li onclick="openProbeDialog();" class="needsXYZProbe"><a href="#"><span class="fas fa-podcast fa-rotate-180 icon"></span> Probing Wizards</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
@@ -354,7 +358,6 @@
                     <li class="divider"></li>
                     <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
                     <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
-                  </ul>
                 </div>
                 <span class="title">Settings</span>
               </div>
@@ -437,6 +440,9 @@
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                             <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
+                            <li class="divider"></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe X-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -469,6 +475,9 @@
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                             <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
+                            <li class="divider"></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Y-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -502,7 +511,9 @@
                             <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
                             <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
-                            <li><a href="#" onclick="z0probe()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z0 Wizard</a></li>
+                            <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ Plate</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -1190,16 +1201,13 @@
             <li>Launches the installer for the new version</li>
           </ul>
           <small>You may want to wait until your machine is idle before continuing</small>
+          <small id="changelogupdate"></small>
         </div>
         <div class="dialog-actions">
           <button class="button js-dialog-close">Not right now please</button>
           <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
         </div>
       </div>
-    </div>
-
-    <!-- Modal Divs -->
-    <div style="display: none;">
 
       <div class="dialog dark" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog">
         <div class="dialog-title"><i class="fas fa-mobile-alt"></i> Jog Widget</div>
@@ -1232,18 +1240,237 @@
           <button class="button js-dialog-close">Close</button>
         </div>
       </div>
+
+      <!-- XYZ Probe -->
+      <div class="dialog dark" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="true" data-to-top="true" data-width="800">
+        <div class="dialog-title">Probing Wizard</div>
+        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
+          <nav data-role="ribbonmenu">
+            <ul class="tabs-holder">
+              <li onclick="probexyztab();" class="probetabxyz" id="probexyztab"><a href="#">XYZ-Zero</a></li>
+              <li onclick="probextab();" class="probetabxyz" id="probextab"><a href="#">X-Zero</a></li>
+              <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y-Zero</a></li>
+              <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z-Zero</a></li>
+              <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z Touch Plate</a></li>
+              <li onclick="probeautotab();" class="probetabxyz disabled" id="probeautotab"><a href="#">Automatic</a></li>
+              <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li>
+            </ul>
+          </nav>
+
+          <table>
+            <tr>
+
+              <td>
+                <div>
+                  <img src="./img/xyzprobe/auto.png" alt="probe-auto" height="350" id="img-probe-auto" class="img-probe">
+                  <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/x.png" alt="probe-x" height="350" id="img-probe-x" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/y.png" alt="probe-y" height="350" id="img-probe-y" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/z.png" alt="probe-z" height="350" id="img-probe-z" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/zplate.png" alt="probe-zplate" height="350" id="img-probe-zplate" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/endmill.png" alt="probe-endmill" height="350" id="img-probe-endmill" class="img-probe" style="display: none;">
+                </div>
+
+              </td>
+
+              <td style="padding: 4px; padding-left: 15px; vertical-align: top;">
+
+                <div id="probe-auto" class="probe-tab-content" style="display: none;">
+                  <small>Automatic Probe Routine: This routine is used to find the XYZ origins, as well as automatically
+                    determine endmill diameter. </small>
+                  <hr>
+                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
+                    on the magnetic connecting clip, then click Probe</small>
+                </div>
+                <div id="probe-xyz" class="probe-tab-content">
+                  <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
+                  <hr>
+                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
+                    on the magnetic connecting clip, then click Probe</small>
+                </div>
+                <div id="probe-x" class="probe-tab-content" style="display: none;">
+                  <small>X Probe Routine: This routine is used to find the X origin</small>
+                  <hr>
+                  <small>Position the endmill to the left of the probe plate as shown, clip on the magnetic connecting clip,
+                    then click Probe</small>
+                </div>
+                <div id="probe-y" class="probe-tab-content" style="display: none;">
+                  <small>Y Probe Routine: This routine is used to find the Y origin</small>
+                  <hr>
+                  <small>Position the endmill in front of the probe plate as shown, clip on the magnetic connecting clip, then
+                    click Probe</small>
+                </div>
+                <div id="probe-z" class="probe-tab-content" style="display: none;">
+                  <small>Z Probe Routine: This routine is used to find the Z origin</small>
+                  <hr>
+                  <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
+                    Probe</small>
+                </div>
+                <div id="probe-endmill" class="probe-tab-content" style="display: none;">
+                  <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
+                  <hr>
+                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
+                    on the magnetic connecting clip, then click Probe</small>
+                  <hr>
+                  <small>
+                    This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
+                    it will measure and calculate the Endmill Diameter and display it onscreen. <br>This operation will NOT set
+                    any work-coordinates!
+                  </small>
+                </div>
+                <hr>
+                <div id="endmilldiameterform">
+                  <label>Endmill Diameter</label>
+                  <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-append="mm" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>"
+                    data-clear-button="false">
+                </div>
+                <hr>
+                <button class="button" id="toggle-probe-advanced"><i class="fas fa-fw fa-cogs"></i> Advanced</button>
+                <div class="pos-relative">
+                  <div data-role="collapse" data-toggle-element="#toggle-probe-advanced" data-collapsed="true" id="toggle-probe-advanced-content">
+
+                    <div id="xyzdatum" class="probe-tab-content">
+
+                      <small>Where is the XY Zero Datum / Origin in your CAM setup, relevant to the front-left corner we are
+                        probing? </small>
+                      <br>
+
+                      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 79.375 47.625">
+                        <style>
+
+                        </style>
+                        <defs>
+                          <marker id="A" orient="auto" class="J">
+                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
+                          </marker>
+                          <marker id="B" orient="auto" class="J">
+                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
+                          </marker>
+                          <marker id="C" orient="auto" class="J">
+                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
+                          </marker>
+                          <marker id="D" orient="auto" class="J">
+                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
+                          </marker>
+                        </defs>
+                        <g fill="#fff" class="D">
+                          <g stroke-width=".132" class="B">
+                            <path d="M7.195 7.363l15.94 28.46L70.758 31.1 47.99 5.015z" fill="#999" />
+                            <path d="M23.133 35.823l-1.257 8.313 47.7-5.284 1.172-7.752z" fill="#ececec" />
+                            <path d="M7.195 7.363l15.94 28.46-1.257 8.313-15.722-29.89z" fill="#ccc" />
+                          </g>
+                          <g stroke-width=".049" class="C N">
+                            <path d="M7.198 7.363l63.74 25.952" />
+                            <path d="M23.322 38.1L47.993 5.093" />
+                          </g>
+                          <g fill="none" stroke-width=".197" class="N">
+                            <path d="M3.942 15.993L19.16 45.07" marker-start="url(#C)" marker-end="url(#A)" />
+                            <path d="M70.118 41.003l-47.624 5.73" marker-start="url(#D)" marker-end="url(#B)" />
+                          </g>
+                          <g transform="matrix(.24595 -.020313 .020313 .24595 108.29 -158.287)">
+                            <rect class="probe-label" id="probe-c" rx="5.925" height="16.422" width="59.717" y="682.21" x="-368.93" stroke-width=".987" class="B" />
+                            <text id="probe-c-text" xml:space="preserve" letter-spacing="0" font-size="2.229" y="694.532" x="-339.852" class="C E F G H">
+                              <tspan y="694.532" x="-330.852" class="I">CENTER</tspan>
+                            </text>
+                            <rect class="probe-label areaactive" id="probe-fl" rx="6.543" height="30.532" width="43.617" y="742.64" x="-423.17" class="B M" />
+                            <text id="probe-fl-text" xml:space="preserve" letter-spacing="0" y="755.631" x="-401.459" class="C E F G H I">
+                              <tspan y="755.631" x="-350">FRONT</tspan>
+                              <tspan y="768.172" x="-350">LEFT</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-fr" rx="6.543" height="30.532" width="43.617" y="733.68" x="-239.82" class="B M" />
+                            <text id="probe-fr-text" xml:space="preserve" letter-spacing="0" y="746.284" x="-217.439" class="C E F G H I">
+                              <tspan y="746.284" x="-166">FRONT</tspan>
+                              <tspan y="758.824" x="-169">RIGHT</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-rr" rx="6.543" height="30.532" width="43.617" y="621.52" x="-312.72" class="B M" />
+                            <text id="probe-rr-text" xml:space="preserve" letter-spacing="0" y="633.759" x="-290.442" class="C E F G H I">
+                              <tspan y="633.759" x="-239.442">REAR</tspan>
+                              <tspan y="646.3" x="-242.442">RIGHT</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-rl" rx="6.543" height="30.532" width="43.617" y="616.07" x="-476.33" class="B M" />
+                            <text id="probe-rl-text" xml:space="preserve" letter-spacing="0" y="628.815" x="-455.49" class="C E F G H I">
+                              <tspan y="628.815" x="-404">REAR</tspan>
+                              <tspan y="641.356" x="-404">LEFT</tspan>
+                            </text></g>
+                        </g>
+                      </svg>
+
+                      <br>
+                      <small>If the origin is not Front, Left (Default): Then provide stock dimensions to calculate correct
+                        offset of X0, Y0:</small>
+                      <br>
+                      <label>Width</label>
+                      <input id="stockwidth" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
+                      <label>Length</label>
+                      <input id="stocklength" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-v'></i>" data-clear-button="false">
+
+                    </div>
+                    <!-- end xyzdatum-->
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="dialog-actions">
+
+          <label>Probe Type: </label>
+
+          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> Prototype OpenBuilds XYZ Probe</span></a>
+          <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
+            <li onclick="probetype('protoxyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> Prototype OpenBuilds XYZ Probe</a></li>
+            <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a></li>
+            <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
+            <li class="divider"></li>
+            <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
+          </ul>
+          <span style="padding-left: 200px;"></span>
+          <button class="button js-dialog-close" onclick="Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
+          <button class="button success js-dialog-close" onclick="confirmProbeInPlace();">Probe</button>
+
+        </div>
+      </div>
+      <!-- End XYZ Probe -->
+
+      <!-- XYZ Probe confirmation -->
+      <div class="dialog dark" id="confirmXYZprobeModal" data-role="dialog" data-overlay-click-close="true">
+        <div class="dialog-title"><i class='fas fa-podcast' data-fa-transform='rotate-180'></i> Confirm Probe Hardware</div>
+        <div class="dialog-content" id="confirmXYZprobeDiv">
+        </div>
+        <div class="dialog-actions">
+          <div class="float-right">
+            <button class="button js-dialog-close">Cancel</button>
+            <button onclick="runProbeNew()" class="button success js-dialog-close">Probe</button>
+          </div>
+        </div>
+      </div>
+      <!-- end XYZ Probe confirmation -->
+
+
+      <!-- job completion confirmation -->
+      <div class="dialog dark" id="completeMsgModal" data-role="dialog" data-overlay-click-close="true">
+        <div class="dialog-title"><i class='far fa-check-square'></i> Completed</div>
+        <div class="dialog-content" id="completeMsgDiv">
+        </div>
+        <div class="dialog-actions">
+          <div class="float-right">
+            <button class="button primary js-dialog-close">OK</button>
+          </div>
+        </div>
+      </div>
+      <!-- end job completion confirmation -->
+
     </div>
   </body>
 
   <script type="x-shader/x-vertex" id="vertexShader">
     varying vec3 vWorldPosition; void main() { vec4 worldPosition = modelMatrix * vec4( position, 1.0 ); vWorldPosition = worldPosition.xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }
-
-</script>
+  </script>
   <script type="x-shader/x-fragment" id="fragmentShader">
     uniform vec3 topColor; uniform vec3 bottomColor; uniform float offset; uniform float exponent; varying vec3 vWorldPosition; void main() { float h = normalize( vWorldPosition + offset ).z; gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max(
-  h , 0.0), exponent ), 0.0 ) ), 1.0 ); }
+    h , 0.0), exponent ), 0.0 ) ), 1.0 ); }
 
-</script>
+  </script>
 
 
   <script type="text/javascript" src="lib/fontawesome5/js/all.min.js"></script>
@@ -1303,6 +1530,7 @@
   <script type="text/javascript" src="js/calibrate-servo.js"></script>
 
   <script type="text/javascript" src="js/probe.js"></script>
+  <script type="text/javascript" src="js/probev2.js"></script>
 
   <script type="text/javascript" src="wizards/surfacing.js"></script>
 

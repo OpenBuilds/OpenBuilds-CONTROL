@@ -14,6 +14,7 @@ function saveDiagnostics() {
   localStorage.setItem('disable3Dgcodepreview', disable3Dgcodepreview);
   localStorage.setItem('disableSerialLog', disableSerialLog);
   localStorage.setItem('disableDROupdates', disableDROupdates);
+
 }
 
 function initDiagnostics() {
@@ -81,6 +82,7 @@ function initDiagnostics() {
   } else {
     disableDROupdates = false;
   }
+
 };
 
 initDiagnostics();

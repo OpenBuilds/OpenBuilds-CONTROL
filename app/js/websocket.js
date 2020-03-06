@@ -116,6 +116,7 @@ function initSocket() {
     // 6 = Firmware Upgrade State
     if (laststatus.comms.connectionStatus < 3 && !continuousJogRunning) {
       $('#availVersion').html(data)
+      getChangelog();
       Metro.dialog.open('#downloadUpdate')
     }
 
@@ -153,7 +154,17 @@ function initSocket() {
   });
 
   socket.on("jobComplete", function(data) {
-    console.log("Job Complete", data)
+
+    console.log("jobComplete", data)
+
+    if (data.completed) {
+      console.log("Job Complete", data)
+    }
+    if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
+      $("#completeMsgDiv").html(data.jobCompletedMsg);
+      Metro.dialog.open("#completeMsgModal");
+    }
+
   });
 
   socket.on("machinename", function(data) {
@@ -231,6 +242,9 @@ function initSocket() {
         }
       ]
     });
+    setTimeout(function() {
+      $(".closeAlarmBtn").focus();
+    }, 200, )
     //
   });
 
@@ -240,8 +254,18 @@ function initSocket() {
     Metro.dialog.create({
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
-      clsDialog: 'dark'
+      clsDialog: 'dark',
+      actions: [{
+        caption: "OK",
+        cls: "js-dialog-close alert closeErrorBtn",
+        onclick: function() {
+          socket.emit('clearAlarm', 2)
+        }
+      }]
     });
+    setTimeout(function() {
+      $(".closeErrorBtn").focus();
+    }, 200, )
     //
   });
 
@@ -586,7 +610,10 @@ function populatePortsMenu() {
     response += `<option value="` + laststatus.comms.interfaces.ports[i].comName + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].comName.replace("/dev/tty.", "") + `</option>`;
   };
   if (!laststatus.comms.interfaces.ports.length) {
-    response += `<option value="">Waiting for USB</option`
+    response += `<option value="">Waiting for USB</option>`
+    $("#driverBtn").show();
+  } else {
+    $("#driverBtn").hide();
   }
   response += `</optgroup></select>`
   var select = $("#portUSB").data("select");

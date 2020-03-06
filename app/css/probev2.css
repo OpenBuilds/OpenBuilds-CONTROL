@@ -1,0 +1,76 @@
+.probe-label:hover {
+  fill: #ccc;
+}
+
+.probe-label path {
+  pointer-events: none;
+}
+
+.areaactive {
+  fill: #dd0000;
+}
+
+.areaactive:hover {
+  fill: #ff0000;
+}
+
+.probe-label, #probe-c-text, #probe-fl-text, #probe-fr-text, #probe-rl-text, #probe-rr-text {
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.B {
+  stroke-linejoin: round
+}
+
+.C {
+  fill: #000
+}
+
+.D {
+  stroke: #000
+}
+
+.E {
+  word-spacing: 0px
+}
+
+.F {
+  font-family: Arial Black
+}
+
+.G {
+  text-anchor: middle
+}
+
+.H {
+  stroke: none
+}
+
+.I {
+  font-size: 10.033px
+}
+
+.J {
+  overflow: visible
+}
+
+.K {
+  fill-rule: evenodd
+}
+
+.L {
+  stroke-width: 1pt
+}
+
+.M {
+  stroke-width: 1.09
+}
+
+.N {
+  stroke-linejoin: miter
+}

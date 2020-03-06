@@ -17,6 +17,15 @@ function getChangelog() {
     }
     template2 += `</ul>`
     $("#changelog").html(template2);
+    var template3 = `Changelog: <hr> <ul>`
+    for (var line = 0; line < 3; line++) {
+      template3 += '<li>' + lines[line] + '</li>'
+    }
+    template3 += `</ul>`
+
+    $("#changelogupdate").html(template3);
+
+
   });
 }
 
