@@ -1,4 +1,4 @@
-v1.0.211: TODO: Jog add space between jog rose and step size,  update to new Jog wizards
+v1.0.211: TODO: Jog add space between jog rose and step size,  Todo update mobile to new Probe wizards, 
 v1.0.210: Focussed on close button of alarm/error dialogs to ease closing, added Driver Install button for beginners, beta probing wizards (internal testing only)
 v1.0.209: Added Node-Debugger to help check not-responding issue, disabled console.log debugging in server process
 v1.0.208: Removed accidental S-Word from coolant menu commands

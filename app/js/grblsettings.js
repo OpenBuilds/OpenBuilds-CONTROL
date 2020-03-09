@@ -50,6 +50,7 @@ function grblSettings(data) {
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
   $('.grblCalibrationMenu').removeClass("disabled")
+  $('.grblProbeMenu').removeClass("disabled")
 
 
   if (grblParams['$22'] == 1) {
