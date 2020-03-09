@@ -1,11 +1,3 @@
-var protoxyzprobeplate = {
-  xoffset: 6,
-  yoffset: 6,
-  zoffset: 5,
-  name: "Prototype OpenBuilds XYZ Touchplate",
-  xyzmode: true
-}
-
 var xyzprobeplate = {
   xoffset: 10,
   yoffset: 10,
@@ -35,7 +27,7 @@ var probemode = {
     thickness: 20,
     feedrate: 500
   },
-  probe: protoxyzprobeplate,
+  probe: xyzprobeplate,
 }
 
 // still beta, lets hide it from users
