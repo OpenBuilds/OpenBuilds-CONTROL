@@ -467,7 +467,30 @@ function runProbeNew() {
     ; Probe Z
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
-    G10 P1 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
+    G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
+    G0 Z10 ; retract
+    `
+
+    socket.emit('runJob', {
+      data: zmacro,
+      isJob: false,
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+    });
+
+  }
+
+  if (probemode.mode == "zplate") {
+    var zoffset = probemode.probe.zoffset // not *-1 as its offset in z pos
+
+    var zmacro = `
+    ; Header
+    G21 ; mm mode
+    G10 P1 L20 Z0 ; zero out current location
+
+    ; Probe Z
+    G38.2 Z-25 F100 ; Probe Z
+    G4 P0.4
+    G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
     G0 Z10 ; retract
     `
 

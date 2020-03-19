@@ -1,3 +1,5 @@
+v1.0.214: Fixed bug with Z-Zero plate probing routine
+v1.0.213: Updated Authenticode Signing certificate
 v1.0.212: Major updates to dependency versions (SerialPort8, Electron 8)
 v1.0.211: Mobile Jog: added space between jog rose and step size,  Update mobile to new Probe wizards, Updates to Mobile Jog Page, Updated SSL Certificates, fixed bug #114 (Tooltip incorrect)
 v1.0.210: Focussed on close button of alarm/error dialogs to ease closing, added Driver Install button for beginners, beta probing wizards (internal testing only)
