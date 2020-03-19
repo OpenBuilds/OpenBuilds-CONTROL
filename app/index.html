@@ -289,7 +289,7 @@
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
-                    <li class="disabled grblProbeMenu" onclick="openProbeDialog();" class="needsXYZProbe"><a href="#"><span class="fas fa-podcast fa-rotate-180 icon"></span> Probing Wizards</a></li>
+                    <li class="disabled grblProbeMenu" onclick="openProbeDialog();"><a href="#"><span class="fas fa-podcast fa-rotate-180 icon"></span> Probing Wizards</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
@@ -441,8 +441,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                             <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe X-Zero Wizard</a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -476,8 +476,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                             <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Y-Zero Wizard</a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -512,7 +512,7 @@
                             <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ Plate</a></li>
+                            <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ Plate</a></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
@@ -787,7 +787,7 @@
                       </button>
                       <button id="runSimBtn" title="Run simulation" class="button dark" onclick="sim(0)"><i class="fas fa-fighter-jet"></i> Simulate</button>&nbsp;
                       <button id="stopSimBtn" style="display: none;" title="Stop Sim" class="button dark" onclick="simstop()"><i class="fas fa-stop"></i> Stop Sim</button>&nbsp;
-                      <button id="resetViewBtn" title="Stop Sim" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
+                      <button id="resetViewBtn" title="Resets camera angle and zoom" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
                     </div>
                   </div>
                   <div class="section" id="tab-four">
@@ -1247,13 +1247,13 @@
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <nav data-role="ribbonmenu">
             <ul class="tabs-holder">
-              <li onclick="probexyztab();" class="probetabxyz" id="probexyztab"><a href="#">XYZ-Zero</a></li>
-              <li onclick="probextab();" class="probetabxyz" id="probextab"><a href="#">X-Zero</a></li>
-              <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y-Zero</a></li>
-              <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z-Zero</a></li>
-              <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z Touch Plate</a></li>
-              <li onclick="probeautotab();" class="probetabxyz disabled" id="probeautotab"><a href="#">Automatic</a></li>
-              <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li>
+              <li onclick="probexyztab();" class="probetabxyz" id="probexyztab"><a href="#">XYZ&nbsp;Zero</a></li>
+              <li onclick="probextab();" class="probetabxyz" id="probextab"><a href="#">X&nbsp;Zero</a></li>
+              <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y&nbsp;Zero</a></li>
+              <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z&nbsp;Zero</a></li>
+              <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z&nbsp;Touch&nbsp;Plate</a></li>
+              <!-- <li onclick="probeautotab();" class="probetabxyz disabled" id="probeautotab"><a href="#">Automatic</a></li>
+              <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
             </ul>
           </nav>
 
@@ -1261,7 +1261,7 @@
             <tr>
 
               <td>
-                <div>
+                <div id="xyzprobeimages">
                   <img src="./img/xyzprobe/auto.png" alt="probe-auto" height="350" id="img-probe-auto" class="img-probe">
                   <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/x.png" alt="probe-x" height="350" id="img-probe-x" class="img-probe" style="display: none;">
@@ -1416,7 +1416,7 @@
 
           <label>Probe Type: </label>
 
-          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</span></a>
+          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a>
           <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
             <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a></li>
             <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>

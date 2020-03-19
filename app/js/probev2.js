@@ -10,8 +10,8 @@ var zprobeplate = {
   xoffset: 0,
   yoffset: 0,
   zoffset: 20,
+  xyzmode: false,
   name: "OpenBuilds Z Touchplate",
-  xyzmode: false
 }
 
 var probemode = {
@@ -30,6 +30,15 @@ var probemode = {
   probe: xyzprobeplate,
 }
 
+$(document).ready(function() {
+  if (localStorage.getItem('probeType')) {
+    console.log("Enabling XYZ Probing")
+    $(".needsXYZProbe").show()
+  } else {
+    console.log("Disabling XYZ Probing")
+    $(".needsXYZProbe").hide()
+  }
+});
 // still beta, lets hide it from users
 // if (!enableBetaFeatures) {
 //   $(".needsXYZProbe").hide();
@@ -52,6 +61,13 @@ function openProbeDialog() {
         $("#probexyztab").addClass("active")
       }, 100)
     }
+  } else {
+    probetype("z")
+    setTimeout(function() {
+      probezplatetab()
+      $(".probetabxyz").removeClass("active")
+      $("#probezplatetab").addClass("active")
+    }, 100)
   }
 }
 
@@ -72,6 +88,9 @@ function openProbeXDialog() {
         $("#probextab").addClass("active")
       }, 100)
     }
+  } else {
+    probetype("z");
+    // error - needs XYZ probe
   }
 }
 
@@ -92,6 +111,9 @@ function openProbeYDialog() {
         $("#probeytab").addClass("active")
       }, 100)
     }
+  } else {
+    probetype("z");
+    // error - needs XYZ probe
   }
 }
 
@@ -112,6 +134,9 @@ function openProbeZDialog() {
         $("#probeztab").addClass("active")
       }, 100)
     }
+  } else {
+    probetype("z");
+    // error - needs XYZ probe
   }
 }
 
@@ -251,6 +276,7 @@ $("#probe-c, #probe-c-text").on("click", function() {
 function probetype(type) {
   localStorage.setItem('probeType', type);
   if (type == "xyz") {
+    $(".needsXYZProbe").show()
     probemode.probe = xyzprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
     var template = `<span class="icon"><img src="https://i.ibb.co/QkxzYN8/xyztouch.png"/></span> OpenBuilds XYZ Probe`;
     $("#probetypebtn").html(template)
@@ -258,6 +284,7 @@ function probetype(type) {
     $(".probetabxyz").show();
     probexyztab()
   } else if (type == "protoxyz") {
+    $(".needsXYZProbe").show()
     probemode.probe = protoxyzprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
     var template = `<span class="icon"><img src="https://i.ibb.co/QkxzYN8/xyztouch.png"/></span> Prototype OpenBuilds XYZ Probe`;
     $("#probetypebtn").html(template)
@@ -265,6 +292,7 @@ function probetype(type) {
     $(".probetabxyz").show();
     probexyztab()
   } else if (type == "z") {
+    $(".needsXYZProbe").hide()
     probemode.probe = zprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
     var template = `<span class="icon"><img src="https://i.ibb.co/CQ7rSW6/ztouch.png"/></span>OpenBuilds Z Touch Plate`;
     $("#probetypebtn").html(template)

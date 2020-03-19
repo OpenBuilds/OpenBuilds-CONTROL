@@ -31,6 +31,7 @@ function getChangelog() {
 
 $(document).ready(function() {
 
+
   initDiagnostics(); // run second time to ensure checkboxes are ticked
 
   if (!isJogWidget) {

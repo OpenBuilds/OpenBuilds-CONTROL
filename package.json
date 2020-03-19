@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.211", 
+  "version": "1.0.211",
   "license": "AGPL-3.0",
   "description": "Machine Interface Driver for OpenBuilds",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -17,7 +17,9 @@
     "electron-updater": "^4.0.6",
     "express": "^4.16.4",
     "formidable": "^1.2.1",
+    "https": "^1.0.0",
     "ip": "^1.1.5",
+    "jscs": "^3.0.7",
     "lodash": "^4.17.13",
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",

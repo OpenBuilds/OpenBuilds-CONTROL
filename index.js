@@ -42,6 +42,11 @@ var mkdirp = require('mkdirp');
 
 app.use(express.static(path.join(__dirname, "app")));
 
+
+//Note when renewing Convert zerossl cert first `openssl.exe rsa -in domain-key.key -out domain-key.key`
+// fix error:    App threw an error during load
+//               Error: error:06000066:public key routines:OPENSSL_internal:DECODE_ERROR
+
 var httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, 'domain-key.key')),
   cert: fs.readFileSync(path.join(__dirname, 'domain-crt.cer'))
