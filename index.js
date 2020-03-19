@@ -188,10 +188,8 @@ var jobCompletedMsg = ""; // message sent when job is done
 var uploadedgcode = ""; // var to store uploaded gcode
 var uploadedworkspace = ""; // var to store uploaded OpenBuildsCAM Workspace
 
-mkdirp(uploadsDir, function(err) {
-  if (err) console.error(err)
-  else debug_log('Created Uploads Temp Directory')
-});
+mkdirp(uploadsDir).then(made =>
+  debug_log('Created Uploads Temp Directory'))
 
 var oldportslist;
 var oldpinslist;
@@ -308,27 +306,44 @@ var status = {
 
 
 
-SerialPort.list(function(err, ports) {
+async function findPorts() {
+  const ports = await SerialPort.list()
+  // console.log(ports)
   oldportslist = ports;
   status.comms.interfaces.ports = ports;
-});
+  for (const port of ports) {}
+  // throw new Error('No ports found')
+}
+findPorts()
+
+async function findChangedPorts() {
+  const ports = await SerialPort.list()
+  // console.log(ports)
+  status.comms.interfaces.ports = ports;
+  if (!_.isEqual(ports, oldportslist)) {
+    var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
+    if (newPorts.length > 0) {
+      debug_log("Plugged " + newPorts[0].path);
+    }
+    var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
+    if (removedPorts.length > 0) {
+      debug_log("Unplugged " + removedPorts[0].path);
+    }
+  }
+  oldportslist = ports;
+  // throw new Error('No ports found')
+}
+findPorts()
+
+
+// SerialPort.list(function(err, ports) {
+//   oldportslist = ports;
+//   status.comms.interfaces.ports = ports;
+// });
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
-    SerialPort.list(function(err, ports) {
-      status.comms.interfaces.ports = ports;
-      if (!_.isEqual(ports, oldportslist)) {
-        var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
-        if (newPorts.length > 0) {
-          debug_log("Plugged " + newPorts[0].comName);
-        }
-        var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
-        if (removedPorts.length > 0) {
-          debug_log("Unplugged " + removedPorts[0].comName);
-        }
-      }
-      oldportslist = ports;
-    });
+    findChangedPorts();
   }
 }, 500);
 
@@ -611,7 +626,7 @@ io.on("connection", function(socket) {
 
     if (status.comms.connectionStatus < 1) {
       data = data.split(",");
-      debug_log("Connecting via " + data[0] + " to " + data[1] + " at baud " + data[2]);
+      console.log("Connecting via " + data[0] + " to " + data[1] + " at baud " + data[2]);
 
       port = new SerialPort(data[1], {
         baudRate: parseInt(data[2])
@@ -620,6 +635,10 @@ io.on("connection", function(socket) {
       parser = port.pipe(new Readline({
         delimiter: '\r\n'
       }));
+
+      // port.on("data", function(data) {
+      //   console.log(data)
+      // })
 
       port.on("error", function(err) {
         if (err.message != "Port is not open") {
@@ -640,6 +659,8 @@ io.on("connection", function(socket) {
         }
 
       });
+
+
       port.on("open", function() {
         debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
@@ -1672,7 +1693,7 @@ function readFile(path) {
 
 function machineSend(gcode) {
   // console.time('MachineSend');
-  // debug_log("SENDING: " + gcode)
+  //debug_log("SENDING: " + gcode)
   if (port.isOpen) {
     if (gcode.match(/T([\d.]+)/i)) {
       var tool = parseFloat(RegExp.$1);

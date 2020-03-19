@@ -311,7 +311,7 @@ function initSocket() {
       if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
         var string = "Detected a change in available ports: ";
         for (i = 0; i < status.comms.interfaces.ports.length; i++) {
-          string += "[" + status.comms.interfaces.ports[i].comName + "]"
+          string += "[" + status.comms.interfaces.ports[i].path + "]"
         }
 
         if (!status.comms.interfaces.ports.length) {
@@ -607,7 +607,7 @@ function populatePortsMenu() {
   var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Ports">`
   for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
     var port = friendlyPort(i)
-    response += `<option value="` + laststatus.comms.interfaces.ports[i].comName + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].comName.replace("/dev/tty.", "") + `</option>`;
+    response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
   };
   if (!laststatus.comms.interfaces.ports.length) {
     response += `<option value="">Waiting for USB</option>`
