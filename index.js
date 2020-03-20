@@ -467,6 +467,7 @@ io.on("connection", function(socket) {
 
   iosocket = socket;
 
+
   if (status.machine.firmware.type == 'grbl') {
 
     // handle Grbl RESET external input
@@ -1693,7 +1694,7 @@ function readFile(path) {
 
 function machineSend(gcode) {
   // console.time('MachineSend');
-  //debug_log("SENDING: " + gcode)
+  // debug_log("SENDING: " + gcode)
   if (port.isOpen) {
     if (gcode.match(/T([\d.]+)/i)) {
       var tool = parseFloat(RegExp.$1);
