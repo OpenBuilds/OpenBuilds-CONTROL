@@ -480,7 +480,7 @@ function runProbeNew() {
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
     G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
-    G0 Z10 ; retract
+    $J=G91G21Z5F1000 ; retract
     `
 
     socket.emit('runJob', {
@@ -507,7 +507,7 @@ function runProbeNew() {
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
     G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
-    G0 Z10 ; retract
+    $J=G91G21Z5F1000 ; retract
     `
 
     socket.emit('runJob', {
