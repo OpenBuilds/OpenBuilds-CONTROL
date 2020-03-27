@@ -1465,10 +1465,13 @@
           <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
             <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a></li>
             <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
+            <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
+
             <li class="divider"></li>
             <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
           </ul>
-          <span style="padding-left: 50px;"></span>
+          <button title="Configure Custom Probe parameters" class="button" onclick="editCustomProbe();" id="editCustomProbeBtn" style="display: none;"><i class="fas fa-cogs"></i></button>
+          <span style="padding-left: 50px;" id="ProbeButtonBarSpacer"></span>
           <button class="button alert js-dialog-close" onclick="resetJogModeAfterProbe(); Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
           <button class="button primary" onclick="confirmProbeInPlace();" id="confirmNewProbeBtn">Confirm Probe Position</button>
           <button class="button success js-dialog-close disabled" onclick="runProbeNew();" id="runNewProbeBtn">Probe</button>
@@ -1477,8 +1480,20 @@
       </div>
       <!-- End XYZ Probe -->
 
-
-
+      <!-- Edit Custom Probe -->
+      <div class="dialog dark" data-role="dialog" id="editCustomProbeDialog" data-role="dialog" data-overlay-click-close="true">
+        <div class="dialog-title"><i class="fas fa-cogs"></i> Edit Custom Probe</div>
+        <div class="dialog-content">
+          <input type="text" data-role="input" class="mb-1" data-prepend="X Offset" data-append="mm" id="customProbeXOffset">
+          <input type="text" data-role="input" class="mb-1" data-prepend="Y Offset" data-append="mm" id="customProbeYOffset">
+          <input type="text" data-role="input" class="mb-1" data-prepend="Z Offset" data-append="mm" id="customProbeZOffset">
+        </div>
+        <div class="dialog-actions">
+          <button class="button js-dialog-close">Cancel</button>
+          <button class="button primary js-dialog-close" onclick="saveEditCustomProbe();">Save</button>
+        </div>
+      </div>
+      <!-- End Edit Custom Probe -->
 
       <!-- job completion confirmation -->
       <div class="dialog dark" id="completeMsgModal" data-role="dialog" data-overlay-click-close="true">

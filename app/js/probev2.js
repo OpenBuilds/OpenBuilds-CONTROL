@@ -14,6 +14,14 @@ var zprobeplate = {
   name: "OpenBuilds Z Touchplate",
 }
 
+var customprobeplate = {
+  xoffset: 6,
+  yoffset: 6,
+  zoffset: 8,
+  xyzmode: true,
+  name: "Custom XYZ Touchplate",
+}
+
 var probemode = {
   mode: "auto", // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
   endmilldia: 0,
@@ -38,6 +46,10 @@ $(document).ready(function() {
     $(".needsXYZProbe").hide()
   }
 });
+
+if (localStorage.getItem('customProbe')) {
+  customprobeplate = (JSON.parse(localStorage.getItem('customProbe')))
+}
 // still beta, lets hide it from users
 // if (!enableBetaFeatures) {
 //   $(".needsXYZProbe").hide();
@@ -310,28 +322,34 @@ function probetype(type) {
   localStorage.setItem('probeType', type);
   if (type == "xyz") {
     $(".needsXYZProbe").show()
-    probemode.probe = xyzprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="https://i.ibb.co/QkxzYN8/xyztouch.png"/></span> OpenBuilds XYZ Probe`;
+    probemode.probe = xyzprobeplate // customprobeplate, xyzprobeplate, zprobeplate
+    var template = `<span class="icon"><img src="/img/xyzprobe/xyztouch.png"/></span> OpenBuilds XYZ Probe`;
     $("#probetypebtn").html(template)
     $(".probetabz").hide();
     $(".probetabxyz").show();
-    probexyztab()
-  } else if (type == "protoxyz") {
-    $(".needsXYZProbe").show()
-    probemode.probe = protoxyzprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="https://i.ibb.co/QkxzYN8/xyztouch.png"/></span> Prototype OpenBuilds XYZ Probe`;
-    $("#probetypebtn").html(template)
-    $(".probetabz").hide();
-    $(".probetabxyz").show();
+    $("#editCustomProbeBtn").hide()
+    $("#ProbeButtonBarSpacer").show()
     probexyztab()
   } else if (type == "z") {
     $(".needsXYZProbe").hide()
-    probemode.probe = zprobeplate // protoxyzprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="https://i.ibb.co/CQ7rSW6/ztouch.png"/></span>OpenBuilds Z Touch Plate`;
+    probemode.probe = zprobeplate // customprobeplate, xyzprobeplate, zprobeplate
+    var template = `<span class="icon"><img src="/img/xyzprobe/ztouch.png"/></span>OpenBuilds Z Touch Plate`;
     $("#probetypebtn").html(template)
     $(".probetabxyz").hide();
     $(".probetabz").show();
+    $("#editCustomProbeBtn").hide()
+    $("#ProbeButtonBarSpacer").show()
     probezplatetab();
+  } else if (type == "custom") {
+    $(".needsXYZProbe").show()
+    probemode.probe = customprobeplate // customprobeplate, xyzprobeplate, zprobeplate
+    var template = `<span class="icon"><img src="/img/xyzprobe/custom.png"/></span> Custom XYZ Probe`;
+    $("#probetypebtn").html(template)
+    $(".probetabz").hide();
+    $(".probetabxyz").show();
+    $("#editCustomProbeBtn").show()
+    $("#ProbeButtonBarSpacer").hide()
+    probexyztab()
   }
 }
 
@@ -370,7 +388,7 @@ function runProbeNew() {
   template += `Probe: Z:` + probemode.probe.zoffset + `\n`
 
   if (probemode.mode == "xyz" || probemode.mode == "xzero" || probemode.mode == "yzero" || probemode.mode == "zzero") {
-    probemode.endmilldia = $("#probediameterxyz").val();
+    probemode.endmilldia = parseFloat($("#probediameterxyz").val());
     template += `Endmill: ` + probemode.endmilldia + `mm\n`
   }
 
@@ -416,7 +434,7 @@ function runProbeNew() {
     stockoffset.y = probemode.stock.y / 2
   }
 
-  // alert(template)
+  alert(template)
 
   if (probemode.mode == "xzero") {
     var xoffset = (probemode.probe.xoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the left too far from x0
@@ -521,7 +539,7 @@ function runProbeNew() {
   if (probemode.mode == "xyz") {
     var xoffset = (probemode.probe.xoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the left too far from x0
     var yoffset = (probemode.probe.yoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the front too far from y0
-    var zoffset = probemode.probe.zoffset // not *-1 as its offset in z pos
+    var zoffset = parseFloat(probemode.probe.zoffset) // not *-1 as its offset in z pos
 
     var xyzmacro = `
     ; Header
@@ -533,29 +551,26 @@ function runProbeNew() {
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
     G10 P1 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
-    G0 Z10 ; retract
-    G0 X0 Y0 ; return
+    G0 Z` + (zoffset + 5) + ` ; retract
 
     ; Probe X
-    G0 X-20 ; position to left side
-    G0 Y15 ; and move forward a little to be closer to center of edge
+    G0 X-20 Y15 ; position to left side and move forward a little to be closer to center of edge
     G0 Z0 ; drop down to be next to plate
     G38.2 X25 F100 ; Probe X
     G4 P0.4
     G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
     G0 X` + (xoffset - 2).toFixed(3) + `
-    G0 Z10 ; retract
+    G0 Z` + (zoffset + 5) + ` ; retract
     G0 X0 Y0 ; return
 
     ; Probe Y
-    G0 Y-20 ; position to front side
-    G0 X15 ; and move right a little to be closer to center of edge
+    G0 X15 Y-20 ; position to front side and move right a little to be closer to center of edge
     G0 Z0 ; drop down to be next to plate
     G38.2 Y25 F100 ; probe Y
     G4 P0.4
     G10 P1 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
     G0 Y` + (yoffset - 2).toFixed(3) + `
-    G0 Z10 ; retract
+    G0 Z` + (zoffset + 5) + ` ; retract
     G0 X0 Y0 ; return
     `
 
@@ -610,4 +625,22 @@ function rippleEffect(el, color) {
     timer = null;
     $(".ripple").remove();
   }, 400);
+}
+
+function editCustomProbe() {
+  Metro.dialog.open('#editCustomProbeDialog');
+  $("#customProbeXOffset").val(customprobeplate.xoffset);
+  $("#customProbeYOffset").val(customprobeplate.yoffset);
+  $("#customProbeZOffset").val(customprobeplate.zoffset);
+}
+
+function saveEditCustomProbe() {
+  customprobeplate = {
+    xoffset: parseFloat($("#customProbeXOffset").val()),
+    yoffset: parseFloat($("#customProbeYOffset").val()),
+    zoffset: parseFloat($("#customProbeZOffset").val()),
+    xyzmode: true, // stays
+    name: "Custom Z Touchplate", // stays
+  };
+  localStorage.setItem('customProbe', JSON.stringify(customprobeplate));
 }
