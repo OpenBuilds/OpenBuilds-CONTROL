@@ -578,7 +578,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn" id="yP" data-role="ripple" data-ripple-color="#5de21b">
+                        <button class="button light square large jogbtn yP" id="yP" data-role="ripple" data-ripple-color="#5de21b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
@@ -591,7 +591,7 @@
 
 
                       <td>
-                        <button class="button light square large jogbtn" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn zP" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
@@ -599,7 +599,7 @@
                         </button>
                       </td>
                       <td class="servo-active" style="display: none;">
-                        <button class="button light square large jogbtn" id="pP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn pP" id="pP" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
                             <i class="fas fa-ban fg-red" data-fa-transform="shrink-0.5 down-8.5"></i>
@@ -611,7 +611,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <button class="button light square large jogbtn" id="xM" data-role="ripple" data-ripple-color="#e21b1b">
+                        <button class="button light square large jogbtn xM" id="xM" data-role="ripple" data-ripple-color="#e21b1b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
@@ -620,7 +620,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn" id="yM" data-role="ripple" data-ripple-color="#5de21b">
+                        <button class="button light square large jogbtn yM" id="yM" data-role="ripple" data-ripple-color="#5de21b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
@@ -629,7 +629,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn" id="xP" data-role="ripple" data-ripple-color="#e21b1b">
+                        <button class="button light square large jogbtn xP" id="xP" data-role="ripple" data-ripple-color="#e21b1b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
@@ -637,7 +637,7 @@
                         </button>
                       </td>
                       <td>
-                        <button class="button light square large jogbtn" id="zM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn zM" id="zM" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
@@ -645,7 +645,7 @@
                         </button>
                       </td>
                       <td class="servo-active" style="display: none;">
-                        <button class="button light square large jogbtn" id="pM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn pM" id="pM" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-12" style="font-weight:600">PEN</span>
@@ -1280,43 +1280,83 @@
                     determine endmill diameter. </small>
                   <hr>
                   <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
+                    on the magnetic connecting clip, then click the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-xyz" class="probe-tab-content">
                   <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
                   <hr>
                   <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
+                    on the magnetic connecting clip, then click the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-x" class="probe-tab-content" style="display: none;">
                   <small>X Probe Routine: This routine is used to find the X origin</small>
                   <hr>
                   <small>Position the endmill to the left of the probe plate as shown, clip on the magnetic connecting clip,
-                    then click Probe</small>
+                    then click the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-y" class="probe-tab-content" style="display: none;">
                   <small>Y Probe Routine: This routine is used to find the Y origin</small>
                   <hr>
                   <small>Position the endmill in front of the probe plate as shown, clip on the magnetic connecting clip, then
-                    click Probe</small>
+                    click the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-z" class="probe-tab-content" style="display: none;">
                   <small>Z Probe Routine: This routine is used to find the Z origin</small>
                   <hr>
                   <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
-                    Probe</small>
+                    the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-endmill" class="probe-tab-content" style="display: none;">
                   <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
                   <hr>
                   <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
+                    on the magnetic connecting clip, then click the <span class="fg-cobalt">Confirm Probe Position</span> button to continue...</small>
                   <hr>
                   <small>
                     This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
                     it will measure and calculate the Endmill Diameter and display it onscreen. <br>This operation will NOT set
                     any work-coordinates!
                   </small>
+                </div>
+                <div id="probeJogWindow">
+                  <hr>
+                  <table>
+                    <tr>
+                      <td>
+                        &nbsp;
+                      </td>
+                      <td>
+                        <button class="button success small rounded outline m-1 yP" id="yPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y+</button>
+                      </td>
+                      <td>
+                        &nbsp;
+                      </td>
+                      <td>
+                        <button class="button primary small rounded outline m-1 zP" id="zPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z+</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="button alert small rounded outline m-1 xM" id="xMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X-</button>
+                      </td>
+                      <td>
+                        <button class="button success small rounded outline m-1 yM" id="yMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y-</button>
+                      </td>
+                      <td>
+                        <button class="button alert small rounded outline m-1 xP" id="xPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X+</button>
+                      </td>
+                      <td>
+                        <button class="button primary small rounded outline m-1 zM" id="zMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z-</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">
+                        <center>
+                          <span class="text-small">Or use the Keyboard to Jog</span>
+                        </center>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
                 <hr>
                 <div id="endmilldiameterform">
@@ -1428,27 +1468,16 @@
             <li class="divider"></li>
             <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
           </ul>
-          <span style="padding-left: 200px;"></span>
-          <button class="button js-dialog-close" onclick="Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
-          <button class="button success js-dialog-close" onclick="confirmProbeInPlace();">Probe</button>
+          <span style="padding-left: 50px;"></span>
+          <button class="button alert js-dialog-close" onclick="resetJogModeAfterProbe(); Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
+          <button class="button primary" onclick="confirmProbeInPlace();" id="confirmNewProbeBtn">Confirm Probe Position</button>
+          <button class="button success js-dialog-close disabled" onclick="runProbeNew();" id="runNewProbeBtn">Probe</button>
 
         </div>
       </div>
       <!-- End XYZ Probe -->
 
-      <!-- XYZ Probe confirmation -->
-      <div class="dialog dark" id="confirmXYZprobeModal" data-role="dialog" data-overlay-click-close="true">
-        <div class="dialog-title"><i class='fas fa-podcast' data-fa-transform='rotate-180'></i> Confirm Probe Hardware</div>
-        <div class="dialog-content" id="confirmXYZprobeDiv">
-        </div>
-        <div class="dialog-actions">
-          <div class="float-right">
-            <button class="button js-dialog-close">Cancel</button>
-            <button onclick="runProbeNew()" class="button success js-dialog-close">Probe</button>
-          </div>
-        </div>
-      </div>
-      <!-- end XYZ Probe confirmation -->
+
 
 
       <!-- job completion confirmation -->

@@ -273,55 +273,67 @@ $(document).ready(function() {
     sendGcode('G0 Z0');
   });
 
-  $('#xM').on('click', function(ev) {
+  $('.xM').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('X', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#xP').on('click', function(ev) {
+  $('.xP').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('X', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#yM').on('click', function(ev) {
+  $('.yM').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Y', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#yP').on('click', function(ev) {
+  $('.yP').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Y', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#zM').on('click', function(ev) {
+  $('.zM').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Z', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#zP').on('click', function(ev) {
+  $('.zP').on('click', function(ev) {
     if (!allowContinuousJog) {
       var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Z', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('#xM').on('mousedown', function(ev) {
+  $('.xM').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "X-";
       var distance = 1000;
@@ -338,16 +350,16 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xM').click();
+      $('.xM').click();
     }
   });
-  $('#xM').on('mouseup', function(ev) {
+  $('.xM').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('#xP').on('mousedown', function(ev) {
+  $('.xP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "X";
       var distance = 1000;
@@ -363,16 +375,16 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#xP').click();
+      $('.xP').click();
     }
   });
-  $('#xP').on('mouseup', function(ev) {
+  $('.xP').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('#yM').on('mousedown', function(ev) {
+  $('.yM').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Y-";
       var distance = 1000;
@@ -390,16 +402,16 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#yM').click();
+      $('.yM').click();
     }
   });
-  $('#yM').on('mouseup', function(ev) {
+  $('.yM').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('#yP').on('mousedown', function(ev) {
+  $('.yP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Y";
       var distance = 1000;
@@ -420,13 +432,13 @@ $(document).ready(function() {
       $('#yP').click();
     }
   });
-  $('#yP').on('mouseup', function(ev) {
+  $('.yP').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('#zM').on('mousedown', function(ev) {
+  $('.zM').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Z-";
       var distance = 1000;
@@ -444,16 +456,16 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#zM').click();
+      $('.zM').click();
     }
   });
-  $('#zM').on('mouseup', function(ev) {
+  $('.zM').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('#zP').on('mousedown', function(ev) {
+  $('.zP').on('mousedown', function(ev) {
     if (allowContinuousJog) { // startJog();
       var direction = "Z";
       var distance = 1000;
@@ -471,10 +483,10 @@ $(document).ready(function() {
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
-      $('#zP').click();
+      $('.zP').click();
     }
   });
-  $('#zP').on('mouseup', function(ev) {
+  $('.zP').on('mouseup', function(ev) {
     if (allowContinuousJog) {
       cancelJog()
     }

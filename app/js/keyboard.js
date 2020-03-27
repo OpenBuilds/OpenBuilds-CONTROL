@@ -104,6 +104,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#xM').click();
+          rippleEffect($('#xMprobe'), "#e21b1b")
         }
       } else {
         $('#xM').click();
@@ -134,6 +135,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#xP').click();
+          rippleEffect($('#xPprobe'), "#e21b1b")
         }
       } else {
         $('#xP').click();
@@ -167,6 +169,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#yM').click();
+          rippleEffect($('#yMprobe'), "#5de21b")
         }
       } else {
         $('#yM').click();
@@ -200,6 +203,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#yP').click();
+          rippleEffect($('#yPprobe'), "#5de21b")
         }
       } else {
         $('#yP').click();
@@ -232,6 +236,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#zM').click();
+          rippleEffect($('#zMprobe'), "#1ba1e2")
         }
       } else {
         $('#zM').click();
@@ -264,6 +269,7 @@ function bindKeys() {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
           continuousJogRunning = true;
           $('#zP').click();
+          rippleEffect($('#zPprobe'), "#1ba1e2")
         }
       } else {
         $('#zP').click();

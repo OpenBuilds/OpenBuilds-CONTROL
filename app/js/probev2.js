@@ -22,11 +22,6 @@ var probemode = {
     y: 0,
     position: "fl" // fl, fr, rl, rr, c
   },
-  plate: {
-    traveldistance: 25,
-    thickness: 20,
-    feedrate: 500
-  },
   probe: xyzprobeplate,
 }
 
@@ -159,7 +154,10 @@ function probeautotab() {
   } else {
     $("#toggle-probe-advanced-content").data('collapse').expand()
   }
-
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probexyztab() {
@@ -177,7 +175,10 @@ function probexyztab() {
   } else {
     $("#toggle-probe-advanced-content").data('collapse').expand()
   }
-
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probextab() {
@@ -192,6 +193,10 @@ function probextab() {
   $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").show();
   $("#toggle-probe-advanced-content").data('collapse').collapse()
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probeytab() {
@@ -206,6 +211,10 @@ function probeytab() {
   $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").show();
   $("#toggle-probe-advanced-content").data('collapse').collapse()
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probeztab() {
@@ -221,6 +230,10 @@ function probeztab() {
   $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").hide();
   $("#toggle-probe-advanced-content").data('collapse').collapse()
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probezplatetab() {
@@ -235,6 +248,10 @@ function probezplatetab() {
   $("#toggle-probe-advanced").show();
   $("#endmilldiameterform").hide();
   $("#toggle-probe-advanced-content").data('collapse').collapse()
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function probeendmilltab() {
@@ -249,6 +266,10 @@ function probeendmilltab() {
   $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").hide();
   $("#toggle-probe-advanced-content").data('collapse').collapse()
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+  $('#jogTypeContinuous').prop('checked', true)
+  allowContinuousJog = true;
 }
 
 function resetOffsetFL() {
@@ -315,49 +336,28 @@ function probetype(type) {
 }
 
 function confirmProbeInPlace(operation) {
+  $('#confirmNewProbeBtn').addClass("disabled")
+  $('#runNewProbeBtn').removeClass("disabled").focus();
+}
 
-  var imgurl = "./img/xyzprobe/xyz.png"
-  if (probemode.mode == "xyz") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/xyz.png"
-  } else if (probemode.mode == "xzero") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/x.png"
-  } else if (probemode.mode == "yzero") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/y.png"
-  } else if (probemode.mode == "zzero") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/z.png"
-  } else if (probemode.mode == "zplate") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/zplate.png"
-  } else if (probemode.mode == "endmilldia") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/endmill.png"
-  } else if (probemode.mode == "auto") { // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-    imgurl = "./img/xyzprobe/auto.png"
+function resetJogModeAfterProbe() {
+  if (localStorage.getItem('continuousJog')) {
+    if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
+      $('#jogTypeContinuous').prop('checked', true)
+      allowContinuousJog = true;
+      $('.distbtn').hide()
+    } else {
+      $('#jogTypeContinuous').prop('checked', false)
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    }
   }
-
-  var confirmTemplate = `
-  <table>
-    <tr>
-      <td><img src="` + imgurl + `" height="350" class="img-probe"/>
-      </td>
-      <td style="padding: 4px; vertical-align: middle;">
-        <ul>
-          <li>Are you sure the probe plate was placed onto the front, left corner of the stock/workpiece?</li>
-          <li>Are you sure the probe clip is attached to the bit?</li>
-          <li>Are you sure you jogged the bit to the correct approximate position as shown, prior to initiating the probe?</li>
-        </ul>
-      </td>
-    </tr>
-  </table>
-  `
-
-  $("#confirmXYZprobeDiv").html(confirmTemplate);
-  setTimeout(function() {
-    Metro.dialog.open("#confirmXYZprobeModal")
-  }, 100);
-
+  $('#confirmNewProbeBtn').removeClass("disabled")
 }
 
 
 function runProbeNew() {
+  resetJogModeAfterProbe()
   $("#consoletab").click()
   probemode.stock.x = $("#stockwidth").val();
   probemode.stock.y = $("#stocklength").val();
@@ -573,4 +573,41 @@ function runProbeNew() {
     });
 
   }
+}
+
+function rippleEffect(el, color) {
+  var timer = null;
+
+  if (el.css('position') === 'static') {
+    el.css('position', 'relative');
+  }
+
+  el.css({
+    overflow: 'hidden'
+  });
+
+  $(".ripple").remove();
+
+  var size = Math.max(el.outerWidth(), el.outerHeight());
+
+  // Add the element
+  var ripple = $("<span class='ripple'></span>").css({
+    width: size,
+    height: size
+  });
+
+  el.prepend(ripple);
+
+  // Add the ripples CSS and start the animation
+  ripple.css({
+    background: color,
+    width: size,
+    height: size,
+    top: 0 + 'px',
+    left: 0 + 'px'
+  }).addClass("rippleEffect");
+  timer = setTimeout(function() {
+    timer = null;
+    $(".ripple").remove();
+  }, 400);
 }
