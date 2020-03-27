@@ -434,7 +434,7 @@ function runProbeNew() {
     stockoffset.y = probemode.stock.y / 2
   }
 
-  alert(template)
+  // alert(template)
 
   if (probemode.mode == "xzero") {
     var xoffset = (probemode.probe.xoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the left too far from x0
@@ -554,15 +554,14 @@ function runProbeNew() {
     G0 Z` + (zoffset + 5) + ` ; retract
 
     ; Probe X
-    G0 X-20 Y15 ; position to left side and move forward a little to be closer to center of edge
+    G0 X-20 Y10 ; position to left side and move forward a little to be closer to center of edge
     G0 Z0 ; drop down to be next to plate
     G38.2 X25 F100 ; Probe X
     G4 P0.4
     G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
     G0 X` + (xoffset - 2).toFixed(3) + `
     G0 Z` + (zoffset + 5) + ` ; retract
-    G0 X0 Y0 ; return
-
+    
     ; Probe Y
     G0 X15 Y-20 ; position to front side and move right a little to be closer to center of edge
     G0 Z0 ; drop down to be next to plate
