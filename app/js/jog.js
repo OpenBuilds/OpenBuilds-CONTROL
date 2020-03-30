@@ -521,7 +521,8 @@ $(document).ready(function() {
     }
     socket.emit('runJob', {
       data: moves,
-      isJob: false
+      isJob: false,
+      fileName: ""
     });
   });
 

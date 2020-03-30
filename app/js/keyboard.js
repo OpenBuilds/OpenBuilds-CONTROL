@@ -67,19 +67,17 @@ function bindKeys() {
 
   // Bind for Electron Devtools
   document.addEventListener('keydown', function(evt) {
-    if (evt.which === 123) {
-      try {
-        var focusedWindow = require('electron').remote.getCurrentWindow();
-        if (focusedWindow.isDevToolsOpened()) {
-          focusedWindow.closeDevTools();
-        } else {
-          focusedWindow.openDevTools();
-        }
-      } catch (error) {
-        console.warn(error);
-      }
-    } else if (evt.which === 116) {
+    if (evt.which === 116) {
+      // F5 - reload interface
       location.reload();
+    } else if (evt.which === 117) {
+      // F6 - switch to serial console and focus on Console Input
+      $("#controlTab").click();
+      $("#consoletab").click();
+      $("#command").focus();
+    } else if (evt.which === 112) {
+      // F1 - troubleshooting
+      $("#troubleshootingTab").click();
     }
   });
 
@@ -301,7 +299,8 @@ function bindKeys() {
       if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
         socket.emit('runJob', {
           data: editor.getValue(),
-          isJob: true
+          isJob: true,
+          fileName: ""
         });
       } else if (laststatus.comms.connectionStatus == 3) {
         socket.emit('pause', true);
@@ -418,7 +417,9 @@ function keyboardShortcutsEditor() {
           <input type="text" class="keyboardshortcutinput" readonly id="stepPnewKey" value="` + keyboardShortcuts.stepP + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
+
     </form>
+
   </div>`
 
   Metro.dialog.create({

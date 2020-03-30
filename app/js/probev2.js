@@ -41,9 +41,6 @@ $(document).ready(function() {
       console.log("Enabling XYZ Probing")
       $(".needsXYZProbe").show()
     }
-  } else {
-    console.log("Disabling XYZ Probing")
-    $(".needsXYZProbe").hide()
   }
 });
 
@@ -73,11 +70,10 @@ function openProbeDialog() {
       }, 100)
     }
   } else {
-    probetype("z")
     setTimeout(function() {
-      probezplatetab()
+      probexyztab()
       $(".probetabxyz").removeClass("active")
-      $("#probezplatetab").addClass("active")
+      $("#probexyztab").addClass("active")
     }, 100)
   }
 }
@@ -100,8 +96,11 @@ function openProbeXDialog() {
       }, 100)
     }
   } else {
-    probetype("z");
-    // error - needs XYZ probe
+    setTimeout(function() {
+      probextab()
+      $(".probetabxyz").removeClass("active")
+      $("#probextab").addClass("active")
+    }, 100)
   }
 }
 
@@ -123,8 +122,11 @@ function openProbeYDialog() {
       }, 100)
     }
   } else {
-    probetype("z");
-    // error - needs XYZ probe
+    setTimeout(function() {
+      probeytab()
+      $(".probetabxyz").removeClass("active")
+      $("#probeytab").addClass("active")
+    }, 100)
   }
 }
 
@@ -146,8 +148,11 @@ function openProbeZDialog() {
       }, 100)
     }
   } else {
-    probetype("z");
-    // error - needs XYZ probe
+    setTimeout(function() {
+      probeztab()
+      $(".probetabxyz").removeClass("active")
+      $("#probeztab").addClass("active")
+    }, 100)
   }
 }
 
@@ -457,7 +462,8 @@ function runProbeNew() {
     socket.emit('runJob', {
       data: xmacro,
       isJob: false,
-      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... ",
+      fileName: ""
     });
 
   }
@@ -480,7 +486,8 @@ function runProbeNew() {
     socket.emit('runJob', {
       data: ymacro,
       isJob: false,
-      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... ",
+      fileName: ""
     });
   }
 
@@ -504,7 +511,8 @@ function runProbeNew() {
     socket.emit('runJob', {
       data: zmacro,
       isJob: false,
-      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... ",
+      fileName: ""
     });
 
   }
@@ -531,7 +539,8 @@ function runProbeNew() {
     socket.emit('runJob', {
       data: zmacro,
       isJob: false,
-      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... ",
+      fileName: ""
     });
 
   }
@@ -561,7 +570,7 @@ function runProbeNew() {
     G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
     G0 X` + (xoffset - 2).toFixed(3) + `
     G0 Z` + (zoffset + 5) + ` ; retract
-    
+
     ; Probe Y
     G0 X15 Y-20 ; position to front side and move right a little to be closer to center of edge
     G0 Z0 ; drop down to be next to plate
@@ -583,7 +592,8 @@ function runProbeNew() {
     socket.emit('runJob', {
       data: xyzmacro,
       isJob: false,
-      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... "
+      completedMsg: "Probe Complete: Remove the Probe Clip and Probe Plate before continuing... ",
+      fileName: ""
     });
 
   }

@@ -1,6 +1,31 @@
 var gcode;
+var loadedFileName = "";
 var editor;
 var isJogWidget = false;
+
+function setWindowTitle(status) {
+
+  var string = "OpenBuilds CONTROL"
+
+  if (status) {
+    string += " v" + status.driver.version
+  } else {
+    string += " v" + laststatus.driver.version
+  }
+
+
+  if (loadedFileName.length > 0) {
+    string += " / " + loadedFileName
+  }
+
+  if (!nostatusyet && laststatus.comms.interfaces.activePort) {
+    string += " / connected to " + laststatus.comms.interfaces.activePort
+  }
+
+  $('#windowtitle').html(string)
+
+
+}
 
 function getChangelog() {
   $("#changelog").empty()
@@ -30,7 +55,6 @@ function getChangelog() {
 }
 
 $(document).ready(function() {
-
 
   initDiagnostics(); // run second time to ensure checkboxes are ticked
 
@@ -107,6 +131,10 @@ $(document).ready(function() {
     $('#splash').fadeOut(500);
   }, 100)
 
+  setInterval(function() {
+    setWindowTitle();
+  }, 1000)
+
 
 });
 
@@ -135,6 +163,8 @@ function loadFile(f) {
     r.readAsText(f);
     r.onload = function(event) {
       editor.session.setValue(this.result);
+      loadedFileName = f.name;
+      setWindowTitle()
       if (webgl) {
         printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
       } else {

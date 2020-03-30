@@ -172,7 +172,7 @@ if (isElectron()) {
     // repeat every minute
     setTimeout(function() {
       io.sockets.emit('updateready', availversion);
-    }, 15 * 60 * 1000) // 15 mins
+    }, 60 * 60 * 1000) // 60 mins
     updateIsDownloading = false;
   });
 } else {
@@ -1682,7 +1682,11 @@ function readFile(path) {
               } = require('electron')
               shell.openExternal('https://cam.openbuilds.com')
             } else { // GCODE
-              io.sockets.emit('gcodeupload', data);
+              var payload = {
+                gcode: data,
+                filename: path
+              }
+              io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;
               return data
             }
@@ -2166,9 +2170,18 @@ if (isElectron()) {
     electronApp.on('second-instance', (event, commandLine, workingDirectory) => {
       //Someone tried to run a second instance, we should focus our window.
       // debug_log('SingleInstance')
-      // debug_log(commandLine)
+
+      function checkFileType(fileName) {
+        var fileNameLC = fileName.toLowerCase();
+        if (fileNameLC.endsWith('.obc') || fileName.endsWith('.gcode') || fileName.endsWith('.gc') || fileName.endsWith('.tap') || fileName.endsWith('.nc') || fileName.endsWith('.cnc')) {
+          return fileName;
+        }
+      }
+
+      debug_log(commandLine)
       lauchGUI = true;
-      var openFilePath = commandLine[1];
+
+      var openFilePath = commandLine.find(checkFileType);
       if (openFilePath !== "") {
         readFile(openFilePath);
         if (openFilePath !== undefined) {

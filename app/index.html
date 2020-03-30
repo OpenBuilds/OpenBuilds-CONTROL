@@ -40,7 +40,7 @@
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
             <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
-            <li><a href="#section-troubleshooting" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
+            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
           <div class="content-holder">
             <div class="section" id="section-grbl">
@@ -133,30 +133,23 @@
                     <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button" style="margin: 5px;">Disconnect</button>
                     <button class="button small secondary disabled" disabled style="display:none;" id="flashBtn" type="button" style="margin: 5px;">please wait...</button>
                     <button class="button small primary float-right" onclick="socket.emit('opendriverspage', true);" id="driverBtn" type="button" style="margin: 5px;">Install Drivers</button>
+                    <div class="ribbon-group" id="grblButtons">
+                      <hr>
+                      <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                        <span class="icon">
+                          <span class="mif-loop"></span>
+                        </span>
+                        <span class="caption">Restart Grbl</span>
+                      </button>
 
+
+                    </div>
                   </form>
 
                 </div>
                 <span class="title">Machine Interface</span>
               </div>
-              <div class="group" id="grblButtons" style="display: none;">
-                <div class="ribbon-group">
-                  <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
-                    <span class="icon">
-                      <span class="mif-loop"></span>
-                    </span>
-                    <span class="caption">Reset</span>
-                  </button>
-                  <br>
-                  <button class="ribbon-icon-button" onclick="sendGcode('$$'); sendGcode('$I');">
-                    <span class="icon">
-                      <span class="mif-cogs"></span>
-                    </span>
-                    <span class="caption">Settings</span>
-                  </button>
-                </div>
-                <span class="title" id="firmwarename"></span>
-              </div>
+
               <div class="group">
                 <div>
                   <button id="openGcodeBtn" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
@@ -171,7 +164,7 @@
                   </ul>
                 </div>
 
-                <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', {data: editor.getValue(), isJob: true});" title="Run a Job">
+                <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', {data: editor.getValue(), isJob: true, fileName : loadedFileName});" title="Run a Job">
                   <span class="icon">
                     <i class="fas fa-play"></i>
                   </span>
@@ -208,6 +201,18 @@
                   </span>
                   <span class="caption">Stop<br>Job</span>
                 </button>
+
+                <button id="grblProbeMenu" class="ribbon-button" onclick="openProbeDialog();" disabled>
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-podcast fa-rotate-180"></i>
+                    </span>
+                  </span>
+                  <span class="caption grblmode">Probe</span>
+                  <span class="badge bg-green fg-white">New!</span>
+                </button>
+
+
                 <button id="chkSize" class="ribbon-button">
                   <span class="icon">
                     <i class="far fa-square"></i>
@@ -284,12 +289,10 @@
                       </span>
                     </span>
                     <span class="caption">Wizards<br>& Tools</span>
-                    <span class="badge  bg-red fg-white">New!</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
-                    <li class="disabled grblProbeMenu" onclick="openProbeDialog();"><a href="#"><span class="fas fa-podcast fa-rotate-180 icon"></span> Probing Wizards</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
@@ -441,8 +444,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                             <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
                           </ul>
                         </div>
                       </td>
@@ -476,8 +479,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                             <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
                           </ul>
                         </div>
                       </td>
@@ -512,8 +515,8 @@
                             <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
-                            <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
+                            <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
                           </ul>
                         </div>
                       </td>
@@ -748,12 +751,12 @@
                     <div id="console"></div>
                     <div class="fixed-bottom m-3 mb-9">
                       <form class="inline-form" id="commandform" autocomplete="off">
-                        <input data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command" type="text" autocomplete="on" class=" dark needs-connection"
-                          style="width: calc(100vw - 170px);" data-editable="true" />
-                        <button id="sendCommand" class="button dark needs-connection" type="button" data-role="hint" data-hint-position="top" data-hint-text="Execute Command" data-cls-hint="bg-light fg-dark drop-shadow">
+                        <input title="Tip: Press F6 anywhere on the CONTROL window to quickly jump to this input" data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command"
+                          type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" data-editable="true" />
+                        <button id="sendCommand" class="button dark needs-connection" type="button" title="Execute command">
                           <i class="fa fa-play" style="margin-right: 10px;"></i> Send
                         </button>
-                        <button class="button dark emptylog" type="button" onclick="$('#console').empty();" data-role="hint" data-hint-position="top" data-hint-text="Empty console log" data-cls-hint="bg-light fg-dark drop-shadow">
+                        <button class="button dark emptylog" type="button" onclick="$('#console').empty();" title="Clear the Log screen">
                           <i class="fa fa-trash"></i>
                         </button>
                       </form>
@@ -772,7 +775,8 @@
                       <button title="Redo" class="button dark" onclick="editor.execCommand('redo')"><i class="fas fa-redo"></i> Redo</button>&nbsp;
                       <button title="Go to End" class="button dark" onclick="editor.execCommand('gotoend')"><i class="fas fa-chevron-down"></i></button>&nbsp;
                       <button title="Go to Start" class="button dark" onclick="editor.execCommand('gotostart')"><i class="fas fa-chevron-up"></i></button>&nbsp;
-                      <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del'); parseGcodeInWebWorker(editor.getValue());"><i class="fas fa-eraser"></i> Clear</button>&nbsp;
+                      <button title="Clear Editor" class="button dark" onclick="editor.execCommand('selectall'); editor.execCommand('del'); parseGcodeInWebWorker(editor.getValue()); loadedFileName = ''; setWindowTitle()"><i class="fas fa-eraser"></i>
+                        Clear</button>&nbsp;
                       <!-- </form> -->
                     </div>
                   </div>
@@ -1204,7 +1208,7 @@
           <small id="changelogupdate"></small>
         </div>
         <div class="dialog-actions">
-          <button class="button js-dialog-close">Not right now please</button>
+          <button class="button js-dialog-close">Not right now (snooze for 1hr)</button>
           <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
         </div>
       </div>
@@ -1461,7 +1465,7 @@
 
           <label>Probe Type: </label>
 
-          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a>
+          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a>
           <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
             <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a></li>
             <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>

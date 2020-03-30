@@ -78,8 +78,10 @@ function initSocket() {
 
   socket.on('gcodeupload', function(data) {
     printLog("Received new GCODE from API")
-    editor.session.setValue(data);
-    parseGcodeInWebWorker(data)
+    editor.session.setValue(data.gcode);
+    loadedFileName = data.filename;
+    setWindowTitle()
+    parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
     if (webgl) {
       $('#gcodeviewertab').click();
@@ -299,7 +301,8 @@ function initSocket() {
   socket.on('status', function(status) {
 
     if (nostatusyet) {
-      $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
+      // $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
+      setWindowTitle(status)
       if (status.driver.operatingsystem == "rpi") {
         $('#windowtitlebar').hide();
       }

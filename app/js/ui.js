@@ -122,6 +122,7 @@ function setControlBar(val, status) {
       $('#runToolsBtn').hide().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);
     }
+    $('#grblProbeMenu').show().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -135,9 +136,9 @@ function setControlBar(val, status) {
         $('#homeBtn').hide().attr('disabled', true);
       }
     }
-
     $('.estop').hide()
   } else if (val == 1 || val == 2) { // Connected, but not Playing yet
+    $('#grblProbeMenu').show().attr('disabled', false);
     if (typeof ace !== 'undefined') {
       if (toolchanges.length) {
         $('#runToolsBtn').show().attr('disabled', editor.session.getLength() < 2);
@@ -176,6 +177,8 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 3) { // Busy Streaming GCODE
+    $('#grblProbeMenu').show().attr('disabled', true);
+
     if (toolchanges.length) {
       $('#runToolsBtn').hide().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);
@@ -198,6 +201,8 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 4) { // Paused
+    $('#grblProbeMenu').show().attr('disabled', true);
+
     if (toolchanges.length) {
       $('#runToolsBtn').hide().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);
@@ -220,6 +225,8 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 5) { // Alarm State
+    $('#grblProbeMenu').show().attr('disabled', true);
+
     if (toolchanges.length) {
       $('#runToolsBtn').show().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);
@@ -243,6 +250,8 @@ function setControlBar(val, status) {
     }
     $('.estop').show()
   } else if (val == 6) { // Firmware Upgrade State
+    $('#grblProbeMenu').show().attr('disabled', true);
+
     if (toolchanges.length) {
       $('#runToolsBtn').hide().attr('disabled', true);
       $('#runBtn').hide().attr('disabled', true);

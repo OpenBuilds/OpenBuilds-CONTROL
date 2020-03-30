@@ -50,7 +50,6 @@ function grblSettings(data) {
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
   $('.grblCalibrationMenu').removeClass("disabled")
-  $('.grblProbeMenu').removeClass("disabled")
 
 
   if (grblParams['$22'] == 1) {
@@ -417,7 +416,8 @@ function grblSaveSettings() {
   console.log("commands", commands)
   socket.emit('runJob', {
     data: commands,
-    isJob: false
+    isJob: false,
+    fileName: ""
   });
   grblParams = {};
 

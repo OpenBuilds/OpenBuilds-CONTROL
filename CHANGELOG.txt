@@ -1,4 +1,5 @@
-v1.0.216: Internal Testing Build 
+v1.0.220: New XYZ and Custom Probe wizards, new Probe Button on Main toolbar, fixed File Assocation Opening (Bug #119 ), added loaded Filename to titlebar (Issue #116), changed Keybinding for Devtools to ctrl+shift+i, added shortcut key F6 to jump to console  (Issue #112)
+v1.0.216-219: Internal Testing versions only
 v1.0.215: Fixed bug with Z Plate retract where plate is thicker than 10mm
 v1.0.214: Fixed bug with Z-Zero plate probing routine, added Z Plate thickness setting back
 v1.0.213: Updated Authenticode Signing certificate

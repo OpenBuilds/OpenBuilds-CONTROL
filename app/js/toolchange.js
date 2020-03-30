@@ -117,7 +117,8 @@ function runGcodeSection(startline, endline) {
   console.log(newGcodeString)
   socket.emit('runJob', {
     data: newGcodeString,
-    isJob: true
+    isJob: true,
+    fileName: ""
   });
 }
 
