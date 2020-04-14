@@ -150,6 +150,7 @@ function edit(i, evt) {
             buttonsarray[seq].tooltip = $('#macrotooltip').val();
             buttonsarray[seq].macrokeyboardshortcut = $('#macrokeyboardshortcut').val();
             populateMacroButtons();
+            bindKeys()
           } else {
             buttonsarray.push({
               title: $('#macrotitle').val(),
@@ -160,6 +161,7 @@ function edit(i, evt) {
               macrokeyboardshortcut: $('#macrokeyboardshortcut').val(),
             })
             populateMacroButtons();
+            bindKeys()
           }
         }
       }
@@ -230,6 +232,7 @@ if (localStorage.getItem('macroButtons')) {
 }
 
 populateMacroButtons()
+bindKeys()
 
 function searchMacro(prop, nameKey, myArray) {
   console.log(nameKey, prop, myArray)
