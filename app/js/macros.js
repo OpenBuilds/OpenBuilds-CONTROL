@@ -8,20 +8,35 @@ function populateMacroButtons() {
     if (!buttonsarray[i].tooltip) {
       buttonsarray[i].tooltip = ""
     };
+    if (buttonsarray[i].macrokeyboardshortcut.length) {
+      var keyboardAssignment = buttonsarray[i].macrokeyboardshortcut
+    } else {
+      var keyboardAssignment = "none"
+    }
     var button = `
-    <button title="` + buttonsarray[i].tooltip + `" id="macro` + i + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');" class="shortcut outline rounded no-caption m-1 ` + buttonsarray[i].class + `">
-        <span class="tag"><span onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span></span>
-        <span class="caption">` + buttonsarray[i].title + `</span>
-        <span class="` + buttonsarray[i].icon + ` icon"></span>
-    </button>`
+    <button class="macrobtn m-1 command-button outline ` + buttonsarray[i].class + `" title="` + buttonsarray[i].tooltip + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');">
+      <span class="` + buttonsarray[i].icon + ` icon"></span>
+      <span class="caption mt-2">
+        ` + buttonsarray[i].title + `
+        <small><i class="far fa-fw fa-keyboard"></i>: [` + keyboardAssignment + `]</small>
+      </span>
+      <span title="Edit Macro" onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span>
+    </button>
+
+    `
     $("#macros").append(button);
   }
   // append add button
   var button = `
-  <button class="shortcut outline rounded no-caption m-1" onclick="edit(` + (buttonsarray.length + 1) + `, event)">
-    <span class="caption">Add Macro</span>
-    <span class="fas fa-plus icon"></span>
-  </button>`
+  <button class="m-1 command-button outline rounded" onclick="edit(` + (buttonsarray.length + 1) + `, event)">
+      <span class="fas fa-plus icon"></span>
+      <span class="caption mt-2">
+          Add
+          <small>Macro</small>
+      </span>
+  </button>
+
+  `
   $("#macros").append(button);
   localStorage.setItem('macroButtons', JSON.stringify(buttonsarray));
 }
@@ -37,15 +52,22 @@ function edit(i, evt) {
     var gcode = buttonsarray[i].gcode;
     var cls = buttonsarray[i].class;
     var tooltip = buttonsarray[i].tooltip;
+    if (buttonsarray[i].macrokeyboardshortcut.length > 0) {
+      var macrokeyboardshortcut = buttonsarray[i].macrokeyboardshortcut;
+    } else {
+      var macrokeyboardshortcut = "";
+    }
+
   } else {
     var icon = "far fa-question-circle";
     var title = "";
     var gcode = "";
     var cls = "";
     var tooltip = "";
+    var macrokeyboardshortcut = "";
   }
 
-  var macroTemplate = `<form>
+  var macroTemplate = `<form id="macroEditForm">
       <div class="row mb-2">
           <label class="cell-sm-2">Icon</label>
           <div class="cell-sm-10">
@@ -87,6 +109,13 @@ function edit(i, evt) {
             </select>
           </div>
       </div>
+      <div class="row mb-2">
+          <span class="text-small">Click below to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.</span>
+          <label class="cell-sm-2">Keyboard Shortcut</label>
+          <div class="cell-sm-10" >
+            <input id="macrokeyboardshortcut" class="macrokeyboardshortcutinput" type="text" value="` + macrokeyboardshortcut + `" data-editable="true" onclick="$('.macrokeyboardshortcutinput').removeClass('newMacroKeyAssignment'); $('#macrokeyboardshortcut').addClass('newMacroKeyAssignment')">
+          </div>
+      </div>
       <input type="hidden" id="macroseq" value="` + i + `" />
   </form>`
 
@@ -119,6 +148,7 @@ function edit(i, evt) {
             buttonsarray[seq].gcode = $('#macrogcode').val();
             buttonsarray[seq].class = $('#macrocls').val();
             buttonsarray[seq].tooltip = $('#macrotooltip').val();
+            buttonsarray[seq].macrokeyboardshortcut = $('#macrokeyboardshortcut').val();
             populateMacroButtons();
           } else {
             buttonsarray.push({
@@ -126,13 +156,50 @@ function edit(i, evt) {
               icon: $('#macroicon').val(),
               gcode: $('#macrogcode').val(),
               class: $('#macrocls').val(),
-              tooltip: $('#macrotooltip').val()
+              tooltip: $('#macrotooltip').val(),
+              macrokeyboardshortcut: $('#macrokeyboardshortcut').val(),
             })
             populateMacroButtons();
           }
         }
       }
     ]
+  });
+
+  $('#macrokeyboardshortcut').bind('keydown', null, function(e) {
+    e.preventDefault();
+    console.log(e)
+    var newVal = "";
+    if (e.altKey) {
+      newVal += 'alt+'
+    }
+    if (e.ctrlKey) {
+      newVal += 'ctrl+'
+    }
+    if (e.shiftKey) {
+      newVal += 'shift+'
+    }
+
+    if (e.key.toLowerCase() != 'alt' && e.key.toLowerCase() != 'control' && e.key.toLowerCase() != 'shift') {
+      // Handle MetroUI naming non-standards of some keys
+      if (e.keyCode == 32) {
+        newVal += 'space';
+      } else if (e.key.toLowerCase() == 'escape') {
+        newVal += 'esc';
+      } else if (e.key.toLowerCase() == 'arrowleft') {
+        newVal += 'left';
+      } else if (e.key.toLowerCase() == 'arrowright') {
+        newVal += 'right';
+      } else if (e.key.toLowerCase() == 'arrowup') {
+        newVal += 'up';
+      } else if (e.key.toLowerCase() == 'arrowdown') {
+        newVal += 'down';
+      } else {
+        newVal += e.key.toLowerCase();
+      }
+      $('.newMacroKeyAssignment').val(newVal)
+    }
+
   });
 
   var options = {
@@ -163,3 +230,12 @@ if (localStorage.getItem('macroButtons')) {
 }
 
 populateMacroButtons()
+
+function searchMacro(prop, nameKey, myArray) {
+  console.log(nameKey, prop, myArray)
+  for (var i = 0; i < myArray.length; i++) {
+    if (myArray[i][prop] === nameKey) {
+      return myArray[i];
+    }
+  }
+}

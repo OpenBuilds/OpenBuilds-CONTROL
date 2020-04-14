@@ -95,6 +95,31 @@ function bindKeys() {
     }
   });
 
+  // Bind for Macro keys
+  if (buttonsarray.length > 0) {
+    for (i = 0; i < buttonsarray.length; i++) {
+      if (buttonsarray[i].macrokeyboardshortcut.length) {
+        $(document).bind('keydown', buttonsarray[i].macrokeyboardshortcut, function(e) {
+          console.log(e)
+          var newVal = "";
+          if (e.altKey) {
+            newVal += 'alt+'
+          }
+          if (e.ctrlKey) {
+            newVal += 'ctrl+'
+          }
+          if (e.shiftKey) {
+            newVal += 'shift+'
+          }
+          newVal += e.key
+          var macro = searchMacro("macrokeyboardshortcut", newVal, buttonsarray)
+          console.log(macro)
+          sendGcode(macro.gcode);
+        });
+      }
+    }
+  }
+
   // Bind for Jog and Control Buttons
   if (keyboardShortcuts.xM.length) {
     $(document).bind('keydown', keyboardShortcuts.xM, function(event) {

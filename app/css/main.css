@@ -208,8 +208,15 @@ select {
   background-color: #fff
 }
 
+.macroedit {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+  font-size: 11px !important;
+}
+
 .macroedit:hover {
-  color: #CE352C !important;
+  color: #ff1e11 !important;
 }
 
 .machineicon:hover {
