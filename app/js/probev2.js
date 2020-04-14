@@ -2,7 +2,7 @@ var xyzprobeplate = {
   xoffset: 10,
   yoffset: 10,
   zoffset: 9,
-  name: "OpenBuilds XYZ Touchplate",
+  name: "OpenBuilds XYZ Probe Plus",
   xyzmode: true
 }
 
@@ -328,7 +328,7 @@ function probetype(type) {
   if (type == "xyz") {
     $(".needsXYZProbe").show()
     probemode.probe = xyzprobeplate // customprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="/img/xyzprobe/xyztouch.png"/></span> OpenBuilds XYZ Probe`;
+    var template = `<span class="icon"><img src="/img/xyzprobe/xyztouch.png"/></span> OpenBuilds XYZ Probe Plus`;
     $("#probetypebtn").html(template)
     $(".probetabz").hide();
     $(".probetabxyz").show();

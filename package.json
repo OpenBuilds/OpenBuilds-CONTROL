@@ -1,8 +1,8 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.220",
+  "version": "1.0.221",
   "license": "AGPL-3.0",
-  "description": "Machine Interface Driver for OpenBuilds",
+  "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
   "devDependencies": {
     "copyfiles": "^2.1.0",
@@ -32,7 +32,6 @@
     "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
     "test": "echo \"Error: no test specified\" && exit 0",
     "dist": "electron-builder --ia32 --x64",
-    "distpi": "build --linux deb --armv7l",
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
