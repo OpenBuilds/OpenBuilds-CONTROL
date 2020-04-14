@@ -35,8 +35,19 @@ $(document).ready(function() {
 
   if (localStorage.getItem('keyboardShortcuts')) {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));
+    // fix incorrect key naming bug from an old version
     if (keyboardShortcuts.xP == "arrowright") {
       keyboardShortcuts.xP == "right"
+    }
+    // add new key defaults to existing allocations
+    if (!keyboardShortcuts.incJogMode) {
+      keyboardShortcuts.incJogMode = "/"
+    }
+    if (!keyboardShortcuts.conJogMode) {
+      keyboardShortcuts.conJogMode = "*"
+    }
+    if (!keyboardShortcuts.gotozeroxyz) {
+      keyboardShortcuts.gotozeroxyz = "del"
     }
   } else {
     keyboardShortcuts = {
@@ -52,7 +63,10 @@ $(document).ready(function() {
       playpause: "space", // Start, Pause, Resume
       unlockAlarm: "end", // Clear Alarm
       home: "home", // Home All
-      setzeroxyz: "insert" // Set ZERO XYZ
+      setzeroxyz: "insert", // Set ZERO XYZ
+      gotozeroxyz: "del", // go to zero xyz
+      incJogMode: "/", // Incremental Jog Mode
+      conJogMode: "*" // Continuous Jog Mode
     }
   }
   bindKeys()
@@ -281,11 +295,17 @@ function bindKeys() {
   }
   if (keyboardShortcuts.stepM.length) {
     $(document).bind('keydown', keyboardShortcuts.stepM, function(e) {
+      $('#jogTypeContinuous').prop('checked', false)
+      allowContinuousJog = false;
+      $('.distbtn').show();
       changeStepSize(-1)
     });
   }
   if (keyboardShortcuts.stepP.length) {
     $(document).bind('keydown', keyboardShortcuts.stepP, function(e) {
+      $('#jogTypeContinuous').prop('checked', false)
+      allowContinuousJog = false;
+      $('.distbtn').show();
       changeStepSize(1)
     });
   }
@@ -326,6 +346,31 @@ function bindKeys() {
     });
   }
 
+  if (keyboardShortcuts.gotozeroxyz.length) {
+    $(document).bind('keydown', keyboardShortcuts.gotozeroxyz, function(e) {
+      sendGcode('G21 G90');
+      sendGcode('G0 Z5');
+      sendGcode('G0 X0 Y0');
+      sendGcode('G0 Z0');
+    });
+  }
+
+  if (keyboardShortcuts.incJogMode.length) {
+    $(document).bind('keydown', keyboardShortcuts.incJogMode, function(e) {
+      $('#jogTypeContinuous').prop('checked', false)
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    });
+  }
+
+  if (keyboardShortcuts.conJogMode.length) {
+    $(document).bind('keydown', keyboardShortcuts.conJogMode, function(e) {
+      $('#jogTypeContinuous').prop('checked', true)
+      allowContinuousJog = true;
+      $('.distbtn').hide()
+    });
+  }
+
   localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
 }
 
@@ -355,6 +400,12 @@ function keyboardShortcutsEditor() {
         <label class="cell-sm-6"><i class="fas fa-crosshairs fg-openbuilds fa-fw"></i> Setzero XYZ</label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="setzeroxyznewKey" value="` + keyboardShortcuts.setzeroxyz + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#setzeroxyznewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-chart-line fg-openbuilds fa-fw"></i> Goto XYZ Zero</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="gotozeroxyznewKey" value="` + keyboardShortcuts.gotozeroxyz + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#setzeroxyznewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
@@ -418,6 +469,20 @@ function keyboardShortcutsEditor() {
         </div>
       </div>
 
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-step-forward fg-openbuilds fa-fw"></i> Incremental Jog Mode<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="incJogModeKey" value="` + keyboardShortcuts.incJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-running fg-openbuilds fa-fw"></i> Continuous Jog Mode<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="conJogModeKey" value="` + keyboardShortcuts.conJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
+
     </form>
 
   </div>`
@@ -445,6 +510,9 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.unlockAlarm = $('#unlocknewKey').val()
           keyboardShortcuts.home = $('#homenewKey').val()
           keyboardShortcuts.setzeroxyz = $('#setzeroxyznewKey').val()
+          keyboardShortcuts.incJogMode = $("#incJogModeKey").val()
+          keyboardShortcuts.conJogMode = $("#conJogModeKey").val()
+          keyboardShortcuts.gotozeroxyz = $("#gotozeroxyznewKey").val()
           bindKeys()
         }
       },

@@ -1,3 +1,5 @@
+v1.0.222: Added Keyboard shortcuts for GotoZero, and switching between Incremental/Continuous jogging
+v1.0.221: Corrected product names for XYZ Probe Plus
 v1.0.220: New XYZ and Custom Probe wizards, new Probe Button on Main toolbar, fixed File Assocation Opening (Bug #119 ), added loaded Filename to titlebar (Issue #116), changed Keybinding for Devtools to ctrl+shift+i, added shortcut key F6 to jump to console  (Issue #112)
 v1.0.216-219: Internal Testing versions only
 v1.0.215: Fixed bug with Z Plate retract where plate is thicker than 10mm
