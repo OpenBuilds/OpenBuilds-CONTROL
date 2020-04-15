@@ -14,7 +14,7 @@ function populateMacroButtons() {
       var keyboardAssignment = "none"
     }
     var button = `
-    <button class="macrobtn m-1 command-button outline ` + buttonsarray[i].class + `" title="` + buttonsarray[i].tooltip + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');">
+    <button class="macrobtn m-1 command-button drop-shadow outline ` + buttonsarray[i].class + `" title="` + buttonsarray[i].tooltip + `" onclick="sendGcode('` + buttonsarray[i].gcode.replace(/(\r\n|\n|\r)/gm, "\\n") + `');">
       <span class="` + buttonsarray[i].icon + ` icon"></span>
       <span class="caption mt-2">
         ` + buttonsarray[i].title + `
@@ -28,7 +28,7 @@ function populateMacroButtons() {
   }
   // append add button
   var button = `
-  <button class="m-1 command-button outline rounded" onclick="edit(` + (buttonsarray.length + 1) + `, event)">
+  <button class="m-1 command-button drop-shadow outline rounded" onclick="edit(` + (buttonsarray.length + 1) + `, event)">
       <span class="fas fa-plus icon"></span>
       <span class="caption mt-2">
           Add
