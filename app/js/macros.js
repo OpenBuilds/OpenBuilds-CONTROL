@@ -8,7 +8,7 @@ function populateMacroButtons() {
     if (!buttonsarray[i].tooltip) {
       buttonsarray[i].tooltip = ""
     };
-    if (buttonsarray[i].macrokeyboardshortcut.length) {
+    if (buttonsarray[i].macrokeyboardshortcut && buttonsarray[i].macrokeyboardshortcut.length) {
       var keyboardAssignment = buttonsarray[i].macrokeyboardshortcut
     } else {
       var keyboardAssignment = "none"
@@ -231,8 +231,10 @@ if (localStorage.getItem('macroButtons')) {
   buttonsarray = JSON.parse(localStorage.getItem('macroButtons'));
 }
 
-populateMacroButtons()
-bindKeys()
+$(document).ready(function() {
+  populateMacroButtons()
+  bindKeys()
+});
 
 function searchMacro(prop, nameKey, myArray) {
   console.log(nameKey, prop, myArray)

@@ -96,9 +96,10 @@ function bindKeys() {
   });
 
   // Bind for Macro keys
-  if (buttonsarray.length > 0) {
+
+  if (buttonsarray && buttonsarray.length > 0) {
     for (i = 0; i < buttonsarray.length; i++) {
-      if (buttonsarray[i].macrokeyboardshortcut.length) {
+      if (buttonsarray[i].macrokeyboardshortcut && buttonsarray[i].macrokeyboardshortcut.length) {
         $(document).bind('keydown', buttonsarray[i].macrokeyboardshortcut, function(e) {
           console.log(e)
           var newVal = "";
@@ -121,282 +122,285 @@ function bindKeys() {
   }
 
   // Bind for Jog and Control Buttons
-  if (keyboardShortcuts.xM.length) {
-    $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "X-";
-          var distance = 1000;
+  if (keyboardShortcuts) {
+    if (keyboardShortcuts.xM.length) {
+      $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "X-";
+            var distance = 1000;
 
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$130)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Negative move:
-              distance = (mindistance + (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$130)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Negative move:
+                distance = (mindistance + (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+              }
             }
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#xM').click();
+            rippleEffect($('#xMprobe'), "#e21b1b")
           }
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+        } else {
           $('#xM').click();
-          rippleEffect($('#xMprobe'), "#e21b1b")
         }
-      } else {
-        $('#xM').click();
-      }
-    });
-    $(document).bind('keyup', keyboardShortcuts.xM, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.xP.length) {
-    $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "X";
-          var distance = 1000;
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$130)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Positive move:
-              distance = (maxdistance - (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+      });
+      $(document).bind('keyup', keyboardShortcuts.xM, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.xP.length) {
+      $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "X";
+            var distance = 1000;
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$130)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Positive move:
+                distance = (maxdistance - (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+              }
             }
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#xP').click();
+            rippleEffect($('#xPprobe'), "#e21b1b")
           }
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+        } else {
           $('#xP').click();
-          rippleEffect($('#xPprobe'), "#e21b1b")
         }
-      } else {
-        $('#xP').click();
-      }
 
-    });
-    $(document).bind('keyup', keyboardShortcuts.xP, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.yM.length) {
-    $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "Y-";
-          var distance = 1000;
+      });
+      $(document).bind('keyup', keyboardShortcuts.xP, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.yM.length) {
+      $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "Y-";
+            var distance = 1000;
 
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$131)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Negative move:
-              distance = (mindistance + (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$131)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Negative move:
+                distance = (mindistance + (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+              }
             }
-          }
 
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#yM').click();
+            rippleEffect($('#yMprobe'), "#5de21b")
+          }
+        } else {
           $('#yM').click();
-          rippleEffect($('#yMprobe'), "#5de21b")
         }
-      } else {
-        $('#yM').click();
-      }
 
-    });
-    $(document).bind('keyup', keyboardShortcuts.yM, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.yP.length) {
-    $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "Y";
-          var distance = 1000;
+      });
+      $(document).bind('keyup', keyboardShortcuts.yM, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.yP.length) {
+      $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "Y";
+            var distance = 1000;
 
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$131)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Positive move:
-              distance = (maxdistance - (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$131)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Positive move:
+                distance = (maxdistance - (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+              }
             }
-          }
 
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#yP').click();
+            rippleEffect($('#yPprobe'), "#5de21b")
+          }
+        } else {
           $('#yP').click();
-          rippleEffect($('#yPprobe'), "#5de21b")
         }
-      } else {
-        $('#yP').click();
-      }
-    });
-    $(document).bind('keyup', keyboardShortcuts.yP, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.zM.length) {
-    $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "Z-";
-          var distance = 1000;
+      });
+      $(document).bind('keyup', keyboardShortcuts.yP, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.zM.length) {
+      $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "Z-";
+            var distance = 1000;
 
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$132)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Negative move:
-              distance = (mindistance + (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$132)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Negative move:
+                distance = (mindistance + (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+              }
             }
-          }
 
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#zM').click();
+            rippleEffect($('#zMprobe'), "#1ba1e2")
+          }
+        } else {
           $('#zM').click();
-          rippleEffect($('#zMprobe'), "#1ba1e2")
         }
-      } else {
-        $('#zM').click();
-      }
-    });
-    $(document).bind('keyup', keyboardShortcuts.zM, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.zP.length) {
-    $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
-      if (allowContinuousJog) {
-        if (!event.originalEvent.repeat) {
-          var direction = "Z";
-          var distance = 1000;
+      });
+      $(document).bind('keyup', keyboardShortcuts.zM, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.zP.length) {
+      $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
+        if (allowContinuousJog) {
+          if (!event.originalEvent.repeat) {
+            var direction = "Z";
+            var distance = 1000;
 
-          if (Object.keys(grblParams).length > 0) {
-            if (parseInt(grblParams.$20) == 1) {
-              // Soft Limits is enabled so lets calculate maximum move distance
-              var mindistance = parseInt(grblParams.$132)
-              var maxdistance = 0; // Grbl all negative coordinates
-              // Positive move:
-              distance = (maxdistance - (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+            if (Object.keys(grblParams).length > 0) {
+              if (parseInt(grblParams.$20) == 1) {
+                // Soft Limits is enabled so lets calculate maximum move distance
+                var mindistance = parseInt(grblParams.$132)
+                var maxdistance = 0; // Grbl all negative coordinates
+                // Positive move:
+                distance = (maxdistance - (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+              }
             }
+
+            var feed = $('#jograte').val();
+            socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+            continuousJogRunning = true;
+            $('#zP').click();
+            rippleEffect($('#zPprobe'), "#1ba1e2")
           }
-
-          var feed = $('#jograte').val();
-          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-          continuousJogRunning = true;
+        } else {
           $('#zP').click();
-          rippleEffect($('#zPprobe'), "#1ba1e2")
         }
-      } else {
-        $('#zP').click();
-      }
-    });
-    $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
-      if (allowContinuousJog) {
-        cancelJog()
-      }
-    });
-  }
-  if (keyboardShortcuts.stepM.length) {
-    $(document).bind('keydown', keyboardShortcuts.stepM, function(e) {
-      $('#jogTypeContinuous').prop('checked', false)
-      allowContinuousJog = false;
-      $('.distbtn').show();
-      changeStepSize(-1)
-    });
-  }
-  if (keyboardShortcuts.stepP.length) {
-    $(document).bind('keydown', keyboardShortcuts.stepP, function(e) {
-      $('#jogTypeContinuous').prop('checked', false)
-      allowContinuousJog = false;
-      $('.distbtn').show();
-      changeStepSize(1)
-    });
-  }
-  if (keyboardShortcuts.estop.length) {
-    $(document).bind('keydown', keyboardShortcuts.estop, function(e) {
-      socket.emit('stop', false)
-    });
-  }
-  if (keyboardShortcuts.playpause.length) {
-    $(document).bind('keydown', keyboardShortcuts.playpause, function(e) {
-      if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
-        socket.emit('runJob', {
-          data: editor.getValue(),
-          isJob: true,
-          fileName: ""
-        });
-      } else if (laststatus.comms.connectionStatus == 3) {
-        socket.emit('pause', true);
-      } else if (laststatus.comms.connectionStatus == 4) {
-        socket.emit('resume', true);
-      }
-    });
-  }
-  if (keyboardShortcuts.unlockAlarm.length) {
-    $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function(e) {
-      Metro.dialog.close($('.closeAlarmBtn').parent().parent());
-      socket.emit('clearAlarm', 2);
-    });
-  }
-  if (keyboardShortcuts.home.length) {
-    $(document).bind('keydown', keyboardShortcuts.home, function(e) {
-      home();
-    });
-  }
-  if (keyboardShortcuts.setzeroxyz.length) {
-    $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function(e) {
-      sendGcode('G10 P1 L20 X0 Y0 Z0')
-    });
+      });
+      $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
+        if (allowContinuousJog) {
+          cancelJog()
+        }
+      });
+    }
+    if (keyboardShortcuts.stepM.length) {
+      $(document).bind('keydown', keyboardShortcuts.stepM, function(e) {
+        $('#jogTypeContinuous').prop('checked', false)
+        allowContinuousJog = false;
+        $('.distbtn').show();
+        changeStepSize(-1)
+      });
+    }
+    if (keyboardShortcuts.stepP.length) {
+      $(document).bind('keydown', keyboardShortcuts.stepP, function(e) {
+        $('#jogTypeContinuous').prop('checked', false)
+        allowContinuousJog = false;
+        $('.distbtn').show();
+        changeStepSize(1)
+      });
+    }
+    if (keyboardShortcuts.estop.length) {
+      $(document).bind('keydown', keyboardShortcuts.estop, function(e) {
+        socket.emit('stop', false)
+      });
+    }
+    if (keyboardShortcuts.playpause.length) {
+      $(document).bind('keydown', keyboardShortcuts.playpause, function(e) {
+        if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
+          socket.emit('runJob', {
+            data: editor.getValue(),
+            isJob: true,
+            fileName: ""
+          });
+        } else if (laststatus.comms.connectionStatus == 3) {
+          socket.emit('pause', true);
+        } else if (laststatus.comms.connectionStatus == 4) {
+          socket.emit('resume', true);
+        }
+      });
+    }
+    if (keyboardShortcuts.unlockAlarm.length) {
+      $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function(e) {
+        Metro.dialog.close($('.closeAlarmBtn').parent().parent());
+        socket.emit('clearAlarm', 2);
+      });
+    }
+    if (keyboardShortcuts.home.length) {
+      $(document).bind('keydown', keyboardShortcuts.home, function(e) {
+        home();
+      });
+    }
+    if (keyboardShortcuts.setzeroxyz.length) {
+      $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function(e) {
+        sendGcode('G10 P1 L20 X0 Y0 Z0')
+      });
+    }
+
+    if (keyboardShortcuts.gotozeroxyz.length) {
+      $(document).bind('keydown', keyboardShortcuts.gotozeroxyz, function(e) {
+        sendGcode('G21 G90');
+        sendGcode('G0 Z5');
+        sendGcode('G0 X0 Y0');
+        sendGcode('G0 Z0');
+      });
+    }
+
+    if (keyboardShortcuts.incJogMode.length) {
+      $(document).bind('keydown', keyboardShortcuts.incJogMode, function(e) {
+        $('#jogTypeContinuous').prop('checked', false)
+        allowContinuousJog = false;
+        $('.distbtn').show();
+      });
+    }
+
+    if (keyboardShortcuts.conJogMode.length) {
+      $(document).bind('keydown', keyboardShortcuts.conJogMode, function(e) {
+        $('#jogTypeContinuous').prop('checked', true)
+        allowContinuousJog = true;
+        $('.distbtn').hide()
+      });
+    }
+
+    localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
   }
 
-  if (keyboardShortcuts.gotozeroxyz.length) {
-    $(document).bind('keydown', keyboardShortcuts.gotozeroxyz, function(e) {
-      sendGcode('G21 G90');
-      sendGcode('G0 Z5');
-      sendGcode('G0 X0 Y0');
-      sendGcode('G0 Z0');
-    });
-  }
-
-  if (keyboardShortcuts.incJogMode.length) {
-    $(document).bind('keydown', keyboardShortcuts.incJogMode, function(e) {
-      $('#jogTypeContinuous').prop('checked', false)
-      allowContinuousJog = false;
-      $('.distbtn').show();
-    });
-  }
-
-  if (keyboardShortcuts.conJogMode.length) {
-    $(document).bind('keydown', keyboardShortcuts.conJogMode, function(e) {
-      $('#jogTypeContinuous').prop('checked', true)
-      allowContinuousJog = true;
-      $('.distbtn').hide()
-    });
-  }
-
-  localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
 }
 
 function keyboardShortcutsEditor() {
