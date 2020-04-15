@@ -1,37 +1,7 @@
 var keyboardShortcuts = false;
 
-function cancelJog() {
-  socket.emit('stop', true)
-  continuousJogRunning = false;
-}
 
 $(document).ready(function() {
-  if (localStorage.getItem('continuousJog')) {
-    if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
-      $('#jogTypeContinuous').prop('checked', true)
-      allowContinuousJog = true;
-      $('.distbtn').hide()
-    } else {
-      $('#jogTypeContinuous').prop('checked', false)
-      allowContinuousJog = false;
-      $('.distbtn').show();
-    }
-  }
-
-  $('#jogTypeContinuous').on('click', function() {
-    if ($(this).is(':checked')) {
-      localStorage.setItem('continuousJog', true);
-      allowContinuousJog = true;
-      $('.distbtn').hide();
-    } else {
-      localStorage.setItem('continuousJog', false);
-      allowContinuousJog = false;
-      $('.distbtn').show();
-    }
-    // console.log(document.activeElement)
-    document.activeElement.blur();
-  });
-
 
   if (localStorage.getItem('keyboardShortcuts')) {
     keyboardShortcuts = JSON.parse(localStorage.getItem('keyboardShortcuts'));

@@ -1,19 +1,23 @@
+body {
+  min-height: calc(100vh + 1px) !important;
+}
+
 #buttonview {
-    /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-    padding-top: 2px;
-    height: 200px;
-    width: calc(100vw - 30px);
-    margin: 10px;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    background-color: white;
+  /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
+  padding-top: 2px;
+  height: 200px;
+  width: calc(100vw - 30px);
+  margin: 10px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  background-color: white;
 }
 
 .title_box {
-    /* border: #3c5a86 1px dotted; */
-    margin: 0px;
-    padding: 0px;
-    margin-top: -24px;
+  /* border: #3c5a86 1px dotted; */
+  margin: 0px;
+  padding: 0px;
+  margin-top: -24px;
 }
 
 .title_box #title {
@@ -21,7 +25,7 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   position: relative;
-  top : 1.32em;
+  top: 1.32em;
   margin-left: 1.5em;
   display: inline;
   background-color: white;
@@ -35,6 +39,8 @@
 }
 
 #qrcode canvas {
-    display: block;
-    margin: 0 auto;
-} */
+  display: block;
+  margin: 0 auto;
+}
+
+*/

@@ -17,29 +17,6 @@ function inchtommrate() {
   $("#jograte").val(convert);
 }
 
-$(document).ready(function() {
-  if (localStorage.getItem('unitsMode')) {
-    if (localStorage.getItem('unitsMode') == "mm") {
-      mmMode()
-      $('#mmMode').click()
-    } else if (localStorage.getItem('unitsMode') == "in") {
-      inMode();
-      $('#inMode').click()
-    }
-  } else {
-    // default to inches
-    inMode();
-    $('#inMode').click()
-  }
-
-  $("#jograte").keyup(function() {
-    mmtoinchrate()
-  });
-
-  $("#jograteinch").keyup(function() {
-    inchtommrate()
-  });
-});
 
 function mmMode() {
   unit = "mm";
@@ -89,8 +66,61 @@ function inMode() {
   mmtoinchrate()
 }
 
+function cancelJog() {
+  socket.emit('stop', true)
+  continuousJogRunning = false;
+}
+
 
 $(document).ready(function() {
+
+  if (localStorage.getItem('continuousJog')) {
+    if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
+      $('#jogTypeContinuous').prop('checked', true)
+      allowContinuousJog = true;
+      $('.distbtn').hide()
+    } else {
+      $('#jogTypeContinuous').prop('checked', false)
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    }
+  }
+
+  $('#jogTypeContinuous').on('click', function() {
+    if ($(this).is(':checked')) {
+      localStorage.setItem('continuousJog', true);
+      allowContinuousJog = true;
+      $('.distbtn').hide();
+    } else {
+      localStorage.setItem('continuousJog', false);
+      allowContinuousJog = false;
+      $('.distbtn').show();
+    }
+    // console.log(document.activeElement)
+    document.activeElement.blur();
+  });
+
+  if (localStorage.getItem('unitsMode')) {
+    if (localStorage.getItem('unitsMode') == "mm") {
+      mmMode()
+      $('#mmMode').click()
+    } else if (localStorage.getItem('unitsMode') == "in") {
+      inMode();
+      $('#inMode').click()
+    }
+  } else {
+    // default to inches
+    inMode();
+    $('#inMode').click()
+  }
+
+  $("#jograte").keyup(function() {
+    mmtoinchrate()
+  });
+
+  $("#jograteinch").keyup(function() {
+    inchtommrate()
+  });
 
   $(document).mousedown(function(e) {
     safeToUpdateSliders = false;
@@ -333,7 +363,8 @@ $(document).ready(function() {
     $('#confirmNewProbeBtn').removeClass("disabled")
   })
 
-  $('.xM').on('mousedown', function(ev) {
+  $('.xM').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "X-";
       var distance = 1000;
@@ -353,13 +384,15 @@ $(document).ready(function() {
       $('.xM').click();
     }
   });
-  $('.xM').on('mouseup', function(ev) {
+  $('.xM').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('.xP').on('mousedown', function(ev) {
+  $('.xP').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "X";
       var distance = 1000;
@@ -378,13 +411,15 @@ $(document).ready(function() {
       $('.xP').click();
     }
   });
-  $('.xP').on('mouseup', function(ev) {
+  $('.xP').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('.yM').on('mousedown', function(ev) {
+  $('.yM').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "Y-";
       var distance = 1000;
@@ -405,13 +440,15 @@ $(document).ready(function() {
       $('.yM').click();
     }
   });
-  $('.yM').on('mouseup', function(ev) {
+  $('.yM').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('.yP').on('mousedown', function(ev) {
+  $('.yP').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "Y";
       var distance = 1000;
@@ -432,13 +469,15 @@ $(document).ready(function() {
       $('#yP').click();
     }
   });
-  $('.yP').on('mouseup', function(ev) {
+  $('.yP').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('.zM').on('mousedown', function(ev) {
+  $('.zM').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "Z-";
       var distance = 1000;
@@ -459,13 +498,15 @@ $(document).ready(function() {
       $('.zM').click();
     }
   });
-  $('.zM').on('mouseup', function(ev) {
+  $('.zM').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }
   });
 
-  $('.zP').on('mousedown', function(ev) {
+  $('.zP').on('touchstart mousedown', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "Z";
       var distance = 1000;
@@ -486,7 +527,8 @@ $(document).ready(function() {
       $('.zP').click();
     }
   });
-  $('.zP').on('mouseup', function(ev) {
+  $('.zP').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
     }

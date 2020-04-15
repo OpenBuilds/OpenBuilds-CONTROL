@@ -10,26 +10,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="HandheldFriendly" content="true" />
+    <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="manifest" href="manifest.json">
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
-    <link rel="icon" href="./images/icons/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="OpenBuilds Jog">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-750x1294.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-1242x2148.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="./images/splash/launch-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-icon" sizes="180x180" href="./images/icons/apple-touch-icon.png">
-    <link rel="mask-icon" href="./images/icons/safari-pinned-tab.svg" color="#4a4e51">
-    <meta name="msapplication-TileColor" content="#4a4e51">
-    <meta name="theme-color" content="#4a4e51">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/jog/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/jog/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/jog/favicon-16x16.png">
+    <link rel="manifest" href="/jog/manifest.json">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
 
     <meta name="metro4:init" content="true">
     <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
@@ -50,48 +39,37 @@
       </div>
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
 
-        <nav data-role="ribbonmenu" class="mt-1">
-          <ul class="tabs-holder" style="display:none;">
-            <li><a href="#section-two"><i class="fas fa-fw fa-play"></i> Jog</a></li>
-          </ul>
-          <div class="content-holder">
-            <div class="section" id="section-two">
-              <div class="group">
-                <div class="form-group inline-form">
-                  <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
-                    <option value="">Waiting for USB</option>
-                  </select>
-                  <button class="button success mb-2 " onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
-                  <button class="button alert mb-2" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
-                </div>
-                <span class="title">Machine Interface</span>
-              </div>
-              <div class="group estop">
-                <button class="button mb-2" onclick="socket.emit('clearAlarm', 2)">
-                  <span class="icon">
-                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                      <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
-                      <i class="far fa-bell"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Unlock</span>
-                </button>
-                <button class="button mb-2" onclick="socket.emit('stop', false)">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Abort</span>
-                </button>
-                <span class="title">E-Stop</span>
-              </div>
-            </div>
+        <div class="toolbar" data-role="buttongroup">
+          <div class="form-group inline-form mr-1">
+            <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
+              <option value="">Waiting for USB</option>
+            </select>
+            <button class="button success mb-2 " onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
+            <button class="button alert mb-2" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
           </div>
-        </nav>
+          <button class="button mr-1" onclick="socket.emit('clearAlarm', 2)">
+            <span class="icon">
+              <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                <i class="far fa-bell"></i>
+              </span>
+            </span>
+            Unlock
+          </button>
+          <button class="button mr-1" onclick="socket.emit('stop', false)">
+            <span class="icon">
+              <span class="fa-layers fa-fw">
+                <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+              </span>
+            </span>
+            Abort
+          </button>
 
-        <div style="overflow-y: auto; height: calc(100vh - 180px);">
+
+        </div>
+
+        <div style="overflow-y: auto; height: calc(100vh - 100px);">
 
           <center>
             <nav data-role="ribbonmenu" class="mt-2">
@@ -131,8 +109,8 @@
                       <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                       <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
                       <li class="divider"></li>
-                      <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
-                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li>
+                      <!-- <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
+                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li> -->
                     </ul>
                   </div>
                 </td>
@@ -166,8 +144,8 @@
                       <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                       <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
                       <li class="divider"></li>
-                      <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
-                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li>
+                      <!-- <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
+                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li> -->
                     </ul>
                   </div>
                 </td>
@@ -201,8 +179,8 @@
                       <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
                       <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
                       <li class="divider"></li>
-                      <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ-Touchplate</a></li>
-                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
+                      <!-- <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ-Touchplate</a></li>
+                      <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li> -->
                     </ul>
                   </div>
                 </td>
@@ -269,7 +247,7 @@
                   </td>
 
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="yP">
+                    <button class="button light square large jogbtn yP" id="yP">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
@@ -282,7 +260,7 @@
 
 
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="zP">
+                    <button class="button light square large jogbtn zP" id="zP">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
@@ -292,7 +270,7 @@
                 </tr>
                 <tr>
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="xM">
+                    <button class="button light square large jogbtn xM" id="xM">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
@@ -301,7 +279,7 @@
                   </td>
 
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="yM">
+                    <button class="button light square large jogbtn yM" id="yM">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
@@ -310,7 +288,7 @@
                   </td>
 
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="xP">
+                    <button class="button light square large jogbtn xP" id="xP">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
@@ -318,7 +296,7 @@
                     </button>
                   </td>
                   <td class="p-2">
-                    <button class="button light square large jogbtn" id="zM">
+                    <button class="button light square large jogbtn zM" id="zM">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
@@ -327,7 +305,22 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4" class="p-2">&nbsp;</td>
+                  <td colspan="4" class="p-2">
+                    <table style="width: 100%;">
+                      <tr>
+                        <td><span class="text-small">Incremental Jog</span>
+                        </td>
+                        <td class="pb-1">
+                          <label class="toggle">
+                            <input type="checkbox" id="jogTypeContinuous" />
+                            <div>app-notifition</div>
+                          </label>
+                        </td>
+                        <td><span class="text-small">Continuous Jog</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
                 </tr>
                 <tr>
                   <td class="p-2">
@@ -378,7 +371,7 @@
 
         <div class="fixed-bottom">
           <div class="row">
-            <div class="cell-3 p-1">
+            <div class="cell-3 pl-1 pr-1">
               <div>
                 <span class="badge inline bg-openbuilds fg-white" style="width: 100%; font-size: 0.5em;">
                   <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -388,17 +381,17 @@
                 </span>
               </div>
             </div>
-            <div class="cell-3 p-1">
+            <div class="cell-3  pl-1 pr-1">
               <div>
                 <span class="badge inline bg-openbuilds fg-white" id="connectStatus" style="width: 100%; font-size: 0.5em;">Not Connected</span>
               </div>
             </div>
-            <div class="cell-3 p-1">
+            <div class="cell-3  pl-1 pr-1">
               <div>
                 <span class="badge inline bg-openbuilds fg-white" id="runStatus" style="width: 100%; font-size: 0.5em;">Not Connected</span>
               </div>
             </div>
-            <div class="cell-3 p-1">
+            <div class="cell-3  pl-1 pr-1">
               <div>
                 <span class="badge inline bg-openbuilds fg-white" id="gcodesent" style="width: 100%; font-size: 0.5em;">Job Queue: 0</span>
               </div>
@@ -416,194 +409,7 @@
     </div>
 
     <div style="display: none;">
-      <!-- XYZ Probe -->
-      <div class="dialog dark m-0" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
-        <div class="dialog-title">Probing Wizard</div>
-        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
-          <nav data-role="ribbonmenu">
-            <ul class="tabs-holder">
-              <li onclick="probexyztab();" class="probetabxyz" id="probexyztab"><a href="#">XYZ&nbsp;Zero</a></li>
-              <li onclick="probextab();" class="probetabxyz" id="probextab"><a href="#">X&nbsp;Zero</a></li>
-              <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y&nbsp;Zero</a></li>
-              <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z&nbsp;Zero</a></li>
-              <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z&nbsp;Touch&nbsp;Plate</a></li>
-              <!-- <li onclick="probeautotab();" class="probetabxyz disabled" id="probeautotab"><a href="#">Automatic</a></li>
-              <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
-            </ul>
-          </nav>
-
-          <table>
-            <tr>
-
-              <td>
-                <div id="xyzprobeimages">
-                  <img src="../img/xyzprobe/auto.png" alt="probe-auto" height="150" id="img-probe-auto" class="img-probe">
-                  <img src="../img/xyzprobe/xyz.png" alt="probe-xyz" height="150" id="img-probe-xyz" class="img-probe" style="display: none;">
-                  <img src="../img/xyzprobe/x.png" alt="probe-x" height="150" id="img-probe-x" class="img-probe" style="display: none;">
-                  <img src="../img/xyzprobe/y.png" alt="probe-y" height="150" id="img-probe-y" class="img-probe" style="display: none;">
-                  <img src="../img/xyzprobe/z.png" alt="probe-z" height="150" id="img-probe-z" class="img-probe" style="display: none;">
-                  <img src="../img/xyzprobe/zplate.png" alt="probe-zplate" height="150" id="img-probe-zplate" class="img-probe" style="display: none;">
-                  <img src="../img/xyzprobe/endmill.png" alt="probe-endmill" height="150" id="img-probe-endmill" class="img-probe" style="display: none;">
-                </div>
-
-              </td>
-
-              <td style="padding: 4px; padding-left: 15px; vertical-align: top;">
-
-                <div id="probe-auto" class="probe-tab-content" style="display: none;">
-                  <small>Automatic Probe Routine: This routine is used to find the XYZ origins, as well as automatically
-                    determine endmill diameter. </small>
-                  <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
-                </div>
-                <div id="probe-xyz" class="probe-tab-content">
-                  <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
-                  <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
-                </div>
-                <div id="probe-x" class="probe-tab-content" style="display: none;">
-                  <small>X Probe Routine: This routine is used to find the X origin</small>
-                  <hr>
-                  <small>Position the endmill to the left of the probe plate as shown, clip on the magnetic connecting clip,
-                    then click Probe</small>
-                </div>
-                <div id="probe-y" class="probe-tab-content" style="display: none;">
-                  <small>Y Probe Routine: This routine is used to find the Y origin</small>
-                  <hr>
-                  <small>Position the endmill in front of the probe plate as shown, clip on the magnetic connecting clip, then
-                    click Probe</small>
-                </div>
-                <div id="probe-z" class="probe-tab-content" style="display: none;">
-                  <small>Z Probe Routine: This routine is used to find the Z origin</small>
-                  <hr>
-                  <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
-                    Probe</small>
-                </div>
-                <div id="probe-endmill" class="probe-tab-content" style="display: none;">
-                  <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
-                  <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click Probe</small>
-                  <hr>
-                  <small>
-                    This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
-                    it will measure and calculate the Endmill Diameter and display it onscreen. <br>This operation will NOT set
-                    any work-coordinates!
-                  </small>
-                </div>
-                <hr>
-                <div id="endmilldiameterform">
-                  <label>Endmill Diameter</label>
-                  <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-append="mm" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>"
-                    data-clear-button="false">
-                </div>
-                <hr>
-                <!-- Not working on Mobile -->
-                <!-- <button class="button" id="toggle-probe-advanced"><i class="fas fa-fw fa-cogs"></i> Advanced</button> -->
-                <div class="pos-relative">
-                  <div data-role="collapse" data-toggle-element="#toggle-probe-advanced" data-collapsed="true" id="toggle-probe-advanced-content">
-
-                    <div id="xyzdatum" class="probe-tab-content">
-
-                      <small>Where is the XY Zero Datum / Origin in your CAM setup, relevant to the front-left corner we are
-                        probing? </small>
-                      <br>
-
-                      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 79.375 47.625">
-                        <style>
-
-                        </style>
-                        <defs>
-                          <marker id="A" orient="auto" class="J">
-                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
-                          </marker>
-                          <marker id="B" orient="auto" class="J">
-                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
-                          </marker>
-                          <marker id="C" orient="auto" class="J">
-                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
-                          </marker>
-                          <marker id="D" orient="auto" class="J">
-                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
-                          </marker>
-                        </defs>
-                        <g fill="#fff" class="D">
-                          <g stroke-width=".132" class="B">
-                            <path d="M7.195 7.363l15.94 28.46L70.758 31.1 47.99 5.015z" fill="#999" />
-                            <path d="M23.133 35.823l-1.257 8.313 47.7-5.284 1.172-7.752z" fill="#ececec" />
-                            <path d="M7.195 7.363l15.94 28.46-1.257 8.313-15.722-29.89z" fill="#ccc" />
-                          </g>
-                          <g stroke-width=".049" class="C N">
-                            <path d="M7.198 7.363l63.74 25.952" />
-                            <path d="M23.322 38.1L47.993 5.093" />
-                          </g>
-                          <g fill="none" stroke-width=".197" class="N">
-                            <path d="M3.942 15.993L19.16 45.07" marker-start="url(#C)" marker-end="url(#A)" />
-                            <path d="M70.118 41.003l-47.624 5.73" marker-start="url(#D)" marker-end="url(#B)" />
-                          </g>
-                          <g transform="matrix(.24595 -.020313 .020313 .24595 108.29 -158.287)">
-                            <rect class="probe-label" id="probe-c" rx="5.925" height="16.422" width="59.717" y="682.21" x="-368.93" stroke-width=".987" class="B" />
-                            <text id="probe-c-text" xml:space="preserve" letter-spacing="0" font-size="2.229" y="694.532" x="-339.852" class="C E F G H">
-                              <tspan y="694.532" x="-330.852" class="I">CENTER</tspan>
-                            </text>
-                            <rect class="probe-label areaactive" id="probe-fl" rx="6.543" height="30.532" width="43.617" y="742.64" x="-423.17" class="B M" />
-                            <text id="probe-fl-text" xml:space="preserve" letter-spacing="0" y="755.631" x="-401.459" class="C E F G H I">
-                              <tspan y="755.631" x="-350">FRONT</tspan>
-                              <tspan y="768.172" x="-350">LEFT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-fr" rx="6.543" height="30.532" width="43.617" y="733.68" x="-239.82" class="B M" />
-                            <text id="probe-fr-text" xml:space="preserve" letter-spacing="0" y="746.284" x="-217.439" class="C E F G H I">
-                              <tspan y="746.284" x="-166">FRONT</tspan>
-                              <tspan y="758.824" x="-169">RIGHT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-rr" rx="6.543" height="30.532" width="43.617" y="621.52" x="-312.72" class="B M" />
-                            <text id="probe-rr-text" xml:space="preserve" letter-spacing="0" y="633.759" x="-290.442" class="C E F G H I">
-                              <tspan y="633.759" x="-239.442">REAR</tspan>
-                              <tspan y="646.3" x="-242.442">RIGHT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-rl" rx="6.543" height="30.532" width="43.617" y="616.07" x="-476.33" class="B M" />
-                            <text id="probe-rl-text" xml:space="preserve" letter-spacing="0" y="628.815" x="-455.49" class="C E F G H I">
-                              <tspan y="628.815" x="-404">REAR</tspan>
-                              <tspan y="641.356" x="-404">LEFT</tspan>
-                            </text></g>
-                        </g>
-                      </svg>
-
-                      <br>
-                      <small>If the origin is not Front, Left (Default): Then provide stock dimensions to calculate correct
-                        offset of X0, Y0:</small>
-                      <br>
-                      <label>Width</label>
-                      <input id="stockwidth" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
-                      <label>Length</label>
-                      <input id="stocklength" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-v'></i>" data-clear-button="false">
-
-                    </div>
-                    <!-- end xyzdatum-->
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="dialog-actions">
-          <label>Probe Type: </label>
-          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="../img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></a>
-          <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
-            <!-- <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="../img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe</a></li> -->
-            <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="../img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
-            <li class="divider"></li>
-            <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
-          </ul>
-          <hr>
-          <button class="button js-dialog-close" onclick="Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
-          <button class="button success js-dialog-close" onclick="confirmProbeInPlace();">Probe</button>
-
-        </div>
-      </div>
-      <!-- End XYZ Probe -->
+      <!-- Hidden stuff -->
     </div>
 
 
@@ -633,8 +439,8 @@
   <!-- <script type="text/javascript" src="js/grblsettings.js"></script> -->
   <script type="text/javascript" src="../js/metroactions.js"></script>
   <script type="text/javascript" src="../js/jog.js"></script>
-  <script type="text/javascript" src="../js/probe.js"></script>
-  <script type="text/javascript" src="../js/probev2.js"></script>
+  <!-- <script type="text/javascript" src="../js/probe.js"></script>
+  <script type="text/javascript" src="../js/probev2.js"></script> -->
   <!-- <script type="text/javascript" src="js/calibrate.js"></script> -->
   <script type="text/javascript" src="../js/mobilejog.js"></script>
 
