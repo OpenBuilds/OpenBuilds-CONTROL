@@ -52,7 +52,7 @@ function edit(i, evt) {
     var gcode = buttonsarray[i].gcode;
     var cls = buttonsarray[i].class;
     var tooltip = buttonsarray[i].tooltip;
-    if (buttonsarray[i].macrokeyboardshortcut.length > 0) {
+    if (buttonsarray[i].macrokeyboardshortcut && buttonsarray[i].macrokeyboardshortcut.length > 0) {
       var macrokeyboardshortcut = buttonsarray[i].macrokeyboardshortcut;
     } else {
       var macrokeyboardshortcut = "";
