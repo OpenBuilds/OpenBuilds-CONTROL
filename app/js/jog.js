@@ -3,6 +3,7 @@ var continuousJogRunning = false;
 var jogdist = 10;
 var safeToUpdateSliders = true;
 
+
 function mmtoinchrate() {
   var value = $('#jograte').val();
   var convert = "";
@@ -303,65 +304,65 @@ $(document).ready(function() {
     sendGcode('G0 Z0');
   });
 
-  $('.xM').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('X', '-' + jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
-
-  $('.xP').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('X', jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
-
-  $('.yM').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('Y', '-' + jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
-
-  $('.yP').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('Y', jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
-
-  $('.zM').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('Z', '-' + jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
-
-  $('.zP').on('click', function(ev) {
-    if (!allowContinuousJog) {
-      var dir = 'X-';
-      var feedrate = $('#jograte').val();
-      jog('Z', jogdist, feedrate);
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  })
+  // $('.xM').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('X', '-' + jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
+  //
+  // $('.xP').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('X', jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
+  //
+  // $('.yM').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('Y', '-' + jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
+  //
+  // $('.yP').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('Y', jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
+  //
+  // $('.zM').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('Z', '-' + jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
+  //
+  // $('.zP').on('click', function(ev) {
+  //   if (!allowContinuousJog) {
+  //     var dir = 'X-';
+  //     var feedrate = $('#jograte').val();
+  //     jog('Z', jogdist, feedrate);
+  //   }
+  //   $('#runNewProbeBtn').addClass("disabled")
+  //   $('#confirmNewProbeBtn').removeClass("disabled")
+  // })
 
   $('.xM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
@@ -382,7 +383,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('.xM').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('X', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.xM').on('touchend mouseup', function(ev) {
     ev.preventDefault();
@@ -409,7 +416,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('.xP').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('X', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.xP').on('touchend mouseup', function(ev) {
     ev.preventDefault();
@@ -438,7 +451,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('.yM').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Y', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.yM').on('touchend mouseup', function(ev) {
     ev.preventDefault();
@@ -467,7 +486,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('#yP').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Y', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.yP').on('touchend mouseup', function(ev) {
     ev.preventDefault();
@@ -496,7 +521,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('.zM').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Z', '-' + jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.zM').on('touchend mouseup', function(ev) {
     ev.preventDefault();
@@ -525,7 +556,13 @@ $(document).ready(function() {
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
       $('.zP').click();
+    } else {
+      var dir = 'X-';
+      var feedrate = $('#jograte').val();
+      jog('Z', jogdist, feedrate);
     }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.zP').on('touchend mouseup', function(ev) {
     ev.preventDefault();
