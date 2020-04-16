@@ -384,7 +384,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('.xM').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('X', '-' + jogdist, feedrate);
     }
@@ -399,6 +398,7 @@ $(document).ready(function() {
   });
 
   $('.xP').on('touchstart mousedown', function(ev) {
+    console.log(ev)
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "X";
@@ -417,7 +417,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('.xP').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('X', jogdist, feedrate);
     }
@@ -452,7 +451,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('.yM').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Y', '-' + jogdist, feedrate);
     }
@@ -487,7 +485,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('#yP').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Y', jogdist, feedrate);
     }
@@ -522,7 +519,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('.zM').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Z', '-' + jogdist, feedrate);
     }
@@ -557,7 +553,6 @@ $(document).ready(function() {
       continuousJogRunning = true;
       $('.zP').click();
     } else {
-      var dir = 'X-';
       var feedrate = $('#jograte').val();
       jog('Z', jogdist, feedrate);
     }

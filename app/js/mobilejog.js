@@ -1,25 +1,31 @@
 var isJogWidget = true;
 
 $(document).ready(function() {
-  Metro.dialog.create({
-    title: "Fullscreen View",
-    content: "<div>Would you like to view Jog in Fullscreen mode?</div>",
-    actions: [{
-        caption: "Yes",
-        cls: "js-dialog-close success",
-        onclick: function() {
-          openFullscreen()
+
+  var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
+  if (!iOS) {
+    Metro.dialog.create({
+      title: "Fullscreen View",
+      content: "<div>Would you like to view Jog in Fullscreen mode?</div>",
+      actions: [{
+          caption: "Yes",
+          cls: "js-dialog-close success",
+          onclick: function() {
+            openFullscreen()
+          }
+        },
+        {
+          caption: "Cancel",
+          cls: "js-dialog-close",
+          onclick: function() {
+            //
+          }
         }
-      },
-      {
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      }
-    ]
-  });
+      ]
+    });
+  }
+
 });
 
 var elem = document.documentElement;
