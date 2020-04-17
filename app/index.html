@@ -10,10 +10,11 @@
     <meta name="metro4:init" content="true">
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
-    <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" />
+    <!-- <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" /> -->
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
+    <link rel="stylesheet" href="/lib/furcanIconPicker/iconpicker-1.5.0.css" />
   </head>
 
   <body>
@@ -54,6 +55,17 @@
                   </span>
                   <span class="caption">Save<br> to Firmware</span>
                 </button>
+
+                <button class="ribbon-button" onclick="backupGrblSettings();">
+                  <span class="icon">
+                    <i class="fas fa-download"></i>
+                  </span>
+                  <span class="caption">Backup<br>Settings</span>
+                  <span class="badge bg-green fg-white">New!</span>
+                </button>
+                <span class="title">Grbl Settings</span>
+              </div>
+              <div class="group">
                 <div class="ribbon-group" style="width: 90px;">
                   <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
                     <span class="icon">
@@ -75,7 +87,7 @@
                   </button>
 
                 </div>
-                <span class="title">Grbl Settings</span>
+                <span class="title">Grbl</span>
               </div>
               <div class="group">
                 <div class="ribbon-group">
@@ -821,8 +833,8 @@
                     <table class="table striped compact">
                       <thead>
                         <tr>
-                          <th style="width: 50%;">PIN</th>
-                          <th style="width: 50%;">Status</th>
+                          <th style="width: 40%;">PIN</th>
+                          <th style="width: 60%;">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -868,8 +880,8 @@
                     <table class="table striped compact">
                       <thead>
                         <tr>
-                          <th style="width: 50%;">Value</th>
-                          <th style="width: 50%;">Status</th>
+                          <th style="width: 40%;">Value</th>
+                          <th style="width: 60%;">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -913,8 +925,8 @@
                     <table class="table striped compact">
                       <thead>
                         <tr>
-                          <th style="width: 50%;">Value</th>
-                          <th style="width: 50%;">Status</th>
+                          <th style="width: 80%;">Value</th>
+                          <th style="width: 20%;">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1546,7 +1558,6 @@
   <script type="text/javascript" src="/lib/lodash.core.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-  <script type="text/javascript" src="/lib/iconpicker/js/fontawesome-iconpicker.min.js"></script>
   <script type="text/javascript" src="/js/macros.js"></script>
 
   <script type="text/javascript" src="lib/threejs/three.min.js"></script>
@@ -1589,6 +1600,10 @@
   <script type="text/javascript" src="js/grbl-flashing.js"></script>
 
   <script type="text/javascript" src="js/toolchange.js"></script>
+
+  <!-- <script type="text/javascript" src="/lib/iconpicker/js/fontawesome-iconpicker.min.js"></script> -->
+  <script src="/lib/furcanIconPicker/iconpicker-1.5.0.js"></script>
+
 
 </html>
 <!--  -->

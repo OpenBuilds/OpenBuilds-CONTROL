@@ -2,7 +2,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 // To see console.log output run with `DEBUGCONTROL=true electron .` or set environment variable for DEBUGCONTROL=true
 // debug_log debug overhead
-DEBUG = false;
+DEBUG = true;
 if (process.env.DEBUGCONTROL) {
   DEBUG = true;
   console.log("Console Debugging Enabled")
@@ -211,9 +211,6 @@ var listPortsLoop;
 var GRBL_RX_BUFFER_SIZE = 127; // 128 characters
 var sentBuffer = [];
 
-var SMOOTHIE_RX_BUFFER_SIZE = 64; // max. length of one command line
-var smoothie_buffer = false;
-
 var xPos = 0.00;
 var yPos = 0.00;
 var zPos = 0.00;
@@ -290,7 +287,6 @@ var status = {
   },
   comms: {
     connectionStatus: 0, //0 = not connected, 1 = opening, 2 = connected, 3 = playing, 4 = paused, 5 = alarm, 6 = firmware upgrade
-    connectedTo: "none",
     runStatus: "Pending", // 0 = init, 1 = idle, 2 = alarm, 3 = stop, 4 = run, etc?
     queue: 0,
     blocked: false,
@@ -546,7 +542,10 @@ io.on("connection", function(socket) {
     jogWindow.minimize();
   });
 
-  socket.on("maximise", function(data) {});
+  socket.on("maximize", function(data) {
+    jogWindow.maximize();
+
+  });
 
   socket.on("quit", function(data) {
     if (appIcon) {
@@ -749,6 +748,7 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       parser.on("data", function(data) {
+        // console.log(data)
         var command = sentBuffer[0];
 
         if (data.indexOf("<") != 0) {
@@ -947,11 +947,6 @@ io.on("connection", function(socket) {
             // debug_log('got OK from ' + command)
             command = sentBuffer.shift();
           }
-
-          if (status.machine.firmware.type === "smoothie") {
-            // debug_log('got OK from ' + command)
-            command = sentBuffer.shift();
-          }
           status.comms.blocked = false;
           send1Q();
         } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
@@ -971,9 +966,6 @@ io.on("connection", function(socket) {
                 'response': 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]"
               }
               io.sockets.emit('data', output);
-              break;
-            case 'smoothie':
-              status.comms.alarm = data;
               break;
           }
           status.comms.connectionStatus = 5;
@@ -997,14 +989,6 @@ io.on("connection", function(socket) {
               io.sockets.emit('data', output);
               io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
               break;
-            case 'smoothie':
-              var output = {
-                'command': '',
-                'response': data
-              }
-              io.sockets.emit('data', output);
-              // io.sockets.emit('data', data);
-              break;
           }
           debug_log("error;")
           sentBuffer.shift();
@@ -1021,9 +1005,6 @@ io.on("connection", function(socket) {
               debug_log("[MSG:Reset to continue] -> Sending Reset")
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               break;
-              // case 'smoothie':
-              //
-              //   break;
           }
         }
 
@@ -1152,12 +1133,6 @@ io.on("connection", function(socket) {
         addQToEnd('G38.2 Z-' + data.dist + ' F' + data.feedrate);
         send1Q();
         break;
-        // case 'smoothie':
-        //   addQToEnd('G91');
-        //   addQToEnd('G0' + feed + dir + dist);
-        //   addQToEnd('G90');
-        //   send1Q();
-        //   break;
         debug_log('ERROR: Unsupported firmware!');
         break;
       default:
@@ -1184,12 +1159,6 @@ io.on("connection", function(socket) {
         switch (status.machine.firmware.type) {
           case 'grbl':
             addQToEnd('$J=G91G21' + dir + dist + feed);
-            send1Q();
-            break;
-          case 'smoothie':
-            addQToEnd('G91');
-            addQToEnd('G0' + feed + dir + dist);
-            addQToEnd('G90');
             send1Q();
             break;
           default:
@@ -1226,12 +1195,6 @@ io.on("connection", function(socket) {
             addQToEnd('$J=G91G21X' + xincrement + " Y" + yincrement + " " + feed);
             send1Q();
             break;
-          case 'smoothie':
-            addQToEnd('G91');
-            addQToEnd('G0 X' + xincrement + " Y" + yincrement + " " + feed);
-            addQToEnd('G90');
-            send1Q();
-            break;
           default:
             debug_log('ERROR: Unknown firmware!');
             break;
@@ -1257,12 +1220,6 @@ io.on("connection", function(socket) {
         switch (status.machine.firmware.type) {
           case 'grbl':
             addQToEnd('$J=G91G21' + mode + xVal + yVal + zVal + feed);
-            break;
-          case 'smoothie':
-            addQToEnd('G91' + mode);
-            addQToEnd('G0' + feed + xVal + yVal + zVal);
-            addQToEnd('G90');
-            send1Q();
             break;
           default:
             debug_log('ERROR: Unknown firmware!');
@@ -1354,17 +1311,6 @@ io.on("connection", function(socket) {
     debug_log('probe(' + JSON.stringify(data) + ')');
     if (status.comms.connectionStatus > 0) {
       switch (status.machine.firmware.type) {
-        case 'smoothie':
-          switch (data.direction) {
-            case 'z':
-              addQToEnd('G30 Z' + data.probeOffset);
-              break;
-            default:
-              addQToEnd('G38.2 ' + data.direction);
-              break;
-          }
-          send1Q();
-          break;
         case 'grbl':
           addQToEnd('G38.2 ' + data.direction + '-5 F1');
           addQToEnd('G92 ' + data.direction + ' ' + data.probeOffset);
@@ -1451,20 +1397,7 @@ io.on("connection", function(socket) {
             }
           }
           addQRealtime("?");
-          status.machine.overrides.feedOverride = reqfro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
-          break;
-        case 'smoothie':
-          if (data === 0) {
-            feedOverride = 100;
-          } else {
-            if ((feedOverride + data <= 200) && (feedOverride + data >= 10)) {
-              // valid range is 10..200, else ignore!
-              feedOverride += data;
-            }
-          }
-          addQToStart('M220S' + feedOverride + '\n');
-          send1Q();
-          status.machine.overrides.feedOverride = feedOverride
+          status.machine.overrides.feedOverride = parseInt(reqfro); // Set now, but will be overriden from feedback from Grbl itself in next queryloop
           break;
       }
     } else {
@@ -1542,20 +1475,7 @@ io.on("connection", function(socket) {
             }
           }
           addQRealtime("?");
-          status.machine.overrides.spindleOverride = reqsro // Set now, but will be overriden from feedback from Grbl itself in next queryloop
-          break;
-        case 'smoothie':
-          if (data === 0) {
-            spindleOverride = 100;
-          } else {
-            if ((spindleOverride + data <= 200) && (spindleOverride + data >= 0)) {
-              // valid range is 0..200, else ignore!
-              spindleOverride += data;
-            }
-          }
-          addQToStart('M221S' + spindleOverride + '\n');
-          send1Q();
-          status.machine.overrides.spindleOverride = spindleOverride;
+          status.machine.overrides.spindleOverride = parseInt(reqsro); // Set now, but will be overriden from feedback from Grbl itself in next queryloop
           break;
       }
     } else {
@@ -1591,10 +1511,6 @@ io.on("connection", function(socket) {
               addQRealtime('$X\n');
               debug_log('Sent: $X');
               break;
-            case 'smoothie':
-              addQRealtime('$X\n');
-              debug_log('Sent: $X');
-              break;
           }
           debug_log('Resuming Queue Lockout');
           break;
@@ -1614,13 +1530,6 @@ io.on("connection", function(socket) {
               status.comms.blocked = false;
               status.comms.paused = false;
               break;
-            case 'smoothie':
-              addQToStart('M999'); //M999
-              send1Q();
-              debug_log('Sent: M999');
-              status.comms.blocked = false;
-              status.comms.paused = false;
-              break;
           }
           break;
       }
@@ -1636,10 +1545,6 @@ io.on("connection", function(socket) {
       debug_log('Reset Machine');
       switch (status.machine.firmware.type) {
         case 'grbl':
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-          debug_log('Sent: Code(0x18)');
-          break;
-        case 'smoothie':
           addQRealtime(String.fromCharCode(0x18)); // ctrl-x
           debug_log('Sent: Code(0x18)');
           break;
@@ -1705,8 +1610,8 @@ function machineSend(gcode) {
       status.machine.tool.nexttool.number = tool
       status.machine.tool.nexttool.line = gcode
     }
-    var queueLeft = (gcodeQueue.length - queuePointer)
-    var queueTotal = gcodeQueue.length
+    var queueLeft = parseInt((gcodeQueue.length - queuePointer))
+    var queueTotal = parseInt(gcodeQueue.length)
     // debug_log("Q: " + queueLeft)
     var data = []
     data.push(queueLeft);
@@ -1746,11 +1651,8 @@ function parseFeedback(data) {
       case 'grbl':
         // sentBuffer.shift();
         var alarmCode = parseInt(data.split(':')[1]);
-        // debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+        debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
         status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
-        break;
-      case 'smoothie':
-        status.comms.alarm = data;
         break;
     }
     status.comms.connectionStatus = 5;
@@ -1768,14 +1670,14 @@ function parseFeedback(data) {
       zOffset = parseFloat(wco[2]).toFixed(config.posDecimals);
       if (has4thAxis) {
         aOffset = parseFloat(wco[3]).toFixed(config.posDecimals);
-        status.machine.position.offset.x = xOffset;
-        status.machine.position.offset.y = yOffset;
-        status.machine.position.offset.z = zOffset;
-        status.machine.position.offset.a = aOffset;
+        status.machine.position.offset.x = parseFloat(xOffset);
+        status.machine.position.offset.y = parseFloat(yOffset);
+        status.machine.position.offset.z = parseFloat(zOffset);
+        status.machine.position.offset.a = parseFloat(aOffset);
       } else {
-        status.machine.position.offset.x = xOffset;
-        status.machine.position.offset.y = yOffset;
-        status.machine.position.offset.z = zOffset;
+        status.machine.position.offset.x = parseFloat(xOffset);
+        status.machine.position.offset.y = parseFloat(yOffset);
+        status.machine.position.offset.z = parseFloat(zOffset);
       }
     }
     // Extract wPos (for Grbl > 1.1 only!)
@@ -1810,14 +1712,14 @@ function parseFeedback(data) {
         }
       }
       if (has4thAxis) {
-        status.machine.position.work.x = xPos
-        status.machine.position.work.y = yPos
-        status.machine.position.work.z = zPos
-        status.machine.position.work.a = aPos
+        status.machine.position.work.x = parseFloat(xPos);
+        status.machine.position.work.y = parseFloat(yPos);
+        status.machine.position.work.z = parseFloat(zPos);
+        status.machine.position.work.a = parseFloat(aPos);
       } else {
-        status.machine.position.work.x = xPos
-        status.machine.position.work.y = yPos
-        status.machine.position.work.z = zPos
+        status.machine.position.work.x = parseFloat(xPos);
+        status.machine.position.work.y = parseFloat(yPos);
+        status.machine.position.work.z = parseFloat(zPos);
       }
       // end is WPOS
     } else if (Array.isArray(mPos)) {
@@ -1838,85 +1740,18 @@ function parseFeedback(data) {
         }
       }
       if (has4thAxis) {
-        status.machine.position.work.x = parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals)
-        status.machine.position.work.y = parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals)
-        status.machine.position.work.z = parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals)
-        status.machine.position.work.a = parseFloat(aPos - status.machine.position.offset.a).toFixed(config.posDecimals)
+        status.machine.position.work.x = parseFloat(parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals));
+        status.machine.position.work.y = parseFloat(parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals));
+        status.machine.position.work.z = parseFloat(parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals));
+        status.machine.position.work.a = parseFloat(parseFloat(aPos - status.machine.position.offset.a).toFixed(config.posDecimals));
       } else {
-        status.machine.position.work.x = parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals)
-        status.machine.position.work.y = parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals)
-        status.machine.position.work.z = parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals)
+        status.machine.position.work.x = parseFloat(parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals));
+        status.machine.position.work.y = parseFloat(parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals));
+        status.machine.position.work.z = parseFloat(parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals));
       }
       // end if MPOS
     }
 
-  }
-  if (status.machine.firmware.type == "smoothie") {
-    // Extract wPos (for Smoothieware only!)
-    var startWPos = data.search(/wpos:/i) + 5;
-    var wPos;
-    if (startWPos > 5) {
-      wPos = data.replace('>', '').substr(startWPos).split(/,/, 4);
-    }
-    if (Array.isArray(wPos)) {
-      if (xPos !== wPos[0]) {
-        xPos = wPos[0];
-      }
-      if (yPos !== wPos[1]) {
-        yPos = wPos[1];
-      }
-      if (zPos !== wPos[2]) {
-        zPos = wPos[2];
-      }
-      if (wPos.length > 3) {
-        if (aPos !== wPos[3]) {
-          aPos = wPos[3];
-          has4thAxis = true;
-        }
-      }
-      if (has4thAxis) {
-        status.machine.position.work.x = parseFloat(xPos).toFixed(config.posDecimals)
-        status.machine.position.work.y = parseFloat(yPos).toFixed(config.posDecimals)
-        status.machine.position.work.z = parseFloat(zPos).toFixed(config.posDecimals)
-        status.machine.position.work.a = parseFloat(aPos).toFixed(config.posDecimals)
-      } else {
-        status.machine.position.work.x = parseFloat(xPos).toFixed(config.posDecimals)
-        status.machine.position.work.y = parseFloat(yPos).toFixed(config.posDecimals)
-        status.machine.position.work.z = parseFloat(zPos).toFixed(config.posDecimals)
-      }
-    }
-    // Extract mPos (for Smoothieware only!)
-    var startMPos = data.search(/mpos:/i) + 5;
-    var mPos;
-    if (startMPos > 5) {
-      mPos = data.replace(">", "").substr(startMPos).split(/,|\|/, 4);
-    }
-    if (Array.isArray(mPos)) {
-      if (xOffset != mPos[0] - xPos) {
-        xOffset = mPos[0] - xPos;
-      }
-      if (yOffset != mPos[1] - yPos) {
-        yOffset = mPos[1] - yPos;
-      }
-      if (zOffset != mPos[2] - zPos) {
-        zOffset = mPos[2] - zPos;
-      }
-      if (has4thAxis) {
-        if (aOffset != mPos[3] - aPos) {
-          aOffset = mPos[3] - aPos;
-        }
-      }
-      if (has4thAxis) {
-        status.machine.position.offset.x = parseFloat(xOffset).toFixed(config.posDecimals);
-        status.machine.position.offset.y = parseFloat(yOffset).toFixed(config.posDecimals);
-        status.machine.position.offset.z = parseFloat(zOffset).toFixed(config.posDecimals);
-        status.machine.position.offset.a = parseFloat(aOffset).toFixed(config.posDecimals);
-      } else {
-        status.machine.position.offset.x = parseFloat(xOffset).toFixed(config.posDecimals);
-        status.machine.position.offset.y = parseFloat(yOffset).toFixed(config.posDecimals);
-        status.machine.position.offset.z = parseFloat(zOffset).toFixed(config.posDecimals);
-      }
-    }
   }
   // Extract override values (for Grbl > v1.1 only!)
   var startOv = data.search(/ov:/i) + 3;
@@ -1924,13 +1759,13 @@ function parseFeedback(data) {
     var ov = data.replace(">", "").substr(startOv).split(/,|\|/, 3);
     if (Array.isArray(ov)) {
       if (ov[0]) {
-        status.machine.overrides.feedOverride = ov[0];
+        status.machine.overrides.feedOverride = parseInt(ov[0]);
       }
       if (ov[1]) {
-        status.machine.overrides.rapidOverride = ov[1];
+        status.machine.overrides.rapidOverride = parseInt(ov[1]);
       }
       if (ov[2]) {
-        status.machine.overrides.spindleOverride = ov[2];
+        status.machine.overrides.spindleOverride = parseInt(ov[2]);
       }
     }
   }
@@ -1940,10 +1775,10 @@ function parseFeedback(data) {
     var fs = data.replace(">", "").substr(startFS).split(/,|\|/);
     if (Array.isArray(fs)) {
       if (fs[0]) {
-        status.machine.overrides.realFeed = fs[0];
+        status.machine.overrides.realFeed = parseInt(fs[0]);
       }
       if (fs[1]) {
-        status.machine.overrides.realSpindle = fs[1];
+        status.machine.overrides.realSpindle = parseInt(fs[1]);
       }
     }
   }
@@ -2024,26 +1859,6 @@ function laserTest(data) {
               }
               send1Q();
               break;
-            case 'smoothie':
-              addQToEnd('M3\n');
-              addQToEnd('fire ' + power + '\n');
-              laserTestOn = true;
-              io.sockets.emit('laserTest', power);
-              if (duration > 0) {
-                var divider = 1;
-                if (fDate >= new Date('2017-01-02')) {
-                  divider = 1000;
-                }
-                addQToEnd('G4P' + duration / divider + '\n');
-                addQToEnd('fire off\n');
-                addQToEnd('M5');
-                setTimeout(function() {
-                  laserTestOn = false;
-                  io.sockets.emit('laserTest', 0);
-                }, duration);
-              }
-              send1Q();
-              break;
           }
         }
       } else {
@@ -2051,11 +1866,6 @@ function laserTest(data) {
         switch (status.machine.firmware.type) {
           case 'grbl':
             addQToEnd('M5S0');
-            send1Q();
-            break;
-          case 'smoothie':
-            addQToEnd('fire off\n');
-            addQToEnd('M5\n');
             send1Q();
             break;
         }
@@ -2077,8 +1887,6 @@ function BufferSpace(firmware) {
   }
   if (firmware == "grbl") {
     return GRBL_RX_BUFFER_SIZE - total;
-  } else {
-    return SMOOTHIE_RX_BUFFER_SIZE - total;
   }
 }
 
@@ -2102,16 +1910,6 @@ function send1Q() {
           } else {
             status.comms.blocked = true;
           }
-        }
-        break;
-      case 'smoothie':
-        if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
-          gcode = gcodeQueue[queuePointer];
-          queuePointer++;
-          status.comms.blocked = true;
-          sentBuffer.push(gcode);
-          machineSend(gcode + '\n');
-          // debug_log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer));
         }
         break;
     }
@@ -2515,16 +2313,6 @@ function stop(jog) {
         }
         status.comms.connectionStatus = 2;
         break;
-      case 'smoothie':
-        status.comms.paused = true;
-        addQRealtime('M112'); // ctrl-x
-        setTimeout(function() {
-          addQToEnd("?");
-          send1Q();
-        }, 1000);
-        status.comms.connectionStatus = 5;
-        debug_log('Sent: M112');
-        break;
     }
     clearInterval(queueCounter);
     status.comms.queue = 0
@@ -2536,6 +2324,7 @@ function stop(jog) {
     status.comms.blocked = false;
     status.comms.paused = false;
     status.comms.runStatus = 'Stopped';
+    status.comms.alarm = "";
   } else {
     debug_log('ERROR: Machine connection not open!');
   }
@@ -2554,11 +2343,6 @@ function pause() {
           debug_log('Sent: Code(0x9E)');
         }
         break;
-      case 'smoothie':
-        addQToStart('M600'); // Laser will be turned off by smoothie (in default config!)
-        send1Q();
-        debug_log('Sent: M600');
-        break;
     }
     status.comms.runStatus = 'Paused';
     status.comms.connectionStatus = 4;
@@ -2574,11 +2358,6 @@ function unpause() {
       case 'grbl':
         addQRealtime('~'); // Send resume command
         debug_log('Sent: ~');
-        break;
-      case 'smoothie':
-        addQToStart('M601'); // Send resume command
-        send1Q();
-        debug_log('Sent: M601');
         break;
     }
     status.comms.paused = false;

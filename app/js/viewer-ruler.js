@@ -4,7 +4,7 @@ function drawRuler(xmin, xmax, ymin, ymax) {
   var length5 = 6
   var length10 = 7
   var unitsval = ""
-  console.log(xmin, xmax, ymin, ymax)
+  // console.log(xmin, xmax, ymin, ymax)
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
     color: 0x888888

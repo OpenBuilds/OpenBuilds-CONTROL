@@ -1,0 +1,122 @@
+grblParams = {
+    "$0": "10",
+    "$1": "255",
+    "$2": "0",
+    "$3": "0",
+    "$4": "1",
+    "$5": "0",
+    "$6": "0",
+    "$10": "2",
+    "$11": "0.010",
+    "$12": "0.002",
+    "$13": "0",
+    "$20": "0",
+    "$21": "0",
+    "$22": "1",
+    "$23": "1",
+    "$24": "100.000",
+    "$25": "500.000",
+    "$26": "250",
+    "$27": "5.000",
+    "$30": "1000",
+    "$31": "0",
+    "$32": "0",
+    "$100": "199.100",
+    "$101": "199.100",
+    "$102": "199.100",
+    "$110": "4000.000",
+    "$111": "4000.000",
+    "$112": "3000.000",
+    "$120": "1000.000",
+    "$121": "1000.000",
+    "$122": "1000.000",
+    "$130": "120.000",
+    "$131": "120.000",
+    "$132": "60.000"
+}
+
+laststatus = {
+    "driver": {
+        "version": "1.0.229",
+        "ipaddress": "192.168.87.100",
+        "operatingsystem": "windows"
+    },
+    "machine": {
+        "name": "minimill",
+        "inputs": [],
+        "overrides": {
+            "feedOverride": 100,
+            "spindleOverride": 100,
+            "realFeed": 0,
+            "realSpindle": 0,
+            "rapidOverride": 100
+        },
+        "tool": {
+            "nexttool": {
+                "number": 10,
+                "line": "M6 T10\n"
+            }
+        },
+        "probe": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "state": -1,
+            "plate": 0,
+            "request": {}
+        },
+        "position": {
+            "work": {
+                "x": 13.17,
+                "y": 3.22,
+                "z": 2.65,
+                "a": 0,
+                "e": 0
+            },
+            "offset": {
+                "x": 22.25,
+                "y": -138.79,
+                "z": -49.29,
+                "a": 0,
+                "e": 0
+            }
+        },
+        "firmware": {
+            "type": "grbl",
+            "version": "1.1g",
+            "date": "",
+            "buffer": [
+                "15",
+                "128"
+            ],
+            "features": [
+                "V"
+            ],
+            "blockBufferSize": "15",
+            "rxBufferSize": "128"
+        }
+    },
+    "comms": {
+        "connectionStatus": 2,
+        "runStatus": "Idle",
+        "queue": 0,
+        "blocked": false,
+        "paused": false,
+        "controllerBuffer": 0,
+        "interfaces": {
+            "ports": [
+                {
+                    "path": "COM3",
+                    "manufacturer": "FTDI",
+                    "serialNumber": "5&222e27aa&0&6",
+                    "pnpId": "FTDIBUS\\VID_0403+PID_6001+5&222E27AA&0&6\\0000",
+                    "vendorId": "0403",
+                    "productId": "6001"
+                }
+            ],
+            "activePort": "COM3",
+            "activeBaud": 115200
+        },
+        "alarm": "13 - undefined"
+    }
+}

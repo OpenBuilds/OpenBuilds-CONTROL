@@ -1,5 +1,5 @@
 self.addEventListener('message', function(e) {
-  console.log("New message received by worker", e.data.data.length)
+  // console.log("New message received by worker", e.data.data.length)
   importScripts("/lib/threejs/three.min.js");
   var data = e.data;
   var result = createObjectFromGCode(e.data.data)
@@ -240,7 +240,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       var units = "mm";
       if (!this.isUnitsMm) units = "inch";
       // $('.com-chilipeppr-widget-3dviewer-units-indicator').text(units);
-      console.log("USING UNITS:" + units)
+      // console.log("USING UNITS:" + units)
 
     }
     // these are extra Object3D elements added during

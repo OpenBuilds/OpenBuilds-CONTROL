@@ -38,7 +38,7 @@ $(document).ready(function() {
     if (localStorage.getItem('probeType') == "z") {
       $(".needsXYZProbe").hide()
     } else {
-      console.log("Enabling XYZ Probing")
+      // console.log("Enabling XYZ Probing")
       $(".needsXYZProbe").show()
     }
   }
@@ -564,7 +564,7 @@ function runProbeNew() {
 
     ; Probe X
     G0 X-20 Y10 ; position to left side and move forward a little to be closer to center of edge
-    G0 Z0 ; drop down to be next to plate
+    G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
     G38.2 X25 F100 ; Probe X
     G4 P0.4
     G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
@@ -573,7 +573,7 @@ function runProbeNew() {
 
     ; Probe Y
     G0 X15 Y-20 ; position to front side and move right a little to be closer to center of edge
-    G0 Z0 ; drop down to be next to plate
+    G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
     G38.2 Y25 F100 ; probe Y
     G4 P0.4
     G10 P1 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter

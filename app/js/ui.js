@@ -247,12 +247,12 @@ function setControlBar(val, status) {
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
-    $('#stopBtn').show().attr('disabled', false);
+    $('#stopBtn').show().attr('disabled', true);
     $('#toolBtn').show().attr('disabled', true);
     $('#toolBtn2').show().attr('disabled', true);
     if (laststatus != undefined && laststatus.machine.firmware.type == 'grbl') {
       if (grblParams['$22'] == 1) {
-        $('#homeBtn').show().attr('disabled', true);
+        $('#homeBtn').show().attr('disabled', false);
       } else {
         $('#homeBtn').show().attr('disabled', true);
       }

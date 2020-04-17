@@ -289,7 +289,7 @@ function setBullseyePosition(x, y, z) {
 function init3D() {
 
   if (webgl) {
-    console.log('WebGL Support found! success: this application will work optimally on this device!');
+    // console.log('WebGL Support found! success: this application will work optimally on this device!');
     printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
     renderer = new THREE.WebGLRenderer({
       autoClearColor: true,

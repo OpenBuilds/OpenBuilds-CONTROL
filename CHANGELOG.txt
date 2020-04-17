@@ -1,3 +1,4 @@
+v1.0.229: XYZ Probe Routine: Change Z level from absolute to relative, Enable homing button in Alarms state (to allow homing if alarm = position lost), added Backup Grbl Settings button
 v1.0.228: Fixed bug related to Continous Jogging with Soft Limits via the Mobile Jog Widget
 v1.0.227: Fixed behavior of Jog Buttons on TouchScreens
 v1.0.224-226 Minor Bugfixes (keyboard shortcuts, macros related), Updated Mobile Jog to include Continuous Jogging

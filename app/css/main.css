@@ -219,6 +219,49 @@ select {
   color: #ff1e11 !important;
 }
 
+.macrotype {
+  position: absolute !important;
+  top: 2px !important;
+  right: 22px !important;
+  font-size: 10px !important;
+}
+
+#macrogcode {
+  /*font-family: "Courier New", Courier, monospace;*/
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 12px;
+  padding: 5px;
+  -webkit-touch-callout: text;
+  /* iOS Safari */
+  -webkit-user-select: text;
+  /* Safari */
+  -khtml-user-select: text;
+  /* Konqueror HTML */
+  -moz-user-select: text;
+  /* Firefox */
+  -ms-user-select: text;
+  /* Internet Explorer/Edge */
+  user-select: text;
+}
+
+#macrojs {
+  /*font-family: "Courier New", Courier, monospace;*/
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 12px;
+  padding: 5px;
+  -webkit-touch-callout: text;
+  /* iOS Safari */
+  -webkit-user-select: text;
+  /* Safari */
+  -khtml-user-select: text;
+  /* Konqueror HTML */
+  -moz-user-select: text;
+  /* Firefox */
+  -ms-user-select: text;
+  /* Internet Explorer/Edge */
+  user-select: text;
+}
+
 .machineicon:hover {
   color: #CE352C !important;
 }

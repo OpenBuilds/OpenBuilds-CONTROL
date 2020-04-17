@@ -134,7 +134,45 @@ $(document).ready(function() {
   setInterval(function() {
     setWindowTitle();
   }, 1000)
+  const element = new Image();
+  Object.defineProperty(element, 'id', {
+    get: function() {
+      /* Call callback function here */
+      socket.emit("maximize", true)
+      console.log('%cOpenBuilds CONTROL Devtools', 'font-weight: bold; font-size: 20px;color: rgb(50,80,188); text-shadow: 1px 1px 0 rgb(0,00,39)');
+      console.log('%c', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cGeneral: Check for any errors, messages as requested by our support team', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%c', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cConsole Commands:', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cAccess the last received feedback data (positions', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%coffsets, probes, comms, queues, etc )', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%claststatus', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%cAccess the Grbl Settings on the controller', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cgrblParams', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c; Clears the console screen', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cconsole.clear()', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c; Print a log entry/message to the Serial Log', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%cprintLog("string")', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%cAccess the running/last ran gcode via API', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%c$.get("/gcode", function(data) { //do something with gcode data });', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c;  Send a job, ideal for macros, jobs. Can display a message when complete.', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%c;  Set isJob to store for access via GET /gcode if needed', 'font-weight: bold; font-size: 12px;color: black; ');
 
+      console.log('%csocket.emit("runJob", {', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c  data: gcode-commands,', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c  isJob: false,', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c  completedMsg: "message displayed upon completion ",', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c});', 'font-weight: regular; font-size: 12px;color: black; ');
+      console.log('%c; Send the GCODE string to the controller, ideal for single commands', 'font-weight: bold; font-size: 12px;color: black; ');
+      console.log('%csendGcode("gcode-string")', 'font-weight: regular; font-size: 12px;color: black; ');
+
+
+
+
+
+    }
+  });
+  console.log('%c', element);
 
 });
 

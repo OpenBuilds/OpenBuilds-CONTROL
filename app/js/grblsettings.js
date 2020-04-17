@@ -1,3 +1,15 @@
+function backupGrblSettings() {
+  var grblBackup = ""
+  for (key in grblParams) {
+    var key2 = key.split('=')[0].substr(1);
+    grblBackup += key + "=" + grblParams[key] + "  ;  " + grblSettingCodes[key2] + "\n"
+  }
+  var blob = new Blob([grblBackup], {
+    type: "plain/text"
+  });
+  invokeSaveAsDialog(blob, 'grbl-settings-backup.txt');
+}
+
 var grblSettingCodes = {
   0: "Step pulse time, microseconds",
   1: "Step idle delay, milliseconds",
@@ -162,7 +174,7 @@ function grblPopulate() {
               <hr class="bg-openbuilds">
               <div>
 
-            <div style="overflow-y: scroll; height: calc(100vh - 450px); max-height: calc(100vh - 450px); ">
+            <div style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px); ">
             <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
             <thead>
               <tr>

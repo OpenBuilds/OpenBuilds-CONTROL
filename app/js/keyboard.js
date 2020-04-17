@@ -1,6 +1,5 @@
 var keyboardShortcuts = false;
 
-
 $(document).ready(function() {
 
   if (localStorage.getItem('keyboardShortcuts')) {
@@ -53,14 +52,17 @@ function bindKeys() {
   document.addEventListener('keydown', function(evt) {
     if (evt.which === 116) {
       // F5 - reload interface
+      evt.preventDefault();
       location.reload();
     } else if (evt.which === 117) {
       // F6 - switch to serial console and focus on Console Input
+      evt.preventDefault();
       $("#controlTab").click();
       $("#consoletab").click();
       $("#command").focus();
     } else if (evt.which === 112) {
       // F1 - troubleshooting
+      evt.preventDefault();
       $("#troubleshootingTab").click();
     }
   });
@@ -71,6 +73,7 @@ function bindKeys() {
     for (i = 0; i < buttonsarray.length; i++) {
       if (buttonsarray[i].macrokeyboardshortcut && buttonsarray[i].macrokeyboardshortcut.length) {
         $(document).bind('keydown', buttonsarray[i].macrokeyboardshortcut, function(e) {
+          e.preventDefault();
           console.log(e)
           var newVal = "";
           if (e.altKey) {
@@ -85,7 +88,11 @@ function bindKeys() {
           newVal += e.key
           var macro = searchMacro("macrokeyboardshortcut", newVal, buttonsarray)
           console.log(macro)
-          sendGcode(macro.gcode);
+          if (macro.codetype == "gcode") {
+            sendGcode(macro.gcode); // TODO change to runMacro with JS
+          } else if (macro.codetype == "javascript") {
+            executeJS(macro.javascript)
+          }
         });
       }
     }
@@ -95,6 +102,7 @@ function bindKeys() {
   if (keyboardShortcuts) {
     if (keyboardShortcuts.xM.length) {
       $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "X-";
@@ -120,6 +128,7 @@ function bindKeys() {
         }
       });
       $(document).bind('keyup', keyboardShortcuts.xM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -127,6 +136,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.xP.length) {
       $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "X";
@@ -152,6 +162,7 @@ function bindKeys() {
 
       });
       $(document).bind('keyup', keyboardShortcuts.xP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -159,6 +170,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.yM.length) {
       $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "Y-";
@@ -186,6 +198,7 @@ function bindKeys() {
 
       });
       $(document).bind('keyup', keyboardShortcuts.yM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -193,6 +206,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.yP.length) {
       $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "Y";
@@ -219,6 +233,7 @@ function bindKeys() {
         }
       });
       $(document).bind('keyup', keyboardShortcuts.yP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -226,6 +241,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.zM.length) {
       $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "Z-";
@@ -252,6 +268,7 @@ function bindKeys() {
         }
       });
       $(document).bind('keyup', keyboardShortcuts.zM, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -259,6 +276,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.zP.length) {
       $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           if (!event.originalEvent.repeat) {
             var direction = "Z";
@@ -285,6 +303,7 @@ function bindKeys() {
         }
       });
       $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
+        event.preventDefault();
         if (allowContinuousJog) {
           cancelJog()
         }
@@ -292,6 +311,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.stepM.length) {
       $(document).bind('keydown', keyboardShortcuts.stepM, function(e) {
+        e.preventDefault();
         $('#jogTypeContinuous').prop('checked', false)
         allowContinuousJog = false;
         $('.distbtn').show();
@@ -300,6 +320,7 @@ function bindKeys() {
     }
     if (keyboardShortcuts.stepP.length) {
       $(document).bind('keydown', keyboardShortcuts.stepP, function(e) {
+        e.preventDefault();
         $('#jogTypeContinuous').prop('checked', false)
         allowContinuousJog = false;
         $('.distbtn').show();
@@ -308,11 +329,13 @@ function bindKeys() {
     }
     if (keyboardShortcuts.estop.length) {
       $(document).bind('keydown', keyboardShortcuts.estop, function(e) {
+        e.preventDefault();
         socket.emit('stop', false)
       });
     }
     if (keyboardShortcuts.playpause.length) {
       $(document).bind('keydown', keyboardShortcuts.playpause, function(e) {
+        e.preventDefault();
         if (laststatus.comms.connectionStatus == 1 || laststatus.comms.connectionStatus == 2) {
           socket.emit('runJob', {
             data: editor.getValue(),
@@ -328,23 +351,27 @@ function bindKeys() {
     }
     if (keyboardShortcuts.unlockAlarm.length) {
       $(document).bind('keydown', keyboardShortcuts.unlockAlarm, function(e) {
+        e.preventDefault();
         Metro.dialog.close($('.closeAlarmBtn').parent().parent());
         socket.emit('clearAlarm', 2);
       });
     }
     if (keyboardShortcuts.home.length) {
       $(document).bind('keydown', keyboardShortcuts.home, function(e) {
+        e.preventDefault();
         home();
       });
     }
     if (keyboardShortcuts.setzeroxyz.length) {
       $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function(e) {
+        e.preventDefault();
         sendGcode('G10 P1 L20 X0 Y0 Z0')
       });
     }
 
     if (keyboardShortcuts.gotozeroxyz.length) {
       $(document).bind('keydown', keyboardShortcuts.gotozeroxyz, function(e) {
+        e.preventDefault();
         sendGcode('G21 G90');
         sendGcode('G0 Z5');
         sendGcode('G0 X0 Y0');
@@ -354,6 +381,7 @@ function bindKeys() {
 
     if (keyboardShortcuts.incJogMode.length) {
       $(document).bind('keydown', keyboardShortcuts.incJogMode, function(e) {
+        e.preventDefault();
         $('#jogTypeContinuous').prop('checked', false)
         allowContinuousJog = false;
         $('.distbtn').show();
@@ -362,6 +390,7 @@ function bindKeys() {
 
     if (keyboardShortcuts.conJogMode.length) {
       $(document).bind('keydown', keyboardShortcuts.conJogMode, function(e) {
+        e.preventDefault();
         $('#jogTypeContinuous').prop('checked', true)
         allowContinuousJog = true;
         $('.distbtn').hide()

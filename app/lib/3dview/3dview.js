@@ -69,7 +69,7 @@ function parseGcodeInWebWorker(gcode) {
       // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
       var worker = new Worker('lib/3dview/workers/litegcodeviewer.js');
       worker.addEventListener('message', function(e) {
-        console.log('webworker message', e)
+        // console.log('webworker message', e)
         if (scene.getObjectByName('gcodeobject')) {
           scene.remove(scene.getObjectByName('gcodeobject'))
           object = false;
@@ -112,7 +112,7 @@ function parseGcodeInWebWorker(gcode) {
                 seconds = "0" + seconds;
               }
               var formattedTime = hours + ':' + minutes + ':' + seconds;
-              console.log('Remaining time: ', formattedTime)
+              // console.log('Remaining time: ', formattedTime)
               // output formattedTime to UI here
               $('#timeRemaining').html(" / " + formattedTime);
               printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
@@ -146,7 +146,7 @@ function runSimFrom() {
 
 function sim(startindex) {
   if (typeof(object) == 'undefined' || !scene.getObjectByName('gcodeobject')) {
-    console.log('No Gcode in Preview yet')
+    // console.log('No Gcode in Preview yet')
     var message = `No Gcode in Preview yet: Please setup toolpaths, and generate GCODE before running simulation`
     Metro.toast.create(message, null, 10000, 'bg-red');
     simstop()
@@ -314,7 +314,7 @@ function runSimArc() {
   var posx = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].x; //- (sizexmax/2);
   var posy = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].y; //- (sizeymax/2);
   var posz = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].z;
-  console.log(posx, posy, posz)
+  // console.log(posx, posy, posz)
   if (object.userData.lines[simIdx].args.isFake) {
     if (object.userData.lines[simIdx].args.text.length < 1) {
       var text = "empty line"

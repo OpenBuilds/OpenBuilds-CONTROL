@@ -177,17 +177,17 @@ function initSocket() {
 
   socket.on("queueCount", function(data) {
     // calc percentage
-    var left = parseInt(data[0])
-    var total = parseInt(data[1])
+    var left = data[0]
+    var total = data[1]
     var done = total - left;
-    var donepercent = parseInt(done / total * 100)
+    var donepercent = done / total * 100
     var progressbar = $("#progressbar").data("progress");
     if (progressbar) {
       progressbar.val(donepercent);
     }
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
-        editor.gotoLine(parseInt(data[1]) - parseInt(data[0]));
+        editor.gotoLine(data[1] - data[0]);
       }
       if (typeof object !== 'undefined' && done > 0) {
         if (object.userData !== 'undefined' && object.userData && object.userData.lines.length > 2) {
@@ -218,12 +218,13 @@ function initSocket() {
         $('#timeRemaining').empty();
       }
     }
-    $('#gcodesent').html("Job Queue: " + parseInt(data[0]));
+    $('#gcodesent').html("Job Queue: " + data[0]);
   })
 
   socket.on('toastErrorAlarm', function(data) {
-    console.log("toast", data)
-    // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
+    console.log(data)
+    printLog("<span class='fg-red'>[ ALARM ]</span>  <span class='fg-red'>" + data + "</span>")
+
     Metro.dialog.create({
       clsDialog: 'dark',
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
@@ -251,8 +252,9 @@ function initSocket() {
   });
 
   socket.on('toastError', function(data) {
-    // console.log("toast", data)
-    // toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-red fg-white");
+    console.log(data)
+    printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>" + data + "</span>")
+
     Metro.dialog.create({
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
@@ -268,12 +270,6 @@ function initSocket() {
     setTimeout(function() {
       $(".closeErrorBtn").focus();
     }, 200, )
-    //
-  });
-
-  socket.on('toastSuccess', function(data) {
-    console.log("toast", data)
-    toast("<i class='fas fa-exclamation-triangle'></i> " + data, null, 2300, "bg-green fg-white");
     //
   });
 
@@ -359,14 +355,9 @@ function initSocket() {
         if (!isJogWidget) {
           if (!simRunning) {
             if (object) {
-              // if (object.userData.inch) {
-              //   cone.position.x = status.machine.position.work.x * 0.0393701
-              //   cone.position.y = status.machine.position.work.y * 0.0393701
-              //   cone.position.z = (parseFloat(status.machine.position.work.z * 0.0393701) + 20)
-              // } else {
               cone.position.x = status.machine.position.work.x
               cone.position.y = status.machine.position.work.y
-              cone.position.z = (parseFloat(status.machine.position.work.z) + 20)
+              cone.position.z = status.machine.position.work.z + 20
               // }
             }
 
@@ -384,7 +375,7 @@ function initSocket() {
 
     // Grbl Pins Input Status
     $('.pinstatus').removeClass('alert').addClass('success').html('OFF')
-    $('#holdpin').html('HOLD:OFF')
+    $('#holdpin').html('HOLD/DOOR:OFF')
     $('#resetpin').html('RST:OFF')
     $('#startpin').html('START:OFF')
     if (status.machine.inputs.length > 0) {
