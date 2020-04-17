@@ -1,5 +1,6 @@
-v1.0.227: Fix behavior of Jog Buttons on TouchScreens
-v1.0.224-226 Minor Bugfixes, Updated Mobile Jog
+v1.0.228: Fixed bug related to Continous Jogging with Soft Limits via the Mobile Jog Widget
+v1.0.227: Fixed behavior of Jog Buttons on TouchScreens
+v1.0.224-226 Minor Bugfixes (keyboard shortcuts, macros related), Updated Mobile Jog to include Continuous Jogging
 v1.0.223: Added keyboard shortcuts to Macros, updated look of buttons to include showing keyboard assignment
 v1.0.222: Added Keyboard shortcuts for GotoZero, and switching between Incremental/Continuous jogging
 v1.0.221: Corrected product names for XYZ Probe Plus
