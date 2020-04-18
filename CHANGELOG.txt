@@ -1,3 +1,5 @@
+v1.0.231: Fix bug in Keyboard Shortcut editor 
+v1.0.230: Updated Macros Editor with support for JS macros, new Icon selector, etc
 v1.0.229: XYZ Probe Routine: Change Z level from absolute to relative, Enable homing button in Alarms state (to allow homing if alarm = position lost), added Backup Grbl Settings button
 v1.0.228: Fixed bug related to Continous Jogging with Soft Limits via the Mobile Jog Widget
 v1.0.227: Fixed behavior of Jog Buttons on TouchScreens

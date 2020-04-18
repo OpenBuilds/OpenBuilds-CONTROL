@@ -433,7 +433,7 @@ function keyboardShortcutsEditor() {
       <div class="row mb-1 ml-1 mr-1">
         <label class="cell-sm-6"><i class="fas fa-chart-line fg-openbuilds fa-fw"></i> Goto XYZ Zero</label>
         <div class="cell-sm-6">
-          <input type="text" class="keyboardshortcutinput" readonly id="gotozeroxyznewKey" value="` + keyboardShortcuts.gotozeroxyz + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#setzeroxyznewKey').addClass('alert').addClass('newKeyAssignment')">
+          <input type="text" class="keyboardshortcutinput" readonly id="gotozeroxyznewKey" value="` + keyboardShortcuts.gotozeroxyz + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#gotozeroxyznewKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
@@ -500,13 +500,13 @@ function keyboardShortcutsEditor() {
       <div class="row mb-1 ml-1 mr-1">
         <label class="cell-sm-6"><i class="fas fa-step-forward fg-openbuilds fa-fw"></i> Incremental Jog Mode<br></label>
         <div class="cell-sm-6">
-          <input type="text" class="keyboardshortcutinput" readonly id="incJogModeKey" value="` + keyboardShortcuts.incJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+          <input type="text" class="keyboardshortcutinput" readonly id="incJogModeKey" value="` + keyboardShortcuts.incJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#incJogModeKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
         <label class="cell-sm-6"><i class="fas fa-running fg-openbuilds fa-fw"></i> Continuous Jog Mode<br></label>
         <div class="cell-sm-6">
-          <input type="text" class="keyboardshortcutinput" readonly id="conJogModeKey" value="` + keyboardShortcuts.conJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#stepPnewKey').addClass('alert').addClass('newKeyAssignment')">
+          <input type="text" class="keyboardshortcutinput" readonly id="conJogModeKey" value="` + keyboardShortcuts.conJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#conJogModeKey').addClass('alert').addClass('newKeyAssignment')">
         </div>
       </div>
 
