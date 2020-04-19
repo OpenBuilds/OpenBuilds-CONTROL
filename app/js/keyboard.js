@@ -124,7 +124,7 @@ function bindKeys() {
             rippleEffect($('#xMprobe'), "#e21b1b")
           }
         } else {
-          $('#xM').click();
+          $('#xM').mousedown();
         }
       });
       $(document).bind('keyup', keyboardShortcuts.xM, function(event) {
@@ -157,7 +157,7 @@ function bindKeys() {
             rippleEffect($('#xPprobe'), "#e21b1b")
           }
         } else {
-          $('#xP').click();
+          $('#xP').mousedown();
         }
 
       });
@@ -193,7 +193,7 @@ function bindKeys() {
             rippleEffect($('#yMprobe'), "#5de21b")
           }
         } else {
-          $('#yM').click();
+          $('#yM').mousedown();
         }
 
       });
@@ -229,7 +229,7 @@ function bindKeys() {
             rippleEffect($('#yPprobe'), "#5de21b")
           }
         } else {
-          $('#yP').click();
+          $('#yP').mousedown();
         }
       });
       $(document).bind('keyup', keyboardShortcuts.yP, function(event) {
@@ -264,7 +264,7 @@ function bindKeys() {
             rippleEffect($('#zMprobe'), "#1ba1e2")
           }
         } else {
-          $('#zM').click();
+          $('#zM').mousedown();
         }
       });
       $(document).bind('keyup', keyboardShortcuts.zM, function(event) {
@@ -299,7 +299,7 @@ function bindKeys() {
             rippleEffect($('#zPprobe'), "#1ba1e2")
           }
         } else {
-          $('#zP').click();
+          $('#zP').mousedown();
         }
       });
       $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
@@ -382,6 +382,7 @@ function bindKeys() {
     if (keyboardShortcuts.incJogMode.length) {
       $(document).bind('keydown', keyboardShortcuts.incJogMode, function(e) {
         e.preventDefault();
+        localStorage.setItem('continuousJog', false);
         $('#jogTypeContinuous').prop('checked', false)
         allowContinuousJog = false;
         $('.distbtn').show();
@@ -391,6 +392,7 @@ function bindKeys() {
     if (keyboardShortcuts.conJogMode.length) {
       $(document).bind('keydown', keyboardShortcuts.conJogMode, function(e) {
         e.preventDefault();
+        localStorage.setItem('continuousJog', true);
         $('#jogTypeContinuous').prop('checked', true)
         allowContinuousJog = true;
         $('.distbtn').hide()

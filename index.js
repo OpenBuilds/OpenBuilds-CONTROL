@@ -2,7 +2,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 // To see console.log output run with `DEBUGCONTROL=true electron .` or set environment variable for DEBUGCONTROL=true
 // debug_log debug overhead
-DEBUG = true;
+DEBUG = false;
 if (process.env.DEBUGCONTROL) {
   DEBUG = true;
   console.log("Console Debugging Enabled")
