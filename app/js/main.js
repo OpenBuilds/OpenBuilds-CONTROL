@@ -42,8 +42,10 @@ function getChangelog() {
     }
     template2 += `</ul>`
     $("#changelog").html(template2);
-    var template3 = `Changelog: <hr> <ul>`
-    for (var line = 0; line < 3; line++) {
+
+    // Update Dialog
+    var template3 = `<h6>Changelog:</h6> <hr> <ul>`
+    for (var line = 0; line < 5; line++) {
       template3 += '<li>' + lines[line] + '</li>'
     }
     template3 += `</ul>`
