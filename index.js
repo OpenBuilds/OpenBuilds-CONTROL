@@ -191,6 +191,71 @@ var uploadedworkspace = ""; // var to store uploaded OpenBuildsCAM Workspace
 mkdirp(uploadsDir).then(made =>
   debug_log('Created Uploads Temp Directory'))
 
+// Check USB Selective Suspend Settings
+function checkPowerSettings() {
+  if (process.platform == 'win32') {
+    debug_log("Checking Power Settings")
+    var powerplan = "",
+      usbselectiveAC = false,
+      usbselectiveDC = false;
+    const {
+      exec
+    } = require('child_process');
+
+    const cfg = exec('powercfg /GETACTIVESCHEME', function(error, stdout, stderr) {
+      if (error) {
+        debug_log(error.stack);
+        debug_log('Error code: ' + error.code);
+        debug_log('Signal received: ' + error.signal);
+      }
+      // console.log('Child Process STDOUT: ' + stdout);
+      // console.log('Child Process STDERR: ' + stderr);
+      powerplan = stdout.split(":")[1].split("()")[0].trim()
+    });
+
+    cfg.on('exit', function(code) {
+      debug_log('powercfg /GETACTIVESCHEME exited with exit code ' + code);
+      if (code == 0) {
+        const usbsetting = exec('powercfg /q ' + powerplan, function(error, stdout, stderr) {
+          if (error) {
+            debug_log(error.stack);
+            debug_log('Error code: ' + error.code);
+            debug_log('Signal received: ' + error.signal);
+          }
+          // console.log('Child Process STDOUT: ' + stdout);
+          // console.log('Child Process STDERR: ' + stderr);
+          usbselective = (stdout.slice(stdout.search("USB selective suspend setting") - 1)).split("\n")
+          usbselective.length = 7;
+
+          if (usbselective[5].indexOf("0x00000000") != -1) {
+            debug_log("USB Selective Suspend DISABLED on AC power ")
+            status.driver.powersettings.usbselectiveAC = false;
+          } else if (usbselective[5].indexOf("0x00000001") != -1) {
+            debug_log("USB Selective Suspend ENABLED on AC power ")
+            status.driver.powersettings.usbselectiveAC = true;
+          }
+
+          if (usbselective[6].indexOf("0x00000000") != -1) {
+            debug_log("USB Selective Suspend DISABLED on DC power ")
+            status.driver.powersettings.usbselectiveDC = false;
+          } else if (usbselective[6].indexOf("0x00000001") != -1) {
+            debug_log("USB Selective Suspend ENABLED on DC power ")
+            status.driver.powersettings.usbselectiveDC = true;
+          }
+        });
+        usbsetting.on('exit', function(code) {
+          debug_log('powercfg /q exited with exit code ' + code);
+          setTimeout(function() {
+            debug_log(status.driver.powersettings.usbselectiveDC, status.driver.powersettings.usbselectiveAC)
+          }, 200);
+        })
+      }
+    });
+    //  end USB Selective Suspend
+  }
+}
+
+
 var oldportslist;
 var oldpinslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
@@ -232,7 +297,11 @@ var status = {
   driver: {
     version: require('./package').version,
     ipaddress: ip.address(),
-    operatingsystem: false
+    operatingsystem: false,
+    powersettings: {
+      usbselectiveAC: null,
+      usbselectiveDC: null
+    },
   },
   machine: {
     name: '',
@@ -342,6 +411,11 @@ var PortCheckinterval = setInterval(function() {
     findChangedPorts();
   }
 }, 500);
+
+checkPowerSettings()
+var PowerSettingsInterval = setInterval(function() {
+  checkPowerSettings()
+}, 60 * 1000)
 
 
 // JSON API

@@ -357,7 +357,7 @@ function init3D() {
 function animate() {
   if (!pauseAnimation) {
     camera.updateMatrixWorld();
-
+    simAnimate()
     if (clearSceneFlag) {
       while (scene.children.length > 1) {
         scene.remove(scene.children[1])

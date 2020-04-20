@@ -70,7 +70,7 @@ function populateMacroButtons() {
 function edit(i, evt) {
   evt.preventDefault();
   evt.stopPropagation();
-  console.log("Editing " + i)
+  // console.log("Editing " + i)
 
   if (buttonsarray[i]) {
     var icon = buttonsarray[i].icon;

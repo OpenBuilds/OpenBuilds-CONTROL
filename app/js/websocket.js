@@ -373,6 +373,32 @@ function initSocket() {
       }
     }
 
+    // Windows Power Management
+    if (status.driver.operatingsystem == "windows") {
+      $("#powerSettingsCard").show();
+      if (status.driver.powersettings.usbselectiveAC == false) {
+        $('#selectivesuspendAC').removeClass('alert').addClass('success').html('DISABLED')
+      } else if (status.driver.powersettings.usbselectiveAC == null) {
+        $('#selectivesuspendAC').removeClass('success').addClass('alert').html('UNKNOWN')
+      } else if (status.driver.powersettings.usbselectiveAC == true) {
+        $('#selectivesuspendAC').removeClass('success').addClass('alert').html('ENABLED')
+      }
+
+      if (status.driver.powersettings.usbselectiveDC == false) {
+        $('#selectivesuspendDC').removeClass('alert').addClass('success').html('DISABLED')
+      } else if (status.driver.powersettings.usbselectiveDC == null) {
+        $('#selectivesuspendDC').removeClass('success').addClass('alert').html('UNKNOWN')
+      } else if (status.driver.powersettings.usbselectiveDC == true) {
+        $('#selectivesuspendDC').removeClass('success').addClass('alert').html('ENABLED')
+      }
+    } else {
+      $("#powerSettingsCard").hide();
+    }
+
+
+
+
+
     // Grbl Pins Input Status
     $('.pinstatus').removeClass('alert').addClass('success').html('OFF')
     $('#holdpin').html('HOLD/DOOR:OFF')

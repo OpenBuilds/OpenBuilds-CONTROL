@@ -307,6 +307,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       });
       var aco = new THREE.Line(acgeo, acmat);
       aco.userData.points = points;
+
       //aco.position.set(pArc.x, pArc.y, pArc.z);
       //console.log("aco:", aco);
       this.extraObjects[plane].push(aco);
@@ -555,24 +556,61 @@ GCodeParser = function(handlers, modecmdhandlers) {
         // end of if p2.arc
         // console.log( p2.threeObjArc.userData.points)
 
-        console.log(threeObjArc.userData.points.length)
+        // console.log(JSON.stringify(threeObjArc.userData))
+
+        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
+        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
+
+        if (dist > 0) {
+          this.totalDist += dist;
+        }
+
+        // calc distance of one segment of the arc
+        dist = a.distanceTo(b) / threeObjArc.userData.points.length;
+
+        // time to execute this move
+        // if this move is 10mm and we are moving at 100mm/min then
+        // this move will take 10/100 = 0.1 minutes or 6 seconds
+
+
 
         for (i = 0; i < threeObjArc.userData.points.length; i++) {
-          var p2 = {
+          var timeMinutes = 0;
+          if (dist > 0) {
+            var fr;
+            if (args.feedrate > 0) {
+              fr = args.feedrate
+            } else {
+              fr = 1000;
+            }
+            timeMinutes = dist / fr;
+
+            // adjust for acceleration, meaning estimate
+            // this will run longer than estimated from the math
+            // above because we don't start moving at full feedrate
+            // obviously, we have to slowly accelerate in and out
+            timeMinutes = timeMinutes * 1.32;
+          }
+          this.totalTime += timeMinutes;
+          var p2sub = {
             x: threeObjArc.userData.points[i].x,
             y: threeObjArc.userData.points[i].y,
             z: threeObjArc.userData.points[i].z,
             e: p2.e,
             f: p2.f,
-            g2: true
+            g2: true,
+            g2segment: true,
+            feedrate: fr,
+            dist: dist,
+            distSum: this.totalDist,
+            timeMins: timeMinutes,
+            timeMinsSum: this.totalTime,
           }
           lines.push({
-            p2: p2,
+            p2: p2sub,
             'args': args
           });
         }
-
-
 
       } else { // not an arc
         lines.push({

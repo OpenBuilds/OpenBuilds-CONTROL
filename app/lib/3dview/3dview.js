@@ -1,6 +1,7 @@
 var object;
-var draw, line, timefactor = 1,
-  object, simRunning = false;
+var simIdx, draw, line, timefactor = 1,
+  object, simRunning = false,
+  simSingleLine = -1;
 
 var loader = new THREE.ObjectLoader();
 
@@ -139,36 +140,42 @@ function simSpeed() {
   $('#simspeedval').text(timefactor);
 }
 
-function runSimFrom() {
+function runSimFrom(startindex, singleLineOnly) {
+  if (singleLineOnly) {
+    simSingleLine = startindex;
+  }
   $('#gcodeviewertab').click()
-  sim(editor.getSelectionRange().start.row + 1);
+  if (startindex) {
+    for (i = 0; i < object.userData.lines.length; i++)
+      if (object.userData.lines[i].args.indx == startindex) {
+        simIdx = i + 1;
+        sim();
+      }
+  } else {
+    sim();
+  }
 }
 
-function sim(startindex) {
+function sim() {
   if (typeof(object) == 'undefined' || !scene.getObjectByName('gcodeobject')) {
     // console.log('No Gcode in Preview yet')
-    var message = `No Gcode in Preview yet: Please setup toolpaths, and generate GCODE before running simulation`
+    var message = `No Gcode in Preview yet: Please load GCODE from the Open GCODE button first before running simulation`
     Metro.toast.create(message, null, 10000, 'bg-red');
     simstop()
   } else {
-    lastLine = {
-      x: 0,
-      y: 0,
-      z: 0,
-      e: 0,
-      f: 0,
-      feedrate: null,
-      extruding: false
-    };
-    $('#runSimBtn').hide()
-    $('#stopSimBtn').show()
-    clearSceneFlag = true;
     if (!disable3Drealtimepos) {
       $("#conetext").show();
       cone.visible = true
-      var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
-      var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
-      var posz = object.userData.lines[0].p2.z + 20;
+      if (simIdx == 0) {
+        var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
+        var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
+        var posz = object.userData.lines[0].p2.z + 20;
+      } else {
+        var posx = object.userData.lines[simIdx - 1].p2.x; //- (sizexmax/2);
+        var posy = object.userData.lines[simIdx - 1].p2.y; //- (sizeymax/2);
+        var posz = object.userData.lines[simIdx - 1].p2.z + 20;
+      }
+
       cone.position.x = posx;
       cone.position.y = posy;
       cone.position.z = posz;
@@ -180,11 +187,23 @@ function sim(startindex) {
         transparent: true
       })
     }
+    lastLine = {
+      x: posx,
+      y: posy,
+      z: posz,
+      e: 0,
+      f: 0,
+      feedrate: 10000,
+      extruding: false
+    };
+
+
+    $('#runSimBtn').hide()
+    $('#stopSimBtn').show()
+    clearSceneFlag = true;
     simRunning = true;
     // timefactor = 1;
     $('#simspeedval').text(timefactor);
-    var simIdx = startindex;
-    var arcIdx = 0;
     $('#simstartbtn').attr('disabled', true);
     $('#simstopbtn').attr('disabled', false);
     $('#editorContextMenu').hide() // sometimes we launch sim(linenum) from the context menu... close it once running
@@ -193,128 +212,21 @@ function sim(startindex) {
 }
 
 function runSim() {
-  // editor.gotoLine(simIdx + 1)
-  $('#gcodesent').html(simIdx + 1);
-  // $('#simgcode').html(object.userData.lines[simIdx].args.origtext);
 
-  if (object.userData.lines[simIdx].p2.arc) {
-    //console.log(object.userData.lines[simIdx])
-    // not running arcs yet!
-    arcIdx = 0;
-    runSimArc()
-    // lets move on
-    // simIdx++;
-    // if (simIdx < object.userData.lines.length) {
-    //   runSim();
-    // } else {
-    //   simstop();
-    // }
+  if (object.userData.inch) {
+    var posx = object.userData.lines[simIdx].p2.x * 25.4; //- (sizexmax/2);
+    var posy = object.userData.lines[simIdx].p2.y * 25.4; //- (sizeymax/2);
+    var posz = object.userData.lines[simIdx].p2.z * 25.4;
+
   } else {
-    if (object.userData.inch) {
-      var posx = object.userData.lines[simIdx].p2.x * 25.4; //- (sizexmax/2);
-      var posy = object.userData.lines[simIdx].p2.y * 25.4; //- (sizeymax/2);
-      var posz = object.userData.lines[simIdx].p2.z * 25.4;
-
-    } else {
-      var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
-      var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
-      var posz = object.userData.lines[simIdx].p2.z;
-
-    }
-
-    //console.log(posx, posy, posz, object.userData.lines[simIdx])
-
-    if (object.userData.lines[simIdx].args.isFake) {
-      if (object.userData.lines[simIdx].args.text.length < 1) {
-        var text = "empty line"
-      } else {
-        var text = object.userData.lines[simIdx].args.text
-      }
-      var simTime = 0.01 / timefactor;
-    } else {
-      var text = object.userData.lines[simIdx].args.cmd
-      var simTime = object.userData.lines[simIdx].p2.timeMins / timefactor;
-
-    }
-    if (object.userData.lines[simIdx].p2.feedrate == null) {
-      var feedrate = 0.00
-    } else {
-      var feedrate = object.userData.lines[simIdx].p2.feedrate
-    }
-
-    $("#conetext").html(
-      ` <table style="border: 1px solid #888">
-          <tr class="stripe" style="border-bottom: 1px solid #888">
-            <td><b>CMD</b></td><td align="right"><b>` + text + `</b></td>
-          </tr>
-          <tr class="stripe" style="border-bottom: 1px solid #888">
-            <td><b>X:</b></td><td align="right"><b>` + posx.toFixed(2) + `mm</b></td>
-          </tr>
-          <tr class="stripe" style="border-bottom: 1px solid #888">
-            <td><b>Y:</b></td><td align="right"><b>` + posy.toFixed(2) + `mm</b></td>
-          </tr>
-          <tr class="stripe" style="border-bottom: 1px solid #888">
-            <td><b>Z:</b></td><td align="right"><b>` + posz.toFixed(2) + `mm</b></td>
-          </tr>
-          <tr class="stripe" style="border-bottom: 1px solid #888">
-            <td><b>F:</b></td><td align="right"><b>` + feedrate + `mm/min</b></td>
-          </tr>
-        </table>
-      `);
-    var simTimeInSec = simTime * 60;
-    // console.log(simTimeInSec)
-    if (!object.userData.lines[simIdx].args.isFake) {
-      if (!disable3Drealtimepos) {
-        TweenMax.to(cone.position, simTimeInSec, {
-          x: posx,
-          y: posy,
-          z: posz + 20,
-          onComplete: function() {
-            if (simRunning == false) {
-              //return
-              simstop();
-            } else {
-              simIdx++;
-              if (simIdx < object.userData.lines.length) {
-                runSim();
-              } else {
-                simstop();
-              }
-            }
-          }
-        })
-      }
-    } else {
-      if (simRunning == false) {
-        //return
-        simstop();
-      } else {
-        simIdx++;
-        if (simIdx < object.userData.lines.length) {
-          runSim();
-        } else {
-          simstop();
-        }
-      }
-    }
+    var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
+    var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
+    var posz = object.userData.lines[simIdx].p2.z;
 
   }
 
+  //console.log(posx, posy, posz, object.userData.lines[simIdx])
 
-
-};
-
-function runSimArc() {
-
-  //var object = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx]
-
-  // editor.gotoLine(simIdx + 1)
-  $('#gcodesent').html(simIdx + 1);
-  // $('#simgcode').html(object.userData.lines[simIdx].args.origtext);
-  var posx = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].x; //- (sizexmax/2);
-  var posy = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].y; //- (sizeymax/2);
-  var posz = object.userData.lines[simIdx].p2.threeObjArc.object.userData.points[arcIdx].z;
-  // console.log(posx, posy, posz)
   if (object.userData.lines[simIdx].args.isFake) {
     if (object.userData.lines[simIdx].args.text.length < 1) {
       var text = "empty line"
@@ -324,40 +236,23 @@ function runSimArc() {
     var simTime = 0.01 / timefactor;
   } else {
     var text = object.userData.lines[simIdx].args.cmd
-    var simTime = (object.userData.lines[simIdx].p2.timeMins / timefactor) / object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length;
-
+    var simTime = object.userData.lines[simIdx].p2.timeMins / timefactor;
   }
   if (object.userData.lines[simIdx].p2.feedrate == null) {
-    var feedrate = 0.00
+    var feedrate = 5000.00
   } else {
     var feedrate = object.userData.lines[simIdx].p2.feedrate
   }
 
-  $("#conetext").html(
-    ` <table style="border: 1px solid #888">
-        <tr class="stripe" style="border-bottom: 1px solid #888">
-          <td><b>CMD</b></td><td align="right"><b>` + text + `</b></td>
-        </tr>
-        <tr class="stripe" style="border-bottom: 1px solid #888">
-          <td><b>X:</b></td><td align="right"><b>` + posx.toFixed(2) + `mm</b></td>
-        </tr>
-        <tr class="stripe" style="border-bottom: 1px solid #888">
-          <td><b>Y:</b></td><td align="right"><b>` + posy.toFixed(2) + `mm</b></td>
-        </tr>
-        <tr class="stripe" style="border-bottom: 1px solid #888">
-          <td><b>Z:</b></td><td align="right"><b>` + posz.toFixed(2) + `mm</b></td>
-        </tr>
-        <tr class="stripe" style="border-bottom: 1px solid #888">
-          <td><b>F:</b></td><td align="right"><b>` + feedrate + `mm/min</b></td>
-        </tr>
-      </table>
-    `);
+  $("#conetext").html(`<span class="tally success drop-shadow">Line ` + (parseInt(object.userData.lines[simIdx].args.indx) - 1) + ": " + object.userData.lines[simIdx].args.origtext + `</span>`);
+  // $('#gcodesent').html(parseInt(object.userData.lines[simIdx].args.indx) - 1);
+
   var simTimeInSec = simTime * 60;
   // console.log(simTimeInSec)
-
   if (!object.userData.lines[simIdx].args.isFake) {
     if (!disable3Drealtimepos) {
       TweenMax.to(cone.position, simTimeInSec, {
+        ease: Linear.easeNone,
         x: posx,
         y: posy,
         z: posz + 20,
@@ -366,12 +261,13 @@ function runSimArc() {
             //return
             simstop();
           } else {
-            arcIdx++;
-            if (simIdx < object.userData.lines[simIdx].p2.threeObjArc.object.userData.points.length) {
-              runSimArc();
-            } else {
-              simIdx++;
+            simIdx++;
+            if (simSingleLine > 0 && object.userData.lines[simIdx].args.indx > simSingleLine + 1) {
+              simstop();
+            } else if (simIdx < object.userData.lines.length) {
               runSim();
+            } else {
+              simstop();
             }
           }
         }
@@ -391,11 +287,17 @@ function runSimArc() {
     }
   }
 
+
+
+
+
 };
+
 
 function simstop() {
   simIdx = 0;
   simRunning = false;
+  simSingleLine = -1;
   $('#runSimBtn').show()
   $('#stopSimBtn').hide()
   // timefactor = 1;
@@ -404,5 +306,51 @@ function simstop() {
   if (!disable3Drealtimepos) {
     cone.visible = false;
   }
+  $("#conetext").hide();
   clearSceneFlag = true;
 }
+
+function simAnimate() {
+  if (simRunning) {
+    if (cone) {
+      // 160widthx200height offset?
+      if (cone.position) {
+        var conepos = toScreenPosition(cone, camera)
+        var offset = $("#renderArea").offset()
+        var farside = $("#renderArea").offset().left + $("#renderArea").outerWidth()
+        var bottomside = $("#renderArea").outerHeight()
+        // console.log(conepos)
+        // console.log(offset)
+        if (conepos.y < 25) {
+          conepos.y = 25;
+        }
+        if (conepos.y > bottomside - 40) {
+          conepos.y = bottomside - 40;
+        }
+        if (conepos.x < 0) {
+          conepos.x = 0;
+        }
+
+        if (conepos.x > farside - $("#conetext").outerWidth()) {
+          conepos.x = farside - $("#conetext").outerWidth();
+        }
+
+        $("#conetext").css('left', conepos.x + "px").css('top', conepos.y - 20 + "px");
+      }
+    }
+  }
+}
+
+function toScreenPosition(obj, camera) {
+  var vector = new THREE.Vector3(obj.position.x, obj.position.y + 10, obj.position.z + 30);
+  var widthHalf = 0.5 * renderer.getContext().canvas.width;
+  var heightHalf = 0.5 * renderer.getContext().canvas.height;
+  vector.project(camera);
+  vector.x = (vector.x * widthHalf) + widthHalf;
+  vector.y = -(vector.y * heightHalf) + heightHalf;
+  return {
+    x: vector.x,
+    y: vector.y
+  };
+
+};

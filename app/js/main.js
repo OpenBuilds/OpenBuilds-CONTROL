@@ -32,10 +32,10 @@ function getChangelog() {
   var template2 = `<ul>`
   $.get("https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
     var lines = data.split('\n');
-    if (lines.length < 7) {
+    if (lines.length < 12) {
       var count = lines.length - 1
     } else {
-      var count = 7
+      var count = 12
     }
     for (var line = 0; line < count - 1; line++) {
       template2 += '<li>' + lines[line] + '</li>'
@@ -86,21 +86,18 @@ $(document).ready(function() {
     tempY = e.pageY;
     // console.log(tempX);
     var offset = $("#editorContextMenu").offset();
-    console.log(offset)
     $("#editorContextMenu").css({
       display: 'block',
       left: e.pageX,
       top: e.pageY
     });
-    console.log(e.pageX, e.pageY)
   }
 
   if (editor) {
     editor.container.addEventListener("contextmenu", function(e) {
-      console.log("context", e)
       setposition(e);
       e.preventDefault();
-      $('#linenumber').html((editor.getSelectionRange().start.row + 1));
+      $('.linenumber').html((editor.getSelectionRange().start.row + 1));
       // alert('success! - rightclicked line ' + (editor.getSelectionRange().start.row + 1));
     }, false);
   }
@@ -175,7 +172,6 @@ $(document).ready(function() {
     }
   });
   console.log('%c', element);
-
 });
 
 function readFile(evt) {

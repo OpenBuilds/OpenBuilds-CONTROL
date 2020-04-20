@@ -805,6 +805,8 @@
                       <button id="stopSimBtn" style="display: none;" title="Stop Sim" class="button dark" onclick="simstop()"><i class="fas fa-stop"></i> Stop Sim</button>&nbsp;
                       <button id="resetViewBtn" title="Resets camera angle and zoom" class="button dark" onclick="resetView(object)"><i class="fas fa-stop"></i> Reset View</button>&nbsp;
                     </div>
+                    <div id="conetext" style="position:absolute;top:0px;left:0px; padding: 0px; display:none;"></div>
+
                   </div>
                   <div class="section" id="tab-four">
                     <div id="macros"></div>
@@ -1004,6 +1006,35 @@
                   </div>
                 </div>
 
+                <div class="card" id="powerSettingsCard">
+                  <div class="card-header p-1 m-0">
+                    <i class="fas fa-fw fa-power-off"></i>Power Settings
+                  </div>
+                  <div class="card-content">
+                    <table class="table striped compact">
+                      <thead>
+                        <tr>
+                          <th style="width: 70%;">Setting</th>
+                          <th style="width: 30%;">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>USB Selective Suspend on AC Power</td>
+                          <td><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td>USB Selective Suspend on Battery Power</td>
+                          <td><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
                 <div class="card">
                   <div class="card-header  p-1 m-0">
                     <i class="fas fa-fw fa-history"></i> Changelog
@@ -1060,7 +1091,8 @@
     <!-- Simulator Context Menu -->
     <ul class="d-menu context" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
       <span id="dropdowncontent">
-        <li onclick="runSimFrom();"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span id="linenumber"></span></a>
+        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, false);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span class="linenumber"></span></a>
+        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, true);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate only line <span class="linenumber"></span></a>
         </li>
       </span>
     </ul>
