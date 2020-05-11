@@ -1718,7 +1718,7 @@ function parseFeedback(data) {
   // debug_log(data)
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
-  if (state == "Alarm") {
+  if (state == "Alarm" || state == "Hold:0") {
     // debug_log("ALARM:  " + data)
     status.comms.connectionStatus = 5;
     switch (status.machine.firmware.type) {
@@ -1975,15 +1975,17 @@ function send1Q() {
       case 'grbl':
         if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
           spaceLeft = BufferSpace('grbl');
-          if (gcodeQueue[queuePointer].length < spaceLeft) {
-            gcode = gcodeQueue[queuePointer];
-            queuePointer++;
-            sentBuffer.push(gcode);
-            machineSend(gcode + '\n');
-            // debug_log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
-          } else {
-            status.comms.blocked = true;
-          }
+          // v1.0.235 removed this
+          // if (gcodeQueue[queuePointer].length < spaceLeft) {
+          gcode = gcodeQueue[queuePointer];
+          queuePointer++;
+          sentBuffer.push(gcode);
+          machineSend(gcode + '\n');
+          // v1.0.235 removed this
+          // debug_log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
+          // } else {
+          //   status.comms.blocked = true;
+          // }
         }
         break;
     }
