@@ -1,3 +1,5 @@
+v1.0.236: Fixed Pause bug
+v1.0.235: Improved Serial Buffer check
 v1.0.234: Added check for USB Selective Suspend to Troubleshooting tab, improved simulation of arcs, Fixed right-click menu in Gcode Editor
 v1.0.233: Cleanup code
 v1.0.232: Fix bug in Keyboard Jog
