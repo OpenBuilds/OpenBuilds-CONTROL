@@ -48,8 +48,8 @@ app.use(express.static(path.join(__dirname, "app")));
 //               Error: error:06000066:public key routines:OPENSSL_internal:DECODE_ERROR
 
 var httpsOptions = {
-  key: fs.readFileSync(path.join(__dirname, 'domain-key.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'domain-crt.cer'))
+  key: fs.readFileSync(path.join(__dirname, 'privkey1.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'fullchain1.pem'))
 };
 
 const httpsserver = https.createServer(httpsOptions, app).listen(3001, function() {
