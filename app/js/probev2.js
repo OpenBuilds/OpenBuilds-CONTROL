@@ -42,11 +42,19 @@ $(document).ready(function() {
       $(".needsXYZProbe").show()
     }
   }
+
+  if (localStorage.getItem('z0platethickness')) {
+    zprobeplate.zoffset = localStorage.getItem('z0platethickness')
+  }
 });
 
 if (localStorage.getItem('customProbe')) {
   customprobeplate = (JSON.parse(localStorage.getItem('customProbe')))
 }
+
+$("#z0platethickness").keyup(function() {
+  localStorage.setItem('z0platethickness', $("#z0platethickness").val())
+});
 // still beta, lets hide it from users
 // if (!enableBetaFeatures) {
 //   $(".needsXYZProbe").hide();
@@ -164,17 +172,15 @@ function probeautotab() {
   $("#zplatesettings").hide();
   $(".img-probe").hide();
   $("#img-probe-auto").show();
-  $("#toggle-probe-advanced").show();
+  $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").hide();
-  if (probemode.stock.position == "fl") {
-    $("#toggle-probe-advanced-content").data('collapse').collapse()
-  } else {
-    $("#toggle-probe-advanced-content").data('collapse').expand()
-  }
+  probemode.stock.position == "fl"
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
   allowContinuousJog = true;
+  $('.probetabxyz').removeClass('active');
+  $('#probeautotab').addClass('active');
 }
 
 function probexyztab() {
@@ -196,6 +202,8 @@ function probexyztab() {
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
   allowContinuousJog = true;
+  $('.probetabxyz').removeClass('active');
+  $('#probexyztab').addClass('active');
 }
 
 function probextab() {
@@ -269,6 +277,9 @@ function probezplatetab() {
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
   allowContinuousJog = true;
+  $('#z0platethickness').val(zprobeplate.zoffset)
+  $('.probetabxyz').removeClass('active');
+  $('#probezplatetab').addClass('active');
 }
 
 function probeendmilltab() {
@@ -334,7 +345,8 @@ function probetype(type) {
     $(".probetabxyz").show();
     $("#editCustomProbeBtn").hide()
     $("#ProbeButtonBarSpacer").show()
-    probexyztab()
+    $("#probeautotab").show();
+    probeautotab()
   } else if (type == "z") {
     $(".needsXYZProbe").hide()
     probemode.probe = zprobeplate // customprobeplate, xyzprobeplate, zprobeplate
@@ -344,6 +356,7 @@ function probetype(type) {
     $(".probetabz").show();
     $("#editCustomProbeBtn").hide()
     $("#ProbeButtonBarSpacer").show()
+    $("#probeautotab").hide();
     probezplatetab();
   } else if (type == "custom") {
     $(".needsXYZProbe").show()
@@ -354,6 +367,7 @@ function probetype(type) {
     $(".probetabxyz").show();
     $("#editCustomProbeBtn").show()
     $("#ProbeButtonBarSpacer").hide()
+    $("#probeautotab").hide();
     probexyztab()
   }
 }
@@ -440,6 +454,10 @@ function runProbeNew() {
   }
 
   // alert(template)
+
+  if (probemode.mode == "auto") {
+    findCenter();
+  }
 
   if (probemode.mode == "xzero") {
     var xoffset = (probemode.probe.xoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the left too far from x0

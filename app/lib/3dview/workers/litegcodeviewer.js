@@ -110,7 +110,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
             'isComment': isComment,
             'feedrate': null
           };
-          //console.log("args:", args);
+          // console.log("args:", args);
           if (tokens.length > 1 && !isComment) {
             tokens.splice(1).forEach(function(token) {
               //console.log("token:", token);

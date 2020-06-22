@@ -32,7 +32,8 @@ function createSurfaceGcode() {
     surfaceX: $("#surfaceX").val(),
     surfaceY: $("#surfaceY").val(),
     surfaceDepth: $("#surfaceDepth").val(),
-    surfaceType: $("input[name='surfaceType']:checked").val()
+    surfaceType: $("input[name='surfaceType']:checked").val(),
+    surfaceRPM: $('#surfaceRPM').val()
   };
   console.log(data);
   localStorage.setItem("lastSurfacingTool", JSON.stringify(data));
@@ -46,9 +47,7 @@ function createSurfaceGcode() {
   var lineOver = data.surfaceDiameter * (data.surfaceStepover / 100);
 
   var gcode =
-    `; Surfacing / Flattening Operation: ` +
-    data.surfaceType +
-    `
+    `; Surfacing / Flattening Operation
 ; Endmill Diameter: ` +
     data.surfaceDiameter +
     `mm
@@ -67,8 +66,10 @@ function createSurfaceGcode() {
 G54; Work Coordinates
 G21; mm-mode
 G90; Absolute Positioning
-M3 S1000; Spindle On
-G0 X0 Y0 Z10
+M3 S` + data.surfaceRPM + `; Spindle On
+G4 P1.8 ; Wait for spindle to come up to speed
+G0 Z10
+G0 X0 Y0
 G1 F` +
     data.surfaceFeedrate + `\n`;
 
@@ -134,15 +135,15 @@ G1 X` +
 
   // Framing Pass
   gcode += `; Framing pass\n`;
-   gcode += `G0 X` + startpointX + ` Y` + startpointY + `Z10\n`; // position at start point
-   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-   gcode += `G1 X` + startpointX + ` Y` + endpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
-   gcode += `G0 Z10\n`;
-   gcode += `G0 X` + endpointX + ` Y` + endpointY +`\n`; // position at start point
-   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-   gcode += `G0 X` + endpointX + ` Y` + startpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
-   gcode += `G0 Z10\n`;
-   gcode += `G0 X0 Y0\n`;
+  gcode += `G0 X` + startpointX + ` Y` + startpointY + `Z10\n`; // position at start point
+  gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
+  gcode += `G1 X` + startpointX + ` Y` + endpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G0 Z10\n`;
+  gcode += `G0 X` + endpointX + ` Y` + endpointY + `\n`; // position at start point
+  gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
+  gcode += `G0 X` + endpointX + ` Y` + startpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G0 Z10\n`;
+  gcode += `G0 X0 Y0\n`;
 
 
   gcode += `M5 S0\n`;

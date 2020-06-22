@@ -123,6 +123,18 @@ $(document).ready(function() {
     inchtommrate()
   });
 
+  $("#jograte").on("keypress", function(e) {
+    if (e.which == 13) {
+      $("#jograte").blur();
+    }
+  })
+
+  $("#jograteinch").on("keypress", function(e) {
+    if (e.which == 13) {
+      $("#jograte").blur();
+    }
+  })
+
   $(document).mousedown(function(e) {
     safeToUpdateSliders = false;
   }).mouseup(function(e) {
@@ -131,7 +143,7 @@ $(document).ready(function() {
     safeToUpdateSliders = true;
   });
 
-  $("#xPos").click(function() {
+  $("#xPosDro").click(function() {
     $("#xPos").hide()
     if (unit == "mm") {
       $("#xPosInput").show().focus().val(laststatus.machine.position.work.x)
@@ -154,15 +166,14 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("G21")
+        sendGcode("$J=G90 G21 X" + $("#xPosInput").val() + " F" + $('#jograte').val());
       } else if (unit == "in") {
-        sendGcode("G20")
+        sendGcode("$J=G90 G20 X" + $("#xPosInput").val() + " F" + $('#jograteinch').val());
       }
-      sendGcode("G0 X" + $("#xPosInput").val())
     }
   });
 
-  $("#yPos").click(function() {
+  $("#yPosDro").click(function() {
     $("#yPos").hide()
     if (unit == "mm") {
       $("#yPosInput").show().focus().val(laststatus.machine.position.work.y)
@@ -185,15 +196,14 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("G21")
+        sendGcode("$J=G90 G21 Y" + $("#yPosInput").val() + " F" + $('#jograte').val());
       } else if (unit == "in") {
-        sendGcode("G20")
+        sendGcode("$J=G90 G20 Y" + $("#yPosInput").val() + " F" + $('#jograteinch').val());
       }
-      sendGcode("G0 Y" + $("#yPosInput").val())
     }
   });
 
-  $("#zPos").click(function() {
+  $("#zPosDro").click(function() {
     $("#zPos").hide()
     if (unit == "mm") {
       $("#zPosInput").show().focus().val(laststatus.machine.position.work.z)
@@ -216,11 +226,10 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("G21")
+        sendGcode("$J=G90 G21 Z" + $("#zPosInput").val() + " F" + $('#jograte').val());
       } else if (unit == "in") {
-        sendGcode("G20")
+        sendGcode("$J=G90 G20 Z" + $("#zPosInput").val() + " F" + $('#jograteinch').val());
       }
-      sendGcode("G0 Z" + $("#zPosInput").val())
     }
   });
 
@@ -603,7 +612,7 @@ $(document).ready(function() {
 });
 
 function changeStepSize(dir) {
-  if (jogdist == 0.1) {
+  if (jogdist == 0.1 || jogdist == 0.254) {
     if (dir == 1) {
       jogdist = 1;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -616,7 +625,7 @@ function changeStepSize(dir) {
     if (dir == -1) {
       // do nothing
     }
-  } else if (jogdist == 1) {
+  } else if (jogdist == 1 || jogdist == 2.54) {
     if (dir == 1) {
       jogdist = 10;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -635,7 +644,7 @@ function changeStepSize(dir) {
       $('#dist01label').removeClass('fg-gray')
       $('#dist01label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 10) {
+  } else if (jogdist == 10 || jogdist == 25.4) {
     if (dir == 1) {
       jogdist = 100;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -654,7 +663,7 @@ function changeStepSize(dir) {
       $('#dist1label').removeClass('fg-gray')
       $('#dist1label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 100) {
+  } else if (jogdist == 100 || jogdist == 254) {
     if (dir == 1) {
       // do nothing
     }

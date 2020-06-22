@@ -151,9 +151,9 @@ function initSocket() {
     showGrbl(true)
   });
 
-  socket.on("prbResult", function(data) {
-    z0proberesult(data)
-  });
+  // socket.on("prbResult", function(data) {
+  //   console.log("Probe Data: ", data)
+  // });
 
   socket.on("jobComplete", function(data) {
 
@@ -166,6 +166,7 @@ function initSocket() {
       $("#completeMsgDiv").html(data.jobCompletedMsg);
       Metro.dialog.open("#completeMsgModal");
     }
+    $('#jobCompleteBtnOk').focus();
 
   });
 

@@ -133,11 +133,11 @@ function edit(i, evt) {
           </div>
           <div class="cell-sm-9">
             <div id="macroGcodeEditField">
-              <textarea  wrap="off" id="macrogcode" type="text" value="` + gcode + `" style="overflow-y: auto; max-height: 100px; resize: none;" rows="4"  data-editable="true"></textarea>
+              <textarea  wrap="off" id="macrogcode" type="text" value="` + gcode + `" style="overflow-y: auto; height: 200px; max-height: 200px; resize: none;" rows="4"  data-editable="true"></textarea>
               <span class="text-small">Enter GCODE to execute</span>
             </div>
             <div id="macroJavascriptEditField" style="display:none;" >
-              <textarea  wrap="off" id="macrojs" type="text" value="` + javascript + `" style="overflow-y: auto; max-height: 100px; resize: none;" rows="4"  data-editable="true"></textarea>
+              <textarea  wrap="off" id="macrojs" type="text" value="" style="overflow-y: auto; height: 200px; max-height: 200px; resize: none;" rows="4"  data-editable="true"></textarea>
               <span class="text-small">Enter Javascript to execute</span><br>
               <span class="text-small">tip: Prototype your code using</span>
               <span class="text-small"> the Devtools Console (Ctrl+Shift+i > Console)</span>
@@ -165,7 +165,8 @@ function edit(i, evt) {
 
           <label class="cell-sm-3">Keyboard Shortcut</label>
           <div class="cell-sm-9" >
-            <input id="macrokeyboardshortcut" class="macrokeyboardshortcutinput" type="text" value="` + macrokeyboardshortcut + `" data-editable="true" onclick="$('.macrokeyboardshortcutinput').removeClass('newMacroKeyAssignment'); $('#macrokeyboardshortcut').addClass('newMacroKeyAssignment')">
+            <input id="macrokeyboardshortcut" class="macrokeyboardshortcutinput" type="text" value="` + macrokeyboardshortcut + `" data-role="input" data-clear-button="true" data-editable="true" onclick="$('.macrokeyboardshortcutinput').removeClass('newMacroKeyAssignment'); $('#macrokeyboardshortcut').addClass('newMacroKeyAssignment')">
+            <span class="text-small fg-red" id="alreadyAssignedWarn" style="display: none;"></span>
             <span class="text-small">Click above to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.</span>
           </div>
       </div>
@@ -174,6 +175,7 @@ function edit(i, evt) {
 
   Metro.dialog.create({
     title: "Edit Macro",
+    width: 600,
     content: macroTemplate,
     actions: [{
         caption: "Cancel",
@@ -257,8 +259,29 @@ function edit(i, evt) {
       } else {
         newVal += e.key.toLowerCase();
       }
-      $('.newMacroKeyAssignment').val(newVal)
+      // $('.newMacroKeyAssignment').val(newVal)
+
+      var alreadyAssigned = false;
+      var assignedMacro = '';
+      for (i = 0; i < buttonsarray.length; i++) {
+        if (newVal == buttonsarray[i].macrokeyboardshortcut) {
+          alreadyAssigned = true;
+          assignedMacro = buttonsarray[i].title
+        }
+      }
+      if (alreadyAssigned) {
+        $('#alreadyAssignedWarn').show();
+        $('#alreadyAssignedWarn').html(newVal + " is already assigned to \"" + assignedMacro + "\"<br>");
+        $('#macrokeyboardshortcut').addClass("alert")
+      } else {
+        $('#alreadyAssignedWarn').hide();
+        $('#macrokeyboardshortcut').removeClass("alert")
+      }
     }
+
+    $('.newMacroKeyAssignment').val(newVal)
+
+    $('#jsedit').val(javascript);
 
   });
 

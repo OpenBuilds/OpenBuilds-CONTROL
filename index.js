@@ -323,9 +323,7 @@ var status = {
       x: 0.00,
       y: 0.00,
       z: 0.00,
-      state: -1,
-      plate: 0.00,
-      request: {}
+      state: -1
     },
     position: {
       work: {
@@ -926,33 +924,28 @@ io.on("connection", function(socket) {
 
         // [PRB:0.000,0.000,0.000:0]
         if (data.indexOf("[PRB:") === 0) {
-          if (status.machine.probe.request.plate) {
-            debug_log(data)
-            var prbLen = data.substr(5).search(/\]/);
-            var prbData = data.substr(5, prbLen).split(/,/);
-            var success = data.split(':')[2].split(']')[0];
-            status.machine.probe.x = prbData[0];
-            status.machine.probe.y = prbData[1];
-            status.machine.probe.z = prbData[2];
-            status.machine.probe.state = success;
-            if (success > 0) {
-              var output = {
-                'command': '[ PROBE ]',
-                'response': "Probe Completed.  Setting Z to " + status.machine.probe.plate + 'mm',
-              }
-              io.sockets.emit('data', output);
-              addQToEnd('G10 P1 L20 Z' + status.machine.probe.plate);
-              send1Q();
-            } else {
-              var output = {
-                'command': '[ PROBE ]',
-                'response': "Probe move aborted - probe did not make contact within specified distance",
-              }
-              io.sockets.emit('data', output);
+          debug_log(data)
+          var prbLen = data.substr(5).search(/\]/);
+          var prbData = data.substr(5, prbLen).split(/,/);
+          var success = data.split(':')[2].split(']')[0];
+          status.machine.probe.x = prbData[0];
+          status.machine.probe.y = prbData[1];
+          status.machine.probe.z = prbData[2].split(':')[0];
+          status.machine.probe.state = success;
+          if (success > 0) {
+            var output = {
+              'command': '[ PROBE ]',
+              'response': "Probe Completed.",
             }
-            io.sockets.emit('prbResult', status);
-            status.machine.probe.request = "";
+            io.sockets.emit('data', output);
+          } else {
+            var output = {
+              'command': '[ PROBE ]',
+              'response': "Probe move ERROR - probe did not make contact within specified distance",
+            }
+            io.sockets.emit('data', output);
           }
+          io.sockets.emit('prbResult', status.machine.probe);
         };
 
         // Machine Identification
@@ -1189,29 +1182,6 @@ io.on("connection", function(socket) {
       }
     } else {
       debug_log('ERROR: Machine connection not open!');
-    }
-  });
-
-  socket.on('zProbe', function(data) {
-    debug_log('Probing ' + data.direction + ' down to ' + data.dist + "mm at " + data.feedrate + "mm/min and then subtracting a plate of " + data.plate + "mm")
-    status.machine.probe.request = data;
-    status.machine.probe.x = 0.00;
-    status.machine.probe.y = 0.00;
-    status.machine.probe.z = 0.00;
-    status.machine.probe.state = -1;
-    status.machine.probe.plate = data.plate;
-    switch (status.machine.firmware.type) {
-      case 'grbl':
-        addQToEnd('G21');
-        addQToEnd('G10 P1 L20 Z0');
-        addQToEnd('G38.2 Z-' + data.dist + ' F' + data.feedrate);
-        send1Q();
-        break;
-        debug_log('ERROR: Unsupported firmware!');
-        break;
-      default:
-        debug_log('ERROR: Unsupported firmware!');
-        break;
     }
   });
 

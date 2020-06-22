@@ -437,7 +437,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro">
+                        <div class="dro" id="xPosDro">
                           <div class="float-left fg-red" data-fa-transform="right-15">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
@@ -473,7 +473,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro">
+                        <div class="dro" id="yPosDro">
                           <div class="float-left fg-green">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
@@ -508,7 +508,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro">
+                        <div class="dro" id="zPosDro">
                           <div class="float-left fg-blue">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
@@ -1165,7 +1165,7 @@
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <form>
             <div class="row mb-2">
-              <div class="cell-sm-6">
+              <div class="cell-sm-7">
                 <div class="row mb-2">
                   <label class="cell-sm-6">Router Bit Diameter</label>
                   <div class="cell-sm-6">
@@ -1185,7 +1185,8 @@
                 <div class="row mb-2 border-bottom bd-lightGray">
                   <label class="cell-sm-6">Feedrate</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceFeedrate" type="number" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800" data-editable="true">
+                    <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800" data-editable="true"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                     <small class="text-muted">Cutting speed</small>
                   </div>
                 </div>
@@ -1213,8 +1214,16 @@
                   </div>
                 </div>
 
+                <div class="row mb-2 border-bottom bd-lightGray">
+                  <label class="cell-sm-6">Spindle RPM</label>
+                  <div class="cell-sm-6">
+                    <input id="surfaceRPM" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="1000" value="1000" data-editable="true">
+                    <small class="text-muted">Spindle RPM for variable spindles</small>
+                  </div>
+                </div>
+
               </div>
-              <div class="cell-sm-6">
+              <div class="cell-sm-5">
                 <small class="text-muted">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
                   uneven surface finish
                 </small>
@@ -1295,13 +1304,13 @@
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <nav data-role="ribbonmenu">
             <ul class="tabs-holder">
+              <li onclick="probeautotab();" class="probetabxyz" id="probeautotab"><a href="#">Automatic</a></li>
               <li onclick="probexyztab();" class="probetabxyz" id="probexyztab"><a href="#">XYZ&nbsp;Zero</a></li>
               <li onclick="probextab();" class="probetabxyz" id="probextab"><a href="#">X&nbsp;Zero</a></li>
               <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y&nbsp;Zero</a></li>
               <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z&nbsp;Zero</a></li>
               <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z&nbsp;Touch&nbsp;Plate</a></li>
-              <!-- <li onclick="probeautotab();" class="probetabxyz disabled" id="probeautotab"><a href="#">Automatic</a></li>
-              <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
+              <!-- <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
             </ul>
           </nav>
 
@@ -1550,7 +1559,7 @@
         </div>
         <div class="dialog-actions">
           <div class="float-right">
-            <button class="button primary js-dialog-close">OK</button>
+            <button class="button primary js-dialog-close" id="jobCompleteBtnOk">OK</button>
           </div>
         </div>
       </div>
@@ -1625,8 +1634,10 @@
   <script type="text/javascript" src="js/calibrate-z.js"></script>
   <script type="text/javascript" src="js/calibrate-servo.js"></script>
 
-  <script type="text/javascript" src="js/probe.js"></script>
+
   <script type="text/javascript" src="js/probev2.js"></script>
+  <script type="text/javascript" src="js/holefinder.js"></script>
+
 
   <script type="text/javascript" src="wizards/surfacing.js"></script>
 

@@ -121,14 +121,20 @@ function parseGcodeInWebWorker(gcode) {
           }, 200);
           $('#3dviewicon').removeClass('fa-pulse');
           $('#3dviewlabel').html(' 3D View')
+        } else {
+          // Didn't get an Object
+          $('#3dviewicon').removeClass('fa-pulse');
+          $('#3dviewlabel').html(' 3D View')
         }
       }, false);
 
       worker.postMessage({
         'data': gcode
       });
+
       $('#3dviewicon').addClass('fa-pulse');
       $('#3dviewlabel').html(' 3D View (rendering, please wait...)')
+
       // populateToolChanges(gcode)
     }
   }
