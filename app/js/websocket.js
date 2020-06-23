@@ -427,6 +427,7 @@ function initSocket() {
           case 'D':
             // console.log('PIN: DOOR');
             $('#doorpin').removeClass('success').addClass('alert').html('ON')
+
             break;
           case 'H':
             // console.log('PIN: HOLD');

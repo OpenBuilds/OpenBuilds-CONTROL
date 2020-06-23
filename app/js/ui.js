@@ -150,8 +150,13 @@ function setControlBar(val, status) {
     $('#grblProbeMenu').show().attr('disabled', false);
     if (typeof ace !== 'undefined') {
       if (toolchanges.length) {
-        $('#runToolsBtn').show().attr('disabled', editor.session.getLength() < 2);
-        $('#runBtn').hide().attr('disabled', editor.session.getLength() < 2);
+        if (status.machine.inputs.includes('D')) {
+          $('#runToolsBtn').show().attr('disabled', true);
+          $('#runBtn').hide().attr('disabled', true);
+        } else {
+          $('#runToolsBtn').show().attr('disabled', editor.session.getLength() < 2);
+          $('#runBtn').hide().attr('disabled', editor.session.getLength() < 2);
+        }
         if (webgl) {
           $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
         } else {
@@ -160,7 +165,12 @@ function setControlBar(val, status) {
 
       } else {
         $('#runToolsBtn').hide().attr('disabled', editor.session.getLength() < 2);
-        $('#runBtn').show().attr('disabled', editor.session.getLength() < 2);
+        if (status.machine.inputs.includes('D')) {
+          $('#runBtn').show().attr('disabled', true);
+        } else {
+          $('#runBtn').show().attr('disabled', editor.session.getLength() < 2);
+        }
+
         if (webgl) {
           $('#chkSize').show().attr('disabled', editor.session.getLength() < 2);
         } else {
@@ -169,7 +179,11 @@ function setControlBar(val, status) {
       }
 
     } else {
-      $('#runBtn').show().attr('disabled', false);
+      if (status.machine.inputs.includes('D')) {
+        $('#runBtn').show().attr('disabled', true);
+      } else {
+        $('#runBtn').show().attr('disabled', false);
+      }
       $('#runToolsBtn').hide().attr('disabled', false);
     }
     $('#resumeBtn').hide().attr('disabled', true);
@@ -220,7 +234,12 @@ function setControlBar(val, status) {
       $('#runBtn').hide().attr('disabled', true);
     }
     $('#chkSize').show().attr('disabled', true);
-    $('#resumeBtn').show().attr('disabled', false);
+    if (status.machine.inputs.includes('D')) {
+      $('#resumeBtn').show().attr('disabled', true);
+    } else {
+      $('#resumeBtn').show().attr('disabled', false);
+    }
+
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);

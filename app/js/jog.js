@@ -407,7 +407,7 @@ $(document).ready(function() {
   });
 
   $('.xP').on('touchstart mousedown', function(ev) {
-    console.log(ev)
+    // console.log("xp down")
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
       var direction = "X";
@@ -433,6 +433,7 @@ $(document).ready(function() {
     $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.xP').on('touchend mouseup', function(ev) {
+    // console.log("xp up")
     ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()

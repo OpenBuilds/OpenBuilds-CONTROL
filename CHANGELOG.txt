@@ -1,4 +1,4 @@
-v1.0.238: Fix cosmetic bug in editing JS Macros. Fixed issue #128, #129, #130, #131, #132, #134, #135
+v1.0.238: Added Automatic Probing (Find Endmill diameter automatically), Fix cosmetic bug in editing JS Macros. Fixed issues/enhancements #92, #127, #128, #129, #130, #131, #132, #134, #135
 v1.0.237: Fixed Pause Bug
 v1.0.236: Fixed Pause bug
 v1.0.235: Improved Serial Buffer check

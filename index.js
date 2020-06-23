@@ -1174,11 +1174,9 @@ io.on("connection", function(socket) {
             addQToEnd(tosend);
           }
         }
-        if (i > 0) {
-          status.comms.runStatus = 'Running'
-          // debug_log('sending ' + JSON.stringify(gcodeQueue))
-          send1Q();
-        }
+        status.comms.runStatus = 'Running'
+        // debug_log('sending ' + JSON.stringify(gcodeQueue))
+        send1Q();
       }
     } else {
       debug_log('ERROR: Machine connection not open!');
@@ -1645,28 +1643,31 @@ function readFile(path) {
   }
 }
 
-function machineSend(gcode) {
-  // console.time('MachineSend');
-  // debug_log("SENDING: " + gcode)
+function machineSend(gcode, realtime) {
+  debug_log("SENDING: " + gcode)
   if (port.isOpen) {
-    if (gcode.match(/T([\d.]+)/i)) {
-      var tool = parseFloat(RegExp.$1);
-      status.machine.tool.nexttool.number = tool
-      status.machine.tool.nexttool.line = gcode
+    if (realtime) {
+      // realtime commands doesnt count toward the queue, does not generate OK
+      port.write(gcode);
+    } else {
+      if (gcode.match(/T([\d.]+)/i)) {
+        var tool = parseFloat(RegExp.$1);
+        status.machine.tool.nexttool.number = tool
+        status.machine.tool.nexttool.line = gcode
+      }
+      var queueLeft = parseInt((gcodeQueue.length - queuePointer))
+      var queueTotal = parseInt(gcodeQueue.length)
+      // debug_log("Q: " + queueLeft)
+      var data = []
+      data.push(queueLeft);
+      data.push(queueTotal);
+      io.sockets.emit("queueCount", data);
+      // debug_log(gcode)
+      port.write(gcode);
     }
-    var queueLeft = parseInt((gcodeQueue.length - queuePointer))
-    var queueTotal = parseInt(gcodeQueue.length)
-    // debug_log("Q: " + queueLeft)
-    var data = []
-    data.push(queueLeft);
-    data.push(queueTotal);
-    io.sockets.emit("queueCount", data);
-    // debug_log(gcode)
-    port.write(gcode);
   } else {
     debug_log("PORT NOT OPEN")
   }
-  // console.timeEnd('MachineSend');
 }
 
 function stopPort() {
@@ -1949,7 +1950,7 @@ function send1Q() {
             gcode = gcodeQueue[queuePointer];
             queuePointer++;
             sentBuffer.push(gcode);
-            machineSend(gcode + '\n');
+            machineSend(gcode + '\n', false);
             // debug_log('Sent: ' + gcode + ' Q: ' + (gcodeQueue.length - queuePointer) + ' Bspace: ' + (spaceLeft - gcode.length - 1));
           } else {
             status.comms.blocked = true;
@@ -1987,7 +1988,7 @@ function addQToStart(gcode) {
 
 function addQRealtime(gcode) {
   // realtime command skip the send1Q as it doesnt respond with an ok
-  machineSend(gcode);
+  machineSend(gcode, true);
 }
 
 // Electron
@@ -2342,6 +2343,7 @@ function stop(jog) {
         if (jog) {
           addQRealtime(String.fromCharCode(0x85)); // canceljog
           debug_log('Sent: 0x85 Jog Cancel');
+          debug_log(queuePointer, gcodeQueue)
         } else {
           addQRealtime('!'); // hold
           debug_log('Sent: !');
@@ -2375,7 +2377,7 @@ function stop(jog) {
 }
 
 function pause() {
-  if (status.comms.connectionStatus > 0) {
+  if (status.comms.connectionStatus == 3) {
     status.comms.paused = true;
     debug_log('PAUSE');
     switch (status.machine.firmware.type) {
