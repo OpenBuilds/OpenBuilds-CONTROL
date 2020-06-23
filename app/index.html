@@ -454,7 +454,7 @@
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
-                            <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
+                            <li id="gotoXzeroMpos"><a href="#"><span class="fas fa-chart-line fg-red icon"></span>Goto X<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
@@ -489,7 +489,7 @@
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
-                            <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
+                            <li id="gotoYzeroMpos"><a href="#"><span class="fas fa-chart-line fg-green icon"></span>Goto Y<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
@@ -524,7 +524,7 @@
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
-                            <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
+                            <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
                             <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
@@ -558,8 +558,19 @@
                             </span>
                           </button>
                           <ul class="d-menu context drop-shadow" data-role="dropdown">
-                            <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
-                            <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Machine Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
+                            <li id="gotozeroWPos">
+                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)
+                              </a>
+                            </li>
+                            <li id="gotozeroZmPosXYwPos">
+                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Z Machine Coord, XY Work Coord) (G53 G0 Z<span class="PullOffMPos">0</span>, G0 X0 Y0, G0 Z0) (Retract Z to
+                                Machine Coord)
+                              </a>
+                            </li>
+                            <li id="gotozeroMPos">
+                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Machine Coord) (G53 G0 Z<span class="PullOffMPos">0</span>, G53 G0 X<span class="PullOffMPos">0</span> Y<span class="PullOffMPos">0</span>)
+                              </a>
+                            </li>
                           </ul>
                         </div>
                       </td>

@@ -307,11 +307,52 @@ $(document).ready(function() {
     sendGcode('G0 Z0');
   });
 
-  $('#gotozeroMPos').on('click', function(ev) {
-    sendGcode('G53 G0 Z0');
+  $('#gotoXzeroMpos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 X-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 X0');
+    }
+  });
+
+  $('#gotoYzeroMpos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 Y-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 Y0');
+    }
+  });
+
+  $('#gotoZzeroMpos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 Z-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 Z0');
+    }
+  });
+
+  $('#gotozeroZmPosXYwPos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 Z-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 Z0');
+    }
     sendGcode('G0 X0 Y0');
     sendGcode('G0 Z0');
   });
+
+  $('#gotozeroMPos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 Z-' + grblParams["$27"]);
+      sendGcode('G53 G0 X-' + grblParams["$27"] + ' Y-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 Z0');
+      sendGcode('G53 G0 X0 Y0');
+    }
+
+
+  });
+
 
   // $('.xM').on('click', function(ev) {
   //   if (!allowContinuousJog) {

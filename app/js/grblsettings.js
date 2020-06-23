@@ -70,6 +70,7 @@ function grblSettings(data) {
     $('#gotoXzeroMpos').removeClass('disabled')
     $('#gotoYzeroMpos').removeClass('disabled')
     $('#gotoZzeroMpos').removeClass('disabled')
+    $('.PullOffMPos').html("-" + grblParams['$27'])
   } else {
     $('#gotozeroMPos').addClass('disabled')
     $('#homeBtn').attr('disabled', true)
