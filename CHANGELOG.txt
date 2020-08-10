@@ -1,3 +1,4 @@
+v1.0.239: Add support for VFD/PWM spindles to Tool On menu, Fixed bug in Surfacing Wizard Issue #139, Updated Certificates
 v1.0.238: Added Automatic Probing (Find Endmill diameter automatically), Fix cosmetic bug in editing JS Macros. Fixed issues/enhancements #92, #108, #127, #128, #129, #130, #131, #132, #134, #135
 v1.0.236/7: Fixed Pause bug
 v1.0.235: Improved Serial Buffer check

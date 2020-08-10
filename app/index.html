@@ -243,21 +243,31 @@
                     <span class="caption">Tool<br>On</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Spindle On (M3 S1000)</a></li>
-                    <!-- <li class="divider"></li> -->
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li>
+                      <a href="#" class="dropdown-toggle">Variable Speed Spindle On (M3 Sxxx)</a>
+                      <ul class="ribbon-dropdown" data-role="dropdown">
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 5% RPM (M3 S<span class="ToolOnS5">50</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 10% RPM (M3 S<span class="ToolOnS10">100</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 25% RPM (M3 S<span class="ToolOnS25">250</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 50% RPM (M3 S<span class="ToolOnS50">500</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 75% RPM (M3 S<span class="ToolOnS75">750</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 100% RPM (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                      </ul>
+                    </li>
                     <li>
                       <a href="#" class="dropdown-toggle">Laser On (M3 Sxxx)</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S50\n G1F1000')"><a href="#">Laser On 5% Power (M3 S50)</a></li>
-                        <li onclick="sendGcode('M3 S100\n G1F1000')"><a href="#">Laser On 10% Power (M3 S100)</a></li>
-                        <li onclick="sendGcode('M3 S250\n G1F1000')"><a href="#">Laser On 25% Power (M3 S250)</a></li>
-                        <li onclick="sendGcode('M3 S500\n G1F1000')"><a href="#">Laser On 50% Power (M3 S500)</a></li>
-                        <li onclick="sendGcode('M3 S750\n G1F1000')"><a href="#">Laser On 75% Power (M3 S750)</a></li>
-                        <li onclick="sendGcode('M3 S1000\n G1F1000')"><a href="#">Laser On 100% Power (M3 S1000)</a></li>
+                        <li onclick="sendGcode('M3 S50\n G1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
+                        <li onclick="sendGcode('M3 S100\n G1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
+                        <li onclick="sendGcode('M3 S250\n G1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
+                        <li onclick="sendGcode('M3 S500\n G1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
+                        <li onclick="sendGcode('M3 S750\n G1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
+                        <li onclick="sendGcode('M3 S1000\n G1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                       </ul>
                     </li>
                     <!-- <li class="divider"></li> -->
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S1000')">Plasma On (M3 S1000)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
@@ -278,7 +288,7 @@
                     <span class="caption">Tool<br>Off</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Spindle / Laser / Plasma Off (M5)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Router / Spindle / Laser / Plasma Off (M5)</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M9')">Coolant Off (M9)</a></li>
 
