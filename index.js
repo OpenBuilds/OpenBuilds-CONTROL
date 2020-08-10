@@ -1,5 +1,9 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
+process.on('uncaughtException', function(err) {
+  console.log(err);
+})
+
 // To see console.log output run with `DEBUGCONTROL=true electron .` or set environment variable for DEBUGCONTROL=true
 // debug_log debug overhead
 DEBUG = false;
@@ -2240,7 +2244,10 @@ if (isElectron()) {
         title: "OpenBuilds CONTROL ",
         frame: false,
         autoHideMenuBar: true,
-        icon: '/app/favicon.png',
+        //icon: '/app/favicon.png',
+        icon: nativeImage.createFromPath(
+          path.join(__dirname, "/app/favicon.png")
+        ),
         webgl: true,
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
@@ -2251,7 +2258,7 @@ if (isElectron()) {
       var ipaddr = ip.address();
       // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
       jogWindow.loadURL("http://localhost:3000/");
-      // jogWindow.webContents.openDevTools()
+      jogWindow.webContents.openDevTools()
 
       jogWindow.on('close', function(event) {
         if (!forceQuit) {
