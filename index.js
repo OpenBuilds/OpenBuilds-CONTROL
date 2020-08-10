@@ -2258,7 +2258,7 @@ if (isElectron()) {
       var ipaddr = ip.address();
       // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
       jogWindow.loadURL("http://localhost:3000/");
-      jogWindow.webContents.openDevTools()
+      //jogWindow.webContents.openDevTools()
 
       jogWindow.on('close', function(event) {
         if (!forceQuit) {

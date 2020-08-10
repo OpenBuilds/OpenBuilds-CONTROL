@@ -1,3 +1,4 @@
+v1.0.242: Update CI to NodeJS-12
 v1.0.241: Updated Dependencies
 v1.0.240: Updated Certicates
 v1.0.239: Add support for VFD/PWM spindles to Tool On menu, Fixed bug in Surfacing Wizard Issue #139
