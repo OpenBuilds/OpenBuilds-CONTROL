@@ -670,4 +670,5 @@ function saveEditCustomProbe() {
     name: "Custom Z Touchplate", // stays
   };
   localStorage.setItem('customProbe', JSON.stringify(customprobeplate));
+  probetype('custom');
 }
