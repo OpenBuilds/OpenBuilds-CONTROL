@@ -626,27 +626,29 @@ function closePort() {
 }
 
 function populatePortsMenu() {
-  var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Ports">`
-  for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
-    var port = friendlyPort(i)
-    response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
-  };
-  if (!laststatus.comms.interfaces.ports.length) {
-    response += `<option value="">Waiting for USB</option>`
-    $("#driverBtn").show();
-  } else {
-    $("#driverBtn").hide();
+  if (laststatus) {
+    var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Ports">`
+    for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
+      var port = friendlyPort(i)
+      response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
+    };
+    if (!laststatus.comms.interfaces.ports.length) {
+      response += `<option value="">Waiting for USB</option>`
+      $("#driverBtn").show();
+    } else {
+      $("#driverBtn").hide();
+    }
+    response += `</optgroup></select>`
+    var select = $("#portUSB").data("select");
+    select.data(response);
+    var select2 = $("#portUSB2").data("select");
+    if (select2) {
+      select2.data(response);
+    }
+    $('#portUSB').parent(".select").removeClass('disabled')
+    $('#portUSB2').parent(".select").removeClass('disabled')
+    $("#connectBtn").attr('disabled', false);
   }
-  response += `</optgroup></select>`
-  var select = $("#portUSB").data("select");
-  select.data(response);
-  var select2 = $("#portUSB2").data("select");
-  if (select2) {
-    select2.data(response);
-  }
-  $('#portUSB').parent(".select").removeClass('disabled')
-  $('#portUSB2').parent(".select").removeClass('disabled')
-  $("#connectBtn").attr('disabled', false);
 }
 
 function sendGcode(gcode) {
