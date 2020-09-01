@@ -24,8 +24,8 @@ npm install > /dev/null 2>&1
 echo "(9/10) Recompiling OpenBuilds-CONTROL dependencies..."
 npm rebuild > /dev/null 2>&1
 echo "(10/10) Creating Menu and Desktop Shortcuts..."
-cp pi-shortcut.desktop ~/Desktop/OpenBuilds-CONTROL.desktop > /dev/null 2>&1
-sudo cp pi-shortcut.desktop /usr/share/applications/OpenBuilds-CONTROL.desktop > /dev/null 2>&1
+cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop ~/Desktop/OpenBuilds-CONTROL.desktop > /dev/null 2>&1
+sudo cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop /usr/share/applications/OpenBuilds-CONTROL.desktop > /dev/null 2>&1
 echo "---------------------------------------------------"
 echo "[COMPLETE] Install Complete!  Thank you!"
 echo "---------------------------------------------------"
