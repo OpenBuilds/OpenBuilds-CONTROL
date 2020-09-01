@@ -2441,7 +2441,7 @@ function startChrome() {
     const {
       spawn
     } = require('child_process');
-    const chrome = spawn('MESA_EXTENSION_OVERRIDE=-GL_MESA_framebuffer_flip_y chromium-browser', ['-app=http://127.0.0.1:3000']);
+    const chrome = spawn('chromium-browser', ['-app=http://127.0.0.1:3000']);
     chrome.on('close', (code) => {
       debug_log(`Chromium process exited with code ${code}`);
       process.exit(0);
