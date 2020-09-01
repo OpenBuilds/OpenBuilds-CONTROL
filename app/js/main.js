@@ -23,7 +23,7 @@ function setWindowTitle(status) {
   }
 
   $('#windowtitle').html(string)
-
+  document.title = string
 
 }
 
