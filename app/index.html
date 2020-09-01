@@ -144,7 +144,6 @@
                     <button class="button small success float-right" onclick="selectPort()" id="connectBtn" type="button" style="margin: 5px;" disabled>Connect</button>
                     <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button" style="margin: 5px;">Disconnect</button>
                     <button class="button small secondary disabled" disabled style="display:none;" id="flashBtn" type="button" style="margin: 5px;">please wait...</button>
-                    <button class="button small primary float-right" onclick="socket.emit('opendriverspage', true);" id="driverBtn" type="button" style="margin: 5px;">Install Drivers</button>
                     <div class="ribbon-group" id="grblButtons">
                       <hr>
                       <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">

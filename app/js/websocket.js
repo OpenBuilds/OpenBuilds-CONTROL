@@ -300,7 +300,7 @@ function initSocket() {
     if (nostatusyet) {
       // $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
       setWindowTitle(status)
-      if (status.driver.operatingsystem == "rpi") {
+      if (status.driver.operatingsystem == "rpi" || ) {
         $('#windowtitlebar').hide();
       }
     }
