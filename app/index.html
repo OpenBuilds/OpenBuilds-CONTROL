@@ -33,7 +33,6 @@
         <div class="buttons" style="-webkit-app-region: no-drag">
           <span class="btn-min" onclick="socket.emit('minimize')"></span>
           <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="socket.emit('minimisetotray')"></span>
-          <!-- <span data-cls-hint="bg-light fg-dark drop-shadow" class="btn-close" onclick="confirmQuit()"></span> -->
         </div>
       </div>
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
@@ -1640,7 +1639,7 @@
   <script type="text/javascript" src="js/metroactions.js"></script>
   <script type="text/javascript" src="js/jog.js"></script>
   <script type="text/javascript" src="js/servo.js"></script>
-  <script type="text/javascript" src="js/calibrate.js"></script>
+
   <script type="text/javascript" src="js/widget.js"></script>
 
   <script type="text/javascript" src="js/keyboard.js"></script>
@@ -1649,19 +1648,19 @@
 
   <script type="text/javascript" src="js/grbl-defaults.js"></script>
 
-  <script type="text/javascript" src="js/calibrate-x.js"></script>
-  <script type="text/javascript" src="js/calibrate-y.js"></script>
-  <script type="text/javascript" src="js/calibrate-z.js"></script>
-  <script type="text/javascript" src="js/calibrate-servo.js"></script>
+  <!-- Wizards -->
+  <script type="text/javascript" src="wizards/calibration/calibrate.js"></script>
+  <script type="text/javascript" src="wizards/calibration/calibrate-x.js"></script>
+  <script type="text/javascript" src="wizards/calibration/calibrate-y.js"></script>
+  <script type="text/javascript" src="wizards/calibration/calibrate-z.js"></script>
+  <script type="text/javascript" src="wizards/calibration/calibrate-servo.js"></script>
 
+  <script type="text/javascript" src="wizards/probe/probev2.js"></script>
+  <script type="text/javascript" src="wizards/probe/holefinder.js"></script>
 
-  <script type="text/javascript" src="js/probev2.js"></script>
-  <script type="text/javascript" src="js/holefinder.js"></script>
+  <script type="text/javascript" src="wizards/surfacing/surfacing.js"></script>
 
-
-  <script type="text/javascript" src="wizards/surfacing.js"></script>
-
-  <script type="text/javascript" src="js/grbl-flashing.js"></script>
+  <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script>
 
   <script type="text/javascript" src="js/toolchange.js"></script>
 

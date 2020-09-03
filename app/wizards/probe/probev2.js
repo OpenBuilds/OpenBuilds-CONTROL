@@ -64,13 +64,19 @@ function openProbeDialog() {
   Metro.dialog.open("#xyzProbeWindow");
   if (localStorage.getItem('probeType')) {
     probetype(localStorage.getItem('probeType'))
-    if (localStorage.getItem('probeType') == "z") {
+    if (localStorage.getItem('probeType') == "z") { // Z Touchplate
       setTimeout(function() {
         probezplatetab()
         $(".probetabxyz").removeClass("active")
         $("#probezplatetab").addClass("active")
       }, 100)
-    } else {
+    } else if (localStorage.getItem('probeType') == "xyz") { // OpenBuilds Probe Plus XYZ
+      setTimeout(function() {
+        probeautotab()
+        $(".probetabxyz").removeClass("active")
+        $("#probeautotab").addClass("active")
+      }, 100)
+    } else { // Custom Probe
       setTimeout(function() {
         probexyztab()
         $(".probetabxyz").removeClass("active")
