@@ -1,3 +1,4 @@
+v1.0.247/8: Added LEAD1515 Profile
 v1.0.246: Made AutoProbe the default for button on Main Toolbar, cleaned up codebase, minor changes to autoprobe sequence
 v1.0.245: Updates for Pi4 Buster support
 v1.0.244: Fix for Custom XYZ Probe Values bug #144, Remove Install Drivers button (users misunderstood)
