@@ -762,6 +762,7 @@ io.on("connection", function(socket) {
             }
             io.sockets.emit('data', output);
             addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+            addQRealtime("~\n");
             debug_log("Sent: Ctrl+x");
           }
         }, config.grblWaitTime * 1000);
