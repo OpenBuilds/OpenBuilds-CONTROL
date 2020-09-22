@@ -975,6 +975,7 @@ io.on("connection", function(socket) {
             io.sockets.emit('grbl')
           }, 600)
           // Start interval for status queries
+          clearInterval(statusLoop);
           statusLoop = setInterval(function() {
             if (status.comms.connectionStatus > 0) {
               addQRealtime("?");
