@@ -54,7 +54,10 @@ if (localStorage.getItem('customProbe')) {
 
 $("#z0platethickness").keyup(function() {
   localStorage.setItem('z0platethickness', $("#z0platethickness").val())
+  zprobeplate.zoffset = $("#z0platethickness").val()
 });
+
+
 // still beta, lets hide it from users
 // if (!enableBetaFeatures) {
 //   $(".needsXYZProbe").hide();
@@ -286,6 +289,12 @@ function probezplatetab() {
   $('#z0platethickness').val(zprobeplate.zoffset)
   $('.probetabxyz').removeClass('active');
   $('#probezplatetab').addClass('active');
+  if (zprobeplate.zoffset != 20) {
+    $("#toggle-probe-advanced-content").data('collapse').expand()
+  } else {
+    $("#toggle-probe-advanced-content").data('collapse').collapse()
+  }
+
 }
 
 function probeendmilltab() {

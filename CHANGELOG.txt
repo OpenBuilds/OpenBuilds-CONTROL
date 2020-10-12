@@ -1,3 +1,4 @@
+v1.0.251: Updated LEAD1515 Profile, Improved Stop button, Fixed Custom Z Plate thickness Bug
 v1.0.250: Fix for statusLoop on reconnect
 v1.0.249: Fixed bug related to $32 in machine profiles, Updated LEAD1515 Profile
 v1.0.247/8: Added LEAD1515 Profile

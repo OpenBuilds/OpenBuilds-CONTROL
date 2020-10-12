@@ -68,7 +68,11 @@ function inMode() {
 }
 
 function cancelJog() {
-  socket.emit('stop', true)
+  socket.emit('stop', {
+    stop: false,
+    jog: true,
+    abort: false
+  })
   continuousJogRunning = false;
 }
 

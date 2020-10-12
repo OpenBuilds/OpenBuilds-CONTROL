@@ -2335,28 +2335,36 @@ if (isElectron()) {
 }
 
 
-function stop(jog) {
+function stop(data) {
+  //data = { stop: false, jog: false, abort: true}
   if (status.comms.connectionStatus > 0) {
     status.comms.paused = true;
     debug_log('STOP');
     switch (status.machine.firmware.type) {
       case 'grbl':
-        if (jog) {
+
+        if (data.jog) {
           addQRealtime(String.fromCharCode(0x85)); // canceljog
           debug_log('Sent: 0x85 Jog Cancel');
           debug_log(queuePointer, gcodeQueue)
-        } else {
+        }
+
+        if (!data.abort) { // pause motion first.
           addQRealtime('!'); // hold
           debug_log('Sent: !');
         }
+
         if (status.machine.firmware.version === '1.1d') {
           addQRealtime(String.fromCharCode(0x9E)); // Stop Spindle/Laser
           debug_log('Sent: Code(0x9E)');
         }
+
         debug_log('Cleaning Queue');
-        if (!jog) {
-          addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-          debug_log('Sent: Code(0x18)');
+        if (!data.jog) {
+          setTimeout(function() {
+            addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+            debug_log('Sent: Code(0x18)');
+          }, 200);
         }
         status.comms.connectionStatus = 2;
         break;

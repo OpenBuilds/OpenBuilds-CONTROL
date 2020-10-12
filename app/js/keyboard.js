@@ -210,7 +210,11 @@ function bindKeys() {
     if (keyboardShortcuts.estop.length) {
       $(document).bind('keydown', keyboardShortcuts.estop, function(e) {
         e.preventDefault();
-        socket.emit('stop', false)
+        socket.emit('stop', {
+          stop: false,
+          jog: false,
+          abort: true
+        })
       });
     }
     if (keyboardShortcuts.playpause.length) {
