@@ -2349,7 +2349,7 @@ function stop(data) {
           debug_log(queuePointer, gcodeQueue)
         }
 
-        if (!data.abort) { // pause motion first.
+        if (!data.abort && !data.jog) { // pause motion first.
           addQRealtime('!'); // hold
           debug_log('Sent: !');
         }
