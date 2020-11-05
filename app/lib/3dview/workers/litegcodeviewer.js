@@ -934,6 +934,8 @@ GCodeParser = function(handlers, modecmdhandlers) {
         },
 
         // No-op modal macros that do not affect the viewer
+        M3: function() {}, // Spindle on
+        M5: function() {}, // Spindle off
         M6: function(args) {}, // Pause for Toolchange
         M07: function() {}, // Coolant on (mist)
         M08: function() {}, // Coolant on (flood)
