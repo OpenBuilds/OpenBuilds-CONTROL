@@ -3,7 +3,6 @@ var continuousJogRunning = false;
 var jogdist = 10;
 var safeToUpdateSliders = true;
 
-
 function mmtoinchrate() {
   var value = $('#jograte').val();
   var convert = "";
@@ -358,69 +357,11 @@ $(document).ready(function() {
   });
 
 
-  // $('.xM').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('X', '-' + jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
-  //
-  // $('.xP').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('X', jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
-  //
-  // $('.yM').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('Y', '-' + jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
-  //
-  // $('.yP').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('Y', jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
-  //
-  // $('.zM').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('Z', '-' + jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
-  //
-  // $('.zP').on('click', function(ev) {
-  //   if (!allowContinuousJog) {
-  //     var dir = 'X-';
-  //     var feedrate = $('#jograte').val();
-  //     jog('Z', jogdist, feedrate);
-  //   }
-  //   $('#runNewProbeBtn').addClass("disabled")
-  //   $('#confirmNewProbeBtn').removeClass("disabled")
-  // })
+
 
   $('.xM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "X-";
       var distance = 1000;
 
@@ -430,12 +371,13 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$130)
           var maxdistance = 0; // Grbl all negative coordinates
           // Negative move:
-          distance = (mindistance + (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 5
         }
       }
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('.xM').click();
     } else {
       var feedrate = $('#jograte').val();
@@ -454,7 +396,7 @@ $(document).ready(function() {
   $('.xP').on('touchstart mousedown', function(ev) {
     // console.log("xp down")
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "X";
       var distance = 1000;
       if (Object.keys(grblParams).length > 0) {
@@ -463,12 +405,13 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$130)
           var maxdistance = 0; // Grbl all negative coordinates
           // Positive move:
-          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.x) + parseInt(laststatus.machine.position.work.x))) - 1
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 5
         }
       }
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('.xP').click();
     } else {
       var feedrate = $('#jograte').val();
@@ -487,7 +430,7 @@ $(document).ready(function() {
 
   $('.yM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "Y-";
       var distance = 1000;
 
@@ -497,13 +440,14 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$131)
           var maxdistance = 0; // Grbl all negative coordinates
           // Negative move:
-          distance = (mindistance + (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 5
         }
       }
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('.yM').click();
     } else {
       var feedrate = $('#jograte').val();
@@ -521,7 +465,7 @@ $(document).ready(function() {
 
   $('.yP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "Y";
       var distance = 1000;
 
@@ -531,13 +475,14 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$131)
           var maxdistance = 0; // Grbl all negative coordinates
           // Positive move:
-          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.y) + parseInt(laststatus.machine.position.work.y))) - 1
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 5
         }
       }
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('#yP').click();
     } else {
       var feedrate = $('#jograte').val();
@@ -555,7 +500,7 @@ $(document).ready(function() {
 
   $('.zM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "Z-";
       var distance = 1000;
 
@@ -565,13 +510,14 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$132)
           var maxdistance = 0; // Grbl all negative coordinates
           // Negative move:
-          distance = (mindistance + (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 5
         }
       }
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('.zM').click();
     } else {
       var feedrate = $('#jograte').val();
@@ -589,7 +535,7 @@ $(document).ready(function() {
 
   $('.zP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
-    if (allowContinuousJog) { // startJog();
+    if (allowContinuousJog && !waitingForStatus && laststatus.comms.runStatus == "Idle") { // startJog();
       var direction = "Z";
       var distance = 1000;
 
@@ -599,13 +545,14 @@ $(document).ready(function() {
           var mindistance = parseInt(grblParams.$132)
           var maxdistance = 0; // Grbl all negative coordinates
           // Positive move:
-          distance = (maxdistance - (parseInt(laststatus.machine.position.offset.z) + parseInt(laststatus.machine.position.work.z))) - 1
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 5
         }
       }
 
       var feed = $('#jograte').val();
       socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
       continuousJogRunning = true;
+      waitingForStatus = true;
       $('.zP').click();
     } else {
       var feedrate = $('#jograte').val();

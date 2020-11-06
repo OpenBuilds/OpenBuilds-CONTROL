@@ -10,6 +10,7 @@ var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
 var unit = "mm"
+var waitingForStatus = false;
 
 $(document).ready(function() {
   initSocket();
@@ -493,6 +494,7 @@ function initSocket() {
     }
 
     laststatus = status;
+    waitingForStatus = false;
   });
 
   socket.on('features', function(data) {
