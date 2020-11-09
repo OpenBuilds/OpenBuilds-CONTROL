@@ -1,3 +1,4 @@
+v1.0.255: Fixed an typo in Probe wizard
 v1.0.254: Fixed Continous Jog calculation bug
 v1.0.253: Fix 3D Viewer Bug with Fusion outputs #157
 v1.0.252: Fix for hold:0 status on jog with soft-limits
