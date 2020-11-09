@@ -578,7 +578,7 @@ io.on("connection", function(socket) {
     //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconAlarm), 'Alarm');
     //   }
     // }
-  }, 100);
+  }, 50);
 
 
 
@@ -979,7 +979,7 @@ io.on("connection", function(socket) {
             if (status.comms.connectionStatus > 0) {
               addQRealtime("?");
             }
-          }, 100);
+          }, 50);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");

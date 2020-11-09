@@ -360,7 +360,7 @@ $(document).ready(function() {
   $('.xM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "X-";
         var distance = 1000;
 
@@ -370,14 +370,22 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$130)
             var maxdistance = 0; // Grbl all negative coordinates
             // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 5
+            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("X-");
+            }
           }
         }
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('.xM').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.xM').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -397,7 +405,7 @@ $(document).ready(function() {
     // console.log("xp down")
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "X";
         var distance = 1000;
         if (Object.keys(grblParams).length > 0) {
@@ -406,14 +414,22 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$130)
             var maxdistance = 0; // Grbl all negative coordinates
             // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 5
+            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("X+");
+            }
           }
         }
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('.xP').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.xP').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -433,7 +449,7 @@ $(document).ready(function() {
   $('.yM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "Y-";
         var distance = 1000;
 
@@ -443,15 +459,23 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$131)
             var maxdistance = 0; // Grbl all negative coordinates
             // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 5
+            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("Y-");
+            }
           }
         }
 
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('.yM').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.yM').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -470,7 +494,7 @@ $(document).ready(function() {
   $('.yP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "Y";
         var distance = 1000;
 
@@ -480,15 +504,23 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$131)
             var maxdistance = 0; // Grbl all negative coordinates
             // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 5
+            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("Y+");
+            }
           }
         }
 
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('#yP').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('#yP').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -507,7 +539,7 @@ $(document).ready(function() {
   $('.zM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "Z-";
         var distance = 1000;
 
@@ -517,15 +549,23 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$132)
             var maxdistance = 0; // Grbl all negative coordinates
             // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 5
+            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("Z-");
+            }
           }
         }
 
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('.zM').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.zM').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -544,7 +584,7 @@ $(document).ready(function() {
   $('.zP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
         var direction = "Z";
         var distance = 1000;
 
@@ -554,15 +594,22 @@ $(document).ready(function() {
             var mindistance = parseInt(grblParams.$132)
             var maxdistance = 0; // Grbl all negative coordinates
             // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 5
+            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
+            distance = distance.toFixed(3);
+            if (distance < 1) {
+              toastJogWillHit("Z+");
+            }
           }
         }
-
         var feed = $('#jograte').val();
-        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
-        continuousJogRunning = true;
-        waitingForStatus = true;
-        $('.zP').click();
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.zP').click();
+        }
+      } else {
+        toastJogNotIdle();
       }
     } else {
       var feedrate = $('#jograte').val();
@@ -706,4 +753,16 @@ function home() {
   } else if (laststatus != undefined && laststatus.machine.firmware.type == 'smoothie') {
     sendGcode('G28')
   }
+}
+
+function toastJogWillHit(axis) {
+  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-green'>Unable to jog toward " + axis + ", will hit soft-limit</span>")
+  var toast = Metro.toast.create;
+  toast("Unable to jog toward " + axis + ", will hit soft-limit", null, 1000, "bg-darkRed fg-white")
+}
+
+function toastJogNotIdle(axis) {
+  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-green'>Wait for machine to be Idle, before jogging</span>")
+  var toast = Metro.toast.create;
+  toast("Wait for machine to be Idle, before jogging", null, 1000, "bg-darkRed fg-white")
 }
