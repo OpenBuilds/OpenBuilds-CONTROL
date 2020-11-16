@@ -18,6 +18,19 @@ $(document).ready(function() {
     if (!keyboardShortcuts.gotozeroxyz) {
       keyboardShortcuts.gotozeroxyz = "del"
     }
+    // add new key defaults to existing allocations (1.0.257 and older)
+    if (!keyboardShortcuts.froInc) {
+      keyboardShortcuts.froInc = "q"
+    }
+    if (!keyboardShortcuts.froDec) {
+      keyboardShortcuts.froDec = "a"
+    }
+    if (!keyboardShortcuts.toInc) {
+      keyboardShortcuts.toInc = "w"
+    }
+    if (!keyboardShortcuts.toDec) {
+      keyboardShortcuts.toDec = "s"
+    }
   } else {
     keyboardShortcuts = {
       xP: "right", //X+
@@ -35,7 +48,11 @@ $(document).ready(function() {
       setzeroxyz: "insert", // Set ZERO XYZ
       gotozeroxyz: "del", // go to zero xyz
       incJogMode: "/", // Incremental Jog Mode
-      conJogMode: "*" // Continuous Jog Mode
+      conJogMode: "*", // Continuous Jog Mode
+      froInc: "", // Increase Feedrate Override
+      froDec: "", // Decrease Feedrate Override
+      toInc: "", // Increase Tool Speed Override
+      toDec: "" // Decrease Tool Speed Override
     }
   }
   bindKeys()
@@ -283,6 +300,43 @@ function bindKeys() {
       });
     }
 
+    // froInc: "", // Increase Feedrate Override
+    // froDec: "", // Decrease Feedrate Override
+    // toInc: "", // Increase Tool Speed Override
+    // toDec: "" // Decrease Tool Speed Override
+    if (keyboardShortcuts.froInc.length) {
+      $(document).bind('keydown', keyboardShortcuts.froInc, function(e) {
+        e.preventDefault();
+        var newfeed = laststatus.machine.overrides.feedOverride + 10
+        feedOverride(newfeed)
+      });
+    }
+
+    if (keyboardShortcuts.froDec.length) {
+      $(document).bind('keydown', keyboardShortcuts.froDec, function(e) {
+        e.preventDefault();
+        var newfeed = laststatus.machine.overrides.feedOverride - 10
+        feedOverride(newfeed)
+      });
+    }
+
+    if (keyboardShortcuts.toInc.length) {
+      $(document).bind('keydown', keyboardShortcuts.toInc, function(e) {
+        e.preventDefault();
+        var newspeed = laststatus.machine.overrides.spindleOverride + 10
+        spindleOverride(newspeed)
+      });
+    }
+
+    if (keyboardShortcuts.toDec.length) {
+      $(document).bind('keydown', keyboardShortcuts.toDec, function(e) {
+        e.preventDefault();
+        var newspeed = laststatus.machine.overrides.spindleOverride - 10
+        spindleOverride(newspeed)
+      });
+    }
+
+
     localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
   }
 
@@ -396,6 +450,34 @@ function keyboardShortcutsEditor() {
         </div>
       </div>
 
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-level-up-alt fg-openbuilds fa-fw"></i> Increase Feed Override<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="froIncKey" value="` + keyboardShortcuts.froInc + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#froIncKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-level-down-alt fg-openbuilds fa-fw"></i> Decrease Feed Override<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="froDecKey" value="` + keyboardShortcuts.froDec + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#froDecKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="far fa-hand-point-up fg-openbuilds fa-fw"></i> Increase Tool Override<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="toIncKey" value="` + keyboardShortcuts.toInc + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#toIncKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="far fa-hand-point-down fg-openbuilds fa-fw"></i>  Decrease Tool Override<br></label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="toDecKey" value="` + keyboardShortcuts.toDec + `" onclick="$('.keyboardshortcutinput').removeClass('alert').removeClass('newKeyAssignment'); $('#toDecKey').addClass('alert').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
 
     </form>
 
@@ -427,6 +509,11 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.incJogMode = $("#incJogModeKey").val()
           keyboardShortcuts.conJogMode = $("#conJogModeKey").val()
           keyboardShortcuts.gotozeroxyz = $("#gotozeroxyznewKey").val()
+
+          keyboardShortcuts.froInc = $("#froIncKey").val()
+          keyboardShortcuts.froDec = $("#froDecKey").val()
+          keyboardShortcuts.toInc = $("#toIncKey").val()
+          keyboardShortcuts.toDec = $("#toDecKey").val()
           bindKeys()
         }
       },

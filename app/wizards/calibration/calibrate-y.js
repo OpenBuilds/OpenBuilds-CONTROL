@@ -1,3 +1,5 @@
+var ycalmovedistance = 100;
+
 var ycaltemplate = `
 
    <div id="ycalstep1">
@@ -33,10 +35,13 @@ var ycaltemplate = `
             </td>
             <td>
                Step 2:  Mark Second Position<br>
-               <small>Click the button below to jog your Y-Axis 100mm in the Y+ direction.  Note this will move the axis a theoretical 100mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the Y-Carriage stops</small>
+               <small>Click the button below to jog your Y-Axis in the Y+ direction.  Note this will move the axis a theoretical <span class="ycalmovedistanceval">100</span>mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the Y-Carriage stops</small>
               <hr>
                <center>
-                  <button id="ycal100mm" class="button alert" onclick="$('#ycal100mm').attr('disabled', true); $('#ycalcontinue2').attr('disabled', false); jog('Y', 100, 1000);"><i class="fas fa-arrow-up"></i> Move Y+100mm</button>
+                  <input id="ycalmovedistance" type="number" min="10" max="10000" value="100" data-role="input" data-prepend="Custom Move Distance:" data-append="mm" data-clear-button="false" style="text-align: right;"
+                    data-editable="true" />
+                  <p>
+                  <button id="ycal100mm" class="button alert" onclick="$('#ycal100mm').attr('disabled', true); $('#ycalcontinue2').attr('disabled', false); jog('Y', ycalmovedistance, 1000);"><i class="fas fa-arrow-up"></i> Move Y+<span class="ycalmovedistanceval">100</span>mm</button>
                   <hr>
                   <button class="button"  onclick="ycalslide1();"><i class="fas fa-chevron-left"></i> Back</button>
                   <button id="ycalcontinue2" class="button success"  onclick="ycalslide3();" disabled><i class="fas fa-check"></i> I've made my 2<sup>nd</sup> mark, continue...</button>
@@ -56,7 +61,11 @@ var ycaltemplate = `
                <small>Measure the actual distance between your two marks, as accurately as possible, and enter the value the machine moved below.  This will be used to calculate a new actual steps-per-mm value</small><br>
                <hr>
                <input id="ycaltraveldist" type="number" value="100.0" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
-              <small class="text-muted">Enter the distance the machine moved</small>
+               <small>Enter the distance the machine moved</small>
+               <hr>
+               <small>current steps/mm * (requested dist / actual dist) = newsteps</small><br>
+               <hr>
+               <small id="showcalc"><span id="currentstepspermm">current steps per mm</span> * (<span id="reqdistance">requested distance</span> / <span id="actualdist">actual distance</span>) = <span id="newsteps">newsteps</span> </small>
                <hr>
                <center>
                   <button class="button"  onclick="ycalslide2();"><i class="fas fa-chevron-left"></i> Back</button>
@@ -74,11 +83,11 @@ function applycalibrationy() {
   var currentstepspermm = parseFloat(grblParams['$101']);
   // var currentstepspermm = 199.9;
   // newstepsval = currentsteps * (intended distance  / actual distance)
-  var newsteps = currentstepspermm * (100 / actualdist);
+  var newsteps = (currentstepspermm * (ycalmovedistance / actualdist)).toFixed(2);
   // alert("New Steps Per MM Value:  " + newsteps);
   // $('#val-101-input').val(newsteps)
   // checkifchanged();
-  sendGcode("$101=" + newsteps.toFixed(3));
+  sendGcode("$101=" + newsteps);
   setTimeout(function() {
     sendGcode(String.fromCharCode(0x18));
   }, 500);
@@ -99,6 +108,34 @@ function ystepscalibrate() {
         //
       }
     }]
+  });
+
+  $("#ycalmovedistance").keyup(function() {
+    ycalmovedistance = $("#ycalmovedistance").val();
+    $(".ycalmovedistanceval").html(ycalmovedistance);
+    $("#ycaltraveldist").val(ycalmovedistance)
+    var actualdist = $('#ycaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$101']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (ycalmovedistance / actualdist)).toFixed(2);
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(ycalmovedistance)
+    $("#actualdist").html(ycalmovedistance)
+  });
+
+  $("#ycaltraveldist").keyup(function() {
+    var actualdist = $('#ycaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$101']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (ycalmovedistance / actualdist)).toFixed(2);
+    $("#showcalc").show()
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(ycalmovedistance)
+    $("#actualdist").html(actualdist)
   });
 }
 

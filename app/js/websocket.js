@@ -11,6 +11,7 @@ var bellstate = false;
 var toast = Metro.toast.create;
 var unit = "mm"
 var waitingForStatus = false;
+var openDialogs = [];
 
 $(document).ready(function() {
   initSocket();
@@ -227,7 +228,7 @@ function initSocket() {
     console.log(data)
     printLog("<span class='fg-red'>[ ALARM ]</span>  <span class='fg-red'>" + data + "</span>")
 
-    Metro.dialog.create({
+    var dialog = Metro.dialog.create({
       clsDialog: 'dark',
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
@@ -247,6 +248,7 @@ function initSocket() {
         }
       ]
     });
+    openDialogs.push(dialog);
     setTimeout(function() {
       $(".closeAlarmBtn").focus();
     }, 200, )
@@ -257,7 +259,7 @@ function initSocket() {
     console.log(data)
     printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>" + data + "</span>")
 
-    Metro.dialog.create({
+    var dialog = Metro.dialog.create({
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
       content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
       clsDialog: 'dark',
@@ -269,12 +271,21 @@ function initSocket() {
         }
       }]
     });
+    openDialogs.push(dialog);
     setTimeout(function() {
       $(".closeErrorBtn").focus();
     }, 200, )
     //
   });
 
+  socket.on("errorsCleared", function(data) {
+    if (data) {
+      for (i = 0; i < openDialogs.length; i++) {
+        Metro.dialog.close(openDialogs[i]);
+      }
+      openDialogs.length = 0;
+    }
+  })
 
   socket.on('progStatus', function(data) {
     $('#controlTab').click();

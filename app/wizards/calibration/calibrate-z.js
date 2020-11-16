@@ -1,3 +1,6 @@
+var zcalmovedistance = 50;
+
+
 var zcaltemplate = `
    <div id="zcalstep1">
       <table class="table">
@@ -32,10 +35,13 @@ var zcaltemplate = `
             </td>
             <td>
                Step 2:  Mark Second Position<br>
-               <small>Click the button below to jog your Z-Axis 50mm in the Y+ direction.  Note this will move the axis a theoretical 50mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the Y-Carriage stops</small>
+               <small>Click the button below to jog your Z-Axis in the Y+ direction.  Note this will move the axis a theoretical <span class="zcalmovedistanceval">50</span>mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the Y-Carriage stops</small>
               <hr>
                <center>
-                  <button id="zcal50mm" class="button alert" onclick="$('#zcal50mm').attr('disabled', true); $('#zcalcontinue2').attr('disabled', false); jog('Z', 50, 1000)"><i class="fas fa-arrow-up"></i> Move Z+50mm</button>
+                  <input id="zcalmovedistance" type="number" min="10" max="10000" value="50" data-role="input" data-prepend="Custom Move Distance:" data-append="mm" data-clear-button="false" style="text-align: right;"
+                    data-editable="true" />
+                  <p>
+                  <button id="zcal50mm" class="button alert" onclick="$('#zcal50mm').attr('disabled', true); $('#zcalcontinue2').attr('disabled', false); jog('Z', zcalmovedistance, 1000)"><i class="fas fa-arrow-up"></i> Move Z+<span class="zcalmovedistanceval">50</span>mm</button>
                   <hr>
                   <button class="button"  onclick="zcalslide1();"><i class="fas fa-chevron-left"></i> Back</button>
                   <button id="zcalcontinue2" class="button success"  onclick="zcalslide3();" disabled><i class="fas fa-check"></i> I've made my 2<sup>nd</sup> mark, continue...</button>
@@ -55,7 +61,11 @@ var zcaltemplate = `
                <small>Measure the actual distance between your two marks, as accurately as possible, and enter the value the machine moved below.  This will be used to calculate a new actual steps-per-mm value</small><br>
                <hr>
                <input id="zcaltraveldist" type="number" value="50.0" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
-              <small class="text-muted">Enter the distance the machine moved</small>
+               <small>Enter the distance the machine moved</small>
+               <hr>
+               <small>current steps/mm * (requested dist / actual dist) = newsteps</small><br>
+               <hr>
+               <small id="showcalc"><span id="currentstepspermm">current steps per mm</span> * (<span id="reqdistance">requested distance</span> / <span id="actualdist">actual distance</span>) = <span id="newsteps">newsteps</span> </small>
                <hr>
                <center>
                   <button class="button"  onclick="zcalslide2();"><i class="fas fa-chevron-left"></i> Back</button>
@@ -73,11 +83,11 @@ function applycalibrationz() {
   var currentstepspermm = parseFloat(grblParams['$102']);
   // var currentstepspermm = 199.9;
   // newstepsval = currentsteps * (intended distance  / actual distance)
-  var newsteps = currentstepspermm * (50 / actualdist);
+  var newsteps = (currentstepspermm * (zcalmovedistance / actualdist)).toFixed(2);
   // alert("New Steps Per MM Value:  " + newsteps);
   // $('#val-102-input').val(newsteps)
   // checkifchanged();
-  sendGcode("$102=" + newsteps.toFixed(3));
+  sendGcode("$102=" + newsteps);
   setTimeout(function() {
     sendGcode(String.fromCharCode(0x18));
   }, 500);
@@ -96,6 +106,34 @@ function zstepscalibrate() {
         //
       }
     }]
+  });
+
+  $("#zcalmovedistance").keyup(function() {
+    zcalmovedistance = $("#zcalmovedistance").val();
+    $(".zcalmovedistanceval").html(zcalmovedistance);
+    $("#zcaltraveldist").val(zcalmovedistance)
+    var actualdist = $('#zcaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$102']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (zcalmovedistance / actualdist)).toFixed(2);
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(zcalmovedistance)
+    $("#actualdist").html(zcalmovedistance)
+  });
+
+  $("#zcaltraveldist").keyup(function() {
+    var actualdist = $('#zcaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$102']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (zcalmovedistance / actualdist)).toFixed(2);
+    $("#showcalc").show()
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(zcalmovedistance)
+    $("#actualdist").html(actualdist)
   });
 }
 

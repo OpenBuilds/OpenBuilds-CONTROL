@@ -972,6 +972,7 @@ io.on("connection", function(socket) {
           debug_log("GRBL detected");
           setTimeout(function() {
             io.sockets.emit('grbl')
+            io.sockets.emit('errorsCleared', true);
           }, 600)
           // Start interval for status queries
           clearInterval(statusLoop);
@@ -1575,6 +1576,7 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
+      io.sockets.emit('errorsCleared', true);
     } else {
       debug_log('ERROR: Machine connection not open!');
     }

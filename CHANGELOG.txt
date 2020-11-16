@@ -1,6 +1,7 @@
-v1.0.256: Enhanced Continuous Jog to prevent running 
-v1.0.255: Fixed an typo in Probe wizard, test of Soft Limits calculation Changes
-v1.0.254: Fixed Continous Jog calculation bug
+v1.0.257: Maintenance: Updated SSL Certs for OB CAM integration, Updated to latest build of Font Awesome, New Features: Added keyboard shortcuts for Feed/Speed Overrides #156, Save jog feedrate between sessions #158, Sync error/alarm close event between multiple windows #136, Updated calibration Wizard to support larger moves #154
+v1.0.256: Enhanced Continuous Jog to prevent runaway - should fix #73
+v1.0.255: Fixed a cosmetic typo in Probe wizard, test of Soft Limits calculation Changes
+v1.0.254: Continous Jog - Soft Limit calculation method update
 v1.0.253: Fix 3D Viewer Bug with Fusion outputs #157
 v1.0.252: Fix for hold:0 status on jog with soft-limits
 v1.0.251: Updated LEAD1515 Profile, Improved Stop button, Fixed Custom Z Plate thickness Bug

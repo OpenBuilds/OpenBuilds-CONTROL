@@ -1,3 +1,5 @@
+var xcalmovedistance = 100;
+
 var xcaltemplate = `
 
    <div id="xcalstep1">
@@ -33,10 +35,15 @@ var xcaltemplate = `
             </td>
             <td>
                Step 2:  Mark Second Position<br>
-               <small>Click the button below to jog your X-Axis 100mm in the X+ direction.  Note this will move the axis a theoretical 100mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the X-Carriage stops</small>
+               <small>Click the button below to jog your X-Axis in the X+ direction.  Note this will move the axis a theoretical <span class="xcalmovedistanceval">100</span>mm (What the machine thinks it should be). Then, place a physical mark on your machine to mark where the X-Carriage stops</small>
               <hr>
                <center>
-                  <button id="xcal100mm" class="button alert" onclick="$('#xcal100mm').attr('disabled', true); $('#xcalcontinue2').attr('disabled', false); jog('X', 100, 1000);"><i class="fas fa-arrow-right"></i> Move X+100mm</button>
+
+                  <input id="xcalmovedistance" type="number" min="10" max="10000" value="100" data-role="input" data-prepend="Custom Move Distance:" data-append="mm" data-clear-button="false" style="text-align: right;"
+                    data-editable="true" />
+                  <p>
+                  <button id="xcal100mm" class="button alert" onclick="$('#xcal100mm').attr('disabled', true); $('#xcalcontinue2').attr('disabled', false); jog('X', xcalmovedistance, 1000);"><i class="fas fa-arrow-right"></i> Move X+<span class="xcalmovedistanceval">100</span>mm</button>
+
                   <hr>
                   <button class="button"  onclick="slide1();"><i class="fas fa-chevron-left"></i> Back</button>
                   <button id="xcalcontinue2" class="button success"  onclick="slide3();" disabled><i class="fas fa-check"></i> I've made my 2<sup>nd</sup> mark, continue...</button>
@@ -56,7 +63,11 @@ var xcaltemplate = `
                <small>Measure the actual distance between your two marks, as accurately as possible, and enter the value the machine moved below.  This will be used to calculate a new actual steps-per-mm value</small><br>
                <hr>
                <input id="xcaltraveldist" type="number" value="100.0" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
-              <small class="text-muted">Enter the distance the machine moved</small>
+              <small>Enter the distance the machine moved</small>
+               <hr>
+               <small>current steps/mm * (requested dist / actual dist) = newsteps</small><br>
+               <hr>
+               <small id="showcalc"><span id="currentstepspermm">current steps per mm</span> * (<span id="reqdistance">requested distance</span> / <span id="actualdist">actual distance</span>) = <span id="newsteps">newsteps</span> </small>
                <hr>
                <center>
                   <button class="button"  onclick="slide2();"><i class="fas fa-chevron-left"></i> Back</button>
@@ -74,11 +85,11 @@ function applycalibrationx() {
   var currentstepspermm = parseFloat(grblParams['$100']);
   // var currentstepspermm = 199.9;
   // newstepsval = currentsteps * (intended distance  / actual distance)
-  var newsteps = currentstepspermm * (100 / actualdist);
+  var newsteps = (currentstepspermm * (xcalmovedistance / actualdist)).toFixed(2);
   // alert("New Steps Per MM Value:  " + newsteps);
   // $('#val-100-input').val(newsteps)
   // checkifchanged();
-  sendGcode("$100=" + newsteps.toFixed(3));
+  sendGcode("$100=" + newsteps);
   setTimeout(function() {
     sendGcode(String.fromCharCode(0x18));
   }, 500);
@@ -99,6 +110,35 @@ function xstepscalibrate() {
       }
     }]
   });
+
+  $("#xcalmovedistance").keyup(function() {
+    xcalmovedistance = $("#xcalmovedistance").val();
+    $(".xcalmovedistanceval").html(xcalmovedistance);
+    $("#xcaltraveldist").val(xcalmovedistance)
+    var actualdist = $('#xcaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$100']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (xcalmovedistance / actualdist)).toFixed(2);
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(xcalmovedistance)
+    $("#actualdist").html(xcalmovedistance)
+  });
+
+  $("#xcaltraveldist").keyup(function() {
+    var actualdist = $('#xcaltraveldist').val();
+    var currentstepspermm = parseFloat(grblParams['$100']);
+    // var currentstepspermm = 199.9;
+    // newstepsval = currentsteps * (intended distance  / actual distance)
+    var newsteps = (currentstepspermm * (xcalmovedistance / actualdist)).toFixed(2);
+    $("#showcalc").show()
+    $("#newsteps").html(newsteps)
+    $("#currentstepspermm").html(currentstepspermm)
+    $("#reqdistance").html(xcalmovedistance)
+    $("#actualdist").html(actualdist)
+  });
+
 }
 
 

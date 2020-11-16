@@ -118,12 +118,21 @@ $(document).ready(function() {
     $('#inMode').click()
   }
 
+  if (localStorage.getItem('jogFeed')) {
+    $('#jograte').val(localStorage.getItem('jogFeed'))
+  }
+
   $("#jograte").keyup(function() {
     mmtoinchrate()
+    var feed = $('#jograte').val();
+    localStorage.setItem('jogFeed', feed);
   });
 
   $("#jograteinch").keyup(function() {
     inchtommrate()
+    var feed = $('#jograte').val();
+    localStorage.setItem('jogFeed', feed);
+
   });
 
   $("#jograte").on("keypress", function(e) {
@@ -359,24 +368,29 @@ $(document).ready(function() {
 
   $('.xM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "X-";
         var distance = 1000;
 
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$130)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("X-");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$130)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("X-");
           }
         }
+
         var feed = $('#jograte').val();
         if (distance >= 1) {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
@@ -404,21 +418,25 @@ $(document).ready(function() {
   $('.xP').on('touchstart mousedown', function(ev) {
     // console.log("xp down")
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "X";
         var distance = 1000;
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$130)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("X+");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$130)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("X+");
           }
         }
         var feed = $('#jograte').val();
@@ -448,22 +466,26 @@ $(document).ready(function() {
 
   $('.yM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "Y-";
         var distance = 1000;
 
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$131)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("Y-");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$131)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("Y-");
           }
         }
 
@@ -493,22 +515,26 @@ $(document).ready(function() {
 
   $('.yP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "Y";
         var distance = 1000;
 
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$131)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("Y+");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$131)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("Y+");
           }
         }
 
@@ -538,22 +564,26 @@ $(document).ready(function() {
 
   $('.zM').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "Z-";
         var distance = 1000;
 
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$132)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Negative move:
-            distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("Z-");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$132)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("Z-");
           }
         }
 
@@ -583,24 +613,29 @@ $(document).ready(function() {
 
   $('.zP').on('touchstart mousedown', function(ev) {
     ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus !== "Jog") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
         var direction = "Z";
         var distance = 1000;
 
-        if (Object.keys(grblParams).length > 0) {
-          if (parseInt(grblParams.$20) == 1) {
-            // Soft Limits is enabled so lets calculate maximum move distance
-            var mindistance = parseInt(grblParams.$132)
-            var maxdistance = 0; // Grbl all negative coordinates
-            // Positive move:
-            distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
-            distance = distance.toFixed(3);
-            if (distance < 1) {
-              toastJogWillHit("Z+");
-            }
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$132)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("Z+");
           }
         }
+
         var feed = $('#jograte').val();
         if (distance >= 1) {
           socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + feed + "\n");
@@ -762,7 +797,7 @@ function toastJogWillHit(axis) {
 }
 
 function toastJogNotIdle(axis) {
-  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-green'>Wait for machine to be Idle, before jogging</span>")
+  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-green'>Please wait for machine to be Idle, before jogging</span>")
   var toast = Metro.toast.create;
-  toast("Wait for machine to be Idle, before jogging", null, 1000, "bg-darkRed fg-white")
+  toast("Please wait for machine to be Idle, before jogging. Try again once it is Idle", null, 1000, "bg-darkRed fg-white")
 }
