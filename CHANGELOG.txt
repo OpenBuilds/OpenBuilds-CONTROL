@@ -1,3 +1,4 @@
+v1.0.258: Removed placeholders from Surfacing Wizard form
 v1.0.257: Maintenance: Updated SSL Certs for OB CAM integration, Updated to latest build of Font Awesome, New Features: Added keyboard shortcuts for Feed/Speed Overrides #156, Save jog feedrate between sessions #158, Sync error/alarm close event between multiple windows #136, Updated calibration Wizard to support larger moves #154
 v1.0.256: Enhanced Continuous Jog to prevent runaway - should fix #73
 v1.0.255: Fixed a cosmetic typo in Probe wizard, test of Soft Limits calculation Changes
