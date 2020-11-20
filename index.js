@@ -46,6 +46,30 @@ var mkdirp = require('mkdirp');
 
 app.use(express.static(path.join(__dirname, "app")));
 
+// Interface firmware flash
+app.post('/uploadCustomFirmware', (req, res) => {
+  // 'firmwareBin' is the name of our file input field in the HTML form
+  let upload = multer({
+    storage: storage
+  }).single('firmwareBin');
+
+  upload(req, res, function(err) {
+    // req.file contains information of uploaded file
+    // req.body contains information of text fields, if there were any
+
+    if (err instanceof multer.MulterError) {
+      return res.send(err);
+    } else if (err) {
+      return res.send(err);
+    }
+
+    // Display uploaded image for user validation
+    firmwareImagePath = req.file.path;
+    res.send(`Using ` + req.file.path);
+  });
+});
+// end Interface Firmware flash
+
 
 //Note when renewing Convert zerossl cert first `openssl.exe rsa -in domain-key.key -out domain-key.key`
 // fix error:    App threw an error during load
@@ -689,6 +713,17 @@ io.on("connection", function(socket) {
       });
     }, 1000)
   })
+
+  socket.on("flashInterface", function(data) {
+    if (status.comms.connectionStatus > 0) {
+      debug_log('WARN: Closing Port ' + port);
+      stopPort();
+    } else {
+      debug_log('ERROR: Machine connection not open!');
+    }
+    flashInterface(data)
+  })
+
 
 
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
@@ -2461,5 +2496,105 @@ function startChrome() {
     debug_log('Not a Raspberry Pi. Please use Electron Instead');
   }
 }
+
+// Interface Programming
+var firmwareImagePath = path.join(__dirname, './firmware.bin');
+var spawn = require('child_process').spawn;
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  // By default, multer removes file extensions so let's add them back
+  filename: function(req, file, cb) {
+    cb(null, file.fieldname + '-' + new Date().toJSON().replace(new RegExp(':', 'g'), '.') + path.extname(file.originalname));
+  }
+});
+
+function flashInterface(data) {
+  status.comms.connectionStatus = 6;
+
+  var port = data.port;
+  var file = data.file;
+  var board = data.board
+
+
+  console.log("Flashing Interface on " + port + " with board " + board + " file: " + file)
+  // var data = {
+  //   'port': port,
+  //   'string': debugString
+  // }
+  // io.sockets.emit("progStatus", data);
+  //
+
+  //for (let i = 0; i < ports.length; i++) {
+
+  var data = {
+    'port': port,
+    'string': "[Starting...]"
+  }
+  io.sockets.emit("progStatus", data);
+
+  var esptool_opts = [
+    '--chip', 'esp32',
+    '--port', port,
+    '--baud', '921600',
+    '--before', 'default_reset',
+    '--after', 'hard_reset',
+    'write_flash',
+    '-z',
+    '--flash_mode', 'dio',
+    '--flash_freq', '80m',
+    '--flash_size', 'detect',
+    '0xe000', path.join(__dirname, "./boot_app0.bin"),
+    '0x1000', path.join(__dirname, "./bootloader_qio_80m.bin"),
+    '0x10000', path.resolve(firmwareImagePath),
+    '0x8000', path.join(__dirname, "./firmware.partitions.bin")
+  ];
+
+  var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
+
+
+  child.stdout.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.stderr.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.on('close', (code) => {
+    var data = {
+      'port': port,
+      'string': `[exit]`,
+      'code': code
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 0;
+
+  });
+
+
+}
+
+
+// end Interface Programming
+
 
 process.on('exit', () => debug_log('exit'))

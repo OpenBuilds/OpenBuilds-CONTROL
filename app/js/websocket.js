@@ -301,6 +301,18 @@ function initSocket() {
       string = string.replace('[31mflash complete.[39m', "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'> </i> FLASH FAILED!</span> ");
       string = string.replace('[32m', "<span class='fg-green'><i class='fas fa-check fa-fw fg-green fa-fw'></i> ");
       string = string.replace('[39m', "</span>");
+      if (string.indexOf("Hash of data verified") != -1) {
+        string = "<span class='fg-green'><i class='fas fa-check fa-fw fg-green fa-fw'></i>" + string + "</span>"
+      }
+      if (string.indexOf("could not open port") != -1) {
+        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+      }
+      if (string.indexOf("something went wrong") != -1) {
+        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+      }
+      if (string.indexOf("fatal error occurred") != -1) {
+        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+      }
       printLog("<span class='fg-red'>[ Firmware Upgrade ] </span>" + string)
 
       // $('#sendCommand').click();
