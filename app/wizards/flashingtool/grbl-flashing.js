@@ -73,7 +73,8 @@ function flashFirmwarefromWizard() {
     var data = {
       port: $("#portUSB2").val(),
       file: "grbl-" + $("#grblAxesCount").val() + "-" + $("#grblDoorEnable").val() + ".hex",
-      board: $("#flashController").val()
+      board: $("#flashController").val(),
+      customImg: false
     }
 
     if ($("#grblAxesCount").val() == "custom") {
@@ -85,6 +86,7 @@ function flashFirmwarefromWizard() {
         xhr.onload = function() {
           if (xhr.status == 200) {
             $("#customFirmwareSet").html(xhr.response);
+            data.customImg = true;
             data.file = $("#firmwareBin").val();
             socket.emit('flashGrbl', data);
           }

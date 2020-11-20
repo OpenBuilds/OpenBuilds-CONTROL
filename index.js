@@ -667,6 +667,13 @@ io.on("connection", function(socket) {
     var port = data.port;
     var file = data.file;
     var board = data.board
+    var customImg = data.customImg
+    if (customImg) {
+      var firmwarePath = firmwareImagePath
+    } else {
+      var firmwarePath = path.join(__dirname, file)
+    }
+
     const Avrgirl = require('avrgirl-arduino');
 
     if (status.comms.connectionStatus > 0) {
@@ -698,7 +705,7 @@ io.on("connection", function(socket) {
       debug_log(JSON.stringify(avrgirl));
 
       status.comms.connectionStatus = 6;
-      avrgirl.flash(path.join(__dirname, file), function(error) {
+      avrgirl.flash(firmwarePath, function(error) {
         if (error) {
           console.error(error);
           io.sockets.emit("progStatus", 'Flashing FAILED!');
