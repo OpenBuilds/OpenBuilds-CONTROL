@@ -60,7 +60,6 @@
                     <i class="fas fa-download"></i>
                   </span>
                   <span class="caption">Backup<br>Settings</span>
-                  <span class="badge bg-green fg-white">New!</span>
                 </button>
                 <span class="title">Grbl Settings</span>
               </div>
@@ -219,7 +218,6 @@
                     </span>
                   </span>
                   <span class="caption grblmode">Probe</span>
-                  <span class="badge bg-green fg-white">New!</span>
                 </button>
 
 
@@ -321,7 +319,7 @@
                     <li class="divider fg-lightGray"></li>
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Shortcut Key Assignments</a></li>
                     <li class="divider fg-lightGray"></li>
-                    <li onclick="populateGrblBuilderToolForm();"><a href="#"><img src="img/grbl.png" /> Flashing Tool</a></li>
+                    <li onclick="populateGrblBuilderToolForm();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
                   </ul>
                 </div>
 
@@ -1120,61 +1118,91 @@
     <div id="hiddendivs" style="display:none;">
 
       <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
-        <div class="dialog-title"><img src="img/grbltop.png" /> Custom Grbl Flashing Tool</div>
+        <div class="dialog-title"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
-          <p class="text-small mb-4">You can use this wizard to flash customized instances of Grbl Firmware onto a compatible controller<br>Only use with care, or when instructed by Support</p>
-          <form>
-            <div class="row">
-              <div class="cell-md-4 mb-1">
-                Machine Style
-              </div>
-              <div class="cell-md-8 mb-1">
-                <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
-                  <option value=3axes>3 Axes</option>
-                  <option value=2axes>2 Axes</option>
-                  <option value=servo>2 Axes + RC Servo</option>
-                </select>
-              </div>
+          <p class="text-small mb-4">You can use this wizard to flash Firmware onto compatible controllers<br>Only use with care, or when instructed by Support</p>
+
+          <div class="row">
+            <div class="cell-md-4 mb-1">
+              Controller Type
             </div>
-            <div class="row">
-              <div class="cell-md-4 mb-1">
-                Door Interlock
-              </div>
-              <div class="cell-md-8 mb-1">
-                <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable" data-editable="true">
-                  <option value="nodoor">Disable Door Interlock</option>
-                  <option value="opendoor">Door Interlock (Normally Open Switch)</option>
-                  <option value="closeddoor">Door Interlock (Normally Closed Switch)</option>
-                </select>
-              </div>
+            <div class="cell-md-8 mb-1">
+              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashController" data-editable="true">
+                <option value="interface">OpenBuilds Interface</option>
+                <option value="uno" selected>OpenBuilds BlackBox 4X</option>
+                <option value="xprov4">Spark Concepts xPro v3/4</option>
+                <option value="uno">Arduino Uno</option>
+                <option value="nano">Arduino Nano</option>
+              </select>
             </div>
-            <div class="row">
-              <div class="cell-md-4 mb-1">
-                Controller Type
-              </div>
-              <div class="cell-md-8 mb-1">
-                <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashGrblController" data-editable="true">
-                  <option value="uno">OpenBuilds BlackBox 4X</option>
-                  <option value="xprov4">Spark Concepts xPro v3/4</option>
-                  <option value="uno">Arduino Uno</option>
-                  <option value="nano">Arduino Nano</option>
-                </select>
-              </div>
+          </div>
+
+          <div class="row" id="flash-tool-interface-fw-row" style="display: none;">
+            <div class="cell-md-4 mb-1">
+              Firmware Version
             </div>
-            <div class="row">
-              <div class="cell-md-4 mb-1">
-                Port
-              </div>
-              <div class="cell-md-8 mb-1">
-                <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled data-editable="true">
-                  <option value="">Waiting for USB</option>
-                </select>
-              </div>
+            <div class="cell-md-8 mb-1">
+              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="interfaceFirmwareVer" data-editable="true">
+                <option value="online">Latest available version</option>
+                <option value="custom">Custom: firmware binary file</option>
+              </select>
             </div>
-          </form>
+          </div>
+
+          <div class="row" id="flash-tool-machine-row">
+            <div class="cell-md-4 mb-1">
+              Machine Style
+            </div>
+            <div class="cell-md-8 mb-1">
+              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
+                <option value="3axes">3 Axes</option>
+                <option value="2axes">2 Axes</option>
+                <option value="servo">2 Axes + RC Servo</option>
+                <option value="custom">Custom: firmware hex file</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" id="flash-tool-door-row">
+            <div class="cell-md-4 mb-1">
+              Door Interlock
+            </div>
+            <div class="cell-md-8 mb-1">
+              <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable" data-editable="true">
+                <option value="nodoor">Disable Door Interlock</option>
+                <option value="opendoor">Door Interlock (Normally Open Switch)</option>
+                <option value="closeddoor">Door Interlock (Normally Closed Switch)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="cell-md-4 mb-1">
+              Port
+            </div>
+            <div class="cell-md-8 mb-1">
+              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled data-editable="true">
+                <option value="">Waiting for USB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" id="flash-tool-custom-row" style="display: none;">
+            <div class="cell-md-4 mb-1">
+              Firmware Image
+            </div>
+            <div class="cell-md-8 mb-1">
+              <form id="customFirmwareForm" enctype="multipart/form-data">
+                <button class="button alert shadow btn-file" action="#"><input class="btn-file" id="firmwareBin" type="file" accept=".bin, .hex" name="firmwareBin" /><i class="far fa-folder-open fa-fw"></i> Use custom firmware image</button>
+                <br>
+                <small id="customFirmwareSet"></small>
+              </form>
+            </div>
+          </div>
+
+
         </div>
         <div class="dialog-actions">
-          <button class="button success js-dialog-close" onclick="flashGrblfromWizard()">Flash</button>
+          <button class="button success js-dialog-close" onclick="flashFirmwarefromWizard()">Flash</button>
           <button class="button js-dialog-close">Cancel</button>
         </div>
       </div>
@@ -1188,7 +1216,7 @@
                 <div class="row mb-2">
                   <label class="cell-sm-6">Router Bit Diameter</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="22" data-editable="true">
+                    <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="22" value="22" data-editable="true">
                     <small class="text-muted">Diameter of your bit / endmill</small>
                   </div>
                 </div>
@@ -1196,7 +1224,7 @@
                 <div class="row mb-2">
                   <label class="cell-sm-6">Stepover</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
+                    <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" placeholder="40" value="40" data-editable="true">
                     <small class="text-muted">Stepover between passes </small>
                   </div>
                 </div>
@@ -1204,7 +1232,7 @@
                 <div class="row mb-2 border-bottom bd-lightGray">
                   <label class="cell-sm-6">Feedrate</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
+                    <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" placeholder="800" value="800" data-editable="true"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                     <small class="text-muted">Cutting speed</small>
                   </div>
@@ -1213,14 +1241,14 @@
                 <div class="row mb-2">
                   <label class="cell-sm-6">Width<br> <small class="text-muted">X-Axis</small></label>
                   <div class="cell-sm-6">
-                    <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="200" data-editable="true">
+                    <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="200" value="200" data-editable="true">
                   </div>
                 </div>
 
                 <div class="row mb-2 border-bottom bd-lightGray">
                   <label class="cell-sm-6">Length<br> <small class="text-muted">Y-Axis</small></label>
                   <div class="cell-sm-6">
-                    <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="300" data-editable="true">
+                    <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="300" value="300" data-editable="true">
                     <small class="text-muted">Width and Length of the area to machine flat</small>
                   </div>
                 </div>
@@ -1228,7 +1256,7 @@
                 <div class="row mb-2 border-bottom bd-lightGray">
                   <label class="cell-sm-6">Skim Depth</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
+                    <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="2" value="2" data-editable="true">
                     <small class="text-muted">How much material to remove</small>
                   </div>
                 </div>
@@ -1236,7 +1264,7 @@
                 <div class="row mb-2 border-bottom bd-lightGray">
                   <label class="cell-sm-6">Spindle RPM</label>
                   <div class="cell-sm-6">
-                    <input id="surfaceRPM" type="number" data-role="input" data-append="mm" data-clear-button="false" value="1000" data-editable="true">
+                    <input id="surfaceRPM" type="number" data-role="input" data-append="mm" data-clear-button="false" placeholder="1000" value="1000" data-editable="true">
                     <small class="text-muted">Spindle RPM for variable spindles</small>
                   </div>
                 </div>

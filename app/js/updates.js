@@ -5,7 +5,9 @@ $(document).ready(function() {
 
 
 function checkUpdate() {
+
   if (!isMac && webgl) {
+
     setTimeout(function() {
       // console.log('checking for update')
       printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>Checking for Updates</span>")

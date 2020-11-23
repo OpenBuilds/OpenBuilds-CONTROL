@@ -129,6 +129,7 @@ var appIcon = null,
   mainWindow = null
 var autoUpdater
 
+
 var updateIsDownloading = false;
 if (isElectron()) {
   autoUpdater = require("electron-updater").autoUpdater
@@ -392,6 +393,12 @@ var status = {
       activePort: "" // or activeIP in the case of wifi/telnet?
     },
     alarm: ""
+  },
+  interface: {
+    firmware: {
+      availVersion: "",
+      downloadedVersion: ""
+    }
   }
 };
 
@@ -661,6 +668,12 @@ io.on("connection", function(socket) {
     }
   })
 
+
+
+
+
+
+  //download(url, dest, cb)
 
   socket.on("flashGrbl", function(data) {
 
@@ -1022,7 +1035,7 @@ io.on("connection", function(socket) {
             if (status.comms.connectionStatus > 0) {
               addQRealtime("?");
             }
-          }, 50);
+          }, 100);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
@@ -2505,6 +2518,48 @@ function startChrome() {
 }
 
 // Interface Programming
+
+
+// grab latest firmware.bin for Interface on startup
+
+var file = fs.createWriteStream(path.join(__dirname, "firmware.bin"));
+https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/firmware.bin", function(response) {
+  response.pipe(file);
+  file.on('finish', function() {
+    file.close(function() {
+
+      const options = {
+        hostname: 'raw.githubusercontent.com',
+        port: 443,
+        path: '/OpenBuilds/firmware/main/interface/version.txt',
+        method: 'GET'
+      }
+
+      const req = https.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`)
+
+        res.on('data', d => {
+          status.interface.firmware.availVersion = parseFloat(d.toString())
+        })
+      })
+
+      req.on('error', error => {
+        console.error(error)
+      })
+
+      req.end()
+
+      var output = {
+        'command': '',
+        'response': "Downloaded firmware.bin v" + status.interface.firmware.availVersion
+      }
+      io.sockets.emit('data', output);
+    });
+  });
+})
+
+
+
 var firmwareImagePath = path.join(__dirname, './firmware.bin');
 var spawn = require('child_process').spawn;
 const multer = require('multer');
@@ -2596,11 +2651,7 @@ function flashInterface(data) {
     status.comms.connectionStatus = 0;
 
   });
-
-
 }
-
-
 // end Interface Programming
 
 

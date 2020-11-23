@@ -151,6 +151,12 @@ $(document).ready(function() {
     safeToUpdateSliders = false;
   }).mouseup(function(e) {
     safeToUpdateSliders = true;
+    // Added to cancel Jog moves even when user moved the mouse off the button before releasing
+    if (allowContinuousJog) {
+      if (continuousJogRunning) {
+        cancelJog()
+      }
+    }
   }).mouseleave(function(e) {
     safeToUpdateSliders = true;
   });
@@ -367,6 +373,9 @@ $(document).ready(function() {
 
 
   $('.xM').on('touchstart mousedown', function(ev) {
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
@@ -417,6 +426,9 @@ $(document).ready(function() {
 
   $('.xP').on('touchstart mousedown', function(ev) {
     // console.log("xp down")
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
@@ -465,6 +477,9 @@ $(document).ready(function() {
   });
 
   $('.yM').on('touchstart mousedown', function(ev) {
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
@@ -514,6 +529,9 @@ $(document).ready(function() {
   });
 
   $('.yP').on('touchstart mousedown', function(ev) {
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
@@ -563,6 +581,9 @@ $(document).ready(function() {
   });
 
   $('.zM').on('touchstart mousedown', function(ev) {
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
@@ -612,6 +633,9 @@ $(document).ready(function() {
   });
 
   $('.zP').on('touchstart mousedown', function(ev) {
+    if (ev.which != 1) {
+      return
+    }
     ev.preventDefault();
     var hasSoftLimits = false;
     if (Object.keys(grblParams).length > 0) {
