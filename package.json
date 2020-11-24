@@ -105,6 +105,9 @@
     "extraFiles": [
       "ssl"
     ],
+    "asarUnpack": [
+      "esptool.exe"
+    ],
     "linux": {
       "icon": "build/"
     },
