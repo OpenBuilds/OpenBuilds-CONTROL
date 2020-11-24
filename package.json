@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.261",
+  "version": "1.0.262",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -57,9 +57,6 @@
       "installerSidebar": "build/installerSidebar.bmp",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
-    "extraResources": [
-      "**/*"
-    ],
     "fileAssociations": [
       {
         "ext": "obc",
@@ -101,7 +98,9 @@
     "files": [
       "**/*",
       "ssl/**/*",
-      "firmware/**/*"
+      "firmware/**/*",
+      ""
+
     ],
     "extraFiles": [
       "ssl"
