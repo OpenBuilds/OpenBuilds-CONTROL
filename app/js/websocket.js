@@ -66,6 +66,7 @@ function initSocket() {
   printLog("<span class='fg-red'>[ Websocket ] </span><span class='fg-green'>Bidirectional Websocket Interface Started</span>")
   setTimeout(function() {
     populatePortsMenu();
+    populateDrivesMenu();
   }, 2000);
 
   socket.on('disconnect', function() {
@@ -345,6 +346,19 @@ function initSocket() {
         laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
         populatePortsMenu();
       }
+
+      if (!_.isEqual(status.interface.diskdrives, laststatus.interface.diskdrives)) {
+        var string = "Detected a change in available disk drives: ";
+        for (i = 0; i < status.interface.diskdrives.length; i++) {
+          if (status.interface.diskdrives[i].isUSB || !status.interface.diskdrives[i].isSystem) {
+            string += "[" + status.interface.diskdrives[i].mountpoints[0].path + "], "
+          }
+        }
+        printLog(string)
+        laststatus.interface.diskdrives = status.interface.diskdrives;
+        populateDrivesMenu();
+      }
+
     }
 
     $('#runStatus').html("Controller: " + status.comms.runStatus);
@@ -648,6 +662,38 @@ function closePort() {
   socket.emit('closePort', 1);
   populatePortsMenu();
   $('.mdata').val('');
+}
+
+function populateDrivesMenu() {
+  if (laststatus) {
+    var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Flashdrives">`
+
+    var usbDrives = []
+
+    for (i = 0; i < laststatus.interface.diskdrives.length; i++) {
+      if (laststatus.interface.diskdrives[i].isUSB || !laststatus.interface.diskdrives[i].isSystem) {
+        usbDrives.push(laststatus.interface.diskdrives[i])
+      }
+    };
+
+    if (!usbDrives.length > 0) {
+      response += `<option value="">Waiting for USB Flashdrive</option>`
+    } else {
+      for (i = 0; i < usbDrives.length; i++) {
+        response += `<option value="` + usbDrives[i].mountpoints[0].path + `">` + usbDrives[i].mountpoints[0].path + ` ` + usbDrives[i].description + `</option>`;
+      };
+    }
+    response += `</optgroup></select>`
+    var select = $("#UsbDriveList").data("select");
+    select.data(response);
+    if (!usbDrives.length > 0) {
+      $('#UsbDriveList').parent(".select").addClass('disabled')
+      $("#copyToUsbBtn").attr('disabled', true);
+    } else {
+      $('#UsbDriveList').parent(".select").removeClass('disabled')
+      $("#copyToUsbBtn").attr('disabled', false);
+    }
+  }
 }
 
 function populatePortsMenu() {

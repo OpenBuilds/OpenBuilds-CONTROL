@@ -66,12 +66,12 @@ $(document).ready(function() {
 
 function populateGrblBuilderToolForm() {
   Metro.dialog.open("#grblFlashDialog");
-  var opts = `<option value="online">Latest available v` + laststatus.interface.firmware.availVersion + `</option>`;
-  opts += `<option value="custom">Custom: firmware binary file</option>`;
+  var opts = `<option value="custom">Custom: firmware binary file</option>`;
+  if (parseFloat(laststatus.interface.firmware.availVersion) > 0) {
+    opts += `<option value="online" selected>Latest available v` + laststatus.interface.firmware.availVersion + `</option>`;
+  }
   var select = $("#interfaceFirmwareVer").data("select");
   select.data(opts);
-
-
 }
 
 function flashFirmwarefromWizard() {

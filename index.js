@@ -43,6 +43,8 @@ var fs = require('fs');
 var path = require("path");
 const join = require('path').join;
 var mkdirp = require('mkdirp');
+const drivelist = require('drivelist');
+
 
 app.use(express.static(path.join(__dirname, "app")));
 
@@ -98,7 +100,6 @@ const Readline = SerialPort.parsers.Readline;
 var md5 = require('md5');
 var ip = require("ip");
 var _ = require('lodash');
-var fs = require("fs");
 var formidable = require('formidable')
 var lastsentuploadprogress = 0;
 
@@ -395,10 +396,11 @@ var status = {
     alarm: ""
   },
   interface: {
-    firmware: {
-      availVersion: "",
-      downloadedVersion: ""
-    }
+    diskdrives: [],
+      firmware: {
+        availVersion: "",
+        downloadedVersion: ""
+      }
   }
 };
 
@@ -409,8 +411,6 @@ async function findPorts() {
   // console.log(ports)
   oldportslist = ports;
   status.comms.interfaces.ports = ports;
-  for (const port of ports) {}
-  // throw new Error('No ports found')
 }
 findPorts()
 
@@ -430,25 +430,25 @@ async function findChangedPorts() {
   }
   oldportslist = ports;
   // throw new Error('No ports found')
+  findPorts()
 }
-findPorts()
 
-
-// SerialPort.list(function(err, ports) {
-//   oldportslist = ports;
-//   status.comms.interfaces.ports = ports;
-// });
+async function findDisks() {
+  const drives = await drivelist.list();
+  status.interface.diskdrives = drives;
+}
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
     findChangedPorts();
   }
-}, 500);
+  findDisks();
+}, 1000);
 
 checkPowerSettings()
-var PowerSettingsInterval = setInterval(function() {
-  checkPowerSettings()
-}, 60 * 1000)
+// var PowerSettingsInterval = setInterval(function() {
+//   checkPowerSettings()
+// }, 60 * 1000)
 
 
 // JSON API
@@ -744,7 +744,55 @@ io.on("connection", function(socket) {
     flashInterface(data)
   })
 
+  socket.on("writeInterfaceUsbDrive", function(data) {
+    //data = mountpoint dest
+    var ncp = require('ncp').ncp;
+    ncp.limit = 16;
 
+    var output = {
+      'command': 'Interface USB Drive',
+      'response': "Starting to copy data to " + data
+    }
+    io.sockets.emit('data', output);
+
+    var errorCount = 0;
+
+    var src = path.join(__dirname, './app/wizards/interface/PROBE/');
+    var dest = path.join(data, "/PROBE/");
+
+    ncp(src, dest,
+      function(err) {
+        if (err) {
+          var output = {
+            'command': 'Interface USB Drive',
+            'response': "Failed to copy PROBE macros to " + dest + ":  " + JSON.stringify(err)
+          }
+          io.sockets.emit('data', output);
+          errorCount++
+        } else {
+          var output = {
+            'command': 'Interface USB Drive',
+            'response': "Copied PROBE macros to " + dest + " succesfully!"
+          }
+          io.sockets.emit('data', output);
+        }
+      });
+
+    setTimeout(function() {
+      if (errorCount == 0) {
+        var output = {
+          'command': 'Interface USB Drive',
+          'response': "Finished copying supporting files to Drive " + data
+        }
+        io.sockets.emit('data', output);
+        var output = {
+          'command': 'Interface USB Drive',
+          'response': "Please Eject the drive (Safely Remove) and insert it into your Interface's USB port"
+        }
+        io.sockets.emit('data', output);
+      }
+    }, 1000);
+  });
 
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 
@@ -2540,20 +2588,27 @@ https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/
 
         res.on('data', d => {
           status.interface.firmware.availVersion = parseFloat(d.toString())
+
+          var output = {
+            'command': 'interface firmware update tool',
+            'response': "Downloaded firmware.bin v" + status.interface.firmware.availVersion
+          }
+          io.sockets.emit('data', output);
+
         })
       })
 
       req.on('error', error => {
-        console.error(error)
+        var output = {
+          'command': 'interface firmware update tool',
+          'response': "Unable to download latest firmware.bin"
+        }
+        io.sockets.emit('data', output);
       })
 
       req.end()
 
-      var output = {
-        'command': '',
-        'response': "Downloaded firmware.bin v" + status.interface.firmware.availVersion
-      }
-      io.sockets.emit('data', output);
+
     });
   });
 })

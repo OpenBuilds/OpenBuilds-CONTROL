@@ -172,6 +172,11 @@
                     <li class=""><a href="#" onclick="socket.emit('opencam', true);"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.openbuilds.com</a></li>
                   </ul>
                 </div>
+                <span class="title">File</span>
+              </div>
+
+              <div class="group">
+
 
                 <button id="runBtn" class="ribbon-button" onclick="socket.emit('runJob', {data: editor.getValue(), isJob: true, fileName : loadedFileName});" title="Run a Job">
                   <span class="icon">
@@ -298,6 +303,10 @@
                   <span class="caption grblmode">Home<br>All</span>
                 </button>
 
+                <span class="title">Control</span>
+              </div>
+
+              <div class="group">
 
                 <div>
                   <button id="" class="ribbon-button dropdown-toggle">
@@ -320,10 +329,11 @@
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Shortcut Key Assignments</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li onclick="populateGrblBuilderToolForm();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
+                    <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                   </ul>
                 </div>
 
-                <span class="title">Control</span>
+                <span class="title">Wizards</span>
               </div>
               <div class="group estop" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
@@ -1207,6 +1217,45 @@
         </div>
       </div>
 
+      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
+        <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
+        <div class="dialog-content" style="height: calc(100% - 100px);">
+          This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
+          <hr>
+          <div class="row">
+            <div class="cell-md-3 mb-1">
+
+              <img src="img/interface/interf.png" width="120" class="mt-5" />
+            </div>
+            <div class="cell-md-9 mb-1">
+              <ul>
+                <li class="text-secondary">Insert the USB flashdrive into this computer</li>
+                <li class="text-secondary">Select the correct drive below</li>
+                <li class="text-secondary">Click COPY to transfer the files</li>
+                <li class="text-secondary">Eject the flashdrive </li>
+                <li class="text-secondary">Insert it into the Interface</li>
+              </ul>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="cell-md-3 mb-1">
+              Port
+            </div>
+            <div class="cell-md-9 mb-1">
+              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true">
+                <option value="">Waiting for USB Flashdrive</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="dialog-actions">
+          <button id="copyToUsbBtn" class="button success js-dialog-close" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
+          <button class="button js-dialog-close">Cancel</button>
+        </div>
+      </div>
+
       <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
         <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Flattening / Surfacing Tool</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
@@ -1689,6 +1738,8 @@
   <script type="text/javascript" src="wizards/surfacing/surfacing.js"></script>
 
   <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script>
+
+  <script type="text/javascript" src="wizards/interface/usbprep.js"></script>
 
   <script type="text/javascript" src="js/toolchange.js"></script>
 
