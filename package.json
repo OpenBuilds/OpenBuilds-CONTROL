@@ -47,12 +47,6 @@
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuildsCONTROL",
     "asar": true,
-    "asarUnpack": [
-      "*.exe",
-      "*.conf",
-      "*.hex",
-      "*.bin"
-    ],
     "nsis": {
       "oneClick": false,
       "perMachine": false,
