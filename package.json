@@ -7,7 +7,8 @@
   "devDependencies": {
     "copyfiles": "^2.3.0",
     "electron": "^9.2.0",
-    "electron-builder": "^22.8.0"
+    "electron-builder": "^22.8.0",
+    "ncp": "^2.0.0"
   },
   "dependencies": {
     "avrgirl-arduino": "^4.2.3",
@@ -46,6 +47,12 @@
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuildsCONTROL",
     "asar": true,
+    "asarUnpack": [
+      "*.exe",
+      "*.conf",
+      "*.hex",
+      "*.bin"
+    ],
     "nsis": {
       "oneClick": false,
       "perMachine": false,
@@ -56,6 +63,9 @@
       "installerSidebar": "build/installerSidebar.bmp",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
+    "extraResources": [
+      "**/*"
+    ],
     "fileAssociations": [
       {
         "ext": "obc",
