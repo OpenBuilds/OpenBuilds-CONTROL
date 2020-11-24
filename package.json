@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.262",
+  "version": "1.0.263",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -18,6 +18,7 @@
     "electron-updater": "^4.3.4",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
+    "hazardous": "^0.3.0",
     "https": "^1.0.0",
     "ip": "^1.1.5",
     "jscs-loader": "^0.3.0",
@@ -25,11 +26,11 @@
     "md5": "^2.3.0",
     "mkdirp": "^1.0.4",
     "multer": "^1.4.2",
+    "ncp": "^2.0.0",
     "node-abi": "^2.18.0",
     "rimraf": "^3.0.2",
     "serialport": "^9.0.1",
-    "socket.io": "^2.3.0",
-    "ncp": "^2.0.0"
+    "socket.io": "^2.3.0"
   },
   "main": "index.js",
   "scripts": {
@@ -100,13 +101,13 @@
       "ssl/**/*",
       "firmware/**/*",
       ""
-
     ],
     "extraFiles": [
       "ssl"
     ],
     "asarUnpack": [
-      "esptool.exe"
+      "esptool.exe",
+      "*.bin"
     ],
     "linux": {
       "icon": "build/"

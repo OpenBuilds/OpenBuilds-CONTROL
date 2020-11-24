@@ -10,7 +10,6 @@ electron-builder.yml
 *.com
 *.class
 *.dll
-*.exe
 *.o
 *.so
 

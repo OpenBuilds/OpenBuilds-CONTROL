@@ -44,7 +44,7 @@ var path = require("path");
 const join = require('path').join;
 var mkdirp = require('mkdirp');
 const drivelist = require('drivelist');
-
+require('hazardous');
 
 app.use(express.static(path.join(__dirname, "app")));
 
