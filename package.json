@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.260",
+  "version": "1.0.261",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -8,7 +8,6 @@
     "copyfiles": "^2.3.0",
     "electron": "^9.2.0",
     "electron-builder": "^22.8.0",
-    "ncp": "^2.0.0"
   },
   "dependencies": {
     "avrgirl-arduino": "^4.2.3",
@@ -28,7 +27,8 @@
     "node-abi": "^2.18.0",
     "rimraf": "^3.0.2",
     "serialport": "^9.0.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "ncp": "^2.0.0"
   },
   "main": "index.js",
   "scripts": {
