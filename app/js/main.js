@@ -28,14 +28,18 @@ function setWindowTitle(status) {
 
 }
 
-
+// splash screen ad-fade-in, and fade out after
+function showAndHideSplash() {
+  $('#splashAd').fadeIn(200)
+  setTimeout(function() {
+    $('#splash').fadeOut(500);
+  }, 2000)
+}
 
 function getChangelog() {
 
   // Splash Screen Begin
-  $("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date="` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';" style="display:block; margin:auto;" onload="$('#splashAd').fadeIn(200)" />
-  <br>
-  <center>Starting&nbsp;OpenBuilds&nbsp;CONTROL...</center>`)
+  $("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
 
   $("#changelog").empty()
   var template2 = `<ul>`
@@ -178,10 +182,6 @@ $(document).ready(function() {
     }
   });
   console.log('%c', element);
-
-  setTimeout(function() {
-    $('#splash').fadeOut(500);
-  }, 2000)
 
 });
 
