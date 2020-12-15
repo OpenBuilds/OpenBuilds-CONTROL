@@ -20,8 +20,7 @@
   <body>
 
     <div class="pos-fixed pos-center" id="splash">
-      <img src="splashicon.png" style="display:block; margin:auto;">
-      <br>Starting&nbsp;OpenBuilds&nbsp;CONTROL...
+      <div id="splashAd"></div>
     </div>
 
 
@@ -1130,6 +1129,9 @@
       <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
         <div class="dialog-title"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
+
+          <div id="FlashDialogMsg"></div>
+
           <p class="text-small mb-4">You can use this wizard to flash Firmware onto compatible controllers<br>Only use with care, or when instructed by Support</p>
 
           <div class="row">

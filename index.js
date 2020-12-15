@@ -214,6 +214,7 @@ if (isElectron()) {
 } else {
   var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local')
 }
+var jobStartTime = false;
 var jobCompletedMsg = ""; // message sent when job is done
 var uploadedgcode = ""; // var to store uploaded gcode
 var uploadedworkspace = ""; // var to store uploaded OpenBuildsCAM Workspace
@@ -399,11 +400,11 @@ var status = {
     diskdrives: [],
       firmware: {
         availVersion: "",
-        downloadedVersion: ""
+        installedVersion: "",
       }
   }
 };
-
+//status.interface.firmware.installedVersion
 
 
 async function findPorts() {
@@ -1048,6 +1049,32 @@ io.on("connection", function(socket) {
           io.sockets.emit('prbResult', status.machine.probe);
         };
 
+        if (data.indexOf("[INTF:") === 0) {
+          var output = {
+            'command': 'connect',
+            'response': "Detected an OpenBuilds Interface on port " + port.path,
+          }
+          io.sockets.emit('data', output);
+          if (data.split(":")[1].indexOf("ver") == 0) {
+            var installedVersion = parseFloat(data.split(":")[1].split("]")[0].split("-")[1])
+            status.interface.firmware.installedVersion = installedVersion
+            var output = {
+              'command': 'connect',
+              'response': "OpenBuilds Interface Firmware Version: v" + installedVersion,
+            }
+            io.sockets.emit('data', output);
+            if (status.interface.firmware.availVersion > 1.20 && installedVersion != status.interface.firmware.availVersion) {
+              var output = {
+                'command': 'connect',
+                'response': "OpenBuilds Interface Firmware OUTDATED: v" + installedVersion + " can be upgraded to v" + status.interface.firmware.availVersion,
+              }
+              io.sockets.emit('data', output);
+              io.sockets.emit('interfaceOutdated', status);
+            }
+          }
+          io.sockets.emit("status", status);
+        }
+
         // Machine Identification
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
           debug_log(data)
@@ -1223,9 +1250,11 @@ io.on("connection", function(socket) {
 
   socket.on('runJob', function(object) {
     // debug_log(data)
+    jobStartTime = false;
     var data = object.data
     if (object.isJob) {
       uploadedgcode = data;
+      jobStartTime = new Date().getTime();
     }
 
     if (object.completedMsg) {
@@ -2069,10 +2098,13 @@ function send1Q() {
       status.comms.connectionStatus = 2; // finished
       var data = {
         completed: true,
-        jobCompletedMsg: jobCompletedMsg
+        jobCompletedMsg: jobCompletedMsg,
+        jobStartTime: jobStartTime,
+        jobEndTime: new Date().getTime()
       }
       io.sockets.emit('jobComplete', data);
       jobCompletedMsg = ""
+      jobStartTime = false;
     }
   } else {
     debug_log('Not Connected')

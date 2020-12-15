@@ -3,6 +3,7 @@ var loadedFileName = "";
 var editor;
 var isJogWidget = false;
 
+
 function setWindowTitle(status) {
 
   var string = "OpenBuilds CONTROL"
@@ -27,7 +28,15 @@ function setWindowTitle(status) {
 
 }
 
+
+
 function getChangelog() {
+
+  // Splash Screen Begin
+  $("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date="` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';" style="display:block; margin:auto;" onload="$('#splashAd').fadeIn(200)" />
+  <br>
+  <center>Starting&nbsp;OpenBuilds&nbsp;CONTROL...</center>`)
+
   $("#changelog").empty()
   var template2 = `<ul>`
   $.get("https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
@@ -126,13 +135,10 @@ $(document).ready(function() {
 
   getChangelog()
 
-  setTimeout(function() {
-    $('#splash').fadeOut(500);
-  }, 100)
-
   setInterval(function() {
     setWindowTitle();
   }, 1000)
+
   const element = new Image();
   Object.defineProperty(element, 'id', {
     get: function() {
@@ -172,6 +178,11 @@ $(document).ready(function() {
     }
   });
   console.log('%c', element);
+
+  setTimeout(function() {
+    $('#splash').fadeOut(500);
+  }, 2000)
+
 });
 
 function readFile(evt) {

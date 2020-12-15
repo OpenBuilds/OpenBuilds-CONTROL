@@ -160,14 +160,20 @@ function initSocket() {
 
   socket.on("jobComplete", function(data) {
 
-    // console.log("jobComplete", data)
+    console.log("jobComplete", data)
 
     if (data.completed) {
       // console.log("Job Complete", data)
     }
     if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
-      $("#completeMsgDiv").html(data.jobCompletedMsg);
+      $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
       Metro.dialog.open("#completeMsgModal");
+      printLog("<span class='fg-blue'>[ JOB COMPLETE ]</span>  <span class='fg-green'>Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg + "</span>")
+    } else if (data.jobStartTime) {
+      var runTime = data.jobEndTime - data.jobStartTime;
+      $("#completeMsgDiv").html("Job completed in " + msToTime(runTime));
+      Metro.dialog.open("#completeMsgModal");
+      printLog("<span class='fg-blue'>[ JOB COMPLETE ]</span>  <span class='fg-green'>Job completed in " + msToTime(runTime) + "</span>")
     }
     $('#jobCompleteBtnOk').focus();
 
@@ -608,6 +614,21 @@ function initSocket() {
     }
   })
 
+  socket.on("interfaceOutdated", function(status) {
+    console.log("interfaceOutdated", status)
+    populateGrblBuilderToolForm();
+    var select = $("#flashController").data("select").val("interface")
+    //status.interface.firmware.installedVersion
+    //status.interface.firmware.availVersion
+    var template = `We've detected that you are connected to an OpenBuilds Interface on port ` + status.comms.interfaces.activePort + `.<p>
+    It's firmware is currently out of date. You are running <code>v` + status.interface.firmware.installedVersion + `</code> and you can now update to <code>v` + status.interface.firmware.availVersion + `</code>.
+    Use the wizard below to update the firmware:
+    <hr>
+    `
+
+    $("#FlashDialogMsg").html(template);
+  })
+
   $('#sendCommand').on('click', function() {
     var commandValue = $('#command').val();
     sendGcode(commandValue);
@@ -813,4 +834,17 @@ function friendlyPort(i) {
 
 function escapeHTML(html) {
   return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+}
+
+function msToTime(duration) {
+  var milliseconds = parseInt((duration % 1000) / 100),
+    seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60),
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  return hours + "h " + minutes + "m " + seconds + "." + milliseconds + "s";
 }
