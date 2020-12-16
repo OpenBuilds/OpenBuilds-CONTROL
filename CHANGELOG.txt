@@ -1,3 +1,4 @@
+v1.0.265: Added error handling for Grbl connection failures via Interface, Updated Logging UI, Fixed Keyboard Jog bug
 v1.0.264: Interface Serial Integration, Splash Screen Updates, Improved Continuous Jogging, Fixed runaway jogging bug
 v1.0.263: Job complete running time Dialog, sample macros
 v1.0.262: Fixed runaway Jogging bug, Improved Continuous Jogging calculations, Fixed Soft Limits jogging bugs

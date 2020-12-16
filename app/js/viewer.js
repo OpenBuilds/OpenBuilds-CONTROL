@@ -346,7 +346,7 @@ function init3D() {
 
   } else {
     console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
-    printLog('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
+    printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!</span>")
     $('#gcodeviewertab').hide()
     $('#consoletab').click()
     return false;

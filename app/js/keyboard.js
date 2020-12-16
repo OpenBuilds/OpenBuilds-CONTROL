@@ -111,7 +111,7 @@ function bindKeys() {
           } else if (macro && macro.codetype == "javascript") {
             executeJS(macro.javascript)
           } else {
-            printLog("Macro not found for " + newVal)
+            printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>Macro not found for " + newVal + "</span>")
           }
         });
       }

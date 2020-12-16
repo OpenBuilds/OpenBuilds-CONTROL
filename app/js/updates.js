@@ -10,7 +10,7 @@ function checkUpdate() {
 
     setTimeout(function() {
       // console.log('checking for update')
-      printLog("<span class='fg-red'>[ update ] </span><span class='fg-green'>Checking for Updates</span>")
+      printLog("<span class='fg-red'>[ update ] </span><span class='fg-darkGray'>Checking for Updates</span>")
       $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
         crossDomain: true
       }).done(function(release) {
@@ -21,8 +21,8 @@ function checkUpdate() {
           console.log('outdated')
           time = 10
           printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds CONTROL <code>" + availVersion + "</code>. is available now.</span>")
-          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>Download will start in <span class='tally' id='countdown'>10</span> seconds (<a href='#' onclick='cancelTimer();'>cancel</a>) </span>")
-          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-green'>You will be prompted when its ready to be installed </span>")
+          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-darkGray'>Download will start in <span class='tally' id='countdown'>10</span> seconds (<a href='#' onclick='cancelTimer();'>cancel</a>) </span>")
+          printLog("<span class='fg-red'>[ Update Available! ] </span><span class='fg-darkGray'>You will be prompted when its ready to be installed </span>")
           setTimeout(function() {
             updateTime();
           }, 1000);
@@ -54,5 +54,5 @@ function updateTime() {
 function cancelTimer() {
   time = -1
   $('#countdown').html('cancelled')
-  printLog("<span class='fg-red'>[ Update Deferred! ] </span><span class='fg-green'>No problem, we will ask you again next time</span>")
+  printLog("<span class='fg-red'>[ Update Deferred! ] </span><span class='fg-darkGray'>No problem, we will ask you again next time</span>")
 }

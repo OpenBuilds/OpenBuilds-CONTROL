@@ -213,9 +213,9 @@ function loadFile(f) {
       loadedFileName = f.name;
       setWindowTitle()
       if (webgl) {
-        printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded, please wait while we render a preview... </span>');
+        printLog(`<span class="fg-red">[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE File Loaded, please wait while we render a preview... </span>`);
       } else {
-        printLog('<span class="fg-red">[ GCODE Parser ]</span><span class="fg-green"> GCODE File Loaded </span>');
+        printLog(`<span class="fg-red">[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE File Loaded </span>`);
       }
       parseGcodeInWebWorker(this.result)
 

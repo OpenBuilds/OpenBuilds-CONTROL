@@ -37,7 +37,7 @@ Metro.dialog.create({
     cls: "js-dialog-close alert",
     onclick: function() {
       macro1repeat = false;
-      printLog("Repeating Macro Exited")
+      printLog("<span class='fg-red'>[ custom macro ]</span><span class='fg-darkGray'>Repeating Macro Exited</span>")
     }
   }]
 });

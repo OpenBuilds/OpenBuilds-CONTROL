@@ -39475,7 +39475,7 @@ html.metro-touch-device .streamer .stream.focused .stream-icon {
 .tg-cyan::before {
   border-color: #1ba1e2;
 }
-.fg-cobalt {
+.fg-grayBlue {
   color: #0050ef !important;
 }
 .bg-cobalt {
@@ -39487,13 +39487,13 @@ html.metro-touch-device .streamer .stream.focused .stream-icon {
 .ol-cobalt {
   outline-color: #0050ef !important;
 }
-.fg-cobalt-active:active {
+.fg-grayBlue-active:active {
   color: #0050ef !important;
 }
-.fg-cobalt-hover:hover {
+.fg-grayBlue-hover:hover {
   color: #0050ef !important;
 }
-.fg-cobalt-focus:focus {
+.fg-grayBlue-focus:focus {
   color: #0050ef !important;
 }
 .bg-cobalt-active:active {
@@ -39530,13 +39530,13 @@ html.metro-touch-device .streamer .stream.focused .stream-icon {
 .before-bg-cobalt::before {
   background: #0050ef !important;
 }
-.before-fg-cobalt::before {
+.before-fg-grayBlue::before {
   color: #0050ef !important;
 }
 .after-bg-cobalt::after {
   background: #0050ef !important;
 }
-.after-fg-cobalt::after {
+.after-fg-grayBlue::after {
   color: #0050ef !important;
 }
 .op-cobalt {

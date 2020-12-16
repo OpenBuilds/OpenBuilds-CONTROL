@@ -116,7 +116,7 @@ function parseGcodeInWebWorker(gcode) {
               // console.log('Remaining time: ', formattedTime)
               // output formattedTime to UI here
               $('#timeRemaining').html(" / " + formattedTime);
-              printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-green'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
+              printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
             }
           }, 200);
           $('#3dviewicon').removeClass('fa-pulse');
