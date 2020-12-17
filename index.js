@@ -944,7 +944,7 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       parser.on("data", function(data) {
-        // console.log(data)
+        //console.log(data)
         var command = sentBuffer[0];
 
         if (data.indexOf("<") != 0) {
@@ -1209,14 +1209,19 @@ io.on("connection", function(socket) {
             case 'grbl':
               // sentBuffer.shift();
               var errorCode = parseInt(data.split(':')[1]);
+
+              var lastAlarm = "";
+              if (errorCode == 9 && status.comms.connectionStatus == 5 && status.comms.alarm.length > 0) {
+                lastAlarm = "<hr>This error may just be a symptom of an earlier event:<br> ALARM: " + status.comms.alarm
+              }
               debug_log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
               var output = {
                 'command': '',
-                'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]",
+                'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm,
                 'type': 'error'
               }
               io.sockets.emit('data', output);
-              io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]")
+              io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm)
               break;
           }
           debug_log("error;")
@@ -1743,6 +1748,7 @@ io.on("connection", function(socket) {
       }
       status.comms.runStatus = 'Stopped'
       status.comms.connectionStatus = 2;
+      status.comms.alarm = "";
       io.sockets.emit('errorsCleared', true);
     } else {
       debug_log('ERROR: Machine connection not open!');
@@ -1861,10 +1867,9 @@ function parseFeedback(data) {
     status.comms.connectionStatus = 5;
     switch (status.machine.firmware.type) {
       case 'grbl':
-        // sentBuffer.shift();
-        var alarmCode = parseInt(data.split(':')[1]);
-        debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
-        status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+        //var alarmCode = parseInt(data.split(':')[1]);
+        debug_log('ALARM: ' + data);
+        //status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
         break;
     }
     status.comms.connectionStatus = 5;
