@@ -266,6 +266,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
           break;
         }
       }
+      lines.length = 0;
     }
   },
   colorG0 = 0x00cc00, //bootstrap color
@@ -1223,6 +1224,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
     // of toolhead
     gcobject.userData.bbbox2 = bbbox2;
     gcobject.userData.lines = lines;
+    lines.length = 0; //clean up
     gcobject.userData.layers = layers;
     // gcobject.userData.center2 = center2;
     // gcobject.userData.extraObjects = this.extraObjects;
