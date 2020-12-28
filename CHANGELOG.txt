@@ -1,3 +1,4 @@
+v1.0.267: Fixed probe complete dialog, added 1% laser focus power, restore incremental if it was set prior to probe, added 3rd decimal for Inch mode DRO / padding to 2 decimals for mm mode, added Machine Coordinates to DRO tooltip, Handle M0 Pauses (Carbide etc)
 v1.0.266: Updated "error 9" dialog to also include details of earlier ALARMs for troubleshooting, Fixed CheckSize bug with Lightburn Relative Coordinates
 v1.0.265: Added error handling for Grbl connection failures via Interface, Updated Logging UI, Fixed Keyboard Jog bug
 v1.0.264: Interface Serial Integration, Splash Screen Updates, Improved Continuous Jogging, Fixed runaway jogging bug

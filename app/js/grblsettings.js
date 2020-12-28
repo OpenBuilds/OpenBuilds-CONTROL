@@ -620,6 +620,7 @@ function clearEEPROM() {
 }
 
 function updateToolOnSValues() {
+  $(".ToolOnS1").html((parseInt(grblParams.$30) * 0.01).toFixed(0))
   $(".ToolOnS5").html((parseInt(grblParams.$30) * 0.05).toFixed(0))
   $(".ToolOnS10").html((parseInt(grblParams.$30) * 0.1).toFixed(0))
   $(".ToolOnS25").html((parseInt(grblParams.$30) * 0.25).toFixed(0))

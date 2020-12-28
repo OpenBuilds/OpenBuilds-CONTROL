@@ -1859,7 +1859,7 @@ function stopPort() {
 }
 
 function parseFeedback(data) {
-  // debug_log(data)
+  debug_log(data)
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
@@ -1873,6 +1873,8 @@ function parseFeedback(data) {
         break;
     }
     status.comms.connectionStatus = 5;
+  } else if (state == "Hold:0") {
+    pause();
   }
   if (status.machine.firmware.type == "grbl") {
     // Extract work offset (for Grbl > 1.1 only!)

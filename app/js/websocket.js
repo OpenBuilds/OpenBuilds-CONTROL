@@ -238,7 +238,11 @@ function initSocket() {
       // console.log("Job Complete", data)
     }
     if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
-      $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
+      if (data.jobStartTime) {
+        $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
+      } else {
+        $("#completeMsgDiv").html(data.jobCompletedMsg);
+      }
       Metro.dialog.open("#completeMsgModal");
       var icon = ''
       var source = "JOB COMPLETE"
@@ -471,13 +475,24 @@ function initSocket() {
 
     if (!disableDROupdates) {
       if (unit == "mm") {
-        var xpos = status.machine.position.work.x + unit;
-        var ypos = status.machine.position.work.y + unit;
-        var zpos = status.machine.position.work.z + unit;
+        var xpos = status.machine.position.work.x.toFixed(2) + unit;
+        var ypos = status.machine.position.work.y.toFixed(2) + unit;
+        var zpos = status.machine.position.work.z.toFixed(2) + unit;
+
+        $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(2) + unit + "/ X Work: " + xpos);
+        $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(2) + unit + "/ Y Work: " + ypos);
+        $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(2) + unit + "/ Z Work: " + zpos);
+
       } else if (unit == "in") {
-        var xpos = (status.machine.position.work.x / 25.4).toFixed(2) + unit;
-        var ypos = (status.machine.position.work.y / 25.4).toFixed(2) + unit;
-        var zpos = (status.machine.position.work.z / 25.4).toFixed(2) + unit;
+        var xpos = (status.machine.position.work.x / 25.4).toFixed(3) + unit;
+        var ypos = (status.machine.position.work.y / 25.4).toFixed(3) + unit;
+        var zpos = (status.machine.position.work.z / 25.4).toFixed(3) + unit;
+
+        $(" #xPos ").attr('title', 'X Machine: ' + ((status.machine.position.work.x / 25.4) + (status.machine.position.offset.x / 25.4)).toFixed(3) + unit + "/ X Work: " + xpos);
+        $(" #yPos ").attr('title', 'Y Machine: ' + ((status.machine.position.work.y / 25.4) + (status.machine.position.offset.y / 25.4)).toFixed(3) + unit + "/ Y Work: " + ypos);
+        $(" #zPos ").attr('title', 'Z Machine: ' + ((status.machine.position.work.z / 25.4) + (status.machine.position.offset.z / 25.4)).toFixed(3) + unit + "/ Z Work: " + zpos);
+
+
       }
 
       if ($('#xPos').html() != xpos) {
@@ -489,6 +504,9 @@ function initSocket() {
       if ($('#zPos').html() != zpos) {
         $('#zPos').html(zpos);
       }
+
+
+
     } else {
       $('#xPos').html('disabled');
       $('#yPos').html('disabled');

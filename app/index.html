@@ -260,12 +260,13 @@
                     <li>
                       <a href="#" class="dropdown-toggle">Laser On (M3 Sxxx)</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S50\n G1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
-                        <li onclick="sendGcode('M3 S100\n G1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
-                        <li onclick="sendGcode('M3 S250\n G1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
-                        <li onclick="sendGcode('M3 S500\n G1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
-                        <li onclick="sendGcode('M3 S750\n G1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
-                        <li onclick="sendGcode('M3 S1000\n G1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.01).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 1% Power (M3 S<span class="ToolOnS1">10</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                       </ul>
                     </li>
                     <!-- <li class="divider"></li> -->
@@ -621,7 +622,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn yP" id="yP" data-role="ripple" data-ripple-color="#5de21b">
+                        <button class="button light square large jogbtn yP jogcursorbtn" id="yP" data-role="ripple" data-ripple-color="#5de21b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
@@ -634,7 +635,7 @@
 
 
                       <td>
-                        <button class="button light square large jogbtn zP" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn zP jogcursorbtn" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
@@ -642,7 +643,7 @@
                         </button>
                       </td>
                       <td class="servo-active" style="display: none;">
-                        <button class="button light square large jogbtn pP" id="pP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn pP jogcursorbtn" id="pP" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
                             <i class="fas fa-ban fg-red" data-fa-transform="shrink-0.5 down-8.5"></i>
@@ -654,7 +655,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <button class="button light square large jogbtn xM" id="xM" data-role="ripple" data-ripple-color="#e21b1b">
+                        <button class="button light square large jogbtn xM jogcursorbtn" id="xM" data-role="ripple" data-ripple-color="#e21b1b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-left fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X-</span>
@@ -663,7 +664,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn yM" id="yM" data-role="ripple" data-ripple-color="#5de21b">
+                        <button class="button light square large jogbtn yM jogcursorbtn" id="yM" data-role="ripple" data-ripple-color="#5de21b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
@@ -672,7 +673,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square large jogbtn xP" id="xP" data-role="ripple" data-ripple-color="#e21b1b">
+                        <button class="button light square large jogbtn xP jogcursorbtn" id="xP" data-role="ripple" data-ripple-color="#e21b1b">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-right fg-red" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-red" data-fa-transform="shrink-5 up-8" style="font-weight:600">X+</span>
@@ -680,7 +681,7 @@
                         </button>
                       </td>
                       <td>
-                        <button class="button light square large jogbtn zM" id="zM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn zM jogcursorbtn" id="zM" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z-</span>
@@ -688,7 +689,7 @@
                         </button>
                       </td>
                       <td class="servo-active" style="display: none;">
-                        <button class="button light square large jogbtn pM" id="pM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square large jogbtn pM jogcursorbtn" id="pM" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-pen fg-darkBlue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-darkBlue" data-fa-transform="shrink-10 up-12" style="font-weight:600">PEN</span>
@@ -1646,7 +1647,7 @@
           <input type="text" data-role="input" class="mb-1" data-prepend="Z Offset" data-append="mm" id="customProbeZOffset">
         </div>
         <div class="dialog-actions">
-          <button class="button js-dialog-close">Cancel</button>
+          <button class="button js-dialog-close" onclick="resetJogModeAfterProbe()">Cancel</button>
           <button class="button primary js-dialog-close" onclick="saveEditCustomProbe();">Save</button>
         </div>
       </div>

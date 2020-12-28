@@ -23,6 +23,10 @@
   pointer-events: none;
 }
 
+.jogcursorbtn {
+  margin: 7px;
+}
+
 .dro {
   display: block;
   text-decoration: none;
