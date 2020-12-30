@@ -782,6 +782,29 @@ io.on("connection", function(socket) {
         }
       });
 
+    var src = path.join(__dirname, './app/wizards/interface/PROFILES/');
+    var dest = path.join(data, "/PROFILES/");
+
+    ncp(src, dest,
+      function(err) {
+        if (err) {
+          var output = {
+            'command': 'Interface USB Drive',
+            'response': "Failed to copy MACHINE PROFILES to " + dest + ":  " + JSON.stringify(err),
+            'type': 'error'
+          }
+          io.sockets.emit('data', output);
+          errorCount++
+        } else {
+          var output = {
+            'command': 'Interface USB Drive',
+            'response': "Copied MACHINE PROFILES to " + dest + " succesfully!",
+            'type': 'success'
+          }
+          io.sockets.emit('data', output);
+        }
+      });
+
     setTimeout(function() {
       if (errorCount == 0) {
         var output = {
@@ -2438,7 +2461,6 @@ if (isElectron()) {
 
       jogWindow.on('close', function(event) {
         if (!forceQuit) {
-          event.preventDefault();
           jogWindow.hide();
           return false;
         }
