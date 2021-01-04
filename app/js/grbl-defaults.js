@@ -777,8 +777,8 @@ function selectMachine(type) {
       $120: "350.000", //"X-axis acceleration, mm/sec^2"
       $121: "350.000", //"Y-axis acceleration, mm/sec^2"
       $122: "350.000", //"Z-axis acceleration, mm/sec^2"
-      $130: "1170", //"X-axis maximum travel, millimeters"
-      $131: "1250", //"Y-axis maximum travel, millimeters"
+      $130: "1180", //"X-axis maximum travel, millimeters"
+      $131: "1270", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
   } else if (type == "leadmachine1010laser") {
