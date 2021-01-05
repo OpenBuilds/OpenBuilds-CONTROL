@@ -1,4 +1,5 @@
-v1.0.270: Updated LEAD1515 Profile: Max Travel
+v1.0.271: New 3D viewer: More lightweight, supports larger files, Render Progress percentage, antialiased graphics, opacity, etc; Prevent large files from loading to Gcode Editor, new RunJob method for large files
+v1.0.270: Updated LEAD1515 Profile: Max Travel, Updated Interface Files
 v1.0.269: Added Machine profiles to Interface USB Drive Wizard, renamed menu entry for Keyboard shortcuts editor
 v1.0.268: Fixed cosmetic layout css issue
 v1.0.267: Fixed probe complete dialog, added 1% laser focus power, restore incremental if it was set prior to probe, added 3rd decimal for Inch mode DRO / padding to 2 decimals for mm mode, added Machine Coordinates to DRO tooltip, Handle M0 Pauses (Carbide etc)

@@ -125,7 +125,13 @@ $(document).ready(function() {
   $.get("/gcode").done(function(data) {
     // console.log(data.length)
     if (data.length > 2) {
-      editor.session.setValue(data);
+      if (data.length > 10000000) {
+        gcode = this.result
+        editor.session.setValue("GCODE is too large (" + (data.length / 1024).toFixed(0) + "kB) to load into the GCODE Editor. \nIf you need to edit it inside CONTROL, please use a standalone text editing application and reload it ");
+      } else {
+        editor.session.setValue(data);
+        gcode = false;
+      }
       parseGcodeInWebWorker(data)
       $('#controlTab').click()
       if (!webgl) {
@@ -174,16 +180,40 @@ $(document).ready(function() {
       console.log('%c});', 'font-weight: regular; font-size: 12px;color: black; ');
       console.log('%c; Send the GCODE string to the controller, ideal for single commands', 'font-weight: bold; font-size: 12px;color: black; ');
       console.log('%csendGcode("gcode-string")', 'font-weight: regular; font-size: 12px;color: black; ');
-
-
-
-
-
     }
   });
   console.log('%c', element);
 
 });
+
+function runJobFile() {
+  if (gcode) {
+    var formData = new FormData();
+    var blob = new Blob([gcode], {
+      type: 'text/plain'
+    });
+
+    var fileOfBlob = new File([blob], 'upload.gcode');
+    formData.append("file", fileOfBlob);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        console.log(xhr.response)
+      }
+    };
+    // Add any event handlers here...
+    xhr.open('POST', '/runjob', true);
+    xhr.send(formData);
+
+  } else {
+    socket.emit('runJob', {
+      data: editor.getValue(),
+      isJob: true,
+      fileName: loadedFileName
+    });
+  }
+
+}
 
 function readFile(evt) {
   console.group("New FileOpen Event:");
@@ -209,7 +239,13 @@ function loadFile(f) {
     // if (f.name.match(/.gcode$/i)) {
     r.readAsText(f);
     r.onload = function(event) {
-      editor.session.setValue(this.result);
+      if (this.result.length > (20 * 1024 * 1024)) {
+        gcode = this.result
+        editor.session.setValue("File " + f.name + " is too large (" + (this.result.length / 1024).toFixed(0) + "kB) to load into the GCODE Editor. \nIf you need to edit it inside CONTROL, please use a standalone text editing application and reload it ");
+      } else {
+        editor.session.setValue(this.result);
+        gcode = false;
+      }
       loadedFileName = f.name;
       setWindowTitle()
       if (webgl) {

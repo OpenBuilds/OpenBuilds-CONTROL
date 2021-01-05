@@ -293,7 +293,7 @@ function init3D() {
     printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
     renderer = new THREE.WebGLRenderer({
       autoClearColor: true,
-      antialias: false,
+      antialias: true,
       preserveDrawingBuffer: true
     });
     // ThreeJS Render/Control/Camera
@@ -561,7 +561,7 @@ function resetView(object) {
       viewExtents(helper);
     }
   } else {
-    if (object.userData.lines.length > 1) {
+    if (object.userData.linePoints.length > 1) {
       viewExtents(object);
     }
   }

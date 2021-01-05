@@ -508,6 +508,40 @@ app.get('/workspace', (req, res) => {
   res.send(uploadedworkspace);
 })
 
+// http-post version of runJob
+
+
+app.post('/runjob', (req, res) => {
+  // 'firmwareBin' is the name of our file input field in the HTML form
+  let upload = multer({
+    storage: storage
+  }).single('file');
+
+  upload(req, res, function(err) {
+    // req.file contains information of uploaded file
+    // req.body contains information of text fields, if there were any
+    if (err instanceof multer.MulterError) {
+      return res.send(err);
+    } else if (err) {
+      return res.send(err);
+    }
+    fs.readFile(req.file.path, 'utf8', function(err, data) {
+      if (err) {
+        return console.log(err);
+      }
+      var object = {
+        isJob: true,
+        //completedMsg: "",
+        data: data,
+      }
+      runJob(object)
+    });
+    res.send(`Running ` + req.file.path);
+
+  });
+});
+
+
 // File Post
 app.post('/upload', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -1313,43 +1347,7 @@ io.on("connection", function(socket) {
 
   socket.on('runJob', function(object) {
     // debug_log(data)
-    jobStartTime = false;
-    var data = object.data
-    if (object.isJob) {
-      uploadedgcode = data;
-      jobStartTime = new Date().getTime();
-    }
-
-    if (object.completedMsg) {
-      jobCompletedMsg = object.completedMsg
-    }
-
-
-    // debug_log('Run Job (' + data.length + ')');
-    if (status.comms.connectionStatus > 0) {
-      if (data) {
-        data = data.split('\n');
-        for (var i = 0; i < data.length; i++) {
-
-          var line = data[i].replace("%", "").split(';'); // Remove everything after ; = comment
-          var tosend = line[0].trim();
-          if (tosend.length > 0) {
-            addQToEnd(tosend);
-          }
-        }
-        if (i > 0) {
-          // Start interval for qCount messages to socket clients
-          queueCounter = setInterval(function() {
-            status.comms.queue = gcodeQueue.length - queuePointer
-          }, 500);
-          send1Q(); // send first line
-          status.comms.connectionStatus = 3;
-        }
-
-      }
-    } else {
-      debug_log('ERROR: Machine connection not open!');
-    }
+    runJob(object);
   });
 
   socket.on('forceQueue', function(data) {
@@ -1863,6 +1861,55 @@ function machineSend(gcode, realtime) {
     }
   } else {
     debug_log("PORT NOT OPEN")
+  }
+}
+
+function runJob(object) {
+
+  // object = {
+  //   isJob: true,
+  //   completedMsg: "",
+  //   data: "",
+  // }
+
+  jobStartTime = false;
+  var data = object.data
+  if (object.isJob) {
+    if (data.length < 20000) {
+      uploadedgcode = data;
+    }
+    jobStartTime = new Date().getTime();
+  }
+
+  if (object.completedMsg) {
+    jobCompletedMsg = object.completedMsg
+  }
+
+
+  // debug_log('Run Job (' + data.length + ')');
+  if (status.comms.connectionStatus > 0) {
+    if (data) {
+      data = data.split('\n');
+      for (var i = 0; i < data.length; i++) {
+
+        var line = data[i].replace("%", "").split(';'); // Remove everything after ; = comment
+        var tosend = line[0].trim();
+        if (tosend.length > 0) {
+          addQToEnd(tosend);
+        }
+      }
+      if (i > 0) {
+        // Start interval for qCount messages to socket clients
+        queueCounter = setInterval(function() {
+          status.comms.queue = gcodeQueue.length - queuePointer
+        }, 500);
+        send1Q(); // send first line
+        status.comms.connectionStatus = 3;
+      }
+
+    }
+  } else {
+    debug_log('ERROR: Machine connection not open!');
   }
 }
 

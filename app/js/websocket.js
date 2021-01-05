@@ -93,7 +93,10 @@ function printLog(string) {
 };
 
 function initSocket() {
-  socket = io.connect(server); // socket.io init
+  socket = io.connect(server, {
+    'timeout': 60000,
+    'connect timeout': 60000
+  }); // socket.io init
   var icon = ''
   var source = "websocket"
   var string = "Bidirectional Websocket Interface Started Succesfully"
@@ -125,7 +128,14 @@ function initSocket() {
     var printLogCls = "fg-green"
     printLogModern(icon, source, string, printLogCls)
 
-    editor.session.setValue(data.gcode);
+    if (data.gcode.length > 10000000) {
+      gcode = data.gcode
+      editor.session.setValue("GCODE " + data.filename + " is too large (" + (data.gcode.length / 1024).toFixed(0) + "kB) to load into the GCODE Editor. \nIf you need to edit it inside CONTROL, please use a standalone text editing application and reload it ");
+    } else {
+      editor.session.setValue(data.gcode);
+      gcode = false;
+    }
+
     loadedFileName = data.filename;
     setWindowTitle()
     parseGcodeInWebWorker(data.gcode)
@@ -151,10 +161,8 @@ function initSocket() {
     var string = "Integration called from " + data
     var printLogCls = "fg-green"
     printLogModern(icon, source, string, printLogCls)
-    // editor.session.setValue(data);
     $('#controlTab').click()
     $('#consoletab').click()
-    // gcodeeditortab
   });
 
   socket.on('updatedata', function(data) {
@@ -284,8 +292,8 @@ function initSocket() {
         editor.gotoLine(data[1] - data[0]);
       }
       if (typeof object !== 'undefined' && done > 0) {
-        if (object.userData !== 'undefined' && object.userData && object.userData.lines.length > 2) {
-          var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum - object.userData.lines[done].p2.timeMinsSum;
+        if (object.userData !== 'undefined' && object.userData && object.userData.linePoints.length > 2) {
+          var timeremain = object.userData.linePoints[object.userData.linePoints.length - 1].timeMinsSum - object.userData.linePoints[done].timeMinsSum;
         }
         if (!isNaN(timeremain)) {
           var mins_num = parseFloat(timeremain, 10); // don't forget the second param

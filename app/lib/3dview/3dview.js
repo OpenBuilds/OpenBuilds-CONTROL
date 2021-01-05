@@ -7,42 +7,81 @@ var loader = new THREE.ObjectLoader();
 
 
 
-function convertParsedDataToObject(parsedData) {
-  parsedData = JSON.parse(parsedData)
+function convertParsedDataToObject(jsonData) {
+
+  try {
+    parsedData = JSON.parse(jsonData)
+  } catch (e) {
+    console.log(e, jsonData); // error in the above string (in this case, yes)!
+    return;
+  }
+
+
   var geometry = new THREE.BufferGeometry();
+
   var material = new THREE.LineBasicMaterial({
-    vertexColors: THREE.VertexColors
+    vertexColors: THREE.VertexColors,
+    transparent: true,
+    opacity: 0.8,
   });
   var positions = [];
   var colors = [];
 
-  for (i = 0; i < parsedData.lines.length; i++) {
-    if (!parsedData.lines[i].args.isFake) {
-      var x = parsedData.lines[i].p2.x;
-      var y = parsedData.lines[i].p2.y;
-      var z = parsedData.lines[i].p2.z;
-      positions.push(x, y, z);
+  for (i = 0; i < parsedData.linePoints.length; i++) {
+    // if (!parsedData.linePoint[i].args.isFake) {
+    var x = parsedData.linePoints[i].x;
+    var y = parsedData.linePoints[i].y;
+    var z = parsedData.linePoints[i].z;
+    positions.push(x, y, z);
 
-      if (parsedData.lines[i].p2.g0) {
-        colors.push(0);
-        colors.push(200);
-        colors.push(0);
-      } else if (parsedData.lines[i].p2.g1) {
-        colors.push(200);
-        colors.push(0);
-        colors.push(0);
-      } else if (parsedData.lines[i].p2.g2) {
-        colors.push(0);
-        colors.push(0);
-        colors.push(200);
-      } else {
-        colors.push(200);
-        colors.push(0);
-        colors.push(200);
-      }
-
+    if (parsedData.linePoints[i].g == 0) {
+      colors.push(0);
+      colors.push(200);
+      colors.push(0);
+    } else if (parsedData.linePoints[i].g == 1) {
+      colors.push(200);
+      colors.push(0);
+      colors.push(0);
+    } else if (parsedData.linePoints[i].g == 2) {
+      colors.push(0);
+      colors.push(0);
+      colors.push(200);
+    } else {
+      colors.push(200);
+      colors.push(0);
+      colors.push(200);
     }
+
+    // }
   }
+
+  // for (i = 0; i < parsedData.lines.length; i++) {
+  //   if (!parsedData.lines[i].args.isFake) {
+  //     var x = parsedData.lines[i].p2.x;
+  //     var y = parsedData.lines[i].p2.y;
+  //     var z = parsedData.lines[i].p2.z;
+  //     positions.push(x, y, z);
+  //
+  //     if (parsedData.lines[i].p2.g0) {
+  //       colors.push(0);
+  //       colors.push(200);
+  //       colors.push(0);
+  //     } else if (parsedData.lines[i].p2.g1) {
+  //       colors.push(200);
+  //       colors.push(0);
+  //       colors.push(0);
+  //     } else if (parsedData.lines[i].p2.g2) {
+  //       colors.push(0);
+  //       colors.push(0);
+  //       colors.push(200);
+  //     } else {
+  //       colors.push(200);
+  //       colors.push(0);
+  //       colors.push(200);
+  //     }
+  //
+  //   }
+  // }
 
   geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
@@ -52,9 +91,11 @@ function convertParsedDataToObject(parsedData) {
   var line = new THREE.Line(geometry, material);
   line.geometry.computeBoundingBox();
   var box = line.geometry.boundingBox.clone();
-  line.userData.lines = parsedData.lines
-  line.userData.bbbox2 = box
-  line.userData.inch = parsedData.inch
+  // line.userData.lines = parsedData.lines
+  line.userData.linePoints = parsedData.linePoints;
+  line.userData.bbbox2 = box;
+  line.userData.inch = parsedData.inch;
+  line.userData.totalTime = parsedData.totalTime;
   line.name = 'gcodeobject'
   return line;
 }
@@ -68,64 +109,70 @@ function parseGcodeInWebWorker(gcode) {
       object = false;
 
       // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
-      var worker = new Worker('lib/3dview/workers/litegcodeviewer.js');
+      var worker = new Worker('lib/3dview/workers/more-litegcodeviewer.js');
       worker.addEventListener('message', function(e) {
         // console.log('webworker message', e)
-        if (scene.getObjectByName('gcodeobject')) {
-          scene.remove(scene.getObjectByName('gcodeobject'))
-          object = false;
-        }
-        object = convertParsedDataToObject(e.data);
-        if (object && object.userData.lines.length > 1) {
-          worker.terminate();
-          scene.add(object);
-          if (object.userData.inch) {
-            // console.log(scaling)
-            object.scale.x = 25.4
-            object.scale.y = 25.4
-            object.scale.z = 25.4
-          }
-          redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
-          // animate();
-          setTimeout(function() {
-            if (webgl) {
-              $('#gcodeviewertab').click();
-            }
-            clearSceneFlag = true;
-            resetView();
-            // animate();
-            var timeremain = object.userData.lines[object.userData.lines.length - 1].p2.timeMinsSum;
-
-            if (!isNaN(timeremain)) {
-              var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-              var hours = Math.floor(mins_num / 60);
-              var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
-              var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
-
-              // Appends 0 when unit is less than 10
-              if (hours < 10) {
-                hours = "0" + hours;
-              }
-              if (minutes < 10) {
-                minutes = "0" + minutes;
-              }
-              if (seconds < 10) {
-                seconds = "0" + seconds;
-              }
-              var formattedTime = hours + ':' + minutes + ':' + seconds;
-              // console.log('Remaining time: ', formattedTime)
-              // output formattedTime to UI here
-              $('#timeRemaining').html(" / " + formattedTime);
-              printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE Preview Rendered Succesfully: Estimated GCODE Run Time: </span><span class='badge inline bg-darkGreen fg-white'>" + formattedTime + "</span>")
-            }
-          }, 200);
-          $('#3dviewicon').removeClass('fa-pulse');
-          $('#3dviewlabel').html(' 3D View')
+        if (e.data.progress != undefined) {
+          $('#3dviewlabel').html(' 3D View (rendering, please wait... ' + e.data.progress + '% )')
         } else {
-          // Didn't get an Object
-          $('#3dviewicon').removeClass('fa-pulse');
-          $('#3dviewlabel').html(' 3D View')
+          if (scene.getObjectByName('gcodeobject')) {
+            scene.remove(scene.getObjectByName('gcodeobject'))
+            object = false;
+          }
+          object = convertParsedDataToObject(e.data);
+          console.log(object)
+          if (object && object.userData.linePoints.length > 1) {
+            worker.terminate();
+            scene.add(object);
+            if (object.userData.inch) {
+              // console.log(scaling)
+              object.scale.x = 25.4
+              object.scale.y = 25.4
+              object.scale.z = 25.4
+            }
+            redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
+            // animate();
+            setTimeout(function() {
+              if (webgl) {
+                $('#gcodeviewertab').click();
+              }
+              clearSceneFlag = true;
+              resetView();
+              // animate();
+              var timeremain = object.userData.totalTime;
+
+              if (!isNaN(timeremain)) {
+                var mins_num = parseFloat(timeremain, 10); // don't forget the second param
+                var hours = Math.floor(mins_num / 60);
+                var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
+                var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
+
+                // Appends 0 when unit is less than 10
+                if (hours < 10) {
+                  hours = "0" + hours;
+                }
+                if (minutes < 10) {
+                  minutes = "0" + minutes;
+                }
+                if (seconds < 10) {
+                  seconds = "0" + seconds;
+                }
+                var formattedTime = hours + ':' + minutes + ':' + seconds;
+                // console.log('Remaining time: ', formattedTime)
+                // output formattedTime to UI here
+                $('#timeRemaining').html(" / " + formattedTime);
+                printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-darkGreen'> GCODE Preview Rendered Succesfully: Total lines: <b>" + object.userData.linePoints.length + "</b> / Estimated GCODE Run Time: <b>" + formattedTime + "</b>")
+              }
+            }, 200);
+            $('#3dviewicon').removeClass('fa-pulse');
+            $('#3dviewlabel').html(' 3D View')
+          } else {
+            // Didn't get an Object
+            $('#3dviewicon').removeClass('fa-pulse');
+            $('#3dviewlabel').html(' 3D View')
+          }
         }
+
       }, false);
 
       worker.postMessage({
@@ -173,13 +220,13 @@ function sim() {
       $("#conetext").show();
       cone.visible = true
       if (simIdx == 0) {
-        var posx = object.userData.lines[0].p2.x; //- (sizexmax/2);
-        var posy = object.userData.lines[0].p2.y; //- (sizeymax/2);
-        var posz = object.userData.lines[0].p2.z + 20;
+        var posx = object.userData.linePoints[0].x; //- (sizexmax/2);
+        var posy = object.userData.linePoints[0].y; //- (sizeymax/2);
+        var posz = object.userData.linePoints[0].z + 20;
       } else {
-        var posx = object.userData.lines[simIdx - 1].p2.x; //- (sizexmax/2);
-        var posy = object.userData.lines[simIdx - 1].p2.y; //- (sizeymax/2);
-        var posz = object.userData.lines[simIdx - 1].p2.z + 20;
+        var posx = object.userData.linePoints[simIdx - 1].x; //- (sizexmax/2);
+        var posy = object.userData.linePoints[simIdx - 1].y; //- (sizeymax/2);
+        var posz = object.userData.linePoints[simIdx - 1].z + 20;
       }
 
       cone.position.x = posx;
@@ -220,43 +267,24 @@ function sim() {
 function runSim() {
 
   if (object.userData.inch) {
-    var posx = object.userData.lines[simIdx].p2.x * 25.4; //- (sizexmax/2);
-    var posy = object.userData.lines[simIdx].p2.y * 25.4; //- (sizeymax/2);
-    var posz = object.userData.lines[simIdx].p2.z * 25.4;
+    var posx = object.userData.linePoints[simIdx].x * 25.4; //- (sizexmax/2);
+    var posy = object.userData.linePoints[simIdx].y * 25.4; //- (sizeymax/2);
+    var posz = object.userData.linePoints[simIdx].z * 25.4;
 
   } else {
-    var posx = object.userData.lines[simIdx].p2.x; //- (sizexmax/2);
-    var posy = object.userData.lines[simIdx].p2.y; //- (sizeymax/2);
-    var posz = object.userData.lines[simIdx].p2.z;
+    var posx = object.userData.linePoints[simIdx].x; //- (sizexmax/2);
+    var posy = object.userData.linePoints[simIdx].y; //- (sizeymax/2);
+    var posz = object.userData.linePoints[simIdx].z;
 
   }
 
-  //console.log(posx, posy, posz, object.userData.lines[simIdx])
-
-  if (object.userData.lines[simIdx].args.isFake) {
-    if (object.userData.lines[simIdx].args.text.length < 1) {
-      var text = "empty line"
-    } else {
-      var text = object.userData.lines[simIdx].args.text
-    }
-    var simTime = 0.01 / timefactor;
-  } else {
-    var text = object.userData.lines[simIdx].args.cmd
-    var simTime = object.userData.lines[simIdx].p2.timeMins / timefactor;
-  }
-  if (object.userData.lines[simIdx].p2.feedrate == null) {
-    var feedrate = 5000.00
-  } else {
-    var feedrate = object.userData.lines[simIdx].p2.feedrate
-  }
-
-  $("#conetext").html(`<span class="tally success drop-shadow">Line ` + (parseInt(object.userData.lines[simIdx].args.indx) - 1) + ": " + object.userData.lines[simIdx].args.origtext + `</span>`);
-  // $('#gcodesent').html(parseInt(object.userData.lines[simIdx].args.indx) - 1);
+  var simTime = object.userData.linePoints[simIdx].timeMins / timefactor;
+  $('#gcodesent').html("Sim Line: " + parseInt(simIdx) - 1);
 
   var simTimeInSec = simTime * 60;
-  // console.log(simTimeInSec)
-  if (!object.userData.lines[simIdx].args.isFake) {
-    if (!disable3Drealtimepos) {
+
+  if (!disable3Drealtimepos) {
+    if (!object.userData.linePoints[simIdx].fake) {
       TweenMax.to(cone.position, simTimeInSec, {
         ease: Linear.easeNone,
         x: posx,
@@ -268,9 +296,9 @@ function runSim() {
             simstop();
           } else {
             simIdx++;
-            if (simSingleLine > 0 && object.userData.lines[simIdx].args.indx > simSingleLine + 1) {
+            if (simSingleLine > 0 && simIdx > simSingleLine + 1) {
               simstop();
-            } else if (simIdx < object.userData.lines.length) {
+            } else if (simIdx < object.userData.linePoints.length) {
               runSim();
             } else {
               simstop();
@@ -278,20 +306,24 @@ function runSim() {
           }
         }
       })
-    }
-  } else {
-    if (simRunning == false) {
-      //return
-      simstop();
     } else {
-      simIdx++;
-      if (simIdx < object.userData.lines.length) {
-        runSim();
-      } else {
+      if (simRunning == false) {
+        //return
         simstop();
+      } else {
+        simIdx++;
+        if (simSingleLine > 0 && simIdx > simSingleLine + 1) {
+          simstop();
+        } else if (simIdx < object.userData.linePoints.length) {
+          runSim();
+        } else {
+          simstop();
+        }
       }
     }
+
   }
+
 
 
 
