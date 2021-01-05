@@ -393,75 +393,6 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
       // console.log(p1, p2, args)
 
-
-
-
-      // DISTANCE CALC
-      // add distance so we can calc estimated time to run
-      // see if arc
-      var dist = 0;
-      if (p2.arc) {
-        // calc dist of all lines
-        //console.log("this is an arc to calc dist for. p2.threeObjArc:", p2.threeObjArc, "p2:", p2);
-        var arcGeo = p2.threeObjArc.geometry;
-        //console.log("arcGeo:", arcGeo);
-
-        var tad2 = 0;
-        for (var arcLineCtr = 0; arcLineCtr < arcGeo.vertices.length - 1; arcLineCtr++) {
-          tad2 += arcGeo.vertices[arcLineCtr].distanceTo(arcGeo.vertices[arcLineCtr + 1]);
-        }
-        //console.log("tad2:", tad2);
-
-
-        // just do straight line calc
-        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
-        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
-        var straightDist = a.distanceTo(b);
-
-        //console.log("diff of straight line calc vs arc sum. straightDist:", straightDist);
-
-        dist = tad2;
-
-      } else {
-        // just do straight line calc
-        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
-        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
-        dist = a.distanceTo(b);
-      }
-
-      if (dist > 0) {
-        this.totalDist += dist;
-      }
-
-      // time to execute this move
-      // if this move is 10mm and we are moving at 100mm/min then
-      // this move will take 10/100 = 0.1 minutes or 6 seconds
-      var timeMinutes = 0;
-      if (dist > 0) {
-        var fr;
-        if (args.feedrate > 0) {
-          fr = args.feedrate
-        } else {
-          fr = 100;
-        }
-        timeMinutes = dist / fr;
-
-        // adjust for acceleration, meaning estimate
-        // this will run longer than estimated from the math
-        // above because we don't start moving at full feedrate
-        // obviously, we have to slowly accelerate in and out
-        timeMinutes = timeMinutes * 1.32;
-      }
-      this.totalTime += timeMinutes;
-
-      p2.feedrate = args.feedrate;
-      p2.dist = dist;
-      p2.distSum = this.totalDist;
-      p2.timeMins = timeMinutes;
-      p2.timeMinsSum = this.totalTime;
-
-      //  console.log("calculating distance. dist:", dist, "totalDist:", this.totalDist, "feedrate:", args.feedrate, "timeMinsToExecute:", timeMinutes, "totalTime:", this.totalTime, "p1:", p1, "p2:", p2, "args:", args);
-
       if (p2.arc) {
         //console.log("");
         //console.log("drawing arc. p1:", p1, ", p2:", p2);
@@ -684,7 +615,76 @@ GCodeParser = function(handlers, modecmdhandlers) {
           });
         }
 
-      } else { // not an arc
+      }
+
+
+      // DISTANCE CALC
+      // add distance so we can calc estimated time to run
+      // see if arc
+      var dist = 0;
+      if (p2.arc) {
+        // calc dist of all lines
+        //console.log("this is an arc to calc dist for. p2.threeObjArc:", p2.threeObjArc, "p2:", p2);
+        var arcGeo = p2.threeObjArc.geometry;
+        //console.log("arcGeo:", arcGeo);
+
+        var tad2 = 0;
+        for (var arcLineCtr = 0; arcLineCtr < arcGeo.vertices.length - 1; arcLineCtr++) {
+          tad2 += arcGeo.vertices[arcLineCtr].distanceTo(arcGeo.vertices[arcLineCtr + 1]);
+        }
+        //console.log("tad2:", tad2);
+
+
+        // just do straight line calc
+        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
+        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
+        var straightDist = a.distanceTo(b);
+
+        //console.log("diff of straight line calc vs arc sum. straightDist:", straightDist);
+
+        dist = tad2;
+
+      } else {
+        // just do straight line calc
+        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
+        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
+        dist = a.distanceTo(b);
+      }
+
+      if (dist > 0) {
+        this.totalDist += dist;
+      }
+
+      // time to execute this move
+      // if this move is 10mm and we are moving at 100mm/min then
+      // this move will take 10/100 = 0.1 minutes or 6 seconds
+      var timeMinutes = 0;
+      if (dist > 0) {
+        var fr;
+        if (args.feedrate > 0) {
+          fr = args.feedrate
+        } else {
+          fr = 100;
+        }
+        timeMinutes = dist / fr;
+
+        // adjust for acceleration, meaning estimate
+        // this will run longer than estimated from the math
+        // above because we don't start moving at full feedrate
+        // obviously, we have to slowly accelerate in and out
+        timeMinutes = timeMinutes * 1.32;
+      }
+      this.totalTime += timeMinutes;
+
+      p2.feedrate = args.feedrate;
+      p2.dist = dist;
+      p2.distSum = this.totalDist;
+      p2.timeMins = timeMinutes;
+      p2.timeMinsSum = this.totalTime;
+
+      //  console.log("calculating distance. dist:", dist, "totalDist:", this.totalDist, "feedrate:", args.feedrate, "timeMinsToExecute:", timeMinutes, "totalTime:", this.totalTime, "p1:", p1, "p2:", p2, "args:", args);
+
+      if (!p2.arc) { // not an arc
 
 
 
