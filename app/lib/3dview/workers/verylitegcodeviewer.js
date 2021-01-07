@@ -1,8 +1,10 @@
 self.addEventListener('message', function(e) {
-  console.log("New message received by worker", e.data.data.length)
+  // console.log("New message received by worker", e.data.data.length)
   importScripts("/lib/threejs/three.min.js");
   var data = e.data;
-  var result = openGCodeFromText(e.data.data)
+  var result = createObjectFromGCode(e.data.data)
+  result = result;
+  // console.log(result)
   self.postMessage(JSON.stringify(result));
 }, false);
 
@@ -14,98 +16,21 @@ self.addEventListener('message', function(e) {
 // Updates by PvdW in 2017 - AUTODETECT MAX S VALUE
 // Updated by PvdW in 2017 - Parse GCODE to find starting temperatures (preheat machine)
 // Updated by PvdW in 2018 - Webworker Version
+// Updated by PvdW in 2019 - Improve Performance
+// Updated by PvdW in 2021 - New Sim Data, Smaller footprint, more efficient "lines" userData
 
-var smaxvalue = 0;
+
 var lastLine = {
   x: 0,
   y: 0,
   z: 0,
   e: 0,
   f: 0,
+  t: false,
   feedrate: null,
-  extruding: false
+  extruding: false,
+  tool: false
 };
-
-// function findtemps(gcode) {
-//   var foundETemp = false;
-//   var foundBTemp = false;
-//   var smaxvaluetemp = 0;
-//   var gcode=editor.getValue()
-//   gcode = gcode.split("\n")
-//   for (i=0; i<gcode.length; i++) {
-//     var line = gcode[i]
-//     if (line.indexOf(";") != 0) {
-//       if (line.indexOf("M104") != -1 || line.indexOf("M109") != -1) {
-//         if (!foundETemp) {
-//           line.split(/\s+/).forEach(function (token) {
-//             var key = token.toLowerCase();
-//             var value = parseFloat(token.substring(1));
-//             if (key.match(/S([\d.]+)/i)) {
-//                 var svalue = parseFloat(value);
-//                 console.log("Found Extruder Temp: " + svalue)
-//                 foundETemp = true;
-//             }
-//           });
-//         }
-//       }
-//       if (line.indexOf("M140") != -1 || line.indexOf("M190") != -1) {
-//         if (!foundBTemp) {
-//           line.split(/\s+/).forEach(function (token) {
-//             var key = token.toLowerCase();
-//             var value = parseFloat(token.substring(1));
-//             if (key.match(/S([\d.]+)/i)) {
-//                 var svalue = parseFloat(value);
-//                 console.log("Found Bed Temp: " + svalue)
-//                 foundBTemp = true;
-//             }
-//           });
-//         }
-//       }
-//     }
-//   }
-// }
-
-function findmaxs(gcode) {
-  var smaxvaluetemp = 0;
-  // var gcode=editor.getValue()
-  gcodeS = gcode.split("\n")
-  for (i = 0; i < gcodeS.length; i++) {
-    var line = gcodeS[i]
-    line.split(/\s+/).forEach(function(token) {
-      // console.log(token)
-      var key = token.toLowerCase();
-      // console.log(key)
-      var value = parseFloat(token.substring(1));
-      // console.log(value)
-      if (key.match(/S([\d.]+)/i)) {
-        // we have a new S-Value
-        var svalue = parseFloat(value);
-        // console.log(svalue)
-        if (svalue > smaxvaluetemp) smaxvaluetemp = svalue; // Set smaxvalue to the highest S value in the file
-      }
-    });
-  }
-  return smaxvaluetemp;
-}
-
-function openGCodeFromText(gcode) {
-  smaxvalue = findmaxs(gcode);
-  var object2 = new THREE.Group();
-  // object = new THREE.Group();
-  // take gcode, and it to that object
-  lastLine = {
-    x: 0,
-    y: 0,
-    z: 0,
-    e: 0,
-    f: 0,
-    feedrate: null,
-    extruding: false
-  };
-  createObjectFromGCode(gcode, object2)
-  // console.log(object2)
-  return object2;
-}
 
 GCodeParser = function(handlers, modecmdhandlers) {
     this.handlers = handlers || {};
@@ -185,10 +110,9 @@ GCodeParser = function(handlers, modecmdhandlers) {
             'origtext': origtext,
             'indx': info,
             'isComment': isComment,
-            'feedrate': null,
-            'plane': undefined
+            'feedrate': null
           };
-          //console.log("args:", args);
+          // console.log("args:", args);
           if (tokens.length > 1 && !isComment) {
             tokens.splice(1).forEach(function(token) {
               //console.log("token:", token);
@@ -226,11 +150,21 @@ GCodeParser = function(handlers, modecmdhandlers) {
               // we have a new S-Value
               var svalue = parseFloat(RegExp.$1);
               args.svalue = svalue;
-              if (svalue > smaxvalue) smaxvalue = svalue; // Set smaxvalue to the highest S value in the file
               this.lastsvalue = svalue;
             } else {
               // use feedrate from prior lines
               args.svalue = this.lastsvalue;
+            }
+
+            if (args.text.match(/T([\d.]+)/i)) {
+              console.log("New Tool: ", args.text)
+              // we have a new S-Value
+              var tool = parseFloat(RegExp.$1);
+              args.tool = tool;
+              this.lasttool = tool;
+            } else {
+              // use tool from prior lines
+              args.tool = this.lasttool;
             }
             //console.log("about to call handler. args:", args, "info:", info, "this:", this);
             return handler(args, info, this);
@@ -259,21 +193,48 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
     this.parse = function(gcode) {
       // console.log(gcode)
+
+
+
       var lines = gcode.split(/\r{0,1}\n/);
       // var lines = gcode
+
       for (var i = 0; i < lines.length; i++) {
+
+        if (i % 100 === 0) {
+          var progress = ((i / lines.length) * 100).toFixed(0)
+          self.postMessage({
+            progress: progress,
+          });
+        }
+
+
         if (this.parseLine(lines[i], i) === false) {
           break;
         }
       }
-      lines.length = 0;
+
     }
   },
   colorG0 = 0x00cc00, //bootstrap color
   colorG1 = 0xcc0000,
   colorG2 = 0x0000cc,
-  createObjectFromGCode = function(gcode, gcobject, indxMax) {
+  createObjectFromGCode = function(gcode) {
     // console.log(gcode)
+
+    // Reset Starting Point
+    lastLine = {
+      x: 0,
+      y: 0,
+      z: 0,
+      e: 0,
+      f: 0,
+      s: 0,
+      t: false,
+      feedrate: null,
+      extruding: false
+    };
+
 
     setUnits = function(units) {
       if (units == "mm")
@@ -289,7 +250,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       var units = "mm";
       if (!this.isUnitsMm) units = "inch";
       // $('.com-chilipeppr-widget-3dviewer-units-indicator').text(units);
-      console.log("USING UNITS:" + units)
+      // console.log("USING UNITS:" + units)
 
     }
     // these are extra Object3D elements added during
@@ -314,109 +275,8 @@ GCodeParser = function(handlers, modecmdhandlers) {
     // its own userData info
     // G2/G3 moves are their own child of lots of lines so
     // that even the simulator can follow along better
-    var new3dObj = new THREE.Group();
-    var plane = "G17"; //set default plane to G17 - Assume G17 if no plane specified in gcode.
-    var layers = [];
-    var layer = undefined;
-    var lines = [];
+    var linePoints = [];
     var totalDist = 0;
-    var bbbox = {
-      min: {
-        x: 100000,
-        y: 100000,
-        z: 100000
-      },
-      max: {
-        x: -100000,
-        y: -100000,
-        z: -100000
-      }
-    };
-    var bbbox2 = {
-      min: {
-        x: 100000,
-        y: 100000,
-        z: 100000
-      },
-      max: {
-        x: -100000,
-        y: -100000,
-        z: -100000
-      }
-    };
-
-    this.newLayer = function(line) {
-      //console.log("layers:", layers, "layers.length", layers.length);
-      layer = {
-        type: {},
-        layer: layers.length,
-        z: line.z,
-      };
-      layers.push(layer);
-    };
-
-    this.getLineGroup = function(line, args) {
-      // console.log("getLineGroup:", line);
-      if (layer == undefined) this.newLayer(line);
-      var speed = Math.round(line.e / 1000);
-      var grouptype = (line.extruding ? 10000 : 0) + speed;
-      var opacity = line.s;
-      if (line.g0) {
-        grouptype = "g0" + opacity;
-        color = new THREE.Color(this.colorG0);
-      } else if (line.g1) {
-        if (!line.extruding && !line.s) { // then its probably a G1 3DP Positioning move
-          grouptype = "g0-e" + opacity;
-          opacity = 1;
-          color = new THREE.Color(this.colorG1);
-        } else {
-          grouptype = "g1" + opacity;
-          color = new THREE.Color(this.colorG1);
-        }
-
-      } else if (line.g2) {
-        grouptype = "g2" + opacity;
-        color = new THREE.Color(this.colorG2);
-      } else if (line.arc) {
-        grouptype = "arc" + opacity;
-        color = new THREE.Color(this.colorG2);
-      }
-
-
-      if (typeof line.s === 'undefined') {
-        opacity = 1;
-      } else {
-        opacity = line.s / smaxvalue; // smaxvalue from sValue() - makes sure 100% s value = 100% opacity
-        // console.log(opacity)
-      }
-      // see if we have reached indxMax, if so draw, but
-      // make it ghosted
-      if (args.indx > indxMax) {
-        grouptype = "ghost";
-        //console.log("args.indx > indxMax", args, indxMax);
-        color = new THREE.Color(0x000000);
-      }
-      if (layer.type[grouptype] == undefined || layer.type[grouptype] == 'g1') {
-        layer.type[grouptype] = {
-          type: grouptype,
-          feed: line.e,
-          extruding: line.extruding,
-          color: color,
-          segmentCount: 0,
-          material: new THREE.LineBasicMaterial({
-            opacity: opacity,
-            transparent: true,
-            linewidth: 1,
-            vertexColors: THREE.FaceColors
-          }),
-          geometry: new THREE.Geometry(),
-        }
-        if (args.indx > indxMax) {
-          layer.type[grouptype].material.opacity = 0.05;
-        }
-      }
-      return layer.type[grouptype];
-    };
 
     this.drawArc = function(aX, aY, aZ, endaZ, aRadius, aStartAngle, aEndAngle, aClockwise, plane) {
       //console.log("drawArc:", aX, aY, aZ, aRadius, aStartAngle, aEndAngle, aClockwise);
@@ -444,6 +304,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       });
       var aco = new THREE.Line(acgeo, acmat);
       aco.userData.points = points;
+
       //aco.position.set(pArc.x, pArc.y, pArc.z);
       //console.log("aco:", aco);
       this.extraObjects[plane].push(aco);
@@ -529,20 +390,9 @@ GCodeParser = function(handlers, modecmdhandlers) {
     };
 
     this.addSegment = function(p1, p2, args) {
-      //console.log("");
-      //console.log("addSegment p2:", p2);
-      // add segment to array for later use
-      lines.push({
-        p2: p2,
-        'args': args
-      });
 
-      var group = this.getLineGroup(p2, args);
-      //  console.log(group)
-      var geometry = group.geometry;
+      // console.log(p1, p2, args)
 
-      group.segmentCount++;
-      // see if we need to draw an arc
       if (p2.arc) {
         //console.log("");
         //console.log("drawing arc. p1:", p1, ", p2:", p2);
@@ -691,7 +541,6 @@ GCodeParser = function(handlers, modecmdhandlers) {
         // still push the normal p1/p2 point for debug
         p2.g2 = true;
         p2.threeObjArc = threeObjArc;
-        group = this.getLineGroup(p2, args);
         // these golden lines showing start/end of a g2 or g3 arc were confusing people
         // so hiding them for now. jlauer 8/15/15
         /*
@@ -703,87 +552,71 @@ GCodeParser = function(handlers, modecmdhandlers) {
         geometry.colors.push(group.color);
         geometry.colors.push(group.color);
         */
-      } else {
-        geometry.vertices.push(
-          new THREE.Vector3(p1.x, p1.y, p1.z));
-        geometry.vertices.push(
-          new THREE.Vector3(p2.x, p2.y, p2.z));
-        geometry.colors.push(group.color);
-        geometry.colors.push(group.color);
-      }
+        // end of if p2.arc
+        // console.log( p2.threeObjArc.userData.points)
 
-      if (p2.extruding) {
-        bbbox.min.x = Math.min(bbbox.min.x, p2.x);
-        bbbox.min.y = Math.min(bbbox.min.y, p2.y);
-        bbbox.min.z = Math.min(bbbox.min.z, p2.z);
-        bbbox.max.x = Math.max(bbbox.max.x, p2.x);
-        bbbox.max.y = Math.max(bbbox.max.y, p2.y);
-        bbbox.max.z = Math.max(bbbox.max.z, p2.z);
-      }
-      if (p2.g0) {
-        // we're in a toolhead move, label moves
-        /*
-        if (group.segmentCount < 2) {
-        this.makeSprite(this.scene, "webgl", {
-            x: p2.x,
-            y: p2.y,
-            z: p2.z + 0,
-            text: group.segmentCount,
-            color: "#ff00ff",
-            size: 3,
-        });
-        }
-        */
-      }
-      // global bounding box calc
-      bbbox2.min.x = Math.min(bbbox2.min.x, p2.x);
-      bbbox2.min.y = Math.min(bbbox2.min.y, p2.y);
-      bbbox2.min.z = Math.min(bbbox2.min.z, p2.z);
-      bbbox2.max.x = Math.max(bbbox2.max.x, p2.x);
-      bbbox2.max.y = Math.max(bbbox2.max.y, p2.y);
-      bbbox2.max.z = Math.max(bbbox2.max.z, p2.z);
+        // console.log(JSON.stringify(threeObjArc.userData))
 
-      // NEW METHOD OF CREATING THREE.JS OBJECTS
-      // create new approach for three.js objects which is
-      // a unique object for each line of gcode, including g2/g3's
-      // make sure userData is good too
-      var gcodeObj;
+        var a = new THREE.Vector3(p1.x, p1.y, p1.z);
+        var b = new THREE.Vector3(p2.x, p2.y, p2.z);
 
-      if (p2.arc) {
-        // use the arc that already got built
-        gcodeObj = p2.threeObjArc;
-      } else {
-        // make a line
-        //  var color = 0X0000ff;
-
-        if (p2.extruding) {
-          //  color = 0xff00ff;
-        } else if (p2.g0) {
-          //  color = 0x00ff00;
-        } else if (p2.g2) {
-          //color = 0x999900;
-        } else if (p2.arc) {
-          //  color = 0x0033ff;
+        if (dist > 0) {
+          this.totalDist += dist;
         }
 
-        var material = new THREE.LineBasicMaterial({
-          color: color,
-          opacity: 0.5,
-          transparent: true
-        });
+        // calc distance of one segment of the arc
+        dist = a.distanceTo(b) / threeObjArc.userData.points.length;
 
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(
-          new THREE.Vector3(p1.x, p1.y, p1.z),
-          new THREE.Vector3(p2.x, p2.y, p2.z)
-        );
+        // time to execute this move
+        // if this move is 10mm and we are moving at 100mm/min then
+        // this move will take 10/100 = 0.1 minutes or 6 seconds
 
-        var line = new THREE.Line(geometry, material);
-        gcodeObj = line;
+
+
+        for (i = 0; i < threeObjArc.userData.points.length; i++) {
+          var timeMinutes = 0;
+          if (dist > 0) {
+            var fr;
+            if (args.feedrate > 0) {
+              fr = args.feedrate
+            } else {
+              fr = 1000;
+            }
+            timeMinutes = dist / fr;
+
+            // adjust for acceleration, meaning estimate
+            // this will run longer than estimated from the math
+            // above because we don't start moving at full feedrate
+            // obviously, we have to slowly accelerate in and out
+            timeMinutes = timeMinutes * 1.32;
+          }
+          this.totalTime += timeMinutes;
+          var p2sub = {
+            x: threeObjArc.userData.points[i].x,
+            y: threeObjArc.userData.points[i].y,
+            z: threeObjArc.userData.points[i].z,
+            e: p2.e,
+            f: p2.f,
+            g2: true,
+            g2segment: true,
+            feedrate: fr,
+            dist: dist,
+            distSum: this.totalDist,
+            timeMins: timeMinutes,
+            timeMinsSum: this.totalTime,
+          }
+          linePoints.push({
+            src: 607,
+            x: threeObjArc.userData.points[i].x,
+            y: threeObjArc.userData.points[i].y,
+            z: threeObjArc.userData.points[i].z,
+            g: 2,
+            timeMins: p2sub.timeMins
+          });
+        }
+
       }
-      // gcodeObj.userData.p2 = p2;
-      // gcodeObj.userData.args = args;
-      new3dObj.add(gcodeObj);
+
 
       // DISTANCE CALC
       // add distance so we can calc estimated time to run
@@ -851,7 +684,35 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
       //  console.log("calculating distance. dist:", dist, "totalDist:", this.totalDist, "feedrate:", args.feedrate, "timeMinsToExecute:", timeMinutes, "totalTime:", this.totalTime, "p1:", p1, "p2:", p2, "args:", args);
 
+      if (!p2.arc) { // not an arc
+
+
+
+
+        g = 0;
+        if (p2.g0) {
+          g = 0
+        } else if (p2.g1) {
+          g = 1
+        } else if (p2.g2) {
+          g = 2
+        } else {
+          g = -1
+        }
+        // console.log(timeMinutes);
+
+        linePoints.push({
+          timeMins: timeMinutes,
+          src: 628,
+          x: p2.x,
+          y: p2.y,
+          z: p2.z,
+          g: g
+        });
+      }
+
     }
+
     this.totalDist = 0;
     this.totalTime = 0;
 
@@ -878,9 +739,22 @@ GCodeParser = function(handlers, modecmdhandlers) {
         indx: args.indx
       };
       if (arg2.text.match(/^(;|\(|<)/)) arg2.isComment = true;
-      lines.push({
-        p2: lastLine, // since this is fake, just use lastLine as xyz
-        'args': arg2
+      if (lastLine.g0) {
+        g = 0
+      } else if (lastLine.g1) {
+        g = 1
+      } else if (lastLine.g2) {
+        g = 2
+      } else {
+        g = -1
+      }
+      linePoints.push({
+        src: 742,
+        x: lastLine.x,
+        y: lastLine.y,
+        z: lastLine.z,
+        g: g,
+        fake: true
       });
     }
 
@@ -900,9 +774,9 @@ GCodeParser = function(handlers, modecmdhandlers) {
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
           newLine.g0 = true;
-          //cofg.newLayer(newLine);
           cofg.addSegment(lastLine, newLine, args);
           //console.log("G0", lastLine, newLine, args, cofg.offsetG92);
           lastLine = newLine;
@@ -922,13 +796,8 @@ GCodeParser = function(handlers, modecmdhandlers) {
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
-          /* layer change detection is or made by watching Z, it's made by
-                  watching when we extrude at a new Z position */
-          if (cofg.delta(lastLine.e, newLine.e) > 0) {
-            newLine.extruding = cofg.delta(lastLine.e, newLine.e) > 0;
-            if (layer == undefined || newLine.z != layer.z) cofg.newLayer(newLine);
-          }
           newLine.g1 = true;
           cofg.addSegment(lastLine, newLine, args);
           //console.log("G1", lastLine, newLine, args, cofg.offsetG92);
@@ -938,13 +807,14 @@ GCodeParser = function(handlers, modecmdhandlers) {
           /* this is an arc move from lastLine's xy to the new xy. we'll
           show it as a light gray line, but we'll also sub-render the
           arc itself by figuring out the sub-segments . */
-          args.plane = plane; //set the plane for this command to whatever the current plane is
           var newLine = {
             x: args.x !== undefined ? cofg.absolute(lastLine.x, args.x) + cofg.offsetG92.x : lastLine.x,
             y: args.y !== undefined ? cofg.absolute(lastLine.y, args.y) + cofg.offsetG92.y : lastLine.y,
             z: args.z !== undefined ? cofg.absolute(lastLine.z, args.z) + cofg.offsetG92.z : lastLine.z,
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
+            s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
+            t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
             arci: args.i !== undefined ? cofg.ijkabsolute(lastLine.x, args.i) : lastLine.x,
             arcj: args.j !== undefined ? cofg.ijkabsolute(lastLine.y, args.j) : lastLine.y,
             arck: args.k !== undefined ? cofg.ijkabsolute(lastLine.z, args.k) : lastLine.z,
@@ -1007,7 +877,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
         'default': function(args, info) {
           //if (!args.isComment)
-          //    console.log('Unknown command:', args.cmd, args, info);
+          //console.log('Unknown command:', args.cmd, args, info);
           cofg.addFakeSegment(args);
         },
       },
@@ -1016,17 +886,14 @@ GCodeParser = function(handlers, modecmdhandlers) {
       {
         G17: function() {
           console.log("SETTING XY PLANE");
-          plane = "G17";
         },
 
         G18: function() {
           console.log("SETTING XZ PLANE");
-          plane = "G18";
         },
 
         G19: function() {
           console.log("SETTING YZ PLANE");
-          plane = "G19";
         },
 
         G20: function() {
@@ -1099,6 +966,9 @@ GCodeParser = function(handlers, modecmdhandlers) {
         },
 
         // No-op modal macros that do not affect the viewer
+        M3: function() {}, // Spindle on
+        M5: function() {}, // Spindle off
+        M6: function(args) {}, // Pause for Toolchange
         M07: function() {}, // Coolant on (mist)
         M08: function() {}, // Coolant on (flood)
         M09: function() {}, // Coolant off
@@ -1138,150 +1008,19 @@ GCodeParser = function(handlers, modecmdhandlers) {
     // console.log("GCODE LENGTH " + gcode.length)
 
     parser.parse(gcode);
-
-    // console.log("inside createGcodeFromObject. this:", this);
-
-    // console.log("Layer Count ", layers.length);
-
-    // if (scene.getObjectByName('gcodeobject')) {
-    //   // console.log("Existing GCODE object: Cleaning up first")
-    //   scene.remove(scene.getObjectByName('gcodeobject'))
-    //   object = false;
-    // }
-    //
-    // object = new THREE.Object3D();
-    // console.log("Created new gcodeobject")
-
-    // old approach of monolithic line segment
-    for (var lid in layers) {
-      var layer = layers[lid];
-      // console.log("Layer ", layer.layer);
-      for (var tid in layer.type) {
-        var type = layer.type[tid];
-        // console.log("Layer:", type);
-        //normal geometry (not buffered)
-        // var layerline = new THREE.Line(type.geometry, type.material, THREE.LinePieces)
-        // object.add();
-        // using buffer geometry
-        var bufferGeo = this.convertLineGeometryToBufferGeometry(type.geometry, type.color);
-        var layerline = new THREE.LineSegments(bufferGeo, type.material)
-        layerline.name = "layer-" + type.type
-        gcobject.add(layerline);
-      }
+    var data = {
+      linePoints: linePoints,
+      //lines: lines,
+      inch: false,
+      totalDist: this.totalDist,
+      totalTime: this.totalTime,
     }
-    //XY PLANE
-    this.extraObjects["G17"].forEach(function(obj) {
-      // non-buffered approach
-      //object.add(obj);
-
-      // buffered approach
-      // convert g2/g3's to buffer geo as well
-      //console.log("extra object:", obj);
-      var bufferGeo = this.convertLineGeometryToBufferGeometry(obj.geometry, obj.material.color);
-      gcobject.add(new THREE.Line(bufferGeo, obj.material));
-    }, this);
-    //XZ PLANE
-    this.extraObjects["G18"].forEach(function(obj) {
-      // buffered approach
-      var bufferGeo = this.convertLineGeometryToBufferGeometry(obj.geometry, obj.material.color);
-      var tmp = new THREE.Line(bufferGeo, obj.material)
-      tmp.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-      gcobject.add(tmp);
-    }, this);
-    //YZ PLANE
-    this.extraObjects["G19"].forEach(function(obj) {
-      // buffered approach
-      var bufferGeo = this.convertLineGeometryToBufferGeometry(obj.geometry, obj.material.color);
-      var tmp = new THREE.Line(bufferGeo, obj.material)
-      tmp.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-      tmp.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-      gcobject.add(tmp);
-    }, this);
-
-    // use new approach of building 3d object where each
-    // gcode line is its own segment with its own userData
-    //object = new3dObj;
-
-
-    // console.log("bbox ", bbbox);
-
-    // Center
-    var scale = 1; // TODO: Auto size
-
-    var center = new THREE.Vector3(
-      bbbox.min.x + ((bbbox.max.x - bbbox.min.x) / 2),
-      bbbox.min.y + ((bbbox.max.y - bbbox.min.y) / 2),
-      bbbox.min.z + ((bbbox.max.z - bbbox.min.z) / 2));
-    // console.log("center ", center);
-
-    var center2 = new THREE.Vector3(
-      bbbox2.min.x + ((bbbox2.max.x - bbbox2.min.x) / 2),
-      bbbox2.min.y + ((bbbox2.max.y - bbbox2.min.y) / 2),
-      bbbox2.min.z + ((bbbox2.max.z - bbbox2.min.z) / 2));
-    // console.log("center2 of all gcode ", center2);
-
-    // store meta data in userData of object3d for later use like in animation
-    // of toolhead
-    gcobject.userData.bbbox2 = bbbox2;
-    gcobject.userData.lines = lines;
-    lines.length = 0; //clean up
-    gcobject.userData.layers = layers;
-    // gcobject.userData.center2 = center2;
-    // gcobject.userData.extraObjects = this.extraObjects;
-    // gcobject.userData.threeObjs = new3dObj;
-
-    // console.log("userData for this object3d:", object.userData);
-    /*
-    this.camera.target.x = center2.x;
-    this.camera.target.y = center2.y;
-    this.camera.target.z = center2.z;
-    */
-
-    //object.position = center.multiplyScalar(-scale);
-
-    //object.scale.multiplyScalar(scale);
-    // console.log("final object:", object);
-    // object.translateX(sizexmax /2 * -1);
-    // object.translateY(sizeymax /2 * -1);
-    gcobject.name = "gcodeobject"
-    // scene.add(object);
-    // viewObject();
 
     if (!isUnitsMm) {
-      gcobject.userData.inch = true;
+      data.inch = true;
     } else {
-      gcobject.userData.inch = false;
+      data.inch = false;
     }
 
-    return gcobject;
+    return data;
   } // end of createObjectFromGCode()
-
-function convertLineGeometryToBufferGeometry(lineGeometry, color) {
-  var positions = new Float32Array(lineGeometry.vertices.length * 3);
-  var colors = new Float32Array(lineGeometry.vertices.length * 3);
-
-  var geometry = new THREE.BufferGeometry();
-
-  for (var i = 0; i < lineGeometry.vertices.length; i++) {
-    var x = lineGeometry.vertices[i].x;
-    var y = lineGeometry.vertices[i].y;
-    var z = lineGeometry.vertices[i].z;
-
-    // positions
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z;
-
-    // colors
-    colors[i * 3] = color.r;
-    colors[i * 3 + 1] = color.g;
-    colors[i * 3 + 2] = color.b;
-  }
-
-  geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-  geometry.computeBoundingSphere();
-
-  return geometry;
-};

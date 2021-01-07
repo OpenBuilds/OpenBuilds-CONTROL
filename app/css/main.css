@@ -111,27 +111,6 @@ body {
                                      supported by Chrome and Opera */
 }
 
-/* #updateconsole {
-
-    font-family: "Lucida Console", Monaco, monospace;
-    max-height: calc(100vh - 260px);
-    height: calc(100vh - 200px);
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: none;
-    text-align: left;
-    padding: 0px;
-    font-size: 12px;
-    padding-left: 20px;
-    white-space:normal;
-    margin-bottom: 0px;
-    -webkit-touch-callout:  text;
-       -webkit-user-select: text;
-        -khtml-user-select: text;
-          -moz-user-select: text;
-           -ms-user-select: text;
-               user-select: text;
-} */
 .pf {
   margin-top: 0px;
   margin-bottom: -4px;

@@ -28,7 +28,7 @@ function convertParsedDataToObject(jsonData) {
   var colors = [];
 
   for (i = 0; i < parsedData.linePoints.length; i++) {
-    // if (!parsedData.linePoint[i].args.isFake) {
+
     var x = parsedData.linePoints[i].x;
     var y = parsedData.linePoints[i].y;
     var z = parsedData.linePoints[i].z;
@@ -52,36 +52,7 @@ function convertParsedDataToObject(jsonData) {
       colors.push(200);
     }
 
-    // }
   }
-
-  // for (i = 0; i < parsedData.lines.length; i++) {
-  //   if (!parsedData.lines[i].args.isFake) {
-  //     var x = parsedData.lines[i].p2.x;
-  //     var y = parsedData.lines[i].p2.y;
-  //     var z = parsedData.lines[i].p2.z;
-  //     positions.push(x, y, z);
-  //
-  //     if (parsedData.lines[i].p2.g0) {
-  //       colors.push(0);
-  //       colors.push(200);
-  //       colors.push(0);
-  //     } else if (parsedData.lines[i].p2.g1) {
-  //       colors.push(200);
-  //       colors.push(0);
-  //       colors.push(0);
-  //     } else if (parsedData.lines[i].p2.g2) {
-  //       colors.push(0);
-  //       colors.push(0);
-  //       colors.push(200);
-  //     } else {
-  //       colors.push(200);
-  //       colors.push(0);
-  //       colors.push(200);
-  //     }
-  //
-  //   }
-  // }
 
   geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
@@ -109,7 +80,7 @@ function parseGcodeInWebWorker(gcode) {
       object = false;
 
       // var worker = new Worker('lib/3dview/workers/gcodeparser.js');
-      var worker = new Worker('lib/3dview/workers/more-litegcodeviewer.js');
+      var worker = new Worker('lib/3dview/workers/verylitegcodeviewer.js');
       worker.addEventListener('message', function(e) {
         // console.log('webworker message', e)
         if (e.data.progress != undefined) {
@@ -278,6 +249,11 @@ function runSim() {
 
   }
 
+
+  // Disabled as of 1.0.271:  object.userData.linePoints[simIdx] doesn't line up with gcode line numbers anymore as comments, etc are not added to linePoints[]
+  //$("#conetext").html(`<span class="tally success drop-shadow">Line ` + simIdx + ": " + editor.session.getLine(simIdx) + `</span>`);
+
+
   var simTime = object.userData.linePoints[simIdx].timeMins / timefactor;
   $('#gcodesent').html("Sim Line: " + parseInt(simIdx) - 1);
 
@@ -323,11 +299,6 @@ function runSim() {
     }
 
   }
-
-
-
-
-
 
 };
 

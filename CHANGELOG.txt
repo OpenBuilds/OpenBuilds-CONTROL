@@ -1,4 +1,5 @@
-v1.0.271: New 3D viewer:  Arc Support
+v1.0.273: Cleanup of old resources
+v1.0.272: New 3D viewer:  Arc Support
 v1.0.271: New 3D viewer: More lightweight, supports larger files, Render Progress percentage, antialiased graphics, opacity, etc; Prevent large files from loading to Gcode Editor, new RunJob method for large files
 v1.0.270: Updated LEAD1515 Profile: Max Travel, Updated Interface Files
 v1.0.269: Added Machine profiles to Interface USB Drive Wizard, renamed menu entry for Keyboard shortcuts editor
