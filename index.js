@@ -47,6 +47,8 @@ const drivelist = require('drivelist');
 require('hazardous');
 
 app.use(express.static(path.join(__dirname, "app")));
+//app.use(express.limit('200M'));
+
 
 // Interface firmware flash
 app.post('/uploadCustomFirmware', (req, res) => {
@@ -549,6 +551,7 @@ app.post('/upload', function(req, res) {
   //debug_log(req)
   uploadprogress = 0
   var form = new formidable.IncomingForm();
+  form.maxFileSize = 300 * 1024 * 1024;
   form.parse(req, function(err, fields, files) {
     // debug_log(files);
   });
@@ -563,6 +566,8 @@ app.post('/upload', function(req, res) {
     if (uploadprogress != lastsentuploadprogress) {
       lastsentuploadprogress = uploadprogress;
     }
+    debug_log('Progress ' + uploadprogress + "% / " + bytesReceived + "b");
+
   });
 
   form.on('file', function(name, file) {
@@ -590,6 +595,8 @@ app.post('/upload', function(req, res) {
 
   form.on('end', function() {
     //Emitted when the entire request has been received, and all contained files have finished flushing to disk. This is a great place for you to send your response.
+    res.end();
+
   });
 
   res.sendFile(__dirname + '/app/upload.html');

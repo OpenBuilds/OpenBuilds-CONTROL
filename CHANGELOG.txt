@@ -1,3 +1,5 @@
+v1.0.275: Fixed /upload page for large files
+v1.0.274: Interface Firmware v1.43
 v1.0.273: Cleanup of old resources
 v1.0.272: New 3D viewer:  Arc Support
 v1.0.271: New 3D viewer: More lightweight, supports larger files, Render Progress percentage, antialiased graphics, opacity, etc; Prevent large files from loading to Gcode Editor, new RunJob method for large files
