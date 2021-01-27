@@ -502,7 +502,6 @@ function initSocket() {
       var icon = ''
       var source = "door"
       var printLogCls = "fg-darkGray"
-      printLogModern(icon, source, "Door : " + doorMsg, printLogCls)
     } else {
       $('#runStatus').html("Controller: " + status.comms.runStatus);
     }
