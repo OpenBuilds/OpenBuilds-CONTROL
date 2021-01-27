@@ -235,12 +235,13 @@ function setControlBar(val, status) {
     }
     $('#chkSize').show().attr('disabled', true);
     if (status.machine.inputs.includes('D')) {
-      $('#resumeBtn').show().attr('disabled', true);
+      $('#resumeBtn').hide().attr('disabled', true);
+      $('#pauseBtn').show().attr('disabled', true);
     } else {
       $('#resumeBtn').show().attr('disabled', false);
+      $('#pauseBtn').hide().attr('disabled', true);
     }
 
-    $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);

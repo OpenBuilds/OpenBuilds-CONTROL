@@ -252,6 +252,7 @@ function initSocket() {
         $("#completeMsgDiv").html(data.jobCompletedMsg);
       }
       Metro.dialog.open("#completeMsgModal");
+
       var icon = ''
       var source = "JOB COMPLETE"
       var string = "Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg
@@ -267,7 +268,10 @@ function initSocket() {
       var printLogCls = "fg-green"
       printLogModern(icon, source, string, printLogCls)
     }
-    $('#jobCompleteBtnOk').focus();
+    setTimeout(function() {
+      $('#jobCompleteBtnOk').focus();
+    }, 200)
+
 
   });
 
@@ -479,7 +483,31 @@ function initSocket() {
 
     }
 
-    $('#runStatus').html("Controller: " + status.comms.runStatus);
+    if (status.comms.runStatus.indexOf("Door") == 0) {
+      var doorType = status.comms.runStatus.split(":")[1]
+      var doorMsg = "";
+      if (doorType == 0) {
+        doorMsg += "Closed: Ready to Resume"
+      }
+      if (doorType == 1) {
+        doorMsg += "Open: Paused"
+      }
+      if (doorType == 2) {
+        doorMsg += "De-energising"
+      }
+      if (doorType == 3) {
+        doorMsg += "Re-energising"
+      }
+      $('#runStatus').html("Door : " + doorMsg);
+      var icon = ''
+      var source = "door"
+      var printLogCls = "fg-darkGray"
+      printLogModern(icon, source, "Door : " + doorMsg, printLogCls)
+    } else {
+      $('#runStatus').html("Controller: " + status.comms.runStatus);
+    }
+
+
 
     if (!disableDROupdates) {
       if (unit == "mm") {

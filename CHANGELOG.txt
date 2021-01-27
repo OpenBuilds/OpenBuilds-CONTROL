@@ -1,3 +1,4 @@
+v1.0.276: Focus on OK button on JobComplete dialog, Updated Door handling for UI, Updated DOOR messages in footer
 v1.0.275: Fixed /upload page for large files
 v1.0.274: Interface Firmware v1.43
 v1.0.273: Cleanup of old resources

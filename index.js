@@ -2085,7 +2085,7 @@ function parseFeedback(data) {
     var pins = pinsdata[0].split('')
     status.machine.inputs = pins;
     if (!_.isEqual(pins, oldpinslist)) {
-      if (pins.includes('H')) {
+      if (pins.includes('H') || pins.includes('D')) {
         // pause
         pause();
         var output = {
