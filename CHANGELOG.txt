@@ -1,3 +1,4 @@
+v1.0.278: Fixed bug #179 (Electron upload path for Interface Firmware)
 v1.0.277: Fixed Y Calibrations Wizard Y+ button, Updated SSL Certificates, Fixed comments in Surfacing Wizard Gcode, Display output of "?" in log if sent via sendGcode, added 0.001" Incremental Jog , added Realtime feedrate Indicator to Feed Override slider, Support for JS Macros on startup, Updated Socket.IO
 v1.0.276: Focus on OK button on JobComplete dialog, Updated Door handling for UI, Updated DOOR messages in footer
 v1.0.275: Fixed /upload page for large files

@@ -2747,7 +2747,7 @@ function startChrome() {
 
 // grab latest firmware.bin for Interface on startup
 
-var file = fs.createWriteStream(path.join(__dirname, "firmware.bin"));
+var file = fs.createWriteStream(path.join(uploadsDir, "firmware.bin"));
 https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/firmware.bin", function(response) {
   response.pipe(file);
   file.on('finish', function() {
@@ -2794,7 +2794,7 @@ https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/
 
 
 
-var firmwareImagePath = path.join(__dirname, './firmware.bin');
+var firmwareImagePath = path.join(uploadsDir, './firmware.bin');
 var spawn = require('child_process').spawn;
 const multer = require('multer');
 const storage = multer.diskStorage({
