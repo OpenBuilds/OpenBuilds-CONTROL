@@ -35,8 +35,10 @@ var app = express();
 var http = require("http").Server(app);
 var https = require('https');
 
-var ioServer = require('socket.io');
-var io = new ioServer();
+const {
+  Server
+} = require('socket.io');
+const io = new Server();
 var safetosend;
 
 var fs = require('fs');
