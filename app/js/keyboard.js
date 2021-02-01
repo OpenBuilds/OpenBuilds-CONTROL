@@ -109,7 +109,12 @@ function bindKeys() {
           if (macro && macro.codetype == "gcode") {
             sendGcode(macro.gcode); // TODO change to runMacro with JS
           } else if (macro && macro.codetype == "javascript") {
-            executeJS(macro.javascript)
+            if (!macro.jsrunonstartup) {
+              executeJS(macro.javascript)
+            } else {
+              var toast = Metro.toast.create;
+              toast("Macro: <b>" + macro.title + "</b> is an autorun macro, it runs when CONTROL starts. You cannot run it using the button. You can edit or delete it using the <i class='fas fa-cogs'></i> Edit Macro tool", null, 3000, "bg-darkRed fg-white")
+            }
           } else {
             printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>Macro not found for " + newVal + "</span>")
           }
