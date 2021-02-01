@@ -1,3 +1,4 @@
+v1.0.280: Socket.IO Bug fixed
 v1.0.279: Autorun macros: added error toast to keyboard shortcut, Fixed CSS on Serial Console tab
 v1.0.278: Fixed bug #179 (Electron upload path for Interface Firmware)
 v1.0.277: Fixed Y Calibrations Wizard Y+ button, Updated SSL Certificates, Fixed comments in Surfacing Wizard Gcode, Display output of "?" in log if sent via sendGcode, added 0.001" Incremental Jog , added Realtime feedrate Indicator to Feed Override slider, Support for JS Macros on startup, Updated Socket.IO
