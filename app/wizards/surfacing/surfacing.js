@@ -59,7 +59,7 @@ function createSurfaceGcode() {
 ; X: ` +
     data.surfaceX +
     `, Y: ` +
-    data.surfaceX +
+    data.surfaceY +
     `, Z: ` +
     data.surfaceDepth +
     `

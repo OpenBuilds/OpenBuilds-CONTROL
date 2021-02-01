@@ -266,7 +266,7 @@ function bindKeys() {
     if (keyboardShortcuts.setzeroxyz.length) {
       $(document).bind('keydown', keyboardShortcuts.setzeroxyz, function(e) {
         e.preventDefault();
-        sendGcode('G10 P1 L20 X0 Y0 Z0')
+        sendGcode('G10 P0 L20 X0 Y0 Z0')
       });
     }
 

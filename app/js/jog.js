@@ -45,21 +45,21 @@ function mmMode() {
 function inMode() {
   unit = "in";
   localStorage.setItem('unitsMode', unit);
-  $('#dist01label').html('0.01"')
-  $('#dist1label').html('0.1"')
-  $('#dist10label').html('1"')
-  $('#dist100label').html('10"')
+  $('#dist01label').html('0.001"')
+  $('#dist1label').html('0.01"')
+  $('#dist10label').html('0.1"')
+  $('#dist100label').html('1"')
   if (jogdist == 0.1) {
-    jogdist = 0.254
+    jogdist = 0.0254
   }
   if (jogdist == 1) {
-    jogdist = 2.54
+    jogdist = 0.254
   }
   if (jogdist == 10) {
-    jogdist = 25.4
+    jogdist = 2.54
   }
   if (jogdist == 100) {
-    jogdist = 254
+    jogdist = 25.4
   }
   $('#jogratemmdiv').hide()
   $('#jograteinchdiv').show()
@@ -256,7 +256,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       jogdist = 0.1;
     } else if (unit == "in") {
-      jogdist = 0.254;
+      jogdist = 0.0254;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist01').addClass('bd-openbuilds')
@@ -270,7 +270,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       jogdist = 1;
     } else if (unit == "in") {
-      jogdist = 2.54;
+      jogdist = 0.254;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist1').addClass('bd-openbuilds')
@@ -284,7 +284,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       jogdist = 10;
     } else if (unit == "in") {
-      jogdist = 25.4;
+      jogdist = 2.54;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist10').addClass('bd-openbuilds')
@@ -298,7 +298,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       jogdist = 100;
     } else if (unit == "in") {
-      jogdist = 254.0;
+      jogdist = 25.4;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist100').addClass('bd-openbuilds')
@@ -306,16 +306,6 @@ $(document).ready(function() {
     $('.jogdist').addClass('fg-gray')
     $('#dist100label').removeClass('fg-gray')
     $('#dist100label').addClass('fg-openbuilds')
-  })
-
-  $('#dist500').on('click', function(ev) {
-    jogdist = 500;
-    $('.distbtn').removeClass('bd-openbuilds')
-    $('#dist500').addClass('bd-openbuilds')
-    $('.jogdist').removeClass('fg-openbuilds')
-    $('.jogdist').addClass('fg-gray')
-    $('#dist500label').removeClass('fg-gray')
-    $('#dist500label').addClass('fg-openbuilds')
   })
 
   $('#gotozeroWPos').on('click', function(ev) {

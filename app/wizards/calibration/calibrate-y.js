@@ -14,7 +14,7 @@ var ycaltemplate = `
                <small>To get started, jog your Y-Axis until its near the Y- position.</small><br>
                <center>
                   <button class="button" onclick="jog('Y', -10, 1000);"><i class="fas fa-arrow-down"></i> Y- 10</button>
-                  <button class="button" onclick="jog('Y', -10, 1000);"><i class="fas fa-arrow-up"></i> Y+ 10</button>
+                  <button class="button" onclick="jog('Y', 10, 1000);"><i class="fas fa-arrow-up"></i> Y+ 10</button>
               </center>
               <hr>
               <small>Then, place a physical mark

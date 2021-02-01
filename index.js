@@ -1231,6 +1231,16 @@ io.on("connection", function(socket) {
           // debug_log(' Got statusReport (Grbl & Smoothieware)')
           // statusfeedback func
           parseFeedback(data)
+          if (command == "?") {
+            var output = {
+              'command': command,
+              'response': data,
+              'type': 'info'
+            }
+            // debug_log(output.response)
+            io.sockets.emit('data', output);
+          }
+
           // debug_log(data)
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
           // debug_log("OK FOUND")
@@ -2078,6 +2088,18 @@ function parseFeedback(data) {
       }
     }
   }
+
+  // extras realtime feed (if variable spindle is disabled)
+  var startF = data.search(/F:/i) + 2;
+  if (startF > 2) {
+    var f = data.replace(">", "").substr(startF).split(/,|\|/);
+    if (Array.isArray(f)) {
+      if (fs[0]) {
+        status.machine.overrides.realFeed = parseInt(fs[0]);
+      }
+    }
+  }
+
   // Extract Pin Data
   var startPin = data.search(/Pn:/i) + 3;
   if (startPin > 3) {

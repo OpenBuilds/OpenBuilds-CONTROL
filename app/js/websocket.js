@@ -571,6 +571,15 @@ function initSocket() {
       }
     }
 
+    if (unit == "mm") {
+      $("#realFeed").html(status.machine.overrides.realFeed + "mm/min");
+      //$("#realSpeed").html("S=" + status.machine.overrides.realSpindle);
+    } else if (unit == "in") {
+      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "in/min");
+      //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
+    }
+
+
     // Windows Power Management
     if (status.driver.operatingsystem == "windows") {
       $("#powerSettingsCard").show();

@@ -17,10 +17,14 @@ function populateMacroButtons() {
     }
     if (buttonsarray[i].codetype && buttonsarray[i].codetype.length) {
       var codetype = buttonsarray[i].codetype
+      var codetypeDisplay = buttonsarray[i].codetype
     } else {
       buttonsarray[i].codetype = "gcode"
       var codetype = "gcode"
-
+      var codetypeDisplay = "gcode"
+    }
+    if (buttonsarray[i].jsrunonstartup) {
+      var codetypeDisplay = "js:autorun"
     }
     if (codetype == "gcode") {
       var button = `
@@ -33,7 +37,6 @@ function populateMacroButtons() {
         <span title="Edit Macro" onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span>
         <span title="Code Type: ` + codetype + `" class="macrotype">` + codetype + `</span>
       </button>
-
       `
     } else if (codetype == "javascript") {
       // Future JS Macros here
@@ -45,12 +48,20 @@ function populateMacroButtons() {
           <small><i class="far fa-fw fa-keyboard"></i>: [` + keyboardAssignment + `]</small>
         </span>
         <span title="Edit Macro" onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span>
-        <span title="Code Type: ` + codetype + `" class="macrotype">` + codetype + `</span>
+        <span title="Code Type: ` + codetype + `" class="macrotype">` + codetypeDisplay + `</span>
       </button>
 
       `
     }
     $("#macros").append(button);
+    if (buttonsarray[i].jsrunonstartup) {
+      var icon = ""
+      var source = "macros"
+      var string = "Macro: <b>" + buttonsarray[i].title + "</b> executed on startup!"
+      var printLogCls = "fg-blue"
+      printLogModern(icon, source, string, printLogCls)
+      executeJS(buttonsarray[i].javascript)
+    }
   }
   // append add button
   var button = `
@@ -84,6 +95,11 @@ function edit(i, evt) {
       var macrokeyboardshortcut = buttonsarray[i].macrokeyboardshortcut;
     } else {
       var macrokeyboardshortcut = "";
+    }
+    if (buttonsarray[i].jsrunonstartup) {
+      var jsrunonstartup = "checked";
+    } else {
+      var jsrunonstartup = "";
     }
 
   } else {
@@ -137,10 +153,10 @@ function edit(i, evt) {
               <span class="text-small">Enter GCODE to execute</span>
             </div>
             <div id="macroJavascriptEditField" style="display:none;" >
-              <textarea  wrap="off" id="macrojs" type="text" value="" style="overflow-y: auto; height: 200px; max-height: 200px; resize: none;" rows="4"  data-editable="true"></textarea>
               <span class="text-small">Enter Javascript to execute</span><br>
-              <span class="text-small">tip: Prototype your code using</span>
-              <span class="text-small"> the Devtools Console (Ctrl+Shift+i > Console)</span>
+              <span class="text-small">tip: Prototype your code using (Ctrl+Shift+i > Console)</span>
+              <textarea  wrap="off" id="macrojs" type="text" value="" style="overflow-y: auto; height: 200px; max-height: 200px; resize: none;" rows="4"  data-editable="true"></textarea>
+              <input type="checkbox" data-role="checkbox" data-caption="Run Macro on startup (use with caution, no serial comms)" data-caption-position="left" data-style="2" id="jsRunOnStartup" ` + jsrunonstartup + `>
             </div>
           </div>
       </div>
@@ -177,6 +193,7 @@ function edit(i, evt) {
     title: "Edit Macro",
     width: 600,
     content: macroTemplate,
+    dataToTop: true,
     actions: [{
         caption: "Cancel",
         cls: "js-dialog-close",
@@ -206,6 +223,7 @@ function edit(i, evt) {
             buttonsarray[seq].class = $('#macrocls').val();
             buttonsarray[seq].tooltip = $('#macrotooltip').val();
             buttonsarray[seq].macrokeyboardshortcut = $('#macrokeyboardshortcut').val();
+            buttonsarray[seq].jsrunonstartup = $('#jsRunOnStartup').is(':checked')
             populateMacroButtons();
             bindKeys()
           } else {
@@ -218,6 +236,7 @@ function edit(i, evt) {
               class: $('#macrocls').val(),
               tooltip: $('#macrotooltip').val(),
               macrokeyboardshortcut: $('#macrokeyboardshortcut').val(),
+              jsrunonstartup: $('#jsRunOnStartup').is(':checked')
             })
             populateMacroButtons();
             bindKeys()
@@ -365,9 +384,12 @@ function editorJavascriptMode() {
 
 function runJsMacro(i) {
   console.log("Running: ", buttonsarray[i].javascript)
-  executeJS(buttonsarray[i].javascript)
-  // Execute code
-
+  if (!buttonsarray[i].jsrunonstartup) {
+    executeJS(buttonsarray[i].javascript)
+  } else {
+    var toast = Metro.toast.create;
+    toast("Macro: <b>" + buttonsarray[i].title + "</b> is an autorun macro, it runs when CONTROL starts. You cannot run it using the button. You can edit or delete it using the <i class='fas fa-cogs'></i> Edit Macro tool", null, 3000, "bg-darkRed fg-white")
+  }
 }
 
 function executeJS(js) {
