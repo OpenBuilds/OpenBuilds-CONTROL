@@ -1,13 +1,63 @@
+$(document).ready(function() {
+  var backupFileOpen = document.getElementById('grblBackupFile');
+  if (backupFileOpen) {
+    backupFileOpen.addEventListener('change', readGrblBackupFile, false);
+  }
+});
+
+function readGrblBackupFile(evt) {
+  var files = evt.target.files || evt.dataTransfer.files;
+  loadGrblBackupFile(files[0]);
+  document.getElementById('grblBackupFile').value = '';
+
+}
+
+function loadGrblBackupFile(f) {
+  // Filereader
+  if (f) {
+    var r = new FileReader();
+    // if (f.name.match(/.gcode$/i)) {
+    r.readAsText(f);
+    r.onload = function(event) {
+      //var grblsettingsfile = this.result
+      //console.log(this.result)
+      var data = this.result.split("\n");
+      for (i = 0; i < data.length; i++) {
+        if (data[i].indexOf("$I=") == 0) {
+          setMachineButton(data[i].split('=')[1])
+        } else {
+          var key = data[i].split('=')[0];
+          var param = data[i].split('=')[1]
+          $("#val-" + key.substring(1) + "-input").val(parseFloat(param))
+
+        }
+      };
+      checkifchanged();
+      enableLimits(); // Enable or Disable
+      displayDirInvert();
+    }
+  }
+}
+
 function backupGrblSettings() {
   var grblBackup = ""
   for (key in grblParams) {
     var key2 = key.split('=')[0].substr(1);
     grblBackup += key + "=" + grblParams[key] + "  ;  " + grblSettingCodes[key2] + "\n"
   }
+  if (laststatus.machine.name.length > 0) {
+    grblBackup += "$I=" + laststatus.machine.name
+  }
   var blob = new Blob([grblBackup], {
     type: "plain/text"
   });
-  invokeSaveAsDialog(blob, 'grbl-settings-backup.txt');
+  var date = new Date();
+  if (laststatus.machine.name.length > 0) {
+    invokeSaveAsDialog(blob, 'grbl-settings-backup-' + laststatus.machine.name + "-" + date.yyyymmdd() + '.txt');
+  } else {
+    invokeSaveAsDialog(blob, 'grbl-settings-backup-' + date.yyyymmdd() + '.txt');
+  }
+
 }
 
 var grblSettingCodes = {
@@ -97,7 +147,7 @@ function grblPopulate() {
           <form id="grblSettingsTable">
           <ul class="step-list">
 
-            <li id="installDriversOnSettingspage">
+            <li>
               <h6 class="fg-openbuilds">Load Default Settings<br><small>Populate Grbl parameters from machine-type defaults. You can customize values as needed below. Remember to click Save above to apply</small></h6>
               <hr class="bg-openbuilds">
               <div>
@@ -173,7 +223,7 @@ function grblPopulate() {
           </li>
 
 
-            <li id="installDriversOnSettingspage">
+            <li>
               <h6 class="fg-openbuilds">Advanced Settings<br><small>Customise your Grbl settings below</small></h6>
               <hr class="bg-openbuilds">
               <div>
