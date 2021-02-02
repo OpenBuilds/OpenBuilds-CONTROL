@@ -2094,8 +2094,8 @@ function parseFeedback(data) {
   if (startF > 2) {
     var f = data.replace(">", "").substr(startF).split(/,|\|/);
     if (Array.isArray(f)) {
-      if (fs[0]) {
-        status.machine.overrides.realFeed = parseInt(fs[0]);
+      if (f[0]) {
+        status.machine.overrides.realFeed = parseInt(f[0]);
       }
     }
   }
@@ -2876,7 +2876,7 @@ function flashInterface(data) {
   child.on('close', (code) => {
     var data = {
       'port': port,
-      'string': `[exit]`,
+      'string': `[exit:` + code + `]`,
       'code': code
     }
     io.sockets.emit("progStatus", data);

@@ -426,11 +426,30 @@ function initSocket() {
         string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
       }
 
+      if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
+        string = "<span class='fg-red'>" + string + ":  Make sure the Interface is in BOOTLOADER MODE. See https://docs.openbuilds.com/doku.php?id=docs:interface:firmware-update-control"
+      }
+
+
       var icon = ''
       var source = " Firmware Upgrade"
       //var string = string
       var printLogCls = "fg-darkGray"
       printLogModern(icon, source, string, printLogCls)
+
+      if (data.code != undefined) {
+        var icon = ''
+        var source = " Firmware Upgrade"
+        if (data.code == 0) {
+          var string = "<i class='fas fa-check fa-fw fg-green fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the Interface now, to reboot it with the new firmware. "
+          var printLogCls = "fg-green"
+        } else {
+          var string = "<i class='fas fa-times fa-fw fg-red fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
+          var printLogCls = "fg-darkRed"
+        }
+        printLogModern(icon, source, string, printLogCls)
+      }
+
     }
   });
 
