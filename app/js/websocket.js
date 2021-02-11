@@ -247,6 +247,7 @@ function initSocket() {
     }
     if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
       if (data.jobStartTime) {
+        var runTime = data.jobEndTime - data.jobStartTime;
         $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
       } else {
         $("#completeMsgDiv").html(data.jobCompletedMsg);

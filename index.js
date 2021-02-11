@@ -2122,9 +2122,6 @@ function parseFeedback(data) {
       if (pins.includes('D')) {
         // pause
         pause();
-
-      } else {
-        unpause();
       }
 
       if (pins.includes('R')) {

@@ -1,4 +1,5 @@
-v1.0.283: Fixed realtime feedrate indicator
+v1.0.284: Fixed bug related to Door that was affecting Probing
+v1.0.283: Fixed realtime feedrate indicator, improved Door handling
 v1.0.282: Improved logging messages for Interface Firmware flashing tool, Fixed bug with non-standard Grbl Firmwares that have Variable Speed disabled
 v1.0.281: Added "Restore Backup" button for Grbl Settings, Fixed jog increment for mm after switching between in/mm
 v1.0.280: Socket.IO Bug fixed
