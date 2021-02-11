@@ -375,7 +375,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "X-";
         var distance = 1000;
 
@@ -428,7 +428,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "X";
         var distance = 1000;
         if (hasSoftLimits) {
@@ -479,7 +479,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "Y-";
         var distance = 1000;
 
@@ -531,7 +531,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "Y";
         var distance = 1000;
 
@@ -583,7 +583,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "Z-";
         var distance = 1000;
 
@@ -635,7 +635,7 @@ $(document).ready(function() {
       }
     }
     if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle") {
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
         var direction = "Z";
         var distance = 1000;
 

@@ -598,6 +598,8 @@ function initSocket() {
       //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
     }
 
+    console.log(JSON.stringify(status.machine.overrides, null, 4));
+
 
     // Windows Power Management
     if (status.driver.operatingsystem == "windows") {

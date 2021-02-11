@@ -2076,8 +2076,8 @@ function parseFeedback(data) {
     }
   }
   // Extract realtime Feed and Spindle (for Grbl > v1.1 only!)
-  var startFS = data.search(/FS:/i) + 3;
-  if (startFS > 3) {
+  var startFS = data.search(/\|FS:/i) + 4;
+  if (startFS > 4) {
     var fs = data.replace(">", "").substr(startFS).split(/,|\|/);
     if (Array.isArray(fs)) {
       if (fs[0]) {
@@ -2090,9 +2090,10 @@ function parseFeedback(data) {
   }
 
   // extras realtime feed (if variable spindle is disabled)
-  var startF = data.search(/F:/i) + 2;
-  if (startF > 2) {
+  var startF = data.search(/\|F:/i) + 3;
+  if (startF > 3) {
     var f = data.replace(">", "").substr(startF).split(/,|\|/);
+    console.log(JSON.stringify(f, null, 4))
     if (Array.isArray(f)) {
       if (f[0]) {
         status.machine.overrides.realFeed = parseInt(f[0]);
@@ -2107,7 +2108,7 @@ function parseFeedback(data) {
     var pins = pinsdata[0].split('')
     status.machine.inputs = pins;
     if (!_.isEqual(pins, oldpinslist)) {
-      if (pins.includes('H') || pins.includes('D')) {
+      if (pins.includes('H')) {
         // pause
         pause();
         var output = {
@@ -2117,6 +2118,14 @@ function parseFeedback(data) {
         }
         io.sockets.emit('data', output);
       } // end if HOLD
+
+      if (pins.includes('D')) {
+        // pause
+        pause();
+
+      } else {
+        unpause();
+      }
 
       if (pins.includes('R')) {
         // abort
