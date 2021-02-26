@@ -111,7 +111,11 @@
       "*.bin"
     ],
     "linux": {
-      "icon": "build/"
+      "icon": "build/",
+      "target": [
+        "deb",
+        "AppImage"
+      ],
     },
     "mac": {
       "icon": "build/icon.icns",
