@@ -1,3 +1,4 @@
+v1.0.285: Moved CI to GHActions
 v1.0.285: MacOS ESPtool Support (Beta)
 v1.0.284: Fixed bug related to Door that was affecting Probing
 v1.0.283: Fixed realtime feedrate indicator, improved Door handling
