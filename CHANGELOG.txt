@@ -1,3 +1,4 @@
+v1.0.285: MacOS ESPtool Support (Beta)
 v1.0.284: Fixed bug related to Door that was affecting Probing
 v1.0.283: Fixed realtime feedrate indicator, improved Door handling
 v1.0.282: Improved logging messages for Interface Firmware flashing tool, Fixed bug with non-standard Grbl Firmwares that have Variable Speed disabled
