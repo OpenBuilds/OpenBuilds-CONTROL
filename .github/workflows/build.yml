@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: 12
 
-      - name: Build/release Electron app
-        uses: OpenBuilds/OpenBuilds-CONTROL@master
+      - name: Electron Builder Action - Custom Publishing
+        uses: wixplosives/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
