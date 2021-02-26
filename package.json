@@ -115,7 +115,7 @@
       "target": [
         "deb",
         "AppImage"
-      ],
+      ]
     },
     "mac": {
       "icon": "build/icon.icns",
