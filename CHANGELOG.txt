@@ -1,3 +1,4 @@
+v1.0.289: Fixed Jog Increments Keyboard Shortcuts
 v1.0.286/7/8: Moved CI to GHActions
 v1.0.285: MacOS ESPtool Support (Beta)
 v1.0.284: Fixed bug related to Door that was affecting Probing

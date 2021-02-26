@@ -712,7 +712,7 @@ $(document).ready(function() {
 });
 
 function changeStepSize(dir) {
-  if (jogdist == 0.1 || jogdist == 0.254) {
+  if (jogdist == 0.1 || jogdist == 0.0254) {
     if (dir == 1) {
       jogdist = 1;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -725,7 +725,7 @@ function changeStepSize(dir) {
     if (dir == -1) {
       // do nothing
     }
-  } else if (jogdist == 1 || jogdist == 2.54) {
+  } else if (jogdist == 1 || jogdist == 0.254) {
     if (dir == 1) {
       jogdist = 10;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -744,7 +744,7 @@ function changeStepSize(dir) {
       $('#dist01label').removeClass('fg-gray')
       $('#dist01label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 10 || jogdist == 25.4) {
+  } else if (jogdist == 10 || jogdist == 2.54) {
     if (dir == 1) {
       jogdist = 100;
       $('.distbtn').removeClass('bd-openbuilds')
@@ -763,7 +763,7 @@ function changeStepSize(dir) {
       $('#dist1label').removeClass('fg-gray')
       $('#dist1label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 100 || jogdist == 254) {
+  } else if (jogdist == 100 || jogdist == 25.4) {
     if (dir == 1) {
       // do nothing
     }
