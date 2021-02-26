@@ -11,10 +11,7 @@ Click to see all past releases:  [![Downloads](https://img.shields.io/github/dow
 
 # Development:
 
-### Appveyor Build Status (Windows):
-[![Build status](https://ci.appveyor.com/api/projects/status/n2n7bcchr1kx7tpa?svg=true)](https://ci.appveyor.com/project/openbuilds-engineer/openbuilds-control)
-
-### TravisCI Build Status (Linux and Mac):
-[![Build Status](https://travis-ci.org/OpenBuilds/OpenBuilds-CONTROL.svg?branch=master)](https://travis-ci.org/OpenBuilds/OpenBuilds-CONTROL)
+### Build Status (Windows, Linux, Mac):
+[![Build/release](https://github.com/OpenBuilds/OpenBuilds-CONTROL/actions/workflows/build.yml/badge.svg)](https://github.com/OpenBuilds/OpenBuilds-CONTROL/actions/workflows/build.yml)
 
 ![Screenshot](https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/docs/control.PNG)
