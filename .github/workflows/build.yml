@@ -20,7 +20,7 @@ jobs:
           node-version: 12
 
       - name: Build/release Electron app
-        uses: OpenBuilds/OpenBuilds-CONTROL
+        uses: OpenBuilds/OpenBuilds-CONTROL@master
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
