@@ -107,6 +107,7 @@
     ],
     "asarUnpack": [
       "esptool.exe",
+      "esptool-mac",
       "*.bin"
     ],
     "linux": {
