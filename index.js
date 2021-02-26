@@ -2853,6 +2853,7 @@ function flashInterface(data) {
   ];
 
   if (process.platform == 'darwin') {
+    fs.chmodSync(path.join(__dirname, "./esptool-mac"), 0o755);
     var child = spawn(path.join(__dirname, "./esptool-mac"), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
