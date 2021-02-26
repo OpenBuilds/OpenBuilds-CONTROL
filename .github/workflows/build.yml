@@ -20,8 +20,8 @@ jobs:
         with:
           node-version: 12
 
-      - name: Electron Builder Action - Custom Publishing
-        uses: wixplosives/action-electron-builder@v1
+      - name: Electron Builder Action
+        uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
