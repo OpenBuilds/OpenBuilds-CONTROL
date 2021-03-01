@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.289",
+  "version": "1.0.290",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -110,6 +110,18 @@
       "esptool-mac",
       "*.bin"
     ],
+    "win": {
+     "target": [
+       {
+         "target": "nsis",
+         "arch": [
+           "x64",
+           "ia32"
+         ]
+       }
+     ],
+     "icon": "build/icon.ico"
+   },
     "linux": {
       "icon": "build/",
       "target": [
