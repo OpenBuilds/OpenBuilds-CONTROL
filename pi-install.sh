@@ -20,6 +20,7 @@ echo "(7/10) Downloading OpenBuilds-CONTROL source code..."
 cd ~; git clone https://github.com/OpenBuilds/OpenBuilds-CONTROL.git > /dev/null 2>&1
 cd ~/OpenBuilds-CONTROL > /dev/null 2>&1
 echo "(8/10) Installing OpenBuilds-CONTROL dependencies..."
+chmod 777 ~/.config
 npm install > /dev/null 2>&1
 echo "(9/10) Recompiling OpenBuilds-CONTROL dependencies..."
 npm rebuild > /dev/null 2>&1
