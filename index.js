@@ -662,6 +662,34 @@ io.on("connection", function(socket) {
     shell.openExternal('https://www.openbuilds.com')
   });
 
+  socket.on("carveco", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://carveco.com/carveco-software-range/?ref=openbuilds')
+  });
+
+  socket.on("fabber", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://www.getfabber.com/openbuilds?ref=OpenBuilds')
+  });
+
+  socket.on("lightburn", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://openbuildspartstore.com/lightburn/')
+  });
+
+  socket.on("vectric", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://openbuildspartstore.com/vectric/')
+  });
+
   socket.on("opencam", function(data) {
     const {
       shell
@@ -2517,7 +2545,7 @@ if (isElectron()) {
       // Create the browser window.
       jogWindow = new BrowserWindow({
         // 1366 * 768 == minimum to cater for
-        width: 870,
+        width: 890,
         height: 850,
         fullscreen: false,
         center: true,

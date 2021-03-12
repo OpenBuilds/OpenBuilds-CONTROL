@@ -182,7 +182,7 @@ function edit(i, evt) {
           <label class="cell-sm-3">Keyboard Shortcut</label>
           <div class="cell-sm-9" >
             <input id="macrokeyboardshortcut" class="macrokeyboardshortcutinput" type="text" value="` + macrokeyboardshortcut + `" data-role="input" data-clear-button="true" data-editable="true" onclick="$('.macrokeyboardshortcutinput').removeClass('newMacroKeyAssignment'); $('#macrokeyboardshortcut').addClass('newMacroKeyAssignment')">
-            <span class="text-small fg-red" id="alreadyAssignedWarn" style="display: none;"></span>
+            <span class="text-small fg-red" id="alreadyAssignedWarnMacro" style="display: none;"></span>
             <span class="text-small">Click above to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.</span>
           </div>
       </div>
@@ -275,6 +275,8 @@ function edit(i, evt) {
         newVal += 'up';
       } else if (e.key.toLowerCase() == 'arrowdown') {
         newVal += 'down';
+      } else if (e.key.toLowerCase() == 'delete') {
+        newVal += 'del';
       } else {
         newVal += e.key.toLowerCase();
       }
@@ -282,23 +284,18 @@ function edit(i, evt) {
 
       var alreadyAssigned = false;
       var assignedMacro = '';
-      for (i = 0; i < buttonsarray.length; i++) {
-        if (newVal == buttonsarray[i].macrokeyboardshortcut) {
-          alreadyAssigned = true;
-          assignedMacro = buttonsarray[i].title
-        }
-      }
+      var alreadyAssigned = keyInUse(newVal).inUse;
       if (alreadyAssigned) {
-        $('#alreadyAssignedWarn').show();
-        $('#alreadyAssignedWarn').html(newVal + " is already assigned to \"" + assignedMacro + "\"<br>");
+        $('#alreadyAssignedWarnMacro').show();
+        $('#alreadyAssignedWarnMacro').html("\"" + newVal + "\" is already assigned to " + keyInUse(newVal).source);
         $('#macrokeyboardshortcut').addClass("alert")
       } else {
-        $('#alreadyAssignedWarn').hide();
+        $('#alreadyAssignedWarnMacro').hide();
         $('#macrokeyboardshortcut').removeClass("alert")
+        $('.newMacroKeyAssignment').val(newVal)
+        $('#macrokeyboardshortcut').addClass("primary")
       }
     }
-
-    $('.newMacroKeyAssignment').val(newVal)
 
     $('#jsedit').val(javascript);
 

@@ -246,7 +246,7 @@ function initSocket() {
       // console.log("Job Complete", data)
     }
     if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
-      if (data.jobStartTime) {
+      if (data.jobStartTime && data.jobEndTime) {
         var runTime = data.jobEndTime - data.jobStartTime;
         $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
       } else {
@@ -259,7 +259,7 @@ function initSocket() {
       var string = "Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg
       var printLogCls = "fg-green"
       printLogModern(icon, source, string, printLogCls)
-    } else if (data.jobStartTime) {
+    } else if (data.jobStartTime && data.jobEndTime) {
       var runTime = data.jobEndTime - data.jobStartTime;
       $("#completeMsgDiv").html("Job completed in " + msToTime(runTime));
       Metro.dialog.open("#completeMsgModal");
