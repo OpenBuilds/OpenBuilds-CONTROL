@@ -290,7 +290,7 @@ function init3D() {
 
   if (webgl) {
     // console.log('WebGL Support found! success: this application will work optimally on this device!');
-    printLog("<span class='fg-red'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
+    printLog("<span class='fg-darkRed'>[ 3D Viewer ] </span><span class='fg-green'>WebGL Support found! success: this application will work optimally on this device!</span>")
     renderer = new THREE.WebGLRenderer({
       autoClearColor: true,
       antialias: true,
@@ -346,7 +346,7 @@ function init3D() {
 
   } else {
     console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
-    printLog("<span class='fg-red'>[ ERROR ]</span>  <span class='fg-red'>No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!</span>")
+    printLog("<span class='fg-darkRed'>[ ERROR ]</span>  <span class='fg-darkRed'>No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!</span>")
     $('#gcodeviewertab').hide()
     $('#consoletab').click()
     return false;

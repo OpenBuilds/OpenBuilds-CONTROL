@@ -17,6 +17,19 @@ body {
   overflow-y: hidden;
 }
 
+/* X-Large button for Metro */
+.button.cycle.xlarge, .button.square.xlarge {
+  width: 3.7rem;
+  height: 3.7rem;
+}
+
+.button.xlarge {
+  font-size: 1.375rem;
+  padding: 0 1rem;
+  height: 3.7rem;
+  line-height: 3.7rem;
+}
+
 #jogcontrols {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
   height: 230px;

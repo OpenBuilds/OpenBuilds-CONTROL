@@ -6,14 +6,14 @@ var safeToUpdateSliders = true;
 function mmtoinchrate() {
   var value = $('#jograte').val();
   var convert = "";
-  convert = (value / 25.4).toFixed(2); //converts the value of input(mm) to inch;
+  convert = (value / 25.4).toFixed(0); //converts the value of input(mm) to inch;
   $("#jograteinch").val(convert);
 }
 
 function inchtommrate() {
   var value = $('#jograteinch').val();
   var convert = "";
-  convert = (value * 25.4).toFixed(2); //converts the value of input(mm) to inch;
+  convert = (value * 25.4).toFixed(0); //converts the value of input(mm) to inch;
   $("#jograte").val(convert);
 }
 
@@ -176,6 +176,7 @@ $(document).ready(function() {
   });
 
   $('#xPosInput').on('keypress', function(e) {
+    console.log(e)
     if (e.which === 13) {
       //Disable textbox to prevent multiple submit
       $(this).attr("disabled", "disabled");
@@ -184,9 +185,18 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("$J=G90 G21 X" + $("#xPosInput").val() + " F" + $('#jograte').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 X" + $("#xPosInput").val());
+        } else {
+          sendGcode("$J=G90 G21 X" + $("#xPosInput").val() + " F" + $('#jograte').val());
+        }
+
       } else if (unit == "in") {
-        sendGcode("$J=G90 G20 X" + $("#xPosInput").val() + " F" + $('#jograteinch').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 X" + ($("#xPosInput").val() * 25.4));
+        } else {
+          sendGcode("$J=G90 G20 X" + $("#xPosInput").val() + " F" + $('#jograteinch').val());
+        }
       }
     }
   });
@@ -214,9 +224,17 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("$J=G90 G21 Y" + $("#yPosInput").val() + " F" + $('#jograte').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 Y" + $("#yPosInput").val());
+        } else {
+          sendGcode("$J=G90 G21 Y" + $("#yPosInput").val() + " F" + $('#jograte').val());
+        }
       } else if (unit == "in") {
-        sendGcode("$J=G90 G20 Y" + $("#yPosInput").val() + " F" + $('#jograteinch').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 Y" + ($("#yPosInput").val() * 25.4));
+        } else {
+          sendGcode("$J=G90 G20 Y" + $("#yPosInput").val() + " F" + $('#jograteinch').val());
+        }
       }
     }
   });
@@ -244,9 +262,17 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        sendGcode("$J=G90 G21 Z" + $("#zPosInput").val() + " F" + $('#jograte').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 Z" + $("#zPosInput").val());
+        } else {
+          sendGcode("$J=G90 G21 Z" + $("#zPosInput").val() + " F" + $('#jograte').val());
+        }
       } else if (unit == "in") {
-        sendGcode("$J=G90 G20 Z" + $("#zPosInput").val() + " F" + $('#jograteinch').val());
+        if (e.shiftKey) {
+          sendGcode("G10 P0 L20 Z" + ($("#zPosInput").val() * 25.4));
+        } else {
+          sendGcode("$J=G90 G20 Z" + $("#zPosInput").val() + " F" + $('#jograteinch').val());
+        }
       }
     }
   });

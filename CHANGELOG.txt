@@ -1,4 +1,5 @@
-v1.0.291: Added Carveco and Fabber links, Added duplicate Key checking for Keyboard Shortcuts, Fix for NaN time errors in JobComplete Dialogs, Updated Pi install script
+v1.0.292: Fix for Startup Macros, Added Maximize button, Added ability to set Work Coordinates from DRO (Shift+Enter after entering value on DRO), Darkened Serial Log font colors to improve readability, Larger jog buttons, Cosmetic tweaks
+v1.0.291: Added Carveco and Fabber links, Added duplicate Key checking for Keyboard Shortcuts, Fix for NaN time errors in JobComplete Dialogs, Updated Pi install script, Fix for Jog increments Keyboard shortcuts
 v1.0.290: Windows x32/x64 version
 v1.0.289: Fixed Jog Increments Keyboard Shortcuts
 v1.0.286/7/8: Moved CI to GHActions

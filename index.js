@@ -697,6 +697,14 @@ io.on("connection", function(socket) {
     shell.openExternal('https://cam.openbuilds.com')
   });
 
+
+  socket.on("opendocs", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://docs.openbuilds.com/')
+  });
+
   socket.on("openforum", function(data) {
     const {
       shell
@@ -713,8 +721,11 @@ io.on("connection", function(socket) {
   });
 
   socket.on("maximize", function(data) {
-    jogWindow.maximize();
-
+    if (jogWindow.isMaximized()) {
+      jogWindow.restore();
+    } else {
+      jogWindow.maximize();
+    }
   });
 
   socket.on("quit", function(data) {
@@ -2550,6 +2561,7 @@ if (isElectron()) {
         fullscreen: false,
         center: true,
         resizable: true,
+        maximizable: true,
         title: "OpenBuilds CONTROL ",
         frame: false,
         autoHideMenuBar: true,

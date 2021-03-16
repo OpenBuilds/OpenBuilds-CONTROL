@@ -2,7 +2,7 @@ var buttonsarray = []
 var macroCodeType = "gcode"
 
 
-function populateMacroButtons() {
+function populateMacroButtons(firstRun) {
 
   $("#macros").empty();
   for (i = 0; i < buttonsarray.length; i++) {
@@ -50,17 +50,18 @@ function populateMacroButtons() {
         <span title="Edit Macro" onclick="edit(` + i + `, event);" id="edit` + i + `" class="fas fa-cogs macroedit"></span>
         <span title="Code Type: ` + codetype + `" class="macrotype">` + codetypeDisplay + `</span>
       </button>
-
       `
     }
     $("#macros").append(button);
     if (buttonsarray[i].jsrunonstartup) {
-      var icon = ""
-      var source = "macros"
-      var string = "Macro: <b>" + buttonsarray[i].title + "</b> executed on startup!"
-      var printLogCls = "fg-blue"
-      printLogModern(icon, source, string, printLogCls)
-      executeJS(buttonsarray[i].javascript)
+      if (firstRun) {
+        var icon = ""
+        var source = "macros"
+        var string = "Macro: <b>" + buttonsarray[i].title + "</b> executed on startup!"
+        var printLogCls = "fg-blue"
+        printLogModern(icon, source, string, printLogCls)
+        executeJS(buttonsarray[i].javascript)
+      }
     }
   }
   // append add button
@@ -191,6 +192,7 @@ function edit(i, evt) {
 
   Metro.dialog.create({
     title: "Edit Macro",
+    clsDialog: "dark",
     width: 600,
     content: macroTemplate,
     dataToTop: true,
@@ -354,7 +356,7 @@ if (localStorage.getItem('macroButtons')) {
 }
 
 $(document).ready(function() {
-  populateMacroButtons()
+  populateMacroButtons(true)
   bindKeys()
 });
 

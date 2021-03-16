@@ -57,9 +57,9 @@ function printLogModern(icon, source, string, printLogCls) {
       template += '<span class="fg-dark">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
 
       if (source) {
-        template += "<span class='fg-red'>[ " + source + " ] </span>"
+        template += "<span class='fg-darkRed'>[ " + source + " ] </span>"
       } else {
-        template += "<span class='fg-red'>[  ] </span>"
+        template += "<span class='fg-darkRed'>[  ] </span>"
       }
       if (string) {
         template += "<span class='" + printLogCls + "'>" + string + "</span>"
@@ -100,7 +100,7 @@ function initSocket() {
   var icon = ''
   var source = "websocket"
   var string = "Bidirectional Websocket Interface Started Succesfully"
-  var printLogCls = "fg-green"
+  var printLogCls = "fg-darkGreen"
   printLogModern(icon, source, string, printLogCls)
   setTimeout(function() {
     populatePortsMenu();
@@ -112,7 +112,7 @@ function initSocket() {
     var icon = ''
     var source = "websocket"
     var string = "Disconnected.  OpenBuilds CONTROL probably quit or crashed"
-    var printLogCls = "fg-red"
+    var printLogCls = "fg-darkRed"
     printLogModern(icon, source, string, printLogCls)
     $("#websocketstatus").html("Disconnected")
   });
@@ -125,7 +125,7 @@ function initSocket() {
     var icon = ''
     var source = "api"
     var string = "Received new GCODE from API"
-    var printLogCls = "fg-green"
+    var printLogCls = "fg-darkGreen"
     printLogModern(icon, source, string, printLogCls)
 
     if (data.gcode.length > 10000000) {
@@ -151,7 +151,7 @@ function initSocket() {
     var icon = ''
     var source = "api"
     var string = "API called window into focus"
-    var printLogCls = "fg-green"
+    var printLogCls = "fg-darkGreen"
     printLogModern(icon, source, string, printLogCls)
   });
 
@@ -159,7 +159,7 @@ function initSocket() {
     var icon = ''
     var source = "api"
     var string = "Integration called from " + data
-    var printLogCls = "fg-green"
+    var printLogCls = "fg-darkGreen"
     printLogModern(icon, source, string, printLogCls)
     $('#controlTab').click()
     $('#consoletab').click()
@@ -170,7 +170,7 @@ function initSocket() {
     var icon = ''
     var source = data.command
     var string = data.response
-    var printLogCls = "fg-green"
+    var printLogCls = "fg-darkGreen"
     printLogModern(icon, source, string, printLogCls)
   });
 
@@ -198,13 +198,13 @@ function initSocket() {
     // console.log(data)
     var toPrint = escapeHTML(data.response);
 
-    var lineColor = "fg-darkGray"
+    var lineColor = "fg-dark"
     if (data.type == "error") {
-      lineColor = "fg-red"
+      lineColor = "fg-darkRed"
     } else if (data.type == "success") {
-      lineColor = "fg-green"
+      lineColor = "fg-darkGreen"
     } else if (data.type == "info") {
-      lineColor = "fg-darkGray"
+      lineColor = "fg-dark"
     }
 
     // Parse Grbl Settings Feedback
@@ -257,7 +257,7 @@ function initSocket() {
       var icon = ''
       var source = "JOB COMPLETE"
       var string = "Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg
-      var printLogCls = "fg-green"
+      var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
     } else if (data.jobStartTime && data.jobEndTime) {
       var runTime = data.jobEndTime - data.jobStartTime;
@@ -266,7 +266,7 @@ function initSocket() {
       var icon = ''
       var source = "JOB COMPLETE"
       var string = "Job completed in " + msToTime(runTime)
-      var printLogCls = "fg-green"
+      var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
     }
     setTimeout(function() {
@@ -333,13 +333,13 @@ function initSocket() {
     var icon = ''
     var source = "ALARM"
     var string = data
-    var printLogCls = "fg-red"
+    var printLogCls = "fg-darkRed"
     printLogModern(icon, source, string, printLogCls)
 
     var dialog = Metro.dialog.create({
       clsDialog: 'dark',
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
-      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
+      content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
       actions: [{
           caption: "Clear Alarm",
           cls: "js-dialog-close alert closeAlarmBtn",
@@ -369,12 +369,12 @@ function initSocket() {
     var icon = ''
     var source = "ERROR"
     var string = data
-    var printLogCls = "fg-red"
+    var printLogCls = "fg-darkRed"
     printLogModern(icon, source, string, printLogCls)
 
     var dialog = Metro.dialog.create({
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
-      content: "<i class='fas fa-exclamation-triangle fg-red'></i>  " + data,
+      content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
       clsDialog: 'dark',
       actions: [{
         caption: "OK",
@@ -411,41 +411,41 @@ function initSocket() {
           populatePortsMenu();
         }, 400)
       }
-      string = string.replace('[31mflash complete.[39m', "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'> </i> FLASH FAILED!</span> ");
-      string = string.replace('[32m', "<span class='fg-green'><i class='fas fa-check fa-fw fg-green fa-fw'></i> ");
+      string = string.replace('[31mflash complete.[39m', "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'> </i> FLASH FAILED!</span> ");
+      string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
       string = string.replace('[39m', "</span>");
       if (string.indexOf("Hash of data verified") != -1) {
-        string = "<span class='fg-green'><i class='fas fa-check fa-fw fg-green fa-fw'></i>" + string + "</span>"
+        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
       }
       if (string.indexOf("could not open port") != -1) {
-        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
       }
       if (string.indexOf("something went wrong") != -1) {
-        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
       }
       if (string.indexOf("fatal error occurred") != -1) {
-        string = "<span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>" + string + "</span>"
+        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
       }
 
       if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
-        string = "<span class='fg-red'>" + string + ":  Make sure the Interface is in BOOTLOADER MODE. See https://docs.openbuilds.com/doku.php?id=docs:interface:firmware-update-control"
+        string = "<span class='fg-darkRed'>" + string + ":  Make sure the Interface is in BOOTLOADER MODE. See https://docs.openbuilds.com/doku.php?id=docs:interface:firmware-update-control"
       }
 
 
       var icon = ''
       var source = " Firmware Upgrade"
       //var string = string
-      var printLogCls = "fg-darkGray"
+      var printLogCls = "fg-dark"
       printLogModern(icon, source, string, printLogCls)
 
       if (data.code != undefined) {
         var icon = ''
         var source = " Firmware Upgrade"
         if (data.code == 0) {
-          var string = "<i class='fas fa-check fa-fw fg-green fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the Interface now, to reboot it with the new firmware. "
-          var printLogCls = "fg-green"
+          var string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the Interface now, to reboot it with the new firmware. "
+          var printLogCls = "fg-darkGreen"
         } else {
-          var string = "<i class='fas fa-times fa-fw fg-red fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
+          var string = "<i class='fas fa-times fa-fw fg-darkRed fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
           var printLogCls = "fg-darkRed"
         }
         printLogModern(icon, source, string, printLogCls)
@@ -479,7 +479,7 @@ function initSocket() {
         var icon = ''
         var source = "usb ports"
         //var string = string
-        var printLogCls = "fg-darkGray"
+        var printLogCls = "fg-dark"
         printLogModern(icon, source, string, printLogCls)
         laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
         populatePortsMenu();
@@ -495,7 +495,7 @@ function initSocket() {
         var icon = ''
         var source = "usb drives"
         //var string = string
-        var printLogCls = "fg-darkGray"
+        var printLogCls = "fg-dark"
         printLogModern(icon, source, string, printLogCls)
         laststatus.interface.diskdrives = status.interface.diskdrives;
         populateDrivesMenu();
@@ -521,7 +521,7 @@ function initSocket() {
       $('#runStatus').html("Door : " + doorMsg);
       var icon = ''
       var source = "door"
-      var printLogCls = "fg-darkGray"
+      var printLogCls = "fg-dark"
     } else {
       $('#runStatus').html("Controller: " + status.comms.runStatus);
     }

@@ -12,24 +12,14 @@ var grblcalctemplate = `<div>
               </select>
             </td>
           </tr>
-          <tr id="motorrow">
-            <td style="width: 30%;">Motor Type</td>
-            <td style="width: 70%;">
-              <select data-role="select" data-filter="false" id="motorselect" data-on-change="processpreset();">
-                <option value="200">1.8&deg; (200 steps per rotation)</option>
-                <option value="400">0.9&deg; (400 steps per rotation)</option>
-              </select>
-            </td>
-          </tr>
-          <tr id="microsteprow">
-            <td style="width: 30%;">Microstepping Type</td>
-            <td style="width: 70%;">
-              <select data-role="select" data-filter="false" id="microstepselect" data-on-change="processpreset();">
-                <option value="32">1/32 Step</option>
-                <option value="16">1/16 Step</option>
-                <option value="8" selected>1/8 Step</option>
-                <option value="4">1/4 Step</option>
-                <option value="1">Full Step</option>
+          <tr id="leadscrewrow" style="display: none;">
+            <td>Leadscrew Type</td>
+            <td>
+              <select data-role="select" data-filter="false" id="leadscrewselect" data-on-change="processpreset();">
+                <option value="8">Openbuilds ACME Screw (8mm pitch: 2mm x 4start)</option>
+                <option value="4">Ballscrew 1204/1604/2004 (4mm pitch)</option>
+                <option value="5">Ballscrew 1605/2005 (5mm pitch)</option>
+                <option value="10">Ballscrew 1610 (10mm pitch)</option>
               </select>
             </td>
           </tr>
@@ -53,11 +43,24 @@ var grblcalctemplate = `<div>
               </select>
             </td>
           </tr>
-          <tr id="leadscrewrow" style="display: none;">
-            <td>Leadscrew Type</td>
-            <td>
-              <select data-role="select" data-filter="false" id="leadscrewselect" data-on-change="processpreset();">
-                <option value="8">Openbuilds ACME Screw (2mm x 4start, 8mm pitch)</option>
+          <tr id="motorrow">
+            <td style="width: 30%;">Motor Type</td>
+            <td style="width: 70%;">
+              <select data-role="select" data-filter="false" id="motorselect" data-on-change="processpreset();">
+                <option value="200">1.8&deg; (200 steps per rotation)</option>
+                <option value="400">0.9&deg; (400 steps per rotation)</option>
+              </select>
+            </td>
+          </tr>
+          <tr id="microsteprow">
+            <td style="width: 30%;">Microstepping Type</td>
+            <td style="width: 70%;">
+              <select data-role="select" data-filter="false" id="microstepselect" data-on-change="processpreset();">
+                <option value="32">1/32 Step</option>
+                <option value="16">1/16 Step</option>
+                <option value="8" selected>1/8 Step</option>
+                <option value="4">1/4 Step</option>
+                <option value="1">Full Step</option>
               </select>
             </td>
           </tr>
@@ -79,7 +82,7 @@ function xstepspermm() {
     title: "Calculate Steps per mm for X-Axis  ($100)",
     content: grblcalctemplate,
     actions: [{
-        caption: "Apply",
+        caption: "Apply calculated value to Grbl Settings",
         cls: "js-dialog-close success",
         onclick: function() {
           $('#val-100-input').val($('#calculatedstepspermm').val());
@@ -109,7 +112,7 @@ function ystepspermm() {
     title: "Calculate Steps per mm for Y-Axis ($101)",
     content: grblcalctemplate,
     actions: [{
-        caption: "Apply",
+        caption: "Apply calculated value to Grbl Settings",
         cls: "js-dialog-close success",
         onclick: function() {
           $('#val-101-input').val($('#calculatedstepspermm').val());
@@ -138,7 +141,7 @@ function zstepspermm() {
     title: "Calculate Steps per mm for Z-Axis ($102)",
     content: grblcalctemplate,
     actions: [{
-        caption: "Apply",
+        caption: "Apply calculated value to Grbl Settings",
         cls: "js-dialog-close success",
         onclick: function() {
           $('#val-102-input').val($('#calculatedstepspermm').val());
