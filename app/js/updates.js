@@ -14,6 +14,11 @@ function checkUpdate() {
       $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
         crossDomain: true
       }).done(function(release) {
+        if (release.name.indexOf("v") == 0) {
+          var availVersion = release.name.substr(1)
+        } else {
+          var availVersion = release.name
+        }
         var availVersion = release.name.substr(1)
         var currentVersion = laststatus.driver.version
         // console.log(versionCompare(availVersion, currentVersion), availVersion, currentVersion);
