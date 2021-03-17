@@ -28,4 +28,3 @@ jobs:
           windows_certs: ${{ secrets.WIN_CSC_LINK }}
           windows_certs_password: ${{ secrets.WIN_CSC_PASSWORD }}
           release: true
-          git_tag_prefix: "v"

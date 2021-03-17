@@ -44,6 +44,12 @@
   ],
   "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
   "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "vPrefixedTagName": false
+      }
+    ]
     "icon": "build/icon.icns",
     "appId": "openbuilds.projectmakr",
     "productName": "OpenBuildsCONTROL",
