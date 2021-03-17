@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.293",
+  "version": "1.0.291",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <webmaster@openbuilds.com>",
@@ -47,7 +47,7 @@
     "publish": [
       {
         "provider": "github",
-        "vPrefixedTagName": true
+        "vPrefixedTagName": false
       }
     ],
     "icon": "build/icon.icns",
