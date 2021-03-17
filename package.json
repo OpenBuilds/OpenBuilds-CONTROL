@@ -47,7 +47,7 @@
     "publish": [
       {
         "provider": "github",
-        "vPrefixedTagName": false
+        "vPrefixedTagName": true
       }
     ]
     "icon": "build/icon.icns",
