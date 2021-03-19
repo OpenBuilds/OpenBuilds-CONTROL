@@ -39,7 +39,7 @@
   "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
   "build": {
     "icon": "build/icon.icns",
-    "appId": "openbuilds.projectmakr",
+    "appId": "openbuilds.control",
     "productName": "OpenBuildsCONTROL",
     "asar": true,
     "nsis": {

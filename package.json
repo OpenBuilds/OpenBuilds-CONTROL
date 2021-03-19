@@ -57,7 +57,7 @@
       "category": "public.app-category.graphics-design"
     },
     "icon": "build/icon.icns",
-    "appId": "openbuilds.projectmakr",
+    "appId": "openbuilds.control",
     "productName": "OpenBuildsCONTROL",
     "asar": true,
     "nsis": {
