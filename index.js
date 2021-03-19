@@ -722,7 +722,7 @@ io.on("connection", function(socket) {
 
   socket.on("maximize", function(data) {
     if (jogWindow.isMaximized()) {
-      jogWindow.restore();
+      jogWindow.unmaximize();
     } else {
       jogWindow.maximize();
     }
