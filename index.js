@@ -2918,9 +2918,9 @@ function flashInterface(data) {
     '0x8000', path.join(__dirname, "./firmware.partitions.bin")
   ];
 
-  if (process.platform == 'darwin') {
-    fs.chmodSync(path.join(__dirname, "./esptool-mac"), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool-mac"), esptool_opts);
+  if (process.platform != 'win32') {
+    fs.chmodSync(path.join(__dirname, "./esptool.py"), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py"), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
   }
