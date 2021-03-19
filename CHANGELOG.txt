@@ -1,3 +1,4 @@
+v1.0.294: MacOS Big Sur support (Signed and Notarized)
 v1.0.293: Enhanced detected of Auto Updates, Fixed the "Visit OpenBuilds" link button
 v1.0.292: Fix for Startup Macros, Added Maximize button, Added ability to set Work Coordinates from DRO (Shift+Enter after entering value on DRO), Darkened Serial Log font colors to improve readability, Larger jog buttons, Cosmetic tweaks
 v1.0.291: Added Carveco and Fabber links, Added duplicate Key checking for Keyboard Shortcuts, Fix for NaN time errors in JobComplete Dialogs, Updated Pi install script, Fix for Jog increments Keyboard shortcuts
