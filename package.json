@@ -54,7 +54,7 @@
     "afterSign": "electron-builder-notarize",
     "mac": {
       "icon": "build/icon.icns",
-      "category": "public.app-category.graphics-design"
+      "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
     },
