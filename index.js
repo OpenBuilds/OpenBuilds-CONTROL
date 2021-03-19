@@ -2455,6 +2455,32 @@ if (isElectron()) {
             selector: "selectAll:"
           }
         ]
+      }, {
+        label: "View",
+        submenu: [{
+            label: "Reload",
+            accelerator: "F5",
+            click: (item, focusedWindow) => {
+              if (focusedWindow) {
+                // on reload, start fresh and close any old
+                // open secondary windows
+                if (focusedWindow.id === 1) {
+                  BrowserWindow.getAllWindows().forEach(win => {
+                    if (win.id > 1) win.close();
+                  });
+                }
+                focusedWindow.reload();
+              }
+            }
+          },
+          {
+            label: "Toggle Dev Tools",
+            accelerator: "F12",
+            click: () => {
+              jogWindow.webContents.toggleDevTools();
+            }
+          }
+        ]
       }];
 
       Menu.setApplicationMenu(Menu.buildFromTemplate(template));
