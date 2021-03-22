@@ -308,6 +308,9 @@ function versionCompare(v1, v2, options) {
 var webgl = (function() {
   if (disable3Dviewer) {
     return false;
+  } else if (screen.availHeight < 650) {
+    // On screens thats not tall enough, disable 3D view - it just doesn't fit
+    return false;
   } else {
     // console.log("Testing WebGL")
     try {

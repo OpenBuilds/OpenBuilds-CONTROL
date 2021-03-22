@@ -37,11 +37,16 @@ containerHeight = window.innerHeight;
 
 var animationLoopTimeout;
 
+var xmin = 0,
+  xmax = 307,
+  ymin = 0,
+  ymax = 207
+
 function drawWorkspace(xmin, xmax, ymin, ymax) {
 
   if (!xmin) xmin = 0;
   if (!ymin) ymin = 0;
-  if (!xmax) xmax = 207
+  if (!xmax) xmax = 307
   if (!ymax) ymax = 207
 
   var sceneLights = new THREE.Group();
@@ -144,7 +149,13 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   }
   gridsystem.name = "Grid System"
   workspace.add(gridsystem)
-  redrawGrid(xmin, xmax, ymin, ymax, false);
+  if (localStorage.getItem('unitsMode')) {
+    if (localStorage.getItem('unitsMode') == "in") {
+      redrawGrid(xmin / 25.4, xmax / 25.4, ymin / 25.4, ymax / 25.4, true);
+    } else {
+      redrawGrid(xmin, xmax, ymin, ymax, false);
+    }
+  }
   scene.add(workspace)
 }
 
@@ -155,6 +166,11 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
     xmax = Math.ceil(xmax * 25.4);
     ymin = Math.floor(ymin * 25.4);
     ymax = Math.ceil(ymax * 25.4);
+  } else {
+    xmin = Math.floor(xmin);
+    xmax = Math.ceil(xmax);
+    ymin = Math.floor(ymin);
+    ymax = Math.ceil(ymax);
   }
   // console.log(xmin, xmax, ymin, ymax, inches)
 
@@ -331,8 +347,8 @@ function init3D() {
     }
 
 
-
-    drawWorkspace();
+    //drawWorkspace(xmin, xmax, ymin, ymax)
+    drawWorkspace(xmin, xmax, ymin, ymax);
 
     // Picking stuff
     projector = new THREE.Projector();

@@ -10,7 +10,6 @@
     <meta name="metro4:init" content="true">
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
-    <!-- <link rel="stylesheet" href="lib/iconpicker/css/fontawesome-iconpicker.min.css" /> -->
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
@@ -189,7 +188,8 @@
                     <span class="caption">Open<br>G-CODE</span>
                   </button>
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                    <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> Open GCODE from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a></li>
+                    <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a>
+                    </li>
                     <li class="divider"></li>
                     <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
                     <li class=""><a href="#" onclick="socket.emit('fabber', true);"><img width="16" src="affiliates/fabber/fabber.svg"> Fabber</a></li>
@@ -246,22 +246,6 @@
                   <span class="caption">Stop<br>Job</span>
                 </button>
 
-                <button id="grblProbeMenu" class="ribbon-button" onclick="openProbeDialog();" disabled>
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-podcast fa-rotate-180"></i>
-                    </span>
-                  </span>
-                  <span class="caption grblmode">Probe</span>
-                </button>
-
-
-                <button id="chkSize" class="ribbon-button">
-                  <span class="icon">
-                    <i class="far fa-square"></i>
-                  </span>
-                  <span class="caption">Check<br>Size</span>
-                </button>
                 <div>
                   <button id="toolBtn" class="ribbon-button dropdown-toggle">
                     <span class="icon">
@@ -326,6 +310,23 @@
 
                   </ul>
                 </div>
+
+                <button id="grblProbeMenu" class="ribbon-button" onclick="openProbeDialog();" disabled>
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-podcast fa-rotate-180"></i>
+                    </span>
+                  </span>
+                  <span class="caption grblmode">Probe</span>
+                </button>
+
+
+                <button id="chkSize" class="ribbon-button">
+                  <span class="icon">
+                    <i class="far fa-square"></i>
+                  </span>
+                  <span class="caption">Check<br>Size</span>
+                </button>
 
                 <button id="homeBtn" class="ribbon-button">
                   <span class="icon">
@@ -479,14 +480,14 @@
           <center>
             <div id="jogcontrols" class="mt-1">
               <div class="row flex-justify-center flex-align-start" style="width: 100%; height: 100%;">
-                <div class="cell">
-                  <nav data-role="ribbonmenu" class="mt-2">
+                <div class="cell border-right bd-lightGray ">
+                  <nav data-role="ribbonmenu" class="mt-1">
                     <ul class="tabs-holder ml-17">
                       <li onclick="mmMode();"><a id="mmMode" href="#tab-mm">mm-mode</a></li>
                       <li onclick="inMode();"><a id="inMode" href="#tab-inch">inch-mode</a></li>
                     </ul>
                   </nav>
-                  <table class="drotable mt-2">
+                  <table class="drotable mt-1">
                     <tr>
                       <td>
                         <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
@@ -517,8 +518,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                             <li id="gotoXzeroMpos"><a href="#"><span class="fas fa-chart-line fg-red icon"></span>Goto X<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -552,8 +553,8 @@
                             <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                             <li id="gotoYzeroMpos"><a href="#"><span class="fas fa-chart-line fg-green icon"></span>Goto Y<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -588,8 +589,8 @@
                             <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
-                            <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
-                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard <span class="badge inline bg-red fg-white">New!</span></a></li>
+                            <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li>
+                            <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li>
                           </ul>
                         </div>
                       </td>
@@ -656,7 +657,7 @@
                     </tr>
                   </table>
                 </div>
-                <div class="cell border-left bd-lightGray ">
+                <div class="cell">
 
                   <table class="jogtable">
                     <tr>
@@ -789,31 +790,27 @@
                         </button>
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan='5'>
-                        <div id="jogratemmdiv">
-                          <input id="jograte" type="number" min="100" max="10000" step="500" placeholder="5000" data-role="input" data-prepend="Jog:" data-append="mm/min" data-clear-button="false" value="5000" style="text-align: right;"
-                            data-editable="true" />
-                        </div>
-                        <div id="jograteinchdiv">
-                          <input id="jograteinch" type="number" min="1" max="5000" step="10" placeholder="196" data-role="input" data-prepend="Jog:" data-append="in/min" data-clear-button="false" value="196" style="text-align: right;"
-                            data-editable="true" />
-                        </div>
-                      </td>
-                    </tr>
                   </table>
+                </div>
+
+                <div class="cell border-left bd-lightGray" id="jrocell">
+                  <button class="button light mini mb-1" onclick="jogOverride(100);">reset</button>
+                  <input id="jro" data-on-stop="jogOverride(arguments[0])" data-role="slider" data-accuracy="1" data-vertical="true" data-size="140" data-min="1" data-max="100" data-value="100" data-hint="true" data-hint-always="true"
+                    data-hint-position="bottom" data-hint-mask="Jog: $1%" data-cls-hint="bg-light
+                        fg-dark shadow-1" data-cls-complete="bg-openbuilds">
+                  <span class="tally text-small bg-openbuilds fg-white" id="realJog"></span>
                 </div>
 
                 <div class="cell border-left bd-lightGray" id="frocell">
                   <button class="button light mini mb-1" onclick="feedOverride(100);">reset</button>
-                  <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="190" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
+                  <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="140" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
                     data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
                   <span class="tally text-small bg-openbuilds fg-white" id="realFeed"></span>
                 </div>
                 <div class="cell border-left bd-lightGray" id="trocell">
                   <button class="button light mini  mb-1" onclick="spindleOverride(100);">reset</button>
-                  <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="190" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
+                  <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="140" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
                     data-hint-always="true" data-hint-position="bottom" data-hint-mask="Tool: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
                   <span class="tally text-small bg-openbuilds fg-white" id="realSpeed"></span>
@@ -915,28 +912,28 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>X-Limit</td>
-                          <td><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Y-Limit</td>
-                          <td><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Y-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Z-Limit</td>
-                          <td><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Z-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Probe</td>
-                          <td><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Probe</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Door Sensor</td>
-                          <td><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Door Sensor</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Buttons</td>
-                          <td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Buttons</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">
                             <span class="tally alert pinstatus" id="startpin">NOCOMM</span>
                             <span class="tally alert pinstatus" id="holdpin">NOCOMM</span>
                             <span class="tally alert pinstatus" id="resetpin">NOCOMM</span>
@@ -949,10 +946,10 @@
 
 
                 <div class="card">
-                  <div class="card-header  p-1 m-0">
+                  <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-tty"></i>Communications
                   </div>
-                  <div class="card-content">
+                  <div class="card-content" style="height: calc(100vh - 650px); min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
@@ -962,28 +959,28 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Installed Version</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Installed Version</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Backend Queue Blocked</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Backend Queue Blocked</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Connection Status</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Connection Status</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Connected To</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Connected To</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Serial Queue</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Serial Queue</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>Websocket Status</td>
-                          <td><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Websocket Status</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
                         </tr>
                       </tbody>
                     </table>
@@ -995,7 +992,7 @@
 
                 <div class="card">
                   <div class="card-header  p-1 m-0">
-                    <i class="fas fa-fw fa-microchip"></i>Firmware Parameters
+                    <i class="fas fa-fw fa-microchip"></i>Firmware Compiled with Parameters
                   </div>
                   <div class="card-content" style="height: calc(100vh - 680px); min-height: 120px; overflow-x: auto;">
                     <table class="table striped compact">
@@ -1094,15 +1091,15 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>USB Selective Suspend on AC Power</td>
-                          <td><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on AC Power</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td>USB Selective Suspend on Battery Power</td>
-                          <td><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
                         </tr>
                       </tbody>
                     </table>

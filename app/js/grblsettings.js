@@ -137,6 +137,10 @@ function grblSettings(data) {
   }
 
   updateToolOnSValues();
+
+  if (localStorage.getItem('jogOverride')) {
+    jogOverride(localStorage.getItem('jogOverride'))
+  }
 }
 
 function grblPopulate() {
@@ -228,7 +232,7 @@ function grblPopulate() {
               <hr class="bg-openbuilds">
               <div>
 
-            <div style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px); ">
+            <div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px); ">
             <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
             <thead>
               <tr>
@@ -276,7 +280,7 @@ function grblPopulate() {
             <tr title="` + grblConfigDesc['$13'] + `"><td>$13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td><td></td></tr>
 
             <tr title="` + grblConfigDesc['$20'] + `"><td>$20</td><td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$21'] + `"><td>$21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
+            <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits"><td>$21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
             <tr title="` + grblConfigDesc['$22'] + `"><td>$22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
             <tr title="` + grblConfigDesc['$23'] + `"><td>$23</td><td>Homing direction invert</td><td><select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
               <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
@@ -556,6 +560,8 @@ function enableLimits() {
     }
   }
   checkifchanged();
+  var elm = document.getElementById("grblSettingsLimits");
+  elm.scrollIntoView(true);
 }
 
 // Calc Grbl 1.1 Invert Masks

@@ -318,9 +318,6 @@ function setJogPanel(val, status) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', true);
-    if ($('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', false);
-    }
     $('#xPos').html('0.00');
     $('#yPos').html('0.00');
     $('#zPos').html('0.00');
@@ -345,9 +342,6 @@ function setJogPanel(val, status) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', false);
-    if ($('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', false);
-    }
     if (!isJogWidget && webgl) {
       if (object) {
         if (!simRunning) {
@@ -369,9 +363,6 @@ function setJogPanel(val, status) {
     }
     // $("#jogcontrols").slideDown(20);
     $('.jogbtn').attr('disabled', true);
-    if (!$('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', true);
-    }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
         if (webgl) {
@@ -391,9 +382,6 @@ function setJogPanel(val, status) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', true);
-    if (!$('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', true);
-    }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
         if (!disable3Drealtimepos) {
@@ -412,9 +400,6 @@ function setJogPanel(val, status) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', true);
-    if (!$('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', true);
-    }
     if (!isJogWidget && webgl) {
       if (!simRunning) {
         if (webgl) {
@@ -436,9 +421,6 @@ function setJogPanel(val, status) {
       editor.resize()
     }
     $('.jogbtn').attr('disabled', true);
-    if ($('#jograte').attr('disabled')) {
-      $('#jograte').attr('disabled', false);
-    }
     $('#xPos').html('0.00');
     $('#yPos').html('0.00');
     $('#zPos').html('0.00');

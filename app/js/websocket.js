@@ -37,6 +37,10 @@ function showGrbl(bool) {
     $("#grblButtons").hide()
     $("#firmwarename").html('')
   }
+  if (localStorage.getItem('jogOverride')) {
+    jogOverride(localStorage.getItem('jogOverride'))
+  }
+
 }
 
 function printLogModern(icon, source, string, printLogCls) {
@@ -890,13 +894,15 @@ function populateDrivesMenu() {
     }
     response += `</optgroup></select>`
     var select = $("#UsbDriveList").data("select");
-    select.data(response);
-    if (!usbDrives.length > 0) {
-      $('#UsbDriveList').parent(".select").addClass('disabled')
-      $("#copyToUsbBtn").attr('disabled', true);
-    } else {
-      $('#UsbDriveList').parent(".select").removeClass('disabled')
-      $("#copyToUsbBtn").attr('disabled', false);
+    if (select) {
+      select.data(response);
+      if (!usbDrives.length > 0) {
+        $('#UsbDriveList').parent(".select").addClass('disabled')
+        $("#copyToUsbBtn").attr('disabled', true);
+      } else {
+        $('#UsbDriveList').parent(".select").removeClass('disabled')
+        $("#copyToUsbBtn").attr('disabled', false);
+      }
     }
   }
 }

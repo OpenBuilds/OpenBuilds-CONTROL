@@ -101,7 +101,22 @@ function parseGcodeInWebWorker(gcode) {
               object.scale.y = 25.4
               object.scale.z = 25.4
             }
-            redrawGrid(Math.floor(object.userData.bbbox2.min.x), Math.ceil(object.userData.bbbox2.max.x), Math.floor(object.userData.bbbox2.min.y), Math.ceil(object.userData.bbbox2.max.y), object.userData.inch)
+
+            if (localStorage.getItem('unitsMode')) {
+              if (localStorage.getItem('unitsMode') == "in") {
+                if (object.userData.inch) {
+                  redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, true);
+                } else {
+                  redrawGrid(object.userData.bbbox2.min.x / 25.4, object.userData.bbbox2.max.x / 25.4, object.userData.bbbox2.min.y / 25.4, object.userData.bbbox2.max.y / 25.4, true);
+                }
+              } else {
+                if (object.userData.inch) {
+                  redrawGrid(object.userData.bbbox2.min.x * 25.4, object.userData.bbbox2.max.x * 25.4, object.userData.bbbox2.min.y * 25.4, object.userData.bbbox2.max.y * 25.4, false);
+                } else {
+                  redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, false);
+                }
+              }
+            }
             // animate();
             setTimeout(function() {
               if (webgl) {
@@ -114,9 +129,9 @@ function parseGcodeInWebWorker(gcode) {
 
               if (!isNaN(timeremain)) {
                 var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-                var hours = Math.floor(mins_num / 60);
-                var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
-                var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
+                var hours = Math.ceil(mins_num / 60);
+                var minutes = Math.ceil((mins_num - ((hours * 3600)) / 60));
+                var seconds = Math.ceil((mins_num * 60) - (hours * 3600) - (minutes * 60));
 
                 // Appends 0 when unit is less than 10
                 if (hours < 10) {

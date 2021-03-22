@@ -11,6 +11,10 @@
   border: 1px solid lightgray;
 }
 
+#jrocell button {
+  border: 1px solid lightgray;
+}
+
 #frocell button {
   border: 1px solid lightgray;
 }
@@ -69,6 +73,7 @@
   border: none;
   outline: none;
   display: none;
+  padding-right: 20px;
 }
 
 .glossybtn:link, .glossybtn:visited {
