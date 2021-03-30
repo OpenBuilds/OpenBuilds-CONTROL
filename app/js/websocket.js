@@ -238,17 +238,39 @@ function initSocket() {
     showGrbl(true)
   });
 
-  // socket.on("prbResult", function(data) {
-  //   console.log("Probe Data: ", data)
-  // });
-
   socket.on("jobComplete", function(data) {
 
-    console.log("jobComplete", data)
+    // Jobstats.js
+    if (data.completed && data.jobStartTime && data.jobEndTime) {
+      console.log("jobComplete", data)
+      var runTime = data.jobEndTime - data.jobStartTime; // in Milliseconds
+      if (object && object.userData != undefined) {
+        var estimateTime = object.userData.totalTime; // in Minutes
+      } else {
+        var estimateTime = 0;
+      }
+      var startDate = new Date(data.jobStartTime);
+      var startDateString = startDate.toString();
+      var endDate = new Date(data.jobEndTime);
+      var endDateString = endDate.toString();
+      var completionStatus = "complete"
+      if (data.failed) {
+        completionStatus = "incomplete"
+      }
+      console.log("Completed: " + completionStatus + " / Filename: " + loadedFileName + " / Estimated Runtime: " + timeConvert(estimateTime) + " / Streaming Runtime: " + msToTime(runTime) + " / Start Date: " + startDateString + " / End Date: " + endDateString)
+      var completedJob = {
+        "completed": !data.failed, // Did job complete?
+        "filename": loadedFileName, // File Name
+        "estruntime": estimateTime, // in Minutes
+        "streamruntime": runTime,
+        "startdate": data.jobStartTime,
+        "enddate": data.jobEndTime
+      }
+      storeJob(completedJob);
 
-    if (data.completed) {
-      // console.log("Job Complete", data)
     }
+
+    // With jobCompletedMsg Message
     if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
       if (data.jobStartTime && data.jobEndTime) {
         var runTime = data.jobEndTime - data.jobStartTime;
@@ -257,25 +279,34 @@ function initSocket() {
         $("#completeMsgDiv").html(data.jobCompletedMsg);
       }
       Metro.dialog.open("#completeMsgModal");
-
       var icon = ''
       var source = "JOB COMPLETE"
       var string = "Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg
       var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
     } else if (data.jobStartTime && data.jobEndTime) {
+      // Without jobCompletedMsg Message (Normal Job)
       var runTime = data.jobEndTime - data.jobStartTime;
-      $("#completeMsgDiv").html("Job completed in " + msToTime(runTime));
-      Metro.dialog.open("#completeMsgModal");
       var icon = ''
       var source = "JOB COMPLETE"
       var string = "Job completed in " + msToTime(runTime)
       var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
     }
+
+    // Focus Button
     setTimeout(function() {
       $('#jobCompleteBtnOk').focus();
     }, 200)
+
+    // Cleanup
+    lastJobStartTime = false;
+    if (object && object.userData != undefined) {
+      var timeremain = object.userData.totalTime;
+      if (!isNaN(timeremain)) {
+        $('#timeRemaining').html(timeConvert(timeremain) + " / " + timeConvert(timeremain));
+      }
+    }
 
 
   });
@@ -302,29 +333,12 @@ function initSocket() {
       }
       if (typeof object !== 'undefined' && done > 0) {
         if (object.userData !== 'undefined' && object.userData && object.userData.linePoints.length > 2) {
-          var timeremain = object.userData.linePoints[object.userData.linePoints.length - 1].timeMinsSum - object.userData.linePoints[done].timeMinsSum;
+          var timeremain = object.userData.totalTime;
+          if (!isNaN(timeremain)) {
+            $('#timeRemaining').html(timeConvert((new Date().getTime() - lastJobStartTime) / 1000 / 60) + " / " + timeConvert(timeremain));
+          }
         }
-        if (!isNaN(timeremain)) {
-          var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-          var hours = Math.floor(mins_num / 60);
-          var minutes = Math.floor((mins_num - ((hours * 3600)) / 60));
-          var seconds = Math.floor((mins_num * 60) - (hours * 3600) - (minutes * 60));
 
-          // Appends 0 when unit is less than 10
-          if (hours < 10) {
-            hours = "0" + hours;
-          }
-          if (minutes < 10) {
-            minutes = "0" + minutes;
-          }
-          if (seconds < 10) {
-            seconds = "0" + seconds;
-          }
-          var formattedTime = hours + ':' + minutes + ':' + seconds;
-          // console.log('Remaining time: ', formattedTime)
-          // output formattedTime to UI here
-          $('#timeRemaining').html(" / " + formattedTime);
-        }
       } else {
         $('#timeRemaining').empty();
       }
@@ -1036,5 +1050,5 @@ function msToTime(duration) {
   minutes = (minutes < 10) ? "0" + minutes : minutes;
   seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-  return hours + "h " + minutes + "m " + seconds + "." + milliseconds + "s";
+  return hours + "h" + minutes + "m";
 }

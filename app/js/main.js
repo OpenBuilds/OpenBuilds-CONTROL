@@ -2,7 +2,7 @@ var gcode;
 var loadedFileName = "";
 var editor;
 var isJogWidget = false;
-
+var lastJobStartTime = false;
 
 function setWindowTitle(status) {
 
@@ -154,6 +154,7 @@ $(document).ready(function() {
     get: function() {
       /* Call callback function here */
       socket.emit("maximize", true)
+      console.log("%c                        ", "background-image: url('https://openbuilds.com/styles/uix/uix/OpenBuildsHeader_logo.png'); font-size: 41px; background-repeat: no-repeat; background-size: 183px 41px; ");
       console.log('%cOpenBuilds CONTROL Devtools', 'font-weight: bold; font-size: 20px;color: rgb(50,80,188); text-shadow: 1px 1px 0 rgb(0,00,39)');
       console.log('%c', 'font-weight: bold; font-size: 12px;color: black; ');
       console.log('%cGeneral: Check for any errors, messages as requested by our support team', 'font-weight: bold; font-size: 12px;color: black; ');
@@ -212,6 +213,8 @@ function runJobFile() {
       fileName: loadedFileName
     });
   }
+
+  lastJobStartTime = new Date().getTime()
 
 }
 
@@ -389,36 +392,18 @@ Date.prototype.yyyymmdd = function() {
   ].join('-');
 };
 
-// function setViewerDisableUI() {
-//   if (localStorage.getItem('viewerDisable')) {
-//     if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
-//       $('#viewerdisabled').removeClass("checked");
-//     } else {
-//       $('#viewerdisabled').addClass("checked");
-//     }
-//   } else {
-//     $('#viewerdisabled').removeClass("checked");
-//     return false;
-//   }
-//   return (!JSON.parse(localStorage.getItem('viewerDisable')))
-// }
-//
-// function viewerdisable() {
-//   console.log("viewerdisable")
-//   if (localStorage.getItem('viewerDisable')) {
-//     if (JSON.parse(localStorage.getItem('viewerDisable')) == true) {
-//       console.log("viewerdisable disabled")
-//       localStorage.setItem('viewerDisable', false);
-//       location.reload();
-//     } else {
-//       console.log("viewerdisable enabled")
-//       localStorage.setItem('viewerDisable', true);
-//       location.reload();
-//     }
-//   } else {
-//     console.log("viewerdisable defaulted")
-//     localStorage.setItem('viewerDisable', false);
-//     location.reload();
-//   }
-//   setViewerDisableUI()
-// }
+function timeConvert(n) {
+  var num = n;
+  var hours = (num / 60);
+  var rhours = Math.floor(hours);
+  var minutes = (hours - rhours) * 60;
+  var rminutes = Math.round(minutes);
+  //return num + " minutes = " + rhours + " hour(s) and " + rminutes + " minute(s).";
+  if (rhours < 10) {
+    rhours = "0" + rhours
+  }
+  if (rminutes < 10) {
+    rminutes = "0" + rminutes
+  }
+  return rhours + "h:" + rminutes + "m";
+}

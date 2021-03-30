@@ -2280,18 +2280,30 @@ function send1Q() {
         break;
     }
     if (queuePointer >= gcodeQueue.length) {
+      if (gcodeQueue.length > 1) {
+        var data = {
+          completed: true,
+          failed: false,
+          jobCompletedMsg: jobCompletedMsg,
+          jobStartTime: jobStartTime,
+          jobEndTime: new Date().getTime()
+        }
+        io.sockets.emit('jobComplete', data);
+      } else {
+        var data = {
+          completed: true,
+          failed: true,
+          jobCompletedMsg: jobCompletedMsg,
+          jobStartTime: jobStartTime,
+          jobEndTime: new Date().getTime()
+        }
+        io.sockets.emit('jobComplete', data);
+      }
       status.comms.connectionStatus = 2; // finished
       clearInterval(queueCounter);
       gcodeQueue.length = 0; // Dump the Queye
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
-      var data = {
-        completed: true,
-        jobCompletedMsg: jobCompletedMsg,
-        jobStartTime: jobStartTime,
-        jobEndTime: new Date().getTime()
-      }
-      io.sockets.emit('jobComplete', data);
       jobCompletedMsg = ""
       jobStartTime = false;
     }

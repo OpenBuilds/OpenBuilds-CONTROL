@@ -91,7 +91,7 @@ function parseGcodeInWebWorker(gcode) {
             object = false;
           }
           object = convertParsedDataToObject(e.data);
-          console.log(object)
+          //console.log(object)
           if (object && object.userData.linePoints.length > 1) {
             worker.terminate();
             scene.add(object);
@@ -128,26 +128,10 @@ function parseGcodeInWebWorker(gcode) {
               var timeremain = object.userData.totalTime;
 
               if (!isNaN(timeremain)) {
-                var mins_num = parseFloat(timeremain, 10); // don't forget the second param
-                var hours = Math.ceil(mins_num / 60);
-                var minutes = Math.ceil((mins_num - ((hours * 3600)) / 60));
-                var seconds = Math.ceil((mins_num * 60) - (hours * 3600) - (minutes * 60));
-
-                // Appends 0 when unit is less than 10
-                if (hours < 10) {
-                  hours = "0" + hours;
-                }
-                if (minutes < 10) {
-                  minutes = "0" + minutes;
-                }
-                if (seconds < 10) {
-                  seconds = "0" + seconds;
-                }
-                var formattedTime = hours + ':' + minutes + ':' + seconds;
-                // console.log('Remaining time: ', formattedTime)
+                //console.log(timeConvert(timeremain));
                 // output formattedTime to UI here
-                $('#timeRemaining').html(" / " + formattedTime);
-                printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-darkGreen'> GCODE Preview Rendered Succesfully: Total lines: <b>" + object.userData.linePoints.length + "</b> / Estimated GCODE Run Time: <b>" + formattedTime + "</b>")
+                $('#timeRemaining').html(timeConvert(timeremain) + " / " + timeConvert(timeremain));
+                printLog("<span class='fg-red'>[ GCODE Parser ]</span><span class='fg-darkGreen'> GCODE Preview Rendered Succesfully: Total lines: <b>" + object.userData.linePoints.length + "</b> / Estimated GCODE Run Time: <b>" + timeConvert(timeremain) + "</b>")
               }
             }, 200);
             $('#3dviewicon').removeClass('fa-pulse');
