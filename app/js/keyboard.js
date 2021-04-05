@@ -28,9 +28,15 @@ $(document).ready(function() {
     if (!keyboardShortcuts.toInc) {
       keyboardShortcuts.toInc = "w"
     }
-    if (!keyboardShortcuts.toDec) {
-      keyboardShortcuts.toDec = "s"
+    if (!keyboardShortcuts.jogSpeedM) {
+      keyboardShortcuts.jogSpeedM = "0"
     }
+
+    if (!keyboardShortcuts.jogSpeedP) {
+      keyboardShortcuts.jogSpeedP = "."
+    }
+
+
   } else {
     keyboardShortcuts = {
       xP: "right", //X+
@@ -52,7 +58,9 @@ $(document).ready(function() {
       froInc: "", // Increase Feedrate Override
       froDec: "", // Decrease Feedrate Override
       toInc: "", // Increase Tool Speed Override
-      toDec: "" // Decrease Tool Speed Override
+      toDec: "", // Decrease Tool Speed Override
+      jogSpeedM: "0", // Increase Step Size
+      jogSpeedP: ".", // Decrease Step Size
     }
   }
   bindKeys()
@@ -341,6 +349,31 @@ function bindKeys() {
       });
     }
 
+    if (keyboardShortcuts.jogSpeedM.length) {
+      $(document).bind('keydown', keyboardShortcuts.jogSpeedM, function(e) {
+        e.preventDefault();
+        var currentJogOverride = $('#jro').data('slider').val();
+        var newVal = currentJogOverride - 10
+        if (newVal < 10) {
+          newVal = 10;
+        }
+        jogOverride(newVal)
+      });
+    }
+
+    if (keyboardShortcuts.jogSpeedP.length) {
+      $(document).bind('keydown', keyboardShortcuts.jogSpeedP, function(e) {
+        e.preventDefault();
+        var currentJogOverride = $('#jro').data('slider').val();
+        var newVal = currentJogOverride + 10
+        if (newVal > 100) {
+          newVal = 100;
+        }
+        jogOverride(newVal)
+        // spindleOverride(newspeed)
+      });
+    }
+
 
     localStorage.setItem('keyboardShortcuts', JSON.stringify(keyboardShortcuts));
   }
@@ -444,6 +477,19 @@ function keyboardShortcutsEditor() {
       </div>
 
       <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-fast-backward fg-openbuilds fa-fw"></i> Decrease Jog Speed</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="jogSpeedMnewKey" value="` + keyboardShortcuts.jogSpeedM + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#jogSpeedMnewKey').addClass('primary').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-fast-forward fg-openbuilds fa-fw"></i> Increase Jog Speed</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="jogSpeedPnewKey" value="` + keyboardShortcuts.jogSpeedP + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#jogSpeedPnewKey').addClass('primary').addClass('newKeyAssignment')">
+        </div>
+      </div>
+
+      <div class="row mb-1 ml-1 mr-1">
         <label class="cell-sm-6"><i class="fas fa-step-forward fg-openbuilds fa-fw"></i> Incremental Jog Mode<br></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="incJogModeKey" value="` + keyboardShortcuts.incJogMode + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#incJogModeKey').addClass('primary').addClass('newKeyAssignment')">
@@ -507,6 +553,10 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.zM = $('#zMnewKey').val()
           keyboardShortcuts.stepP = $('#stepPnewKey').val()
           keyboardShortcuts.stepM = $('#stepMnewKey').val()
+
+          keyboardShortcuts.jogSpeedP = $('#jogSpeedPnewKey').val()
+          keyboardShortcuts.jogSpeedM = $('#jogSpeedMnewKey').val()
+
           keyboardShortcuts.estop = $('#stopnewKey').val()
           keyboardShortcuts.playpause = $('#playPausenewKey').val()
           keyboardShortcuts.unlockAlarm = $('#unlocknewKey').val()
@@ -515,6 +565,7 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.incJogMode = $("#incJogModeKey").val()
           keyboardShortcuts.conJogMode = $("#conJogModeKey").val()
           keyboardShortcuts.gotozeroxyz = $("#gotozeroxyznewKey").val()
+
 
           keyboardShortcuts.froInc = $("#froIncKey").val()
           keyboardShortcuts.froDec = $("#froDecKey").val()

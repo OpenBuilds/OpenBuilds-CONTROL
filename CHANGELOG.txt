@@ -1,3 +1,5 @@
+v1.0.298: Added Keyboard shortcuts for in/decrease Jog Speed
+v1.0.297: Changed package.json for GitHub Actions / Electron Updater bug
 v1.0.296: Job Time fix, Added Job Log, Removed Job Complete dialog
 v1.0.295: Added Python ESPtool for Mac/Linux Interface Firmware flasher (Install Python, Pip and PySerial first), Fix for Bug #202: DRO Shift+Enter after G20 gcode, Added support for NumpadEnter on DRO, Enhanced Grbl Settings - Limits installed, Switch from Jog Feedrate Input to Jog Percentage Slider, Increase size of 3D viewer, 3D viewer grid now changes with mm-mode and inch-mode tabs
 v1.0.294: MacOS Big Sur support (Signed and Notarized)
