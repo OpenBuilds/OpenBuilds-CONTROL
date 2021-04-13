@@ -1,3 +1,4 @@
+v1.0.299: Updated GitHubActions to only build on tagged releases
 v1.0.298: Added Keyboard shortcuts for in/decrease Jog Speed
 v1.0.297: Changed package.json for GitHub Actions / Electron Updater bug
 v1.0.296: Job Time fix, Added Job Log, Removed Job Complete dialog

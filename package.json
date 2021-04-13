@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.298",
+  "version": "1.0.299",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -35,10 +35,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "echo \"Please run 'npm run dist' to create a local installer\" ",
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "dist": "electron-builder --ia32 --x64",
-    "postinstall": "electron-builder install-app-deps"
+    "start": "echo \"Error: no start script specified\" && exit 0",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "keywords": [
     "usb"
