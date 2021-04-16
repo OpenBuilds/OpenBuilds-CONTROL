@@ -1,5 +1,5 @@
 # OpenBuilds CONTROL
-OpenBuilds CONTROL - Interface Driver for all CNC style machines running Grbl
+OpenBuilds CONTROL - Grbl Host / Interface for all CNC style machines running Grbl
 
 ## Download
 
@@ -7,7 +7,7 @@ OpenBuilds CONTROL - Interface Driver for all CNC style machines running Grbl
 Click to download latest version:  [![Latest Version](https://img.shields.io/github/package-json/v/openbuilds/openbuilds-control.svg)](https://github.com/OpenBuilds/OpenBuilds-CONTROL/releases/latest)
 
 #### Older Versions
-Click to see all past releases:  [![Downloads](https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)](https://github.com/OpenBuilds/OpenBuilds-CONTROL/releases) 
+Click to see all past releases:  [![Downloads](https://img.shields.io/github/downloads/openbuilds/sw-machine-drivers/total.svg)](https://github.com/OpenBuilds/OpenBuilds-CONTROL/releases)
 
 # Development:
 
