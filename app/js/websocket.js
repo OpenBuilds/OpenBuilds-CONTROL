@@ -244,6 +244,7 @@ function initSocket() {
     if (data.completed && data.jobStartTime && data.jobEndTime) {
       console.log("jobComplete", data)
       var runTime = data.jobEndTime - data.jobStartTime; // in Milliseconds
+      $('#timeRemaining').html("DONE: " + msToTime(runTime));
       if (object && object.userData != undefined) {
         var estimateTime = object.userData.totalTime; // in Minutes
       } else {
@@ -275,8 +276,10 @@ function initSocket() {
       if (data.jobStartTime && data.jobEndTime) {
         var runTime = data.jobEndTime - data.jobStartTime;
         $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
+        $('#timeRemaining').html("DONE: " + msToTime(runTime));
       } else {
         $("#completeMsgDiv").html(data.jobCompletedMsg);
+        $('#timeRemaining').html("DONE: " + msToTime(runTime));
       }
       Metro.dialog.open("#completeMsgModal");
       var icon = ''
@@ -284,6 +287,7 @@ function initSocket() {
       var string = "Job completed in " + msToTime(runTime) + " / " + data.jobCompletedMsg
       var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
+      $('#timeRemaining').html("DONE: " + msToTime(runTime));
     } else if (data.jobStartTime && data.jobEndTime) {
       // Without jobCompletedMsg Message (Normal Job)
       var runTime = data.jobEndTime - data.jobStartTime;
@@ -292,6 +296,7 @@ function initSocket() {
       var string = "Job completed in " + msToTime(runTime)
       var printLogCls = "fg-darkGreen"
       printLogModern(icon, source, string, printLogCls)
+      $('#timeRemaining').html("DONE: " + msToTime(runTime));
     }
 
     // Focus Button
@@ -301,12 +306,12 @@ function initSocket() {
 
     // Cleanup
     lastJobStartTime = false;
-    if (object && object.userData != undefined) {
-      var timeremain = object.userData.totalTime;
-      if (!isNaN(timeremain)) {
-        $('#timeRemaining').html(timeConvert(timeremain) + " / " + timeConvert(timeremain));
-      }
-    }
+    // if (typeof object !== 'undefined' && object.userData != undefined) {
+    //   var timeremain = object.userData.totalTime;
+    //   if (!isNaN(timeremain)) {
+    //     $('#timeRemaining').html(timeConvert(timeremain) + " / " + timeConvert(timeremain));
+    //   }
+    // }
 
 
   });

@@ -140,6 +140,8 @@ function grblSettings(data) {
 
   if (localStorage.getItem('jogOverride')) {
     jogOverride(localStorage.getItem('jogOverride'))
+  } else {
+    jogOverride(100);
   }
 }
 
@@ -277,7 +279,7 @@ function grblPopulate() {
             </select></td><td></td></tr>
             <tr title="` + grblConfigDesc['$11'] + `"><td>$11</td><td>Junction deviation, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td><td></td></tr>
             <tr title="` + grblConfigDesc['$12'] + `"><td>$12</td><td>Arc tolerance, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$13'] + `"><td>$13</td><td>Report in inches</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td><td></td></tr>
+            <tr title="` + grblConfigDesc['$13'] + `"><td>$13</td><td>Report in inches (NB CONTROL handles the conversion, set to Disabled)</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td><td></td></tr>
 
             <tr title="` + grblConfigDesc['$20'] + `"><td>$20</td><td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
             <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits"><td>$21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>

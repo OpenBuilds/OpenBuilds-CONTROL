@@ -1857,11 +1857,13 @@ io.on("connection", function(socket) {
 
 });
 
-function readFile(path) {
-  if (path) {
-    if (path.length > 1) {
-      debug_log('readfile: ' + path)
-      fs.readFile(path, 'utf8',
+function readFile(filePath) {
+  if (filePath) {
+    if (filePath.length > 1) {
+      var filename = path.parse(filePath)
+      filename = filename.name + filename.ext
+      debug_log('readfile: ' + filePath)
+      fs.readFile(filePath, 'utf8',
         function(err, data) {
           if (err) {
             debug_log(err);
@@ -1872,7 +1874,7 @@ function readFile(path) {
             uploadedgcode = "";
           }
           if (data) {
-            if (path.endsWith('.obc')) { // OpenBuildsCAM Workspace
+            if (filePath.endsWith('.obc')) { // OpenBuildsCAM Workspace
               uploadedworkspace = data;
               const {
                 shell
@@ -1881,7 +1883,7 @@ function readFile(path) {
             } else { // GCODE
               var payload = {
                 gcode: data,
-                filename: path
+                filename: filename
               }
               io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;

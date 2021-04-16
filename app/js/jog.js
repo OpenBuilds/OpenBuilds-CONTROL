@@ -35,14 +35,20 @@ function mmMode() {
   if (jogdist == 25.4) {
     jogdist = 100
   }
-  if (object) {
+  if (typeof object !== 'undefined') {
     if (object.userData.inch) {
-      redrawGrid(object.userData.bbbox2.min.x * 25.4, object.userData.bbbox2.max.x * 25.4, object.userData.bbbox2.min.y * 25.4, object.userData.bbbox2.max.y * 25.4, false);
+      if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+        redrawGrid(object.userData.bbbox2.min.x * 25.4, object.userData.bbbox2.max.x * 25.4, object.userData.bbbox2.min.y * 25.4, object.userData.bbbox2.max.y * 25.4, false);
+      }
     } else {
-      redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, false);
+      if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+        redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, false);
+      }
     }
   } else {
-    redrawGrid(xmin, xmax, ymin, ymax, false);
+    if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+      redrawGrid(xmin, xmax, ymin, ymax, false);
+    }
   }
 }
 
@@ -65,15 +71,23 @@ function inMode() {
   if (jogdist == 100) {
     jogdist = 25.4
   }
-  if (object) {
+
+  if (typeof object !== 'undefined') {
     if (object.userData.inch) {
-      redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, true);
+      if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+        redrawGrid(object.userData.bbbox2.min.x, object.userData.bbbox2.max.x, object.userData.bbbox2.min.y, object.userData.bbbox2.max.y, true);
+      }
     } else {
-      redrawGrid(object.userData.bbbox2.min.x / 25.4, object.userData.bbbox2.max.x / 25.4, object.userData.bbbox2.min.y / 25.4, object.userData.bbbox2.max.y / 25.4, true);
+      if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+        redrawGrid(object.userData.bbbox2.min.x / 25.4, object.userData.bbbox2.max.x / 25.4, object.userData.bbbox2.min.y / 25.4, object.userData.bbbox2.max.y / 25.4, true);
+      }
     }
   } else {
-    redrawGrid(xmin / 25.4, xmax / 25.4, ymin / 25.4, ymax / 25.4, true);
+    if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
+      redrawGrid(xmin / 25.4, xmax / 25.4, ymin / 25.4, ymax / 25.4, true);
+    }
   }
+
 }
 
 function cancelJog() {

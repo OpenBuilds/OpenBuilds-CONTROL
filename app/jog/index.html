@@ -40,13 +40,13 @@
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
 
         <div class="toolbar" data-role="buttongroup">
-          <div class="form-group inline-form mr-1">
-            <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
-              <option value="">Waiting for USB</option>
-            </select>
-            <button class="button success mb-2 " onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
-            <button class="button alert mb-2" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
-          </div>
+
+          <select class="success" data-role="select" data-filter="false" id="portUSB" disabled>
+            <option value="">Waiting for USB</option>
+          </select>
+          <button class="button success mb-2 mr-1" onclick="selectPort()" id="connectBtn" type="button" disabled><i class="fas fa-plug"></i></button>
+          <button class="button alert mb-2 mr-1" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button"><i class="fas fa-plug"></i> Disconnect</button>
+
           <button class="button mr-1" onclick="socket.emit('clearAlarm', 2)">
             <span class="icon">
               <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -63,7 +63,6 @@
                 <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
               </span>
             </span>
-            Abort
           </button>
 
 
@@ -350,6 +349,17 @@
                         <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
                       </span>
                     </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">
+                    <div id="jrocell">
+
+                      <input id="jro" data-on-stop="jogOverride(arguments[0])" data-role="slider" data-accuracy="1" data-vertical="false" data-min="1" data-max="100" data-value="100" data-hint="true" data-hint-always="true"
+                        data-hint-position="bottom" data-hint-mask="Jog Rate: $1%" data-cls-hint="bg-light
+                            fg-dark shadow-1" data-cls-complete="bg-openbuilds">
+                      <button class="button light mini mb-1" onclick="jogOverride(100);">reset</button>
+                    </div>
                   </td>
                 </tr>
               </table>
