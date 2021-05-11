@@ -340,7 +340,9 @@ function initSocket() {
         if (object.userData !== 'undefined' && object.userData && object.userData.linePoints.length > 2) {
           var timeremain = object.userData.totalTime;
           if (!isNaN(timeremain)) {
-            $('#timeRemaining').html(timeConvert((new Date().getTime() - lastJobStartTime) / 1000 / 60) + " / " + timeConvert(timeremain));
+            if (lastJobStartTime) {
+              $('#timeRemaining').html(timeConvert((new Date().getTime() - lastJobStartTime) / 1000 / 60) + " / " + timeConvert(timeremain));
+            }
           }
         }
 

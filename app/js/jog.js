@@ -224,13 +224,13 @@ $(document).ready(function() {
       $(this).removeAttr("disabled");
       if (unit == "mm") {
         if (e.shiftKey) {
-          sendGcode("G10 P0 L20 Y" + $("#yPosInput").val());
+          sendGcode("G21\nG10 P0 L20 Y" + $("#yPosInput").val());
         } else {
           sendGcode("$J=G90 G21 Y" + $("#yPosInput").val() + " F" + jogRateY);
         }
       } else if (unit == "in") {
         if (e.shiftKey) {
-          sendGcode("G10 P0 L20 Y" + ($("#yPosInput").val() * 25.4));
+          sendGcode("G21\nG10 P0 L20 Y" + ($("#yPosInput").val() * 25.4));
         } else {
           sendGcode("$J=G90 G20 Y" + $("#yPosInput").val() + " F" + jogRateY);
         }
@@ -264,13 +264,13 @@ $(document).ready(function() {
       $(this).removeAttr("disabled");
       if (unit == "mm") {
         if (e.shiftKey) {
-          sendGcode("G10 P0 L20 Z" + $("#zPosInput").val());
+          sendGcode("G21\nG10 P0 L20 Z" + $("#zPosInput").val());
         } else {
           sendGcode("$J=G90 G21 Z" + $("#zPosInput").val() + " F" + jogRateZ);
         }
       } else if (unit == "in") {
         if (e.shiftKey) {
-          sendGcode("G10 P0 L20 Z" + ($("#zPosInput").val() * 25.4));
+          sendGcode("G21\nG10 P0 L20 Z" + ($("#zPosInput").val() * 25.4));
         } else {
           sendGcode("$J=G90 G20 Z" + $("#zPosInput").val() + " F" + jogRateZ);
         }
