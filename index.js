@@ -749,13 +749,6 @@ io.on("connection", function(socket) {
     }
   })
 
-
-
-
-
-
-  //download(url, dest, cb)
-
   socket.on("flashGrbl", function(data) {
 
     var port = data.port;
@@ -2688,7 +2681,7 @@ if (isElectron()) {
       })
     }
   }
-} else {
+} else { // if its not running under Electron, lets get Chrome up.
   var isPi = require('detect-rpi');
   if (isPi()) {
     DEBUG = true;
