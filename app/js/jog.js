@@ -162,7 +162,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       $("#xPosInput").show().focus().val(laststatus.machine.position.work.x)
     } else if (unit == "in") {
-      $("#xPosInput").show().focus().val((laststatus.machine.position.work.x / 25.4).toFixed(2))
+      $("#xPosInput").show().focus().val((laststatus.machine.position.work.x / 25.4).toFixed(3))
     }
   });
 
@@ -204,7 +204,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       $("#yPosInput").show().focus().val(laststatus.machine.position.work.y)
     } else if (unit == "in") {
-      $("#yPosInput").show().focus().val((laststatus.machine.position.work.y / 25.4).toFixed(2))
+      $("#yPosInput").show().focus().val((laststatus.machine.position.work.y / 25.4).toFixed(3))
     }
   });
 
@@ -244,7 +244,7 @@ $(document).ready(function() {
     if (unit == "mm") {
       $("#zPosInput").show().focus().val(laststatus.machine.position.work.z)
     } else if (unit == "in") {
-      $("#zPosInput").show().focus().val((laststatus.machine.position.work.z / 25.4).toFixed(2))
+      $("#zPosInput").show().focus().val((laststatus.machine.position.work.z / 25.4).toFixed(3))
     }
   });
 
