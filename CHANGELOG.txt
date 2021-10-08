@@ -1,3 +1,4 @@
+v1.0.305: Update SSL Certificates for OpenBuildsCAM integration
 v1.0.304: Inch mode DRO edit use 3 Decimal places as per #216, Updated SSL Certificates
 v1.0.303: Updated Interface Probe Macros
 v1.0.302: Pi Install Script updated to support 2021-03-04-raspios-buster-armhf
