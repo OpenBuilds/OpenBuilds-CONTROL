@@ -432,6 +432,18 @@
                     <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
                     <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
                 </div>
+                <div id="ddThemeButton" style="display: none">
+                  <button id="btnTheme" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-paint-brush"></i>
+                      </span>
+                    </span>
+                    <span class="caption">UI Theme</span>
+                  </button>
+                  <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100" id="ddTheme">
+                  </ul>
+                </div>
                 <span class="title">Settings</span>
               </div>
               <div class="group" style="width: 100px;">
@@ -1756,6 +1768,7 @@
   <script type="text/javascript" src="js/viewer.js"></script>
   <script type="text/javascript" src="js/viewer-ruler.js"></script>
 
+  <script type="text/javascript" src="js/theme.js"></script>
   <script type="text/javascript" src="js/main.js"></script>
   <script type="text/javascript" src="js/updates.js"></script>
   <script type="text/javascript" src="js/ui.js"></script>
