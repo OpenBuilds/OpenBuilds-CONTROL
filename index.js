@@ -352,6 +352,23 @@ var status = {
         line: ""
       }
     },
+    modals: {
+      motionmode: "G0", // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+      coordinatesys: "G54", // G54, G55, G56, G57, G58, G59
+      plane: "G17", // G17, G18, G19
+      distancemode: "G90", // G90, G91
+      arcdistmode: "G91.1", // G91.1
+      feedratemode: "G94", // G93, G94
+      unitsmode: "G21", // G20, G21
+      radiuscomp: "G40", // G40
+      tlomode: "G49", // G43.1, G49
+      programmode: "M0", // M0, M1, M2, M30
+      spindlestate: "M5", // M3, M4, M5
+      coolantstate: "M9", // M7, M8, M9
+      tool: "0",
+      spindle: "0",
+      feedrate: "0"
+    },
     probe: {
       x: 0.00,
       y: 0.00,
@@ -1043,6 +1060,7 @@ io.on("connection", function(socket) {
         //console.log(data)
         var command = sentBuffer[0];
 
+
         if (data.indexOf("<") != 0) {
           debug_log('data:', data)
         }
@@ -1143,6 +1161,7 @@ io.on("connection", function(socket) {
         }
 
         // [PRB:0.000,0.000,0.000:0]
+        //if (data.indexOf("[PRB:") === 0 && command != "$#" && command != undefined) {
         if (data.indexOf("[PRB:") === 0) {
           debug_log(data)
           var prbLen = data.substr(5).search(/\]/);
@@ -1169,6 +1188,10 @@ io.on("connection", function(socket) {
           }
           io.sockets.emit('prbResult', status.machine.probe);
         };
+
+        if (data.indexOf("[GC:") === 0) {
+          gotModals(data)
+        }
 
         if (data.indexOf("[INTF:") === 0) {
           var output = {
@@ -1890,6 +1913,13 @@ function readFile(filePath) {
 
 function machineSend(gcode, realtime) {
   debug_log("SENDING: " + gcode)
+  if (gcode.indexOf("$") != 0) {
+    if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1 || gcode.indexOf("G20") != -1 || gcode.indexOf("G21") != -1 || gcode.indexOf("G90") != -1 || gcode.indexOf("G91") != -1 || gcode.indexOf("G93") != -1 || gcode.indexOf("G94") != -1 || gcode.indexOf("M3") != -1 || gcode.indexOf("M4") != -1 || gcode.indexOf("M5") != -1 || gcode.indexOf("M7") != -1 || gcode.indexOf("M8") != -1 || gcode.indexOf("M9") != -1) {
+      setTimeout(function() {
+        addQRealtime("$G\n");
+      }, 200)
+    }
+  }
   if (port.isOpen) {
     if (realtime) {
       // realtime commands doesnt count toward the queue, does not generate OK
@@ -2195,6 +2225,172 @@ function parseFeedback(data) {
   }
   // end statusreport
 }
+
+function gotModals(data) {
+  // as per https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands#g---view-gcode-parser-state
+  // The shown g-code are the current modal states of Grbl's g-code parser.
+  // This may not correlate to what is executing since there are usually
+  // several motions queued in the planner buffer.
+  // [GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]
+
+  // defaults
+
+  data = data.split(/:|\[|\]/)[2].split(" ")
+
+  for (i = 0; i < data.length; i++) {
+    if (data[i] == "G0") {
+      status.machine.modals.motionmode = "G0";
+    }
+    if (data[i] == "G1") {
+      status.machine.modals.motionmode = "G1";
+    }
+    if (data[i] == "G2") {
+      status.machine.modals.motionmode = "G2";
+    }
+    if (data[i] == "G3") {
+      status.machine.modals.motionmode = "G3";
+    }
+    if (data[i] == "G38.2") {
+      status.machine.modals.motionmode = "G38.2";
+    }
+    if (data[i] == "G38.3") {
+      status.machine.modals.motionmode = "G38.3";
+    }
+    if (data[i] == "G38.4") {
+      status.machine.modals.motionmode = "G38.4";
+    }
+    if (data[i] == "G38.5") {
+      status.machine.modals.motionmode = "G38.5";
+    }
+    if (data[i] == "G80") {
+      status.machine.modals.motionmode = "G80";
+    }
+
+    //   status.machine.modals.coordinatesys = "G54"; // G54, G55, G56, G57, G58, G59
+    if (data[i] == "G54") {
+      status.machine.modals.coordinatesys = "G54";
+    }
+    if (data[i] == "G55") {
+      status.machine.modals.coordinatesys = "G55";
+    }
+    if (data[i] == "G56") {
+      status.machine.modals.coordinatesys = "G56";
+    }
+    if (data[i] == "G57") {
+      status.machine.modals.coordinatesys = "G57";
+    }
+    if (data[i] == "G58") {
+      status.machine.modals.coordinatesys = "G58";
+    }
+    if (data[i] == "G59") {
+      status.machine.modals.coordinatesys = "G59";
+    }
+
+    //   status.machine.modals.plane = "G17"; // G17, G18, G19
+    if (data[i] == "G17") {
+      status.machine.modals.plane = "G17";
+    }
+    if (data[i] == "G18") {
+      status.machine.modals.plane = "G18";
+    }
+    if (data[i] == "G19") {
+      status.machine.modals.plane = "G19";
+    }
+
+    //   status.machine.modals.distancemode = "G90"; // G90, G91
+    if (data[i] == "G90") {
+      status.machine.modals.distancemode = "G90";
+    }
+    if (data[i] == "G91") {
+      status.machine.modals.distancemode = "G91";
+    }
+
+    //   status.machine.modals.arcdistmode = "G91.1"; // G91.1
+    if (data[i] == "G91.1") {
+      status.machine.modals.arcdistmode = "G91.1";
+    }
+
+    //   status.machine.modals.feedratemode = "G94"; // G93, G94
+    if (data[i] == "G93") {
+      status.machine.modals.feedratemode = "G93";
+    }
+    if (data[i] == "G94") {
+      status.machine.modals.feedratemode = "G94";
+    }
+
+    //   status.machine.modals.unitsmode = "G21"; // G20, G21
+    if (data[i] == "G20") {
+      status.machine.modals.unitsmode = "G20";
+    }
+    if (data[i] == "G21") {
+      status.machine.modals.unitsmode = "G21";
+    }
+
+    //   status.machine.modals.radiuscomp = "G40"; // G40
+    if (data[i] == "G40") {
+      status.machine.modals.radiuscomp = "G40";
+    }
+
+    //   status.machine.modals.tlomode = "G49"; // G43.1, G49
+    if (data[i] == "G49") {
+      status.machine.modals.tlomode = "G49";
+    }
+    if (data[i] == "G43.1") {
+      status.machine.modals.tlomode = "G43.1";
+    }
+
+    //   status.machine.modals.programmode = "M0"; // M0, M1, M2, M30
+    if (data[i] == "M0") {
+      status.machine.modals.programmode = "M0";
+    }
+    if (data[i] == "M1") {
+      status.machine.modals.programmode = "M1";
+    }
+    if (data[i] == "M2") {
+      status.machine.modals.programmode = "M2";
+    }
+    if (data[i] == "M30") {
+      status.machine.modals.programmode = "M30";
+    }
+
+    //   status.machine.modals.spindlestate = "M5"; // M3, M4, M5
+    if (data[i] == "M3") {
+      status.machine.modals.spindlestate = "M3";
+    }
+    if (data[i] == "M4") {
+      status.machine.modals.spindlestate = "M4";
+    }
+    if (data[i] == "M5") {
+      status.machine.modals.spindlestate = "M5";
+    }
+
+    //   status.machine.modals.coolantstate = "M9"; // M7, M8, M9
+    if (data[i] == "M7") {
+      status.machine.modals.coolantstate = "M7";
+    }
+    if (data[i] == "M8") {
+      status.machine.modals.coolantstate = "M8";
+    }
+    if (data[i] == "M9") {
+      status.machine.modals.coolantstate = "M9";
+    }
+
+    //   status.machine.modals.tool = "0",
+    if (data[i].indexOf("T") === 0) {
+      status.machine.modals.tool = parseFloat(data[i].substr(1))
+    }
+
+    //   status.machine.modals.spindle = "0"
+    if (data[i].indexOf("S") === 0) {
+      status.machine.modals.spindle = parseFloat(data[i].substr(1))
+    }
+
+    //   status.machine.modals.feedrate = "0"
+    if (data[i].indexOf("F") === 0) {
+      status.machine.modals.feedrate = parseFloat(data[i].substr(1))
+    }
+  }
+} // end gotModals
 
 function laserTest(data) {
   if (status.comms.connectionStatus > 0) {

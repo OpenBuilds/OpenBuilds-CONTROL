@@ -31,6 +31,7 @@ function showGrbl(bool) {
   if (bool) {
     sendGcode('$$')
     sendGcode('$I')
+    sendGcode('$G')
     $("#grblButtons").show()
     $("#firmwarename").html('Grbl')
   } else {
@@ -744,6 +745,35 @@ function initSocket() {
     if (status.comms.connectionStatus == 0) {
       showGrbl(false)
     }
+
+    if (laststatus !== undefined) {
+      if (status.machine.modals.coordinatesys != laststatus.machine.modals.coordinatesys) {
+        $('#wcsBtn').html(`<span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>` + status.machine.modals.coordinatesys)
+        $('.wcsItem').removeClass('checked')
+        switch (status.machine.modals.coordinatesys) {
+          case "G54":
+            $('.wcsItemG54').addClass('checked')
+            break;
+          case "G55":
+            $('.wcsItemG55').addClass('checked')
+            break;
+          case "G56":
+            $('.wcsItemG56').addClass('checked')
+            break;
+          case "G57":
+            $('.wcsItemG57').addClass('checked')
+            break;
+          case "G58":
+            $('.wcsItemG58').addClass('checked')
+            break;
+          case "G59":
+            $('.wcsItemG59').addClass('checked')
+            break;
+        }
+      }
+    }
+
+
 
     laststatus = status;
     waitingForStatus = false;
