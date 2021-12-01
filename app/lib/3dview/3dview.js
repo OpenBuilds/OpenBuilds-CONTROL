@@ -35,21 +35,21 @@ function convertParsedDataToObject(jsonData) {
     positions.push(x, y, z);
 
     if (parsedData.linePoints[i].g == 0) {
-      colors.push(0);
-      colors.push(200);
-      colors.push(0);
+      colors.push(Theme.lines[0].R);
+      colors.push(Theme.lines[0].G);
+      colors.push(Theme.lines[0].B);
     } else if (parsedData.linePoints[i].g == 1) {
-      colors.push(200);
-      colors.push(0);
-      colors.push(0);
+      colors.push(Theme.lines[1].R);
+      colors.push(Theme.lines[1].G);
+      colors.push(Theme.lines[1].B);
     } else if (parsedData.linePoints[i].g == 2) {
-      colors.push(0);
-      colors.push(0);
-      colors.push(200);
+      colors.push(Theme.lines[2].R);
+      colors.push(Theme.lines[2].G);
+      colors.push(Theme.lines[2].B);
     } else {
-      colors.push(200);
-      colors.push(0);
-      colors.push(200);
+      colors.push(Theme.lines[3].R);
+      colors.push(Theme.lines[3].G);
+      colors.push(Theme.lines[3].B);
     }
 
   }
