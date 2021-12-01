@@ -18,7 +18,7 @@ function findCircleCenter(approxCircleDia, endmillDiameter, probeFeed) {
   ; Header
 
   G21 ; mm mode
-  G10 P1 L20 X0 Y0 Z0 ; zero out current location
+  G10 P0 L20 X0 Y0 Z0 ; zero out current location
 
   G38.2 X` + approxCircleDia / 2 + ` F` + probeFeed + ` ; Probe X` // find right side of circle
 
@@ -63,7 +63,7 @@ function findCircleCenter(approxCircleDia, endmillDiameter, probeFeed) {
         G91
         G0 X` + centerdistance / 2 + `
         G90
-        G10 P1 L20 X0
+        G10 P0 L20 X0
         G38.2 Y` + approxCircleDia / 2 + ` F` + probeFeed + ` ; Probe Y` // find far side of circle
 
         socket.emit('runJob', {
@@ -102,7 +102,7 @@ function findCircleCenter(approxCircleDia, endmillDiameter, probeFeed) {
         G91
         G0 Y` + centerYdistance / 2 + `
         G90
-        G10 P1 L20 Y0
+        G10 P0 L20 Y0
         `
 
         socket.emit('runJob', {

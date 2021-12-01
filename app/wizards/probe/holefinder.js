@@ -16,14 +16,14 @@ function findCenter() {
   ; Header
 
   G21 ; mm mode
-  G10 P1 L20 X0 Y0 Z0 ; zero out current location
+  G10 P0 L20 X0 Y0 Z0 ; zero out current location
 
   ; First we establish Zero
   ; Probe Z
   G0 X22.5 Y22.5 ; position to center of logo
   G38.2 Z-25 F100 ; Probe Z
   G4 P0.3
-  G10 P1 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
+  G10 P0 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
   G0 Z` + (zoffset + 5) + ` ; retract
 
   ; Probe X
@@ -31,7 +31,7 @@ function findCenter() {
   G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
   G38.2 X25 F100 ; Probe X
   G4 P0.3
-  G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
+  G10 P0 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
   G0 X` + (xoffset - 2).toFixed(3) + `
   G0 Z` + (zoffset + 5) + ` ; retract
 
@@ -40,7 +40,7 @@ function findCenter() {
   G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
   G38.2 Y25 F100 ; probe Y
   G4 P0.3
-  G10 P1 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
+  G10 P0 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
   G0 Y` + (yoffset - 2).toFixed(3) + `
   G0 Z` + (zoffset + 5) + ` ; retract
   G0 X0 Y0 ; return
@@ -164,7 +164,7 @@ function findCenter() {
         G91
         G0 X-` + centerXdistance / 2 + `
         G90
-        G10 P1 L20 X0 Y0
+        G10 P0 L20 X0 Y0
         G0 Z` + (zoffset + 5) + ` ; retract`
 
         socket.emit('runJob', {

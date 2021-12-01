@@ -1,13 +1,13 @@
 ; Header
 G21 ; mm mode
-G10 P1 L20 X0 Y0 Z0 ; zero out current location
+G10 P0 L20 X0 Y0 Z0 ; zero out current location
 G1 F1000
 
 ; Probe Z
 G1 X22.5 Y22.5 ; position to center of logo
 G38.2 Z-25 F100 ; Probe Z
 G4 P0.4
-G10 P1 L20 Z<zoffset> ; Set Z6 where 6 is thickness of plate
+G10 P0 L20 Z<zoffset> ; Set Z6 where 6 is thickness of plate
 G91 G21 G1 Z5 F1000 ; retract
 G90
 
@@ -18,7 +18,7 @@ G1 Z-11 F1000 ; position next to plate by lowering
 G90
 G38.2 X25 F100 ; Probe X
 G4 P0.4
-G10 P1 L20 X-<xoffset> ; set X as offset and half endmill diameter
+G10 P0 L20 X-<xoffset> ; set X as offset and half endmill diameter
 G91 
 G1 X-2 F1000 ; retract
 G1 Z11 F1000 ; position next to plate by lowering
@@ -30,7 +30,7 @@ G91 G21 G1 Z-11 F1000 ; position next to plate by lowering
 G38.2 Y25 F100 ; probe Y
 G90
 G4 P0.4
-G10 P1 L20 Y-<yoffset> ; set Y as offset and half endmill diameter
+G10 P0 L20 Y-<yoffset> ; set Y as offset and half endmill diameter
 G91 G21 G1 Y-2 F1000 ; retract
 G91 G21 G1 Z11 F1000 ; position next to plate by lowering
 G90

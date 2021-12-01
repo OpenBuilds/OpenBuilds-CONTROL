@@ -482,12 +482,12 @@ function runProbeNew() {
     var xmacro = `
     ; Header
     G21 ; mm mode
-    G10 P1 L20 X0 ; zero out current location
+    G10 P0 L20 X0 ; zero out current location
 
     ; Probe X
     G38.2 X25 F100 ; Probe X
     G4 P0.4
-    G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
+    G10 P0 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
     G0 X` + (xoffset - 2).toFixed(3) + `
     `
 
@@ -509,11 +509,11 @@ function runProbeNew() {
     var ymacro = `
     ; Header
     G21 ; mm mode
-    G10 P1 L20 Y0 ; zero out current location
+    G10 P0 L20 Y0 ; zero out current location
 
     G38.2 Y25 F100 ; probe Y
     G4 P0.4
-    G10 P1 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
+    G10 P0 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
     G0 Y` + (yoffset - 2).toFixed(3) + `
     `
     socket.emit('runJob', {
@@ -532,12 +532,12 @@ function runProbeNew() {
     var zmacro = `
     ; Header
     G21 ; mm mode
-    G10 P1 L20 Z0 ; zero out current location
+    G10 P0 L20 Z0 ; zero out current location
 
     ; Probe Z
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
-    G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
+    G10 P0 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
     $J=G91G21Z5F1000 ; retract
     `
 
@@ -560,12 +560,12 @@ function runProbeNew() {
     var zmacro = `
     ; Header
     G21 ; mm mode
-    G10 P1 L20 Z0 ; zero out current location
+    G10 P0 L20 Z0 ; zero out current location
 
     ; Probe Z
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
-    G10 P1 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
+    G10 P0 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
     $J=G91G21Z5F1000 ; retract
     `
 
@@ -586,13 +586,13 @@ function runProbeNew() {
     var xyzmacro = `
     ; Header
     G21 ; mm mode
-    G10 P1 L20 X0 Y0 Z0 ; zero out current location
+    G10 P0 L20 X0 Y0 Z0 ; zero out current location
 
     ; Probe Z
     G0 X22.5 Y22.5 ; position to center of logo
     G38.2 Z-25 F100 ; Probe Z
     G4 P0.4
-    G10 P1 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
+    G10 P0 L20 Z` + zoffset + ` ; Set Z6 where 6 is thickness of plate
     G0 Z` + (zoffset + 5) + ` ; retract
 
     ; Probe X
@@ -600,7 +600,7 @@ function runProbeNew() {
     G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
     G38.2 X25 F100 ; Probe X
     G4 P0.4
-    G10 P1 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
+    G10 P0 L20 X` + xoffset + ` ; set X as offset and half endmill diameter
     G0 X` + (xoffset - 2).toFixed(3) + `
     G0 Z` + (zoffset + 5) + ` ; retract
 
@@ -609,7 +609,7 @@ function runProbeNew() {
     G0 Z` + (zoffset - 6) + ` ; drop down to be next to plate
     G38.2 Y25 F100 ; probe Y
     G4 P0.4
-    G10 P1 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
+    G10 P0 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
     G0 Y` + (yoffset - 2).toFixed(3) + `
     G0 Z` + (zoffset + 5) + ` ; retract
     G0 X0 Y0 ; return
@@ -617,8 +617,8 @@ function runProbeNew() {
 
     if (stockoffset.x != 0 || stockoffset.y != 0) {
       xyzmacro += `
-      G10 P1 L20 X-` + stockoffset.x + ` ; set X stock offset
-      G10 P1 L20 Y-` + stockoffset.y + ` ; set Y stock offset
+      G10 P0 L20 X-` + stockoffset.x + ` ; set X stock offset
+      G10 P0 L20 Y-` + stockoffset.y + ` ; set Y stock offset
       G0 X0 Y0 ; return
       `
     }
