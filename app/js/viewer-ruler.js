@@ -7,10 +7,10 @@ function drawRuler(xmin, xmax, ymin, ymax) {
   // console.log(xmin, xmax, ymin, ymax)
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
-    color: Theme.RULER_COLOR
+    color: 0x888888
   });
 
-  material.opacity = Theme.RULER_OPACITY;
+  material.opacity = 0.15;
 
   // x axis
   for (i = xmin; i <= xmax; i++) {
@@ -94,7 +94,7 @@ function drawRuler(xmin, xmax, ymin, ymax) {
         y: spacing,
         z: 0,
         text: i + unitsval,
-        color: Theme.X_RULER_NUMBER_COLOR,
+        color: "#cc0000",
         size: fontsize
       });
       ruler.add(x[i]);
@@ -110,7 +110,7 @@ function drawRuler(xmin, xmax, ymin, ymax) {
         y: i,
         z: 0,
         text: i + unitsval,
-        color: Theme.Y_RULER_NUMBER_COLOR,
+        color: "#006600",
         size: fontsize
       });
       ruler.add(y[i]);
@@ -143,10 +143,10 @@ function drawRulerInches(xmin, xmax, ymin, ymax) {
 
   var ruler = new THREE.Group();
   var material = new THREE.LineBasicMaterial({
-    color: Theme.RULER_COLOR
+    color: 0x888888
   });
 
-  material.opacity = Theme.RULER_OPACITY;
+  material.opacity = 0.15;
 
   // x axis
   for (i = xmin; i <= xmax; i++) {
@@ -236,7 +236,7 @@ function drawRulerInches(xmin, xmax, ymin, ymax) {
         y: spacing,
         z: 0,
         text: i + unitsval,
-        color: Theme.X_RULER_NUMBER_COLOR,
+        color: "#cc0000",
         size: fontsize / 2.54
       });
       ruler.add(x[i]);
@@ -250,7 +250,7 @@ function drawRulerInches(xmin, xmax, ymin, ymax) {
         y: i * 25.4,
         z: 0,
         text: i + unitsval,
-        color: Theme.Y_RULER_NUMBER_COLOR,
+        color: "#006600",
         size: fontsize / 2.54
       });
       ruler.add(y[i]);
