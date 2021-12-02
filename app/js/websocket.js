@@ -746,31 +746,40 @@ function initSocket() {
       showGrbl(false)
     }
 
-    if (laststatus !== undefined) {
+    var updateWCS = false
+    if (laststatus == undefined) {
+      var updateWCS = true
+    } else {
       if (status.machine.modals.coordinatesys != laststatus.machine.modals.coordinatesys) {
-        $('#wcsBtn').html(`<span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>` + status.machine.modals.coordinatesys)
-        $('.wcsItem').removeClass('checked')
-        switch (status.machine.modals.coordinatesys) {
-          case "G54":
-            $('.wcsItemG54').addClass('checked')
-            break;
-          case "G55":
-            $('.wcsItemG55').addClass('checked')
-            break;
-          case "G56":
-            $('.wcsItemG56').addClass('checked')
-            break;
-          case "G57":
-            $('.wcsItemG57').addClass('checked')
-            break;
-          case "G58":
-            $('.wcsItemG58').addClass('checked')
-            break;
-          case "G59":
-            $('.wcsItemG59').addClass('checked')
-            break;
-        }
+        var updateWCS = true
       }
+    }
+
+
+    if (updateWCS) {
+      $('#wcsBtn').html(`<span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>` + status.machine.modals.coordinatesys)
+      $('.wcsItem').removeClass('checked')
+      switch (status.machine.modals.coordinatesys) {
+        case "G54":
+          $('.wcsItemG54').addClass('checked')
+          break;
+        case "G55":
+          $('.wcsItemG55').addClass('checked')
+          break;
+        case "G56":
+          $('.wcsItemG56').addClass('checked')
+          break;
+        case "G57":
+          $('.wcsItemG57').addClass('checked')
+          break;
+        case "G58":
+          $('.wcsItemG58').addClass('checked')
+          break;
+        case "G59":
+          $('.wcsItemG59').addClass('checked')
+          break;
+      }
+
     }
 
 

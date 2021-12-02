@@ -1913,13 +1913,6 @@ function readFile(filePath) {
 
 function machineSend(gcode, realtime) {
   debug_log("SENDING: " + gcode)
-  if (gcode.indexOf("$") != 0) {
-    if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1 || gcode.indexOf("G20") != -1 || gcode.indexOf("G21") != -1 || gcode.indexOf("G90") != -1 || gcode.indexOf("G91") != -1 || gcode.indexOf("G93") != -1 || gcode.indexOf("G94") != -1 || gcode.indexOf("M3") != -1 || gcode.indexOf("M4") != -1 || gcode.indexOf("M5") != -1 || gcode.indexOf("M7") != -1 || gcode.indexOf("M8") != -1 || gcode.indexOf("M9") != -1) {
-      setTimeout(function() {
-        addQRealtime("$G\n");
-      }, 200)
-    }
-  }
   if (port.isOpen) {
     if (realtime) {
       // realtime commands doesnt count toward the queue, does not generate OK
@@ -1955,6 +1948,7 @@ function runJob(object) {
 
   jobStartTime = false;
   var data = object.data
+
   if (object.isJob) {
     if (data.length < 20000) {
       uploadedgcode = data;
@@ -2458,6 +2452,8 @@ function send1Q() {
       case 'grbl':
         if ((gcodeQueue.length - queuePointer) > 0 && !status.comms.blocked && !status.comms.paused) {
           spaceLeft = BufferSpace('grbl');
+
+          // Do we have enough space in the buffer?
           if (gcodeQueue[queuePointer].length < spaceLeft) {
             gcode = gcodeQueue[queuePointer];
             queuePointer++;
@@ -2507,6 +2503,9 @@ function send1Q() {
 function addQToEnd(gcode) {
   // debug_log('added ' + gcode)
   gcodeQueue.push(gcode);
+  if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1) {
+    gcodeQueue.push("$G");
+  }
 }
 
 function addQToStart(gcode) {

@@ -1,3 +1,4 @@
+v1.0.309: Fixed WCS report injection bug
 v1.0.308: WCS Display
 v1.0.307: Updated included firmware.bin for Interface update wizard
 v1.0.306: Allow probing in other Coordinate systems as well
