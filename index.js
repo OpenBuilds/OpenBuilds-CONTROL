@@ -2764,7 +2764,8 @@ if (isElectron()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "OpenBuilds CONTROL Started",
-            content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            // content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            content: "OpenBuilds CONTROL has started successfully"
           })
         }
       } else {
