@@ -23,6 +23,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent(".select").addClass('success')
     $('#portUSB').parent(".select").removeClass('alert')
     $('.macrobtn').addClass('disabled')
+    $('.grblCalibrationMenu').addClass("disabled")
     // Set Port Dropdown to Current Value
     // Not applicable to Status 0 as its set by populatePortsMenu();
 
@@ -44,6 +45,7 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
     $('.macrobtn').removeClass('disabled')
+    $('.grblCalibrationMenu').removeClass("disabled")
 
   } else if (val == 3) { // Busy Streaming GCODE
     // Status Badge
@@ -62,6 +64,7 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
     $('.macrobtn').addClass('disabled')
+    $('.grblCalibrationMenu').addClass("disabled")
 
   } else if (val == 4) { // Paused
     // Status Badge
@@ -80,6 +83,7 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
     $('.macrobtn').addClass('disabled')
+    $('.grblCalibrationMenu').addClass("disabled")
 
   } else if (val == 5) { // Alarm State
     // Status Badge
@@ -98,7 +102,7 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
     $('.macrobtn').addClass('disabled')
-
+    $('.grblCalibrationMenu').addClass("disabled")
   } else if (val == 6) { // Firmware Upgrade State
     // Status Badge
     $('#connectStatus').html("Port: Flashing");
@@ -116,8 +120,7 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
     $('.macrobtn').addClass('disabled')
-
-
+    $('.grblCalibrationMenu').addClass("disabled")
   }
 }
 

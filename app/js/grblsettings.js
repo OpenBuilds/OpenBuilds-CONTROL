@@ -111,7 +111,7 @@ function grblSettings(data) {
   // $('#grblSaveBtn').removeAttr('disabled');
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
-  $('.grblCalibrationMenu').removeClass("disabled")
+
 
 
   if (grblParams['$22'] == 1) {
