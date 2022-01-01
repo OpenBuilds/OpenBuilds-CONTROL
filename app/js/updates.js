@@ -8,7 +8,7 @@ function checkUpdate() {
 
   if (!isMac && webgl) {
 
-    setTimeout(function() {
+ /*   setTimeout(function() {
       // console.log('checking for update')
       printLog("<span class='fg-darkRed'>[ update ] </span><span class='fg-darkGray'>Checking for Updates</span>")
       $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
@@ -22,7 +22,7 @@ function checkUpdate() {
         //var availVersion = release.name.substr(1)
         var currentVersion = laststatus.driver.version
         // console.log(versionCompare(availVersion, currentVersion), availVersion, currentVersion);
-        if (versionCompare(availVersion, currentVersion) == 1) {
+          if (versionCompare(availVersion, currentVersion) == 1) {
           console.log('outdated')
           time = 10
           printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds CONTROL <code>" + availVersion + "</code>. is available now.</span>")
@@ -36,10 +36,10 @@ function checkUpdate() {
           setTimeout(function() {
             checkUpdate()
           }, 60 * 60 * 1000) // 60 mins
-        }
-      });
-    }, 1000)
-  }
+        } 
+      }); 
+    }, 1000) 
+  } */
 }
 
 

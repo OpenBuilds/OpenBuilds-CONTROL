@@ -427,21 +427,25 @@ function initSocket() {
   })
 
   socket.on('progStatus', function(data) {
+    
     $('#controlTab').click();
     $('#consoletab').click();
     console.log(data.port, data.string)
     var string = data.string
     if (string) {
-      if (string.indexOf('flash complete') != -1) {
+      if (string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
+        var firmwareErased=true;
+
+      }else if(string.indexOf('flash complete') != -1 ){
         setTimeout(function() {
-          populatePortsMenu();
+           populatePortsMenu();
         }, 400)
       }
       string = string.replace('[31mflash complete.[39m', "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'> </i> FLASH FAILED!</span> ");
       string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
       string = string.replace('[39m', "</span>");
       if (string.indexOf("Hash of data verified") != -1) {
-        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
+        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>";
       }
       if (string.indexOf("could not open port") != -1) {
         string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
@@ -459,14 +463,25 @@ function initSocket() {
 
 
       var icon = ''
-      var source = " Firmware Upgrade"
+
+      if(data.file == 'eepromclear.hex'){
+        var source = " Erasing Firmware"
+      }else{
+        var source = " Installing Firmware"
+      }
+
+      if(data.file == 'eepromclear.hex' && firmwareErased ){
+          string = "waiting to install firmware"
+      }
+
+      
       //var string = string
       var printLogCls = "fg-dark"
       printLogModern(icon, source, string, printLogCls)
 
       if (data.code != undefined) {
         var icon = ''
-        var source = " Firmware Upgrade"
+        var source = " Flashing Firmware"
         if (data.code == 0) {
           var string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the Interface now, to reboot it with the new firmware. "
           var printLogCls = "fg-darkGreen"
