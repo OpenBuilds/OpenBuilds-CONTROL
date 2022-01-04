@@ -1,5 +1,5 @@
 {
-  "name": "OpenBuildsCONTROL",
+  "name": "basic-control",
   "version": "1.0.309",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
@@ -35,7 +35,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "echo \"Error: no start script specified\" && exit 0",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.2.3)\" && echo \"2) Commit that change (git commit -am v1.2.3)\" && echo \"3) Tag your commit (git tag v1.2.3). Make sure your tag name's format is v*.*.*. Your workflow will use this tag to detect when to create a release\" && echo \"4) Push your changes to GitHub (git push && git push --tags)\""
 

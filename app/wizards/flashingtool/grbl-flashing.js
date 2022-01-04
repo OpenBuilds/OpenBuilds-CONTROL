@@ -74,50 +74,102 @@ function populateGrblBuilderToolForm() {
   select.data(opts);
 }
 
-function flashFirmwarefromWizard() {
-  if ($("#flashController").val() != "interface") {
-    var data = {
+// install bobscnc hex files
+function installFirmware(){
+ 
+  if ($("#flashController").val() =="E3") {
+   var data = {
       port: $("#portUSB2").val(),
-      file: "grbl-" + $("#grblAxesCount").val() + "-" + $("#grblDoorEnable").val() + ".hex",
-      board: $("#flashController").val(),
+      file: "grblE3.hex",
+      board: "uno",
       customImg: false
-    }
-
-    if ($("#grblAxesCount").val() == "custom") {
-      // Custom Firmware
-      if ($("#firmwareBin").val().length > 0) {
-        var form = document.getElementById('customFirmwareForm');
-        var formData = new FormData(form);
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function() {
-          if (xhr.status == 200) {
-            $("#customFirmwareSet").html(xhr.response);
-            data.customImg = true;
-            data.file = $("#firmwareBin").val();
-            socket.emit('flashGrbl', data);
-          }
-        };
-        // Add any event handlers here...
-        xhr.open('POST', '/uploadCustomFirmware', true);
-        xhr.send(formData);
-      } else {
-        $('#controlTab').click();
-        $('#consoletab').click();
-        printLog("<span class='fg-red'>[ Firmware Upgrade ] </span><span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>You selected the option to use a custom firmware file, but failed to select a file to use for the operation. Please try again</span>")
       }
+  }else if($("#flashController").val() =="E4"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "grblE4.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="E3SS"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "grblE3ss.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="E4SS"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "grblE4ss.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="Evo3"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "Evolution3.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="Evo4"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "Evolution4.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="Evo5"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "Evolution4.hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="Revo"){
+        var data = {
+           port: $("#portUSB2").val(),
+           file: "Revolution.hex",
+           board: "uno",
+           customImg: false
+           }
+  }else if($("#flashController").val() =="KL733"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "KL733(250).hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val() =="KL744"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "KL744(250).hex",
+      board: "uno",
+      customImg: false
+      }
+  }else if($("#flashController").val()=="KL744E"){
+   var data = {
+      port: $("#portUSB2").val(),
+      file: "KL744(250).hex",
+      board: "uno",
+      customImg: false
+      }
+  }
 
 
-    } else {
-      //  Precompiled Firmwares
-      socket.emit('flashGrbl', data)
 
-    }
+    socket.emit('flashGrbl', data)
 
-  } else if ($("#flashController").val() == "interface") {
+      
+
+    
+
+  } if ($("#flashController").val() == "interface") {
     var data = {
       port: $("#portUSB2").val(),
       file: "firmware.bin", // version that ships with Interface
       board: $("#flashController").val()
+      
     }
 
     if ($("#interfaceFirmwareVer").val() == "custom") {
@@ -139,7 +191,7 @@ function flashFirmwarefromWizard() {
       } else {
         $('#controlTab').click();
         $('#consoletab').click();
-        printLog("<span class='fg-red'>[ Firmware Upgrade ] </span><span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>You selected the option to use a custom firmware file, but failed to select a file to use for the operation. Please try again</span>")
+        printLog("<span class='fg-red'>[ Flashing Firmware3 ] </span><span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>You selected the option to use a custom firmware file, but failed to select a file to use for the operation. Please try again</span>")
       }
 
     } else {
@@ -151,16 +203,25 @@ function flashFirmwarefromWizard() {
   } else {
     console.log("no controller selected")
   }
+
+// erase eeprom (eeprom.hex) on bobscnc controller before loading hex file
+function startFlash(){
+  if ($("#flashController").val() != "interface") {
+  var data = {
+    port: $("#portUSB2").val(),
+    file: "eepromclear.hex",
+    board: "uno",
+    customImg: false
+    }
+  
+    socket.emit('flashGrbl', data)
+  } 
+
+  socket.on('progStatus', function(data) {
+    if (data.string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
+      installFirmware();
+    }
+  });
+
 }
 
-
-
-// grbl-3axes-nodoor.hex
-// grbl-3axes-opendoor.hex
-// grbl-3axes-closeddoor.hex
-// grbl-2axes-nodoor.hex
-// grbl-2axes-opendoor.hex
-// grbl-2axes-closeddoor.hex
-// grbl-servo-nodoor.hex
-// grbl-servo-opendoor.hex
-// grbl-servo-closeddoor.hex

@@ -6,7 +6,7 @@ var lastJobStartTime = false;
 
 function setWindowTitle(status) {
 
-  var string = "OpenBuilds CONTROL"
+  var string = "Basic SENDER"
 
   if (status) {
     string += " v" + status.driver.version
@@ -39,9 +39,9 @@ function showAndHideSplash() {
 function getChangelog() {
 
   // Splash Screen Begin
-  $("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
+  $("#splashAd").html(`<img src="splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
 
-  $("#changelog").empty()
+ /* $("#changelog").empty()
   var template2 = `<ul>`
   $.get("https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
     var lines = data.split('\n');
@@ -66,7 +66,7 @@ function getChangelog() {
     $("#changelogupdate").html(template3);
 
 
-  });
+  });*/
 }
 
 $(document).ready(function() {

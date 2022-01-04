@@ -787,11 +787,12 @@ io.on("connection", function(socket) {
       debug_log('ERROR: Machine connection not open!');
     }
 
-    function flashGrblCallback(debugString, port) {
+    function flashGrblCallback(debugString, port, file) {
       debug_log(port, debugString);
       var data = {
         'port': port,
-        'string': debugString
+        'string': debugString,
+        'file': file
       }
       io.sockets.emit("progStatus", data);
     }
@@ -802,7 +803,7 @@ io.on("connection", function(socket) {
         port: port,
         debug: function(debugString) {
           var port = this.connection.options.port;
-          flashGrblCallback(debugString, port)
+          flashGrblCallback(debugString, port, file)
         }
       });
 
@@ -822,7 +823,7 @@ io.on("connection", function(socket) {
         }
         status.comms.connectionStatus = 0;
       });
-    }, 1000)
+    }, 200)
   })
 
   socket.on("flashInterface", function(data) {
@@ -2790,7 +2791,7 @@ if (isElectron()) {
         center: true,
         resizable: true,
         maximizable: true,
-        title: "OpenBuilds CONTROL ",
+        title: "Basic Sender ",
         frame: false,
         autoHideMenuBar: true,
         //icon: '/app/favicon.png',
@@ -3019,7 +3020,7 @@ function startChrome() {
 
 // grab latest firmware.bin for Interface on startup
 
-var file = fs.createWriteStream(path.join(uploadsDir, "firmware.bin"));
+/*var file = fs.createWriteStream(path.join(uploadsDir, "firmware.bin"));
 https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/firmware.bin", function(response) {
   response.pipe(file);
   file.on('finish', function() {
@@ -3062,7 +3063,7 @@ https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/
 
     });
   });
-})
+}) */
 
 
 

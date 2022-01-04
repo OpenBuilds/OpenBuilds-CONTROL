@@ -2,7 +2,7 @@
 <html lang="en">
 
   <head>
-    <title>OpenBuilds CONTROL</title>
+    <title>BobsCNC Basic SENDER</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="author" content="">
@@ -21,15 +21,15 @@
     <div class="pos-fixed pos-center" id="splash">
       <div id="splashAd" style="display:none"></div>
       <br>
-      <center>Starting&nbsp;OpenBuilds&nbsp;CONTROL...</center>
+      <center>Starting&nbsp;BobsCNC&nbsp;Basic SENDER...</center>
     </div>
 
 
     <div class="window" style="height: 100vh; overflow-y: hidden;">
       <div id="windowtitlebar" class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
         <!-- <span class="icon mif-cog"></span> -->
-        <span class="icon"><img src="icon-transparent.png" /></span>
-        <span class="title" id="windowtitle">OpenBuilds CONTROL</span>
+        <span class="icon"><img src="splash.png" /></span>
+        <span class="title" id="windowtitle">BobsCNC Basic SENDER</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
           <span class="btn-min" onclick="socket.emit('minimize')"></span>
           <span class="btn-max" onclick="socket.emit('maximize')"></span>
@@ -147,9 +147,9 @@
               <div class="group">
                 <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
                   <span class="icon">
-                    <img src="img/openbuilds.svg">
+                    <img src="splash.png">
                   </span>
-                  <span class="caption">OpenBuilds</span>
+                  <span class="caption">BobsCNC</span>
                 </button>
                 <span class="title">Visit</span>
               </div>
@@ -223,7 +223,7 @@
                     <span class="caption">Run<br>Job</span>
                   </button>
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100" id="toolChangesMenu">
-                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.openbuilds.com</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.bobscnc.com</a></li>
                   </ul>
                 </div>
 
@@ -351,18 +351,21 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
+                    <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Round Stock Wizard</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                     <li class="divider fg-lightGray"></li>
-                    <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
+                 <!--     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Keyboard Shortcuts</a></li>
                     <li class="divider fg-lightGray"></li>
+                 -->
                     <li onclick="populateGrblBuilderToolForm();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
-                    <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
+                <!--    <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                     <li class="divider fg-lightGray"></li>
+                -->
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
                   </ul>
                 </div>
@@ -1203,64 +1206,30 @@
 
           <div id="FlashDialogMsg"></div>
 
-          <p class="text-small mb-4">You can use this wizard to flash Firmware onto compatible controllers<br>Only use with care, or when instructed by Support</p>
+          <p class="text mb-4">You can use this wizard to flash Firmware onto BobsCNC controllrs<br>Only use with care, or when instructed by Support</p>
 
           <div class="row">
             <div class="cell-md-4 mb-1">
-              Controller Type
+              Select Machine
             </div>
             <div class="cell-md-8 mb-1">
               <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashController" data-editable="true">
-                <option value="interface">OpenBuilds Interface</option>
-                <option value="uno" selected>OpenBuilds BlackBox 4X</option>
-                <option value="xprov4">Spark Concepts xPro v3/4</option>
-                <option value="uno">Arduino Uno</option>
-                <option value="nano">Arduino Nano</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" id="flash-tool-interface-fw-row" style="display: none;">
-            <div class="cell-md-4 mb-1">
-              Firmware Version
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="interfaceFirmwareVer" data-editable="true">
-                <option value="online">Latest available version</option>
-                <option value="custom">Custom: firmware binary file</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" id="flash-tool-machine-row">
-            <div class="cell-md-4 mb-1">
-              Machine Style
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
-                <option value="3axes">3 Axes</option>
-                <option value="2axes">2 Axes</option>
-                <option value="servo">2 Axes + RC Servo</option>
-                <option value="custom">Custom: firmware hex file</option>
-              </select>
-            </div>
-          </div>
-          <div class="row" id="flash-tool-door-row">
-            <div class="cell-md-4 mb-1">
-              Door Interlock
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable" data-editable="true">
-                <option value="nodoor">Disable Door Interlock</option>
-                <option value="opendoor">Door Interlock (Normally Open Switch)</option>
-                <option value="closeddoor">Door Interlock (Normally Closed Switch)</option>
+                <option value="E3">E3 CNC Router</option>
+                <option value="E4" selected>E4 CNC Router</option>
+                <option value="Evo3">Evolution 3 CNC Router</option>
+                <option value="Evo4">Evolution 4 CNC Router</option>
+                <option value="Evo5">Evolution 5 CNC Router</option>
+                <option value="Revo">Revolution Roatatig Axis CNC Router</option>
+                <option value="KL733">KL733 CNC Router</option>
+                <option value="KL744">KL744 CNC Router</option>
+                <option value="KL744E">KL744E CNC Router</option>
               </select>
             </div>
           </div>
 
           <div class="row">
             <div class="cell-md-4 mb-1">
-              Port
+              Comm Port
             </div>
             <div class="cell-md-8 mb-1">
               <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled data-editable="true">
@@ -1285,49 +1254,12 @@
 
         </div>
         <div class="dialog-actions">
-          <button class="button success js-dialog-close" onclick="flashFirmwarefromWizard()">Flash</button>
+          <button class="button success js-dialog-close" onclick="startFlash()">Flash</button>
           <button class="button js-dialog-close">Cancel</button>
         </div>
       </div>
 
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
-        <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
-        <div class="dialog-content" style="height: calc(100% - 100px);">
-          This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
-          <hr>
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-
-              <img src="img/interface/interf.png" width="120" class="mt-5" />
-            </div>
-            <div class="cell-md-9 mb-1">
-              <ul>
-                <li class="text-secondary">Insert the USB flashdrive into this computer</li>
-                <li class="text-secondary">Select the correct drive below</li>
-                <li class="text-secondary">Click COPY to transfer the files</li>
-                <li class="text-secondary">Eject the flashdrive </li>
-                <li class="text-secondary">Insert it into the Interface</li>
-              </ul>
-            </div>
-          </div>
-          <hr>
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-              Port
-            </div>
-            <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true">
-                <option value="">Waiting for USB Flashdrive</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-        <div class="dialog-actions">
-          <button id="copyToUsbBtn" class="button success js-dialog-close" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
+ 
 
       <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
         <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Flattening / Surfacing Tool</div>
@@ -1423,7 +1355,7 @@
           Updated version <code><span id="availVersion">1.0.100</span></code> has finished downloading and is ready to be installed!<br> Note that proceeding will:
           <ul>
             <li>Stop any running jobs</li>
-            <li>Shut down this instance of OpenBuilds CONTROL</li>
+            <li>Shut down this instance of Basic Sender</li>
             <li>Launch the installer for the new version</li>
           </ul>
           <small>You may want to wait until your machine is idle, and it it's a convenient time for you to do this, before continuing</small>
