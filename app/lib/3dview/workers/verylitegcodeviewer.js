@@ -18,12 +18,15 @@ self.addEventListener('message', function(e) {
 // Updated by PvdW in 2018 - Webworker Version
 // Updated by PvdW in 2019 - Improve Performance
 // Updated by PvdW in 2021 - New Sim Data, Smaller footprint, more efficient "lines" userData
+// Updated by Bob Wood in 2021 - Convert the A axis into YZ vector components for  XZA CNC
 
 
+var projectDiameter=0;
 var lastLine = {
   x: 0,
   y: 0,
   z: 0,
+  a: 0,
   e: 0,
   f: 0,
   t: false,
@@ -50,7 +53,10 @@ GCodeParser = function(handlers, modecmdhandlers) {
         // yes, there's a line num
         text = text.replace(/^N\d+\s*/ig, "");
       }
-
+    // Get project diameter from commented text
+        if(text.match(/Project Diameter/i)){  
+         projectDiameter = parseFloat(text.match(/[\d\.]+/));
+        }
       // collapse leading zero g cmds to no leading zero
       text = text.replace(/G00/i, 'G0');
       text = text.replace(/G0(\d)/i, 'G$1');
@@ -155,7 +161,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
               // use feedrate from prior lines
               args.svalue = this.lastsvalue;
             }
-
+              // tool change
             if (args.text.match(/T([\d.]+)/i)) {
               console.log("New Tool: ", args.text)
               // we have a new S-Value
@@ -201,11 +207,11 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
       for (var i = 0; i < lines.length; i++) {
 
-        if (i % 100 === 0) {
+       if (i % 100 === 0) {
           var progress = ((i / lines.length) * 100).toFixed(0)
           self.postMessage({
-            progress: progress,
-          });
+          progress: progress,
+         });
         }
 
 
@@ -227,6 +233,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       x: 0,
       y: 0,
       z: 0,
+      a: 0,
       e: 0,
       f: 0,
       s: 0,
@@ -263,6 +270,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       x: 0,
       y: 0,
       z: 0,
+      a: 0,
       e: 0
     };
     this.setUnits("mm");
@@ -572,7 +580,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
         // this move will take 10/100 = 0.1 minutes or 6 seconds
 
 
-
+        
         for (i = 0; i < threeObjArc.userData.points.length; i++) {
           var timeMinutes = 0;
           if (dist > 0) {
@@ -613,9 +621,142 @@ GCodeParser = function(handlers, modecmdhandlers) {
             g: 2,
             timeMins: p2sub.timeMins
           });
+        
+        }
+         // Wrap the XY plane around the X axis for rotating axes CNCs (not a 4th axis)
+       }else if( projectDiameter>0){
+        // Create curve for long lines by breaking them into segments, then convert the A axis into YZ vector components (XZA CNA)
+        var maxAngle=0.5;
+        var zRot=p2.z;
+        var p1Angle=p1.a;
+        var p2Angle=p2.a;
+        var deltaTheta=p2Angle-p1Angle;
+        var x2=p2.x;
+        var x1=p1.x;
+        var deltaX=x2-x1;
+        var angleCount = (deltaTheta/maxAngle);
+        
+        g = 0;
+        if (p2.g0) {
+          g = 0
+
+          
+        } else if (p2.g1) {
+          g = 1
+        } else if (p2.g2) {
+          g = 2
+        } else {
+          g = -1
         }
 
-      }
+          if(deltaTheta < -maxAngle){
+
+            for (i=0; i<-(angleCount); i++) {
+              var theta=p1Angle - maxAngle*i;
+              y = zRot*Math.sin(theta*Math.PI/180);
+              z = zRot*Math.cos(theta*Math.PI/180);
+              x = x1-(deltaX/angleCount)*i;
+              var p2 = {
+                x: x,
+                y: y,
+                z: z,
+                a: theta,
+                e: p2.e,
+                f: p2.f,
+                g0:p2.g0,
+                g1:p2.g1,
+              }
+              linePoints.push({
+                x: x,
+                y: y,
+                z: z,
+                a: theta,
+                e: p2.e,
+                f: p2.f,
+                g: g
+              });
+            }
+
+            }else if(deltaTheta > maxAngle){
+
+            for (i=angleCount; i>0; i--) {
+              var theta=p2Angle - maxAngle*i;
+              y = zRot*Math.sin(theta*Math.PI/180);
+              z = zRot*Math.cos(theta*Math.PI/180);
+              x = x2-(deltaX/angleCount)*i;
+              var p2 = {
+                x: x,
+                y: y,
+                z: z,
+                a: theta,
+                e: p2.e,
+                f: p2.f,
+                g0:p2.g0,
+                g1:p2.g1,
+              }
+              linePoints.push({
+                x: x,
+                y: y,
+                z: z,
+                a: theta,
+                e: p2.e,
+                f: p2.f,
+                g: g
+            });
+          }
+
+          }else if (deltaTheta>0){
+            var theta=p2Angle;
+            y = zRot*Math.sin(theta*Math.PI/180);
+            z = zRot*Math.cos(theta*Math.PI/180);
+            x=x2;
+            var p2 = {
+              x: x,
+              y: y,
+              z: z,
+              a: theta,
+              e: p2.e,
+              f: p2.f,
+              g0:p2.g0,
+              g1:p2.g1,
+            }
+            linePoints.push({
+              x: x,
+              y: y,
+              z: z,
+              a: theta,
+              e: p2.e,
+              f: p2.f,
+              g: g
+            });
+            
+          }else{
+            var theta=p1Angle;
+            y = zRot*Math.sin(theta*Math.PI/180);
+            z = zRot*Math.cos(theta*Math.PI/180);
+            x =x1;
+            var p2 = {
+              x: x,
+              y: y,
+              z: z,
+              a: theta,
+              e: p2.e,
+              f: p2.f,
+              g0:p2.g0,
+              g1:p2.g1,
+            }
+            linePoints.push({
+              x: x,
+              y: y,
+              z: z,
+              a: theta,
+              e: p2.e,
+              f: p2.f,
+              g: g
+            });
+            
+          }
+    }
 
 
       // DISTANCE CALC
@@ -707,8 +848,10 @@ GCodeParser = function(handlers, modecmdhandlers) {
           x: p2.x,
           y: p2.y,
           z: p2.z,
+          a: p2.a,
           g: g
         });
+      
       }
 
     }
@@ -753,9 +896,11 @@ GCodeParser = function(handlers, modecmdhandlers) {
         x: lastLine.x,
         y: lastLine.y,
         z: lastLine.z,
+        a: lastLine.a,
         g: g,
         fake: true
       });
+     
     }
 
     var cofg = this;
@@ -765,17 +910,25 @@ GCodeParser = function(handlers, modecmdhandlers) {
         as fast as possible which means no milling or extruding is happening in G0.
         So, let's color it uniquely to indicate it's just a toolhead move. */
         G0: function(args, indx) {
+                 
           //G1.apply(this, args, line, 0x00ff00);
           //console.log("G0", args);
           var newLine = {
             x: args.x !== undefined ? cofg.absolute(lastLine.x, args.x) + cofg.offsetG92.x : lastLine.x,
             y: args.y !== undefined ? cofg.absolute(lastLine.y, args.y) + cofg.offsetG92.y : lastLine.y,
             z: args.z !== undefined ? cofg.absolute(lastLine.z, args.z) + cofg.offsetG92.z : lastLine.z,
+            a: args.a !== undefined ? cofg.absolute(lastLine.a, args.a) + cofg.offsetG92.a : lastLine.a,
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
             t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
+
+          // Calculate missing Y value for X wrapping Gcode
+          if(projectDiameter>0){
+            newLine.y = newLine.z*Math.sin(newLine.a*Math.PI/180);
+          }
+
           newLine.g0 = true;
           cofg.addSegment(lastLine, newLine, args);
           //console.log("G0", lastLine, newLine, args, cofg.offsetG92);
@@ -793,11 +946,16 @@ GCodeParser = function(handlers, modecmdhandlers) {
             x: args.x !== undefined ? cofg.absolute(lastLine.x, args.x) + cofg.offsetG92.x : lastLine.x,
             y: args.y !== undefined ? cofg.absolute(lastLine.y, args.y) + cofg.offsetG92.y : lastLine.y,
             z: args.z !== undefined ? cofg.absolute(lastLine.z, args.z) + cofg.offsetG92.z : lastLine.z,
+            a: args.a !== undefined ? cofg.absolute(lastLine.a, args.a) + cofg.offsetG92.a : lastLine.a,
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
             t: args.t !== undefined ? cofg.absolute(lastLine.t, args.t) : lastLine.t,
           };
+          // Calculate missing Y value for X wrapping Gcode
+          if(projectDiameter>0){
+            newLine.y = newLine.z*Math.sin(newLine.a*Math.PI/180);
+          }
           newLine.g1 = true;
           cofg.addSegment(lastLine, newLine, args);
           //console.log("G1", lastLine, newLine, args, cofg.offsetG92);
@@ -811,6 +969,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
             x: args.x !== undefined ? cofg.absolute(lastLine.x, args.x) + cofg.offsetG92.x : lastLine.x,
             y: args.y !== undefined ? cofg.absolute(lastLine.y, args.y) + cofg.offsetG92.y : lastLine.y,
             z: args.z !== undefined ? cofg.absolute(lastLine.z, args.z) + cofg.offsetG92.z : lastLine.z,
+            a: args.a !== undefined ? cofg.absolute(lastLine.a, args.a) + cofg.offsetG92.a : lastLine.a,
             e: args.e !== undefined ? cofg.absolute(lastLine.e, args.e) + cofg.offsetG92.e : lastLine.e,
             f: args.f !== undefined ? cofg.absolute(lastLine.f, args.f) : lastLine.f,
             s: args.s !== undefined ? cofg.absolute(lastLine.s, args.s) : lastLine.s,
@@ -859,6 +1018,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
           cofg.offsetG92.x = (args.x !== undefined ? (args.x === 0 ? newLine.x : newLine.x - args.x) : 0);
           cofg.offsetG92.y = (args.y !== undefined ? (args.y === 0 ? newLine.y : newLine.y - args.y) : 0);
           cofg.offsetG92.z = (args.z !== undefined ? (args.z === 0 ? newLine.z : newLine.z - args.z) : 0);
+          cofg.offsetG92.a = (args.a !== undefined ? (args.a === 0 ? newLine.a : newLine.a - args.a) : 0);
           cofg.offsetG92.e = (args.e !== undefined ? (args.e === 0 ? newLine.e : newLine.e - args.e) : 0);
 
           //newLine.x = args.x !== undefined ? args.x + newLine.x : newLine.x;

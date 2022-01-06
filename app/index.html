@@ -40,10 +40,10 @@
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
-            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+        <!--   <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>    --> 
             <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
-          <div class="content-holder">
+          <div class="content-holder"> 
             <div class="section" id="section-grbl">
               <div class="group">
                 <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
@@ -98,29 +98,7 @@
                 </div>
                 <span class="title">Grbl</span>
               </div>
-              <div class="group">
-                <div class="ribbon-group">
-                  <button class="ribbon-icon-button" onclick="clearSettings();">
-                    <span class="icon">
-                      <i class="fas fa-sliders-h"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;Settings</span>
-                  </button><br>
-                  <button class="ribbon-icon-button" onclick="clearWCO();">
-                    <span class="icon">
-                      <i class="fas fa-layer-group"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;WCOs</span>
-                  </button><br>
-                  <button class="ribbon-icon-button" onclick="clearEEPROM();">
-                    <span class="icon">
-                      <i class="fas fa-microchip"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;EEPROM</span>
-                  </button>
-                </div>
-                <span class="title">Firmware Reset Defaults</span>
-              </div>
+           
               <div class="group estop">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -181,26 +159,33 @@
 
               <div class="group">
                 <div>
-                  <button id="openGcodeBtn" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
+                  <button class="ribbon-button btn-file" title="Open a GCODE file">
+                  <input  id="file" type="file" accept=".gcode, .ngc, .tap, .nc, .cnc" />
                     <span class="icon">
                       <span class="far fa-folder-open fg-amber"></span>
                     </span>
                     <span class="caption">Open<br>G-CODE</span>
                   </button>
-                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                    <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('fabber', true);"><img width="16" src="affiliates/fabber/fabber.svg"> Fabber</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('carveco', true);"><img width="16" src="affiliates/carveco/carveco.svg"> Carveco</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
-
+                   
+                    
                   </ul>
                 </div>
                 <span class="title">File</span>
               </div>
+
+
+
+<!--
+              <button class="ribbon-button btn-file">
+                <input class="btn-file" id="grblBackupFile" type="file" accept=".txt, .settings, .grbl" />
+                <span class="icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="caption">Restore<br>Backup</span>
+              </button>
+              <span class="title">Grbl Settings</span>
+
+-->
 
 
 
@@ -393,22 +378,7 @@
                 </button>
                 <span class="title">E-Stop</span>
               </div>
-
               <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('fabber', true);">
-                  <span class="icon">
-                    <img src="affiliates/fabber/fabber.svg">
-                  </span>
-                  <span class="caption">Fabber</span>
-                </button>
-                <button class="ribbon-button" onclick="socket.emit('carveco', true);">
-                  <span class="icon">
-                    <img src="affiliates/carveco/carveco.svg">
-                  </span>
-                  <span class="caption">Carveco</span>
-                </button>
-
-                <span class="title">CAM Tools</span>
               </div>
             </div>
 
@@ -437,6 +407,7 @@
                 </div>
                 <span class="title">Settings</span>
               </div>
+
               <div class="group" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -459,26 +430,41 @@
                 <span class="title">E-Stop</span>
               </div>
               <div class="group">
+                <div class="ribbon-group">
+                  <button class="ribbon-icon-button" Id="clearSettings"onclick="clearSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sliders-h"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;Settings</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" Id="clearWCO"onclick="clearWCO();">
+                    <span class="icon">
+                      <i class="fas fa-layer-group"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;WCOs</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" Id="clearEEPROM"onclick="clearEEPROM();">
+                    <span class="icon">
+                      <i class="fas fa-microchip"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;EEPROM</span>
+                  </button>
+                </div>
+                <span class="title">Firmware Reset Defaults</span>
+              </div>
+  
+              <div class="group">
                 <button class="ribbon-button" onclick="socket.emit('opendocs', true);">
                   <span class="icon">
                     <i class="fas fa-book" data-fa-transform=""></i>
                   </span>
-                  <span class="caption">OpenBuilds<br>Documentation</span>
+                  <span class="caption">Basic SENDER<br>Documentation</span>
                 </button>
-                <button class="ribbon-button" onclick="socket.emit('openforum', true);">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="far fa-comment-alt" data-fa-transform=""></i>
-                      <i class="fas fa-question" data-fa-transform="shrink-8 up-1"></i>
-                    </span>
-                  </span>
-                  <span class="caption">OpenBuilds<br>Forum</span>
-                </button>
-                <span class="title">Support</span>
+              <span class="title">Support</span>
               </div>
-            </div>
-
-          </div>
+              <div class="group">
+            <div></div>
+            
         </nav>
 
         <div id="manualControlPanel">
@@ -894,10 +880,7 @@
                   </div>
                   <div class="section" id="tab-three">
                     <div id="renderArea"></div>
-                    <div style="position: absolute; top: 10px; right:10px; z-index: 1; max-width: 100px; max-width: 100px;" id="overlayimg">
-                      <!-- <img src="img/mch/acro55.png" style="max-width:100%; max-height:100%;">
-                    <span style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs"></span> -->
-                    </div>
+                    
                     <div class="fixed-bottom m-3 mb-9">
                       <button class="button dark" onclick="simSpeed();"><span class="icon"><span class="fas fa-tachometer-alt"></span></span><span class="caption"><span id="simspeedval">1</span>x</span>
                       </button>
@@ -955,10 +938,6 @@
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Probe</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Door Sensor</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Buttons</td>
@@ -1019,92 +998,7 @@
               </div>
               <div class="cell p-0 m-0">
 
-                <div class="card">
-                  <div class="card-header  p-1 m-0">
-                    <i class="fas fa-fw fa-microchip"></i>Firmware Compiled with Parameters
-                  </div>
-                  <div class="card-content" style="height: calc(100vh - 680px); min-height: 120px; overflow-x: auto;">
-                    <table class="table striped compact">
-                      <thead>
-                        <tr>
-                          <th style="width: 80%;">Value</th>
-                          <th style="width: 20%;">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Variable Spindle</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enVariableSpindle">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Laser Mode Enabled ($32 Setting)</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enLaser">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Grbl-Servo Installed</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enServo">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Line Numbers Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enLineNumbers">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Mist Cooling Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enMisting">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">CoreXY Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enCoreXY">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Parking Motion Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enParking">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Homing Force Origin Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enHomingOrigin">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Single Axis Homing</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enSingleAxisHome">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Two Limit Switches on Axis Enabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enTwoLimits">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Allow Feed Override in Probe</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enFeedOVProbe">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Restore EEPROM $-settings Disabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enEepromSettingsDisable">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Restore EEPROM parameter Disabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enEepromParamsDisable">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Build Info Write Disabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enBuildInfoDisabled">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Force Sync on EEPROM write Disabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enForceSyncEeprom">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Force Sync on WCO Disabled</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enForceSyncWco">OFF</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Homing Init Lock</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert" id="enHomingInitLock">OFF</span></td>
-                        </tr>
-
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+               
 
                 <div class="card" id="powerSettingsCard">
                   <div class="card-header p-1 m-0">
@@ -1134,16 +1028,6 @@
                     </table>
                   </div>
                 </div>
-
-                <div class="card">
-                  <div class="card-header  p-1 m-0">
-                    <i class="fas fa-fw fa-history"></i> Changelog
-                  </div>
-                  <div class="card-content" style="height: calc(100vh - 680px); min-height: 120px; overflow-x: auto;">
-                    <div id="changelog" class="text-small"></div>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
