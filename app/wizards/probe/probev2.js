@@ -1,17 +1,10 @@
-var xyzprobeplate = {
-  xoffset: 10,
-  yoffset: 10,
-  zoffset: 9,
-  name: "OpenBuilds XYZ Probe Plus",
-  xyzmode: true
-}
 
 var zprobeplate = {
   xoffset: 0,
   yoffset: 0,
   zoffset: 20,
   xyzmode: false,
-  name: "OpenBuilds Z Touchplate",
+  name: "Z Touch Plate",
 }
 
 var customprobeplate = {
@@ -19,7 +12,7 @@ var customprobeplate = {
   yoffset: 6,
   zoffset: 8,
   xyzmode: true,
-  name: "Custom XYZ Touchplate",
+  name: "XYZ Touch Plate",
 }
 
 var probemode = {
@@ -30,7 +23,7 @@ var probemode = {
     y: 0,
     position: "fl" // fl, fr, rl, rr, c
   },
-  probe: xyzprobeplate,
+ 
 }
 
 $(document).ready(function() {
@@ -73,12 +66,7 @@ function openProbeDialog() {
         $(".probetabxyz").removeClass("active")
         $("#probezplatetab").addClass("active")
       }, 100)
-    } else if (localStorage.getItem('probeType') == "xyz") { // OpenBuilds Probe Plus XYZ
-      setTimeout(function() {
-        probeautotab()
-        $(".probetabxyz").removeClass("active")
-        $("#probeautotab").addClass("active")
-      }, 100)
+
     } else { // Custom Probe
       setTimeout(function() {
         probexyztab()
@@ -173,24 +161,7 @@ function openProbeZDialog() {
   }
 }
 
-function probeautotab() {
-  probemode.mode = "auto"; // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-  $(".probe-tab-content").hide();
-  $("#probe-auto").show();
-  $("#xyzdatum").show();
-  $("#zplatesettings").hide();
-  $(".img-probe").hide();
-  $("#img-probe-auto").show();
-  $("#toggle-probe-advanced").hide();
-  $("#endmilldiameterform").hide();
-  probemode.stock.position == "fl"
-  $('#runNewProbeBtn').addClass("disabled")
-  $('#confirmNewProbeBtn').removeClass("disabled")
-  $('#jogTypeContinuous').prop('checked', true)
-  allowContinuousJog = true;
-  $('.probetabxyz').removeClass('active');
-  $('#probeautotab').addClass('active');
-}
+
 
 function probexyztab() {
   probemode.mode = "xyz"; // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
@@ -351,38 +322,27 @@ $("#probe-c, #probe-c-text").on("click", function() {
 
 function probetype(type) {
   localStorage.setItem('probeType', type);
-  if (type == "xyz") {
-    $(".needsXYZProbe").show()
-    probemode.probe = xyzprobeplate // customprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="/img/xyzprobe/xyztouch.png"/></span> OpenBuilds XYZ Probe Plus`;
-    $("#probetypebtn").html(template)
-    $(".probetabz").hide();
-    $(".probetabxyz").show();
-    $("#editCustomProbeBtn").hide()
-    $("#ProbeButtonBarSpacer").show()
-    $("#probeautotab").show();
-    probeautotab()
-  } else if (type == "z") {
+  if (type == "z") {
     $(".needsXYZProbe").hide()
-    probemode.probe = zprobeplate // customprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="/img/xyzprobe/ztouch.png"/></span>OpenBuilds Z Touch Plate`;
+    probemode.probe = zprobeplate // customprobeplate, zprobeplate
+    var template = `<span class="icon"><img src="/img/xyzprobe/ztouch.png"/></span>Z Touch Plate`;
     $("#probetypebtn").html(template)
     $(".probetabxyz").hide();
     $(".probetabz").show();
     $("#editCustomProbeBtn").hide()
     $("#ProbeButtonBarSpacer").show()
-    $("#probeautotab").hide();
+
     probezplatetab();
   } else if (type == "custom") {
     $(".needsXYZProbe").show()
-    probemode.probe = customprobeplate // customprobeplate, xyzprobeplate, zprobeplate
-    var template = `<span class="icon"><img src="/img/xyzprobe/custom.png"/></span> Custom XYZ Probe`;
+    probemode.probe = customprobeplate // customprobeplate, zprobeplate
+    var template = `<span class="icon"><img src="/img/xyzprobe/custom.png"/></span> XYZ Touch Plate`;
     $("#probetypebtn").html(template)
     $(".probetabz").hide();
     $(".probetabxyz").show();
     $("#editCustomProbeBtn").show()
     $("#ProbeButtonBarSpacer").hide()
-    $("#probeautotab").hide();
+
     probexyztab()
   }
 }

@@ -447,6 +447,7 @@ function setJogPanel(val, status) {
     $('#xPos').html('0.00');
     $('#yPos').html('0.00');
     $('#zPos').html('0.00');
+    $('#aPos').html('0.00');
     if (!isJogWidget && webgl) {
       if (!simRunning) {
         if (!disable3Drealtimepos) {
