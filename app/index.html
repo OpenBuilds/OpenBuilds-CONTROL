@@ -1387,7 +1387,7 @@
       </div>
 
       <!-- XYZ Probe -->
-      <div class="dialog dark" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="true" data-to-top="true" data-width="800">
+      <div class="dialog dark" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="true" data-to-top="true" data-width="880">
         <div class="dialog-title">Probing Wizard</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <nav data-role="ribbonmenu">
@@ -1397,7 +1397,6 @@
               <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y&nbsp;Zero</a></li>
               <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z&nbsp;Zero</a></li>
               <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z&nbsp;Touch&nbsp;Plate</a></li>
-              <!-- <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
             </ul>
           </nav>
 
@@ -1406,26 +1405,18 @@
 
               <td>
                 <div id="xyzprobeimages">
-                  <img src="./img/xyzprobe/auto.png" alt="probe-auto" height="350" id="img-probe-auto" class="img-probe">
                   <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/x.png" alt="probe-x" height="350" id="img-probe-x" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/y.png" alt="probe-y" height="350" id="img-probe-y" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/z.png" alt="probe-z" height="350" id="img-probe-z" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/zplate.png" alt="probe-zplate" height="350" id="img-probe-zplate" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/endmill.png" alt="probe-endmill" height="350" id="img-probe-endmill" class="img-probe" style="display: none;">
+               
                 </div>
 
               </td>
 
               <td style="padding: 4px; padding-left: 15px; vertical-align: top;">
 
-                <div id="probe-auto" class="probe-tab-content" style="display: none;">
-                  <small>Automatic Probe Routine: This routine is used to find the XYZ origins, as well as automatically
-                    determine endmill diameter. </small>
-                  <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
-                </div>
                 <div id="probe-xyz" class="probe-tab-content">
                   <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
                   <hr>
@@ -1450,18 +1441,7 @@
                   <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
                     the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
-                <div id="probe-endmill" class="probe-tab-content" style="display: none;">
-                  <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
-                  <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
-                  <hr>
-                  <small>
-                    This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
-                    it will measure and calculate the Endmill Diameter and display it onscreen. <br>This operation will NOT set
-                    any work-coordinates!
-                  </small>
-                </div>
+                
                 <div id="probeJogWindow">
                   <hr>
                   <table>
@@ -1503,16 +1483,8 @@
                   </table>
                 </div>
                 <hr>
-                <div id="endmilldiameterform">
-                  <label>Endmill Diameter</label>
-                  <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-append="mm" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>"
-                    data-clear-button="false">
-                </div>
+                
                 <hr>
-                <button class="button" id="toggle-probe-advanced"><i class="fas fa-fw fa-cogs"></i> Advanced</button>
-                <div class="pos-relative">
-                  <div data-role="collapse" data-toggle-element="#toggle-probe-advanced" data-collapsed="true" id="toggle-probe-advanced-content">
-
                     <div id="zplatesettings" class="probe-tab-content">
                       <label>Plate Thickness</label>
                       <input id="z0platethickness" type="number" value="20" data-role="input" data-append="mm" data-prepend="<i class='fas fa-ruler-vertical'></i>" data-clear-button="false">
@@ -1524,65 +1496,8 @@
                         probing? </small>
                       <br>
 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 79.375 47.625">
-                        <style>
-
-                        </style>
-                        <defs>
-                          <marker id="A" orient="auto" class="J">
-                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
-                          </marker>
-                          <marker id="B" orient="auto" class="J">
-                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
-                          </marker>
-                          <marker id="C" orient="auto" class="J">
-                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
-                          </marker>
-                          <marker id="D" orient="auto" class="J">
-                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
-                          </marker>
-                        </defs>
-                        <g fill="#fff" class="D">
-                          <g stroke-width=".132" class="B">
-                            <path d="M7.195 7.363l15.94 28.46L70.758 31.1 47.99 5.015z" fill="#999" />
-                            <path d="M23.133 35.823l-1.257 8.313 47.7-5.284 1.172-7.752z" fill="#ececec" />
-                            <path d="M7.195 7.363l15.94 28.46-1.257 8.313-15.722-29.89z" fill="#ccc" />
-                          </g>
-                          <g stroke-width=".049" class="C N">
-                            <path d="M7.198 7.363l63.74 25.952" />
-                            <path d="M23.322 38.1L47.993 5.093" />
-                          </g>
-                          <g fill="none" stroke-width=".197" class="N">
-                            <path d="M3.942 15.993L19.16 45.07" marker-start="url(#C)" marker-end="url(#A)" />
-                            <path d="M70.118 41.003l-47.624 5.73" marker-start="url(#D)" marker-end="url(#B)" />
-                          </g>
-                          <g transform="matrix(.24595 -.020313 .020313 .24595 108.29 -158.287)">
-                            <rect class="probe-label" id="probe-c" rx="5.925" height="16.422" width="59.717" y="682.21" x="-368.93" stroke-width=".987" class="B" />
-                            <text id="probe-c-text" xml:space="preserve" letter-spacing="0" font-size="2.229" y="694.532" x="-339.852" class="C E F G H">
-                              <tspan y="694.532" x="-330.852" class="I">CENTER</tspan>
-                            </text>
-                            <rect class="probe-label areaactive" id="probe-fl" rx="6.543" height="30.532" width="43.617" y="742.64" x="-423.17" class="B M" />
-                            <text id="probe-fl-text" xml:space="preserve" letter-spacing="0" y="755.631" x="-401.459" class="C E F G H I">
-                              <tspan y="755.631" x="-350">FRONT</tspan>
-                              <tspan y="768.172" x="-350">LEFT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-fr" rx="6.543" height="30.532" width="43.617" y="733.68" x="-239.82" class="B M" />
-                            <text id="probe-fr-text" xml:space="preserve" letter-spacing="0" y="746.284" x="-217.439" class="C E F G H I">
-                              <tspan y="746.284" x="-166">FRONT</tspan>
-                              <tspan y="758.824" x="-169">RIGHT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-rr" rx="6.543" height="30.532" width="43.617" y="621.52" x="-312.72" class="B M" />
-                            <text id="probe-rr-text" xml:space="preserve" letter-spacing="0" y="633.759" x="-290.442" class="C E F G H I">
-                              <tspan y="633.759" x="-239.442">REAR</tspan>
-                              <tspan y="646.3" x="-242.442">RIGHT</tspan>
-                            </text>
-                            <rect class="probe-label" id="probe-rl" rx="6.543" height="30.532" width="43.617" y="616.07" x="-476.33" class="B M" />
-                            <text id="probe-rl-text" xml:space="preserve" letter-spacing="0" y="628.815" x="-455.49" class="C E F G H I">
-                              <tspan y="628.815" x="-404">REAR</tspan>
-                              <tspan y="641.356" x="-404">LEFT</tspan>
-                            </text></g>
-                        </g>
-                      </svg>
+                      <img src:="./img/xyzprobe/all.png" width="400" height="172" id="img-probe-xyz" >
+                                
 
                       <br>
                       <small>If the origin is not Front, Left (Default): Then provide stock dimensions to calculate correct
