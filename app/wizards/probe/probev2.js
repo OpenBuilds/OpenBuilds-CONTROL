@@ -16,7 +16,7 @@ var customprobeplate = {
 }
 
 var probemode = {
-  mode: "auto", // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
+  mode: "xyz", // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
   endmilldia: 0,
   stock: {
     x: 0,
@@ -169,15 +169,9 @@ function probexyztab() {
   $("#probe-xyz").show();
   $("#xyzdatum").show();
   $("#zplatesettings").hide();
-  $(".img-probe").hide();
   $("#img-probe-xyz").show();
-  $("#toggle-probe-advanced").show();
+  $("#img-probe-all").show();
   $("#endmilldiameterform").show();
-  if (probemode.stock.position == "fl") {
-    $("#toggle-probe-advanced-content").data('collapse').collapse()
-  } else {
-    $("#toggle-probe-advanced-content").data('collapse').expand()
-  }
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -193,11 +187,8 @@ function probextab() {
   $("#probe-x").show();
   $("#xyzdatum").hide();
   $("#zplatesettings").hide();
-  $(".img-probe").hide();
   $("#img-probe-x").show();
-  $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").show();
-  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -211,11 +202,7 @@ function probeytab() {
   $("#probe-y").show();
   $("#xyzdatum").hide();
   $("#zplatesettings").hide();
-  $(".img-probe").hide();
-  $("#img-probe-y").show();
-  $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").show();
-  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -230,11 +217,8 @@ function probeztab() {
   $("#xyzdatum").hide();
   $("#zplatesettings").hide();
   $("#zplatesettings").hide();
-  $(".img-probe").hide();
   $("#img-probe-z").show();
-  $("#toggle-probe-advanced").hide();
   $("#endmilldiameterform").hide();
-  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -248,11 +232,8 @@ function probezplatetab() {
   $("#probe-z").show();
   $("#xyzdatum").hide();
   $("#zplatesettings").show();
-  $(".img-probe").hide();
   $("#img-probe-zplate").show();
-  $("#toggle-probe-advanced").show();
   $("#endmilldiameterform").hide();
-  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -260,31 +241,9 @@ function probezplatetab() {
   $('#z0platethickness').val(zprobeplate.zoffset)
   $('.probetabxyz').removeClass('active');
   $('#probezplatetab').addClass('active');
-  if (zprobeplate.zoffset != 20) {
-    $("#toggle-probe-advanced-content").data('collapse').expand()
-  } else {
-    $("#toggle-probe-advanced-content").data('collapse').collapse()
-  }
-
+ 
 }
 
-function probeendmilltab() {
-  probemode.mode = "endmilldia"; // auto, xyz, xzero, yzero, zzero, zplate, endmilldia
-  resetOffsetFL();
-  $(".probe-tab-content").hide();
-  $("#probe-endmill").show();
-  $("#xyzdatum").hide();
-  $("#zplatesettings").hide();
-  $(".img-probe").hide();
-  $("#img-probe-endmill").show();
-  $("#toggle-probe-advanced").hide();
-  $("#endmilldiameterform").hide();
-  $("#toggle-probe-advanced-content").data('collapse').collapse()
-  $('#runNewProbeBtn').addClass("disabled")
-  $('#confirmNewProbeBtn').removeClass("disabled")
-  $('#jogTypeContinuous').prop('checked', true)
-  allowContinuousJog = true;
-}
 
 function resetOffsetFL() {
   $(".probe-label").removeClass("areaactive")
@@ -430,11 +389,7 @@ function runProbeNew() {
 
   // alert(template)
 
-  if (probemode.mode == "auto") {
-    findCenter();
-  }
-
-  if (probemode.mode == "xzero") {
+   if (probemode.mode == "xzero") {
     var xoffset = (probemode.probe.xoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the left too far from x0
     var yoffset = (probemode.probe.yoffset + probemode.endmilldia / 2) * -1 // *-1 to make negative as we are off to the front too far from y0
     var zoffset = probemode.probe.zoffset // not *-1 as its offset in z pos
