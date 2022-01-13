@@ -38,7 +38,7 @@ body {
 
 #macros {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 455px);
+  height: calc(100vh - 300px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -48,7 +48,7 @@ body {
 
 #renderArea {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 455px);
+  height: calc(100vh - 300px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -58,7 +58,7 @@ body {
 
 #editor {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 495px);
+  height: calc(100vh - 300px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -76,7 +76,7 @@ body {
 #console {
   /*font-family: "Courier New", Courier, monospace;*/
   font-family: "Lucida Console", Monaco, monospace;
-  height: calc(100vh - 495px);
+  height: calc(100vh - 300px);
   width: 100%;
   overflow-y: auto;
   overflow-x: none;
