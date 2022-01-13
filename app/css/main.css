@@ -32,7 +32,8 @@ body {
 
 #jogcontrols {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: 200px;
+  height: auto;
+  width: 550px;
 }
 
 #macros {
