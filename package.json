@@ -35,7 +35,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "echo \"Error: no start script specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.2.3)\" && echo \"2) Commit that change (git commit -am v1.2.3)\" && echo \"3) Tag your commit (git tag v1.2.3). Make sure your tag name's format is v*.*.*. Your workflow will use this tag to detect when to create a release\" && echo \"4) Push your changes to GitHub (git push && git push --tags)\""
 
@@ -56,12 +56,12 @@
     ],
     "afterSign": "electron-builder-notarize",
     "mac": {
-      "icon": "build/icon.icns",
+      "icon": "build/sender.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
     },
-    "icon": "build/icon.icns",
+    "icon": "build/sender.icns",
     "appId": "bobscnc.sender",
     "productName": "BobsCNC Basic SENDER",
     "asar": true,
@@ -71,7 +71,7 @@
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true,
       "license": "build/licence.txt",
-      "installerIcon": "build/icon.ico",
+      "installerIcon": "build/sender.ico",
       "installerSidebar": "build/installerSidebar.bmp",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
@@ -138,7 +138,7 @@
           ]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "build/sender.ico"
     },
     "linux": {
       "icon": "build/",
@@ -148,7 +148,7 @@
       ]
     },
     "dmg": {
-      "icon": "build/icon.icns",
+      "icon": "build/sender.icns",
       "contents": [
         {
           "x": 410,
