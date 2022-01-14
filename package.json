@@ -1,9 +1,9 @@
 {
-  "name": "basic-control",
-  "version": "1.0.309",
+  "name": "bobscnc-basic-sender",
+  "version": "0.0.1",
   "license": "AGPL-3.0",
-  "description": "OpenBuildsCONTROL CNC Machine Interface Software",
-  "author": "github.com/openbuilds <support@openbuilds.com>",
+  "description": "Basic SENDER - CNC Machine Interface Software",
+  "author": "github.com/rlwoodjr <bob@bobscnc.com>",
   "devDependencies": {
     "copyfiles": "^2.3.0",
     "electron": "^9.2.0",
@@ -43,7 +43,10 @@
   "keywords": [
     "usb"
   ],
-  "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlwoodjr/Basic-CONTROL.git"
+  },
   "build": {
     "publish": [
       {
@@ -59,8 +62,8 @@
       "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "icon": "build/icon.icns",
-    "appId": "openbuilds.control",
-    "productName": "OpenBuildsCONTROL",
+    "appId": "bobscnc.sender",
+    "productName": "BobsCNC Basic SENDER",
     "asar": true,
     "nsis": {
       "oneClick": false,
@@ -75,8 +78,8 @@
     "fileAssociations": [
       {
         "ext": "obc",
-        "name": "OpenBuilds CAM Workspace",
-        "description": "OpenBuilds CAM Workspace",
+        "name": "BobsCNC Basic CAM Workspace",
+        "description": "BobsCNC Basic CAM Workspace",
         "role": "Viewer"
       },
       {

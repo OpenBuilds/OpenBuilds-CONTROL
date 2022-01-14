@@ -468,7 +468,7 @@
         </nav>
 
         <div id="manualControlPanel">
-          <center>
+          <center style="display: flex;">
             <div id="jogcontrols" class="mt-1">
               <div class="row flex-justify-center flex-align-start" style="width: 100%; height: 100%;">
                 <div class="cell border-right bd-lightGray ">
@@ -753,7 +753,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square xlarge m-0 ml-2 jogbtn aP jogcursorbtn" id="aP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square xlarge m-0 jogbtn aP jogcursorbtn" id="aP" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">A+</span>
@@ -809,7 +809,7 @@
                         </button>
                       </td>
                       <td>
-                        <button class="button light square xlarge m-0 ml-2 jogbtn aM jogcursorbtn" id="aM" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square xlarge m-0 jogbtn aM jogcursorbtn" id="aM" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-down fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">A-</span>
@@ -939,7 +939,7 @@
               </div>
             </div id="controlLogs" class="mt-0">
 
-              <nav data-role="ribbonmenu">
+              <nav data-role="ribbonmenu" style="width: 100%;">
                 <ul class="tabs-holder">
                   <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw" id="3dviewicon"></i><span id="3dviewlabel"> 3D View</span></a></li>
                   <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
