@@ -2787,7 +2787,7 @@ if (isElectron()) {
         // 1366 * 768 == minimum to cater for
         width: 890,
         height: 850,
-        fullscreen: true,
+        fullscreen: false,
         center: true,
         resizable: true,
         maximizable: true,
