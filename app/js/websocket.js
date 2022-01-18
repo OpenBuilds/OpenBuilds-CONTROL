@@ -116,7 +116,7 @@ function initSocket() {
     console.log("WEBSOCKET DISCONNECTED")
     var icon = ''
     var source = "websocket"
-    var string = "Disconnected.  OpenBuilds CONTROL probably quit or crashed"
+    var string = "Disconnected.  Basic SENDER probably quit or crashed"
     var printLogCls = "fg-darkRed"
     printLogModern(icon, source, string, printLogCls)
     $("#websocketstatus").html("Disconnected")
@@ -498,7 +498,7 @@ function initSocket() {
   socket.on('status', function(status) {
 
     if (nostatusyet) {
-      // $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
+      // $('#windowtitle').html("Basic SENDER v" + status.driver.version)
       setWindowTitle(status)
       if (status.driver.operatingsystem == "rpi") {
         $('#windowtitlebar').hide();
