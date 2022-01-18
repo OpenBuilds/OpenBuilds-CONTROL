@@ -22,7 +22,7 @@ process.on("uncaughtException", (err) => {
   debug_log(err)
 });
 
-debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
+debug_log("Starting Basic SENDER v" + require('./package').version)
 
 var config = {};
 config.webPort = process.env.WEB_PORT || 3000;
@@ -487,7 +487,7 @@ app.get('/activate', (req, res) => {
   debug_log(req.hostname)
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.send('Host: ' + req.hostname + ' asked to activate OpenBuilds CONTROL v' + require('./package').version);
+  res.send('Host: ' + req.hostname + ' asked to activate Basic SENDER v' + require('./package').version);
   if (jogWindow === null) {
     createJogWindow();
     jogWindow.show()
@@ -2172,7 +2172,7 @@ function parseFeedback(data) {
         pause();
         var output = {
           'command': '[external from hardware]',
-          'response': "OpenBuilds CONTROL received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected)",
+          'response': "Basic SENDER received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected)",
           'type': 'info'
         }
         io.sockets.emit('data', output);
@@ -2188,7 +2188,7 @@ function parseFeedback(data) {
         stop(true);
         var output = {
           'command': '[external from hardware]',
-          'response': "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected)",
+          'response': "Basic SENDER received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected)",
           'type': 'info'
         }
         io.sockets.emit('data', output);
@@ -2199,7 +2199,7 @@ function parseFeedback(data) {
         unpause();
         var output = {
           'command': '[external from hardware]',
-          'response': "OpenBuilds CONTROL received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)",
+          'response': "Basic SENDER received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)",
           'type': 'info'
         }
         io.sockets.emit('data', output);
@@ -2712,7 +2712,7 @@ if (isElectron()) {
             }
           }
         }, {
-          label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
+          label: 'Quit Basic SENDER (Disables all integration until started again)',
           click() {
             if (appIcon) {
               appIcon.destroy();
@@ -2765,12 +2765,13 @@ if (isElectron()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "OpenBuilds CONTROL Started",
-            content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            // content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            content: "OpenBuilds CONTROL has started successfully"
           })
         }
       } else {
         const dockMenu = Menu.buildFromTemplate([{
-          label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
+          label: 'Quit Basic SENDER (Disables all integration until started again)',
           click() {
             // appIcon.destroy();
             electronApp.exit(0);
