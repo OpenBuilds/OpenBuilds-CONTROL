@@ -2764,8 +2764,9 @@ if (isElectron()) {
         if (appIcon) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
-            title: "Basic SENDER Started",
-            content: "Basic SENDER has started successfully: Active on " + ip.address() + ":" + config.webPort
+            title: "OpenBuilds CONTROL Started",
+            // content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            content: "OpenBuilds CONTROL has started successfully"
           })
         }
       } else {
