@@ -33,7 +33,7 @@ body {
 #jogcontrols {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
   height: auto;
-  width: 480px;
+  width: 400px;
 }
 
 #macros {
@@ -107,27 +107,7 @@ body {
   justify-content: center;
 }
 
-#grblPanel {
-  max-height: calc(100vh - 215px);
-  height: calc(100vh - 215px);
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: none;
-  padding: 8px;
-  -webkit-touch-callout: text;
-  /* iOS Safari */
-  -webkit-user-select: text;
-  /* Safari */
-  -khtml-user-select: text;
-  /* Konqueror HTML */
-  -moz-user-select: text;
-  /* Firefox */
-  -ms-user-select: text;
-  /* Internet Explorer/Edge */
-  user-select: text;
-  /* Non-prefixed version, currently
-                                     supported by Chrome and Opera */
-}
+
 
 .pf {
   margin-top: 0px;

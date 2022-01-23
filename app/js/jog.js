@@ -5,12 +5,15 @@ var safeToUpdateSliders = true;
 var jogRateX = 4000
 var jogRateY = 4000
 var jogRateZ = 2000
+var jogRateA = 4000
 
 function jogOverride(newVal) {
   if (grblParams.hasOwnProperty('$110')) {
     jogRateX = (grblParams['$110'] * (newVal / 100)).toFixed(0);
     jogRateY = (grblParams['$111'] * (newVal / 100)).toFixed(0);
     jogRateZ = (grblParams['$112'] * (newVal / 100)).toFixed(0);
+    jogRateA = (grblParams['$111'] * (newVal / 100)).toFixed(0);
+    
     $('#jro').data('slider').val(newVal)
   }
   localStorage.setItem('jogOverride', newVal);
@@ -53,8 +56,7 @@ function mmMode() {
 }
 
 function inMode() {
-  unit = "in";
-  localStorage.setItem('unitsMode', unit);
+
   $('#dist01label').html('0.001"')
   $('#dist1label').html('0.01"')
   $('#dist10label').html('0.1"')
@@ -279,6 +281,45 @@ $(document).ready(function() {
   });
 
 
+
+  $("#aPosDro").click(function() {
+    $("#aPos").hide()
+    $("#aPosDro").addClass("drop-shadow");
+    $("#aPosInput").show().focus().val(laststatus.machine.position.work.a)
+  });
+
+  $("#aPosInput").blur(function() {
+    $("#aPos").show()
+    $("#aPosDro").removeClass("drop-shadow");
+    $("#aPosInput").hide()
+  });
+
+  $('#aPosInput').on('keypress', function(e) {
+    if (e.which === 13) {
+      //Disable textbox to prevent multiple submit
+      $(this).attr("disabled", "disabled");
+      $("#aPos").show()
+      $("#aPosInput").hide()
+      //Enable the textbox again if needed.
+      $(this).removeAttr("disabled");
+      if (unit == "mm") {
+        if (e.shiftKey) {
+          sendGcode("G21\nG10 P0 L20 A" + $("#zPosInput").val());
+        } else {
+          sendGcode("$J=G90 G21 Z" + $("#aPosInput").val() + " F" + jogRateA);
+        }
+      } else if (unit == "in") {
+        if (e.shiftKey) {
+          sendGcode("G21\nG10 P0 L20 A" + $("#zPosInput").val());
+        } else {
+          sendGcode("$J=G90 G20 A" + $("#zPosInput").val() + " F" + jogRateA);
+        }
+      }
+    }
+  });
+
+
+
   $('#dist01').on('click', function(ev) {
     if (unit == "mm") {
       jogdist = 0.1;
@@ -336,10 +377,18 @@ $(document).ready(function() {
   })
 
   $('#gotozeroWPos').on('click', function(ev) {
+
+    if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
     sendGcode('G21 G90');
-    sendGcode('G0 Z5');
-    sendGcode('G0 X0 Y0');
-    sendGcode('G0 Z0');
+    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z5')}
+    if($("#XAxisDisplay").is(':checked')&&$("#YAxisDisplay").is(':checked')){
+      sendGcode('G0 X0 Y0');
+    }else{
+      if($("#XAxisDisplay").is(':checked')){sendGcode('G0 X0')};
+      if($("#YAxisDisplay").is(':checked')){sendGcode('G0 Y0')};
+      if($("#AAxisDisplay").is(':checked')){sendGcode('G0 A0')};
+    }
+    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z0')}
   });
 
   $('#gotoXzeroMpos').on('click', function(ev) {
@@ -367,22 +416,49 @@ $(document).ready(function() {
   });
 
   $('#gotozeroZmPosXYwPos').on('click', function(ev) {
-    if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 Z-' + grblParams["$27"]);
-    } else {
-      sendGcode('G53 G0 Z0');
+    var jogString=[null];
+
+    if($("#ZAxisDisplay").is(':checked')){
+        if (grblParams['$22'] == 1) {
+          sendGcode('G53 G0 Z-' + grblParams["$27"]);
+        } else {
+          sendGcode('G53 G0 Z0');
+        }
     }
-    sendGcode('G0 X0 Y0');
-    sendGcode('G0 Z0');
+    if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
+    if($("#YAxisDisplay").is(':checked')){jogString+=" Y0"}
+    if($("#AAxisDisplay").is(':checked')){jogString+=" A0"}
+    sendGcode('G0'+ jogString);
+    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z0')}
+
+
+    
   });
 
   $('#gotozeroMPos').on('click', function(ev) {
+
     if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 Z-' + grblParams["$27"]);
-      sendGcode('G53 G0 X-' + grblParams["$27"] + ' Y-' + grblParams["$27"]);
+      if($("#ZAxisDisplay").is(':checked')){
+          sendGcode('G53 G0 Z-' + grblParams["$27"]);
+      }
+      if($("#XAxisDisplay").is(':checked') && $("#YAxisDisplay").is(':checked')){
+        sendGcode('G53 G0 X-' + grblParams["$27"] + ' Y-' + grblParams["$27"]);
+      }else{
+        if($("#XAxisDisplay").is(':checked')) {sendGcode('G53 G0 X-' + grblParams["$27"])};
+        if($("#YAxisDisplay").is(':checked')) {sendGcode('G53 G0 Y-' + grblParams["$27"])};
+        if($("#AAxisDisplay").is(':checked')) {sendGcode('G53 G0 A-' + grblParams["$27"])};
+      }
+      
     } else {
-      sendGcode('G53 G0 Z0');
-      sendGcode('G53 G0 X0 Y0');
+      if($("#ZAxisDisplay").is(':checked')){sendGcode('G53 G0 Z0')}
+        if($("#XAxisDisplay").is(':checked') && $("#YAxisDisplay").is(':checked')){
+          sendGcode('G53 G0 X0 Y0');
+        }else{
+          if($("#XAxisDisplay").is(':checked')){sendGcode('G53 G0 X0')};
+          if($("#YAxisDisplay").is(':checked')){sendGcode('G53 G0 Y0')};
+          if($("#AAxisDisplay").is(':checked')){sendGcode('G53 G0 A0')};
+      }
+
     }
   });
 
@@ -590,6 +666,8 @@ $(document).ready(function() {
     }
   });
 
+  // Jog Z axis
+
   $('.zM').on('touchstart mousedown', function(ev) {
     if (ev.which > 1) { // Ignore middle and right click
       return
@@ -689,6 +767,133 @@ $(document).ready(function() {
       cancelJog()
     }
   });
+
+
+// Jogging A axis
+
+$('.aM').on('touchstart mousedown', function(ev) {
+  if (ev.which > 1) { // Ignore middle and right click
+    return
+  }
+  ev.preventDefault();
+  var hasSoftLimits = false;
+  if (Object.keys(grblParams).length > 0) {
+    if (parseInt(grblParams.$20) == 1) {
+      hasSoftLimits = true;
+    }
+  }
+  if (allowContinuousJog) { // startJog();
+    if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+      var direction = "A-";
+      var distance = 1000;
+
+      if (hasSoftLimits) {
+        // Soft Limits is enabled so lets calculate maximum move distance
+        //var mindistance = parseInt(grblParams.$131)  //  not using limits for A axis
+        var maxdistance = 0; // Grbl all negative coordinates
+        // Negative move:
+        distance = (mindistance + (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
+        distance = distance.toFixed(3);
+        if (distance < 1) {
+          toastJogWillHit("A-");
+        }
+      }
+
+      if (distance >= 1) {
+        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");
+        continuousJogRunning = true;
+        waitingForStatus = true;
+        $('.aM').click();
+      }
+    } else {
+      toastJogNotIdle();
+    }
+  } else {
+    jog('A', '-' + jogdist, jogRateA);
+  }
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+});
+$('.aM').on('touchend mouseup', function(ev) {
+  ev.preventDefault();
+  if (allowContinuousJog) {
+    cancelJog()
+  }
+});
+
+$('.aP').on('touchstart mousedown', function(ev) {
+  if (ev.which > 1) { // Ignore middle and right click
+    return
+  }
+  ev.preventDefault();
+  var hasSoftLimits = false;
+  if (Object.keys(grblParams).length > 0) {
+    if (parseInt(grblParams.$20) == 1) {
+      hasSoftLimits = true;
+    }
+  }
+  if (allowContinuousJog) { // startJog();
+    if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+      var direction = "A";
+      var distance = 1000;
+
+      if (hasSoftLimits) {
+        // Soft Limits is enabled so lets calculate maximum move distance
+        //var mindistance = parseInt(grblParams.$132)
+        var maxdistance = 0; // Grbl all negative coordinates
+        // Positive move:
+        distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
+        distance = distance.toFixed(3);
+        if (distance < 1) {
+          toastJogWillHit("A+");
+        }
+      }
+
+      if (distance >= 1) {
+        socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");
+        continuousJogRunning = true;
+        waitingForStatus = true;
+        $('.aP').click();
+      }
+    } else {
+      toastJogNotIdle();
+    }
+  } else {
+    jog('A', jogdist, jogRateA);
+  }
+  $('#runNewProbeBtn').addClass("disabled")
+  $('#confirmNewProbeBtn').removeClass("disabled")
+});
+$('.aP').on('touchend mouseup', function(ev) {
+  ev.preventDefault();
+  if (allowContinuousJog) {
+    cancelJog()
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   $('#homeBtn').on('click', function(ev) {
@@ -855,3 +1060,19 @@ function toastJogNotIdle(axis) {
   var toast = Metro.toast.create;
   toast("Please wait for machine to be Idle, before jogging. Try again once it is Idle", null, 1000, "bg-darkRed fg-white")
 }
+
+// only send zero for shown axes
+function SetActiveZeros(){
+   var jogString =[null] 
+
+  if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
+  if($("#YAxisDisplay").is(':checked')){jogString+=" Y0"}
+  if($("#ZAxisDisplay").is(':checked')){jogString+=" Z0"}
+  if($("#AAxisDisplay").is(':checked')){jogString+=" A0"}
+
+  sendGcode( 'G10 P0 L20'+jogString)
+  
+
+}
+
+
