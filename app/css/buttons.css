@@ -170,7 +170,7 @@
 
 .toggle input:checked+div {
   background: #fff;
-  border-color: #lightgray;
+  border-color: lightgray;
 }
 
 .toggle input:checked+div:before {
