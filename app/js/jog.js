@@ -56,7 +56,8 @@ function mmMode() {
 }
 
 function inMode() {
-
+  unit = "in";
+  localStorage.setItem('unitsMode', unit);
   $('#dist01label').html('0.001"')
   $('#dist1label').html('0.01"')
   $('#dist10label').html('0.1"')
@@ -184,18 +185,9 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        if (e.shiftKey) {
           sendGcode("G21\nG10 P0 L20 X" + $("#xPosInput").val());
-        } else {
-          sendGcode("$J=G90 G21 X" + $("#xPosInput").val() + " F" + jogRateX);
-        }
-
       } else if (unit == "in") {
-        if (e.shiftKey) {
           sendGcode("G21\nG10 P0 L20 X" + ($("#xPosInput").val() * 25.4));
-        } else {
-          sendGcode("$J=G90 G20 X" + $("#xPosInput").val() + " F" + jogRateX);
-        }
       }
     }
   });
@@ -225,17 +217,9 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        if (e.shiftKey) {
           sendGcode("G21\nG10 P0 L20 Y" + $("#yPosInput").val());
-        } else {
-          sendGcode("$J=G90 G21 Y" + $("#yPosInput").val() + " F" + jogRateY);
-        }
       } else if (unit == "in") {
-        if (e.shiftKey) {
           sendGcode("G21\nG10 P0 L20 Y" + ($("#yPosInput").val() * 25.4));
-        } else {
-          sendGcode("$J=G90 G20 Y" + $("#yPosInput").val() + " F" + jogRateY);
-        }
       }
     }
   });
@@ -265,17 +249,9 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        if (e.shiftKey) {
           sendGcode("G21\nG10 P0 L20 Z" + $("#zPosInput").val());
-        } else {
-          sendGcode("$J=G90 G21 Z" + $("#zPosInput").val() + " F" + jogRateZ);
-        }
-      } else if (unit == "in") {
-        if (e.shiftKey) {
+       } else if (unit == "in") {
           sendGcode("G21\nG10 P0 L20 Z" + ($("#zPosInput").val() * 25.4));
-        } else {
-          sendGcode("$J=G90 G20 Z" + $("#zPosInput").val() + " F" + jogRateZ);
-        }
       }
     }
   });
@@ -303,17 +279,9 @@ $(document).ready(function() {
       //Enable the textbox again if needed.
       $(this).removeAttr("disabled");
       if (unit == "mm") {
-        if (e.shiftKey) {
-          sendGcode("G21\nG10 P0 L20 A" + $("#zPosInput").val());
-        } else {
-          sendGcode("$J=G90 G21 Z" + $("#aPosInput").val() + " F" + jogRateA);
-        }
+          sendGcode("G21\nG10 P0 L20 A" + $("#aPosInput").val());
       } else if (unit == "in") {
-        if (e.shiftKey) {
-          sendGcode("G21\nG10 P0 L20 A" + $("#zPosInput").val());
-        } else {
-          sendGcode("$J=G90 G20 A" + $("#zPosInput").val() + " F" + jogRateA);
-        }
+         sendGcode("G21\nG10 P0 L20 A" + $("#aPosInput").val());
       }
     }
   });
@@ -415,6 +383,14 @@ $(document).ready(function() {
     }
   });
 
+  $('#gotoAzeroMpos').on('click', function(ev) {
+    if (grblParams['$22'] == 1) {
+      sendGcode('G53 G0 A-' + grblParams["$27"]);
+    } else {
+      sendGcode('G53 G0 A0');
+    }
+  });
+
   $('#gotozeroZmPosXYwPos').on('click', function(ev) {
     var jogString=[null];
 
@@ -428,39 +404,14 @@ $(document).ready(function() {
     if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
     if($("#YAxisDisplay").is(':checked')){jogString+=" Y0"}
     if($("#AAxisDisplay").is(':checked')){jogString+=" A0"}
-    sendGcode('G0'+ jogString);
-    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z0')}
+    sendGcode('G53 G0'+ jogString);
+    if($("#ZAxisDisplay").is(':checked')){sendGcode('G53 G0 Z0')}
 
 
     
   });
 
-  $('#gotozeroMPos').on('click', function(ev) {
-
-    if (grblParams['$22'] == 1) {
-      if($("#ZAxisDisplay").is(':checked')){
-          sendGcode('G53 G0 Z-' + grblParams["$27"]);
-      }
-      if($("#XAxisDisplay").is(':checked') && $("#YAxisDisplay").is(':checked')){
-        sendGcode('G53 G0 X-' + grblParams["$27"] + ' Y-' + grblParams["$27"]);
-      }else{
-        if($("#XAxisDisplay").is(':checked')) {sendGcode('G53 G0 X-' + grblParams["$27"])};
-        if($("#YAxisDisplay").is(':checked')) {sendGcode('G53 G0 Y-' + grblParams["$27"])};
-        if($("#AAxisDisplay").is(':checked')) {sendGcode('G53 G0 A-' + grblParams["$27"])};
-      }
-      
-    } else {
-      if($("#ZAxisDisplay").is(':checked')){sendGcode('G53 G0 Z0')}
-        if($("#XAxisDisplay").is(':checked') && $("#YAxisDisplay").is(':checked')){
-          sendGcode('G53 G0 X0 Y0');
-        }else{
-          if($("#XAxisDisplay").is(':checked')){sendGcode('G53 G0 X0')};
-          if($("#YAxisDisplay").is(':checked')){sendGcode('G53 G0 Y0')};
-          if($("#AAxisDisplay").is(':checked')){sendGcode('G53 G0 A0')};
-      }
-
-    }
-  });
+ 
 
 
 
@@ -484,8 +435,7 @@ $(document).ready(function() {
 
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
-          var mindistance = parseInt(grblParams.$130)
-          var maxdistance = 0; // Grbl all negative coordinates
+          var mindistance = 0; //parseInt(grblParams.$130)
           // Negative move:
           distance = (mindistance + (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
           distance = distance.toFixed(3);
@@ -534,8 +484,7 @@ $(document).ready(function() {
         var distance = 1000;
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
-          var mindistance = parseInt(grblParams.$130)
-          var maxdistance = 0; // Grbl all negative coordinates
+          var maxdistance = parseInt(grblParams.$130)
           // Positive move:
           distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x))) - 1
           distance = distance.toFixed(3);
@@ -584,8 +533,7 @@ $(document).ready(function() {
 
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
-          var mindistance = parseInt(grblParams.$131)
-          var maxdistance = 0; // Grbl all negative coordinates
+          var mindistance = 0; //parseInt(grblParams.$131)
           // Negative move:
           distance = (mindistance + (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
           distance = distance.toFixed(3);
@@ -634,8 +582,7 @@ $(document).ready(function() {
 
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
-          var mindistance = parseInt(grblParams.$131)
-          var maxdistance = 0; // Grbl all negative coordinates
+          var maxdistance = parseInt(grblParams.$131)
           // Positive move:
           distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y))) - 1
           distance = distance.toFixed(3);
@@ -687,7 +634,6 @@ $(document).ready(function() {
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
           var mindistance = parseInt(grblParams.$132)
-          var maxdistance = 0; // Grbl all negative coordinates
           // Negative move:
           distance = (mindistance + (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
           distance = distance.toFixed(3);
@@ -736,8 +682,7 @@ $(document).ready(function() {
 
         if (hasSoftLimits) {
           // Soft Limits is enabled so lets calculate maximum move distance
-          var mindistance = parseInt(grblParams.$132)
-          var maxdistance = 0; // Grbl all negative coordinates
+          var maxdistance = 0; 
           // Positive move:
           distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z))) - 1
           distance = distance.toFixed(3);
@@ -785,19 +730,7 @@ $('.aM').on('touchstart mousedown', function(ev) {
   if (allowContinuousJog) { // startJog();
     if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
       var direction = "A-";
-      var distance = 1000;
-
-      if (hasSoftLimits) {
-        // Soft Limits is enabled so lets calculate maximum move distance
-        //var mindistance = parseInt(grblParams.$131)  //  not using limits for A axis
-        var maxdistance = 0; // Grbl all negative coordinates
-        // Negative move:
-        distance = (mindistance + (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
-        distance = distance.toFixed(3);
-        if (distance < 1) {
-          toastJogWillHit("A-");
-        }
-      }
+      var distance = 360;
 
       if (distance >= 1) {
         socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");
@@ -835,19 +768,7 @@ $('.aP').on('touchstart mousedown', function(ev) {
   if (allowContinuousJog) { // startJog();
     if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
       var direction = "A";
-      var distance = 1000;
-
-      if (hasSoftLimits) {
-        // Soft Limits is enabled so lets calculate maximum move distance
-        //var mindistance = parseInt(grblParams.$132)
-        var maxdistance = 0; // Grbl all negative coordinates
-        // Positive move:
-        distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
-        distance = distance.toFixed(3);
-        if (distance < 1) {
-          toastJogWillHit("A+");
-        }
-      }
+      var distance = 360;
 
       if (distance >= 1) {
         socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");

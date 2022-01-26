@@ -2,10 +2,10 @@
 <html lang="en">
 
   <head>
-    <title>Basic SENDER</title>
+    <title>Basic SENDER Pendant</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="author" content="bobsCNC.com">
+    <meta name="author" content="BobsCNC.com">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -33,7 +33,7 @@
     <div class="window" style="height: 100vh;">
       <div class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
         <span class="icon"><img src="../icon-transparent.png" /></span>
-        <span class="title" id="windowtitle">Basic SENDER</span>
+        <span class="title" id="windowtitle">Basic Sender Pendent</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
         </div>
       </div>
@@ -68,9 +68,9 @@
 
         </div>
 
-        <div style="overflow-y: auto; height: calc(200vh - 100px);">
+        <div style="overflow-y: auto; height: calc(100vh - 100px);">
 
-          <center>
+          <center >
             <nav data-role="ribbonmenu" class="mt-2">
               <ul class="tabs-holder ml-17">
                 <li onclick="mmMode();"><a id="mmMode" href="#tab-mm">mm-mode</a></li>
@@ -79,8 +79,8 @@
             </nav>
             <table class="drotable mt-2">
               <tr>
-                <td class="p-2">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b">
+                <td class="p-1">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 82px;" data-role="ripple" data-ripple-color="#e21b1b" Id="xPosSetZ">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -88,8 +88,8 @@
                     </span>
                   </button>
                 </td>
-                <td class="p-2">
-                  <div class="dro">
+                <td class="p-1">
+                  <div class="dro" id="xPosDro">
                     <div class="float-left fg-red" data-fa-transform="right-15">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
@@ -101,12 +101,12 @@
                     <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" />
                   </div>
                 </td>
-                <td class="p-2">
-                  <div class="pos-relative">
+                <td class="p-1">
+                  <div class="pos-relative" id="xPosGT" >
                     <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                     <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                      <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
-                      <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coord) (G53 G0 X0)</a></li>
+                      <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coordinates) (G0 X0)</a></li>
+                      <li id="gotoXzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coordinates) (G53 G0 X0)</a></li>
                       <li class="divider"></li>
                       <!-- <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
                       <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li> -->
@@ -115,8 +115,8 @@
                 </td>
               </tr>
               <tr>
-                <td class="p-2">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 60px;" data-role="ripple" data-ripple-color="#5de21b">
+                <td class="p-1">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 82px;" data-role="ripple" data-ripple-color="#5de21b"Id=yPosSetZ>
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
@@ -124,8 +124,8 @@
                     </span>
                   </button>
                 </td>
-                <td class="p-2">
-                  <div class="dro">
+                <td class="p-1">
+                  <div class="dro" id="yPosDro">
                     <div class="float-left fg-green">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
@@ -136,12 +136,12 @@
                     <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" />
                   </div>
                 </td>
-                <td class="p-2">
-                  <div class="pos-relative">
+                <td class="p-1">
+                  <div class="pos-relative" id="yPosGT">
                     <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                     <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                      <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
-                      <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coord) (G53 G0 Y0)</a></li>
+                      <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coordinates) (G0 Y0)</a></li>
+                      <li id="gotoYzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coordinates) (G53 G0 Y0)</a></li>
                       <li class="divider"></li>
                       <!-- <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
                       <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li> -->
@@ -150,8 +150,8 @@
                 </td>
               </tr>
               <tr>
-                <td class="p-2">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2">
+                <td class="p-1">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 82px;" data-role="ripple" data-ripple-color="#1ba1e2"Id=zPosSetZ>
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
@@ -159,8 +159,8 @@
                     </span>
                   </button>
                 </td>
-                <td class="p-2">
-                  <div class="dro">
+                <td  class="p-1" >
+                  <div class="dro" id="zPosDro">
                     <div class="float-left fg-blue">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
@@ -171,50 +171,79 @@
                     <input id="zPosInput" class="m-0 p-0 droInput float-right fg-blue" />
                   </div>
                 </td>
-                <td class="p-2">
-                  <div class="pos-relative">
+                <td class="p-1">
+                  <div class="pos-relative" id="zPosGT">
                     <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                     <ul class="d-menu context drop-shadow drop-left" data-role="dropdown">
-                      <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
-                      <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coord) (G53 G0 Z0)</a></li>
+                      <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coordinates) (G0 Z0)</a></li>
+                      <li id="gotoZzeroMpos"><a href="#" onclick="sendGcode( 'G53 G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coordinates) (G53 G0 Z0)</a></li>
                       <li class="divider"></li>
                       <!-- <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard with XYZ-Touchplate</a></li>
                       <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe XYZ-Zero Wizard</a></li> -->
                     </ul>
                   </div>
                 </td>
-              </tr>
+              </tr> 
               <tr>
-                <td class="p-2">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0 Y0 Z0')" style="width: 60px;" data-role="ripple">
+                <td  class="p-1">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 82px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
                     <span class="fa-layers fa-fw">
-                      <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-18"></i>
-                      <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-2" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
-                      <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-12" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
-                      <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-22" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                      <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
+                      <span class="fa-layers-text fg-brown" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">A</span>
                       <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
                     </span>
                   </button>
                 </td>
-                <td class="p-2">
+                  <td class="p-1">
+                    <div class="dro" id="aPosDro" >
+                      <div class="float-left fg-brown">
+                        <span class="fa-layers fa-fw">
+                          <span class="fa-layers-text fg-brown" data-fa-transform="right-3">A</span>
+                          <span class="fa-layers-text fg-brown" data-fa-transform="left-18 rotate-270" style="font-family: Arial; font-size: 8px;">WORK</span>
+                        </span>
+                      </div>
+                      <div class="float-right fg-brown" id="aPos" data-editable>0.000</div>
+                      <input id="aPosInput" class="m-0 p-0 droInput float-right fg-brown" data-editable="true" title="Enter to Go, Shift+Enter to Set" />
+                    </div>
+                  </td>
+                <td class="p-1">
+                  <div class="pos-relative" id="aPosGT">
+                    <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
+                    <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
+                      <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-brown icon"></span>Goto A0 (Work Coordinates) (G0 A0)</a></li>
+                      <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-brown icon"></span>Goto A(Machine Coordinates) (G53 G0 A0)</a></li>
+                      <li class="divider"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-1">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0 Y0 Z0')" style="width: 82px;" data-role="ripple">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-18"></i>
+                      <span class="fa-layers-text fg-openbuilds" data-fa-transform="down-9 right-5" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
+                      <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">setzero</span>
+                    </span>
+                  </button>
+                </td>
+                <td class="p-1">
                   <div class="pos-relative">
                     <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-chart-line fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
-                        <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-2 right-70"></i>
-                        <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
-                        <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-19" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
-                        <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-29" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
+                        <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-5 right-70"></i>
+                        <span class="fa-layers-text fg-openbuilds" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
                         <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
                       </span>
                     </button>
                     <ul class="d-menu context drop-shadow" data-role="dropdown">
-                      <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)</a></li>
-                      <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTO X0Y0Z0 (Machine Coord) (G53 G0 Z0, G0 X0 Y0, G0 Z0) (Retract Z to Machine Coord Z0)</a></li>
+                      <li id="gotozeroWPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO Work Coordinates (G54-59)</a></li>
+                      <li id="gotozeroMPos"><a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO Machine Coordinates (G53)</a></li>
                     </ul>
                   </div>
                 </td>
-                <td class="p-2">
+                <td class="p-1">
                   <div class="pos-relative">
                     <button class="button light jogbtn" style="width: 42px;"></i>
                       <span class="fa-layers fa-fw">
@@ -239,10 +268,17 @@
           <hr class="border-bottom bd-lightGray ml-4 mr-4" />
 
           <div id="buttonview">
-            <center>
-              <table class="jogtable">
+            <center >
+              <table class="jogtable  ml-11">
                 <tr>
-                  <td class="p-2">
+
+                  <td class="p-2">                      
+                    <button class="button light square large jogbtn aP" id="aP">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-arrow-up fg-brown" data-fa-transform="shrink-2 down-8.5"></i>
+                        <span class="fa-layers-text fg-brown" data-fa-transform="shrink-5 up-8" style="font-weight:600">A+</span>
+                      </span>
+                    </button>
                   </td>
 
                   <td class="p-2">
@@ -254,15 +290,43 @@
                     </button>
                   </td>
 
-                  <td class="p-2">
-                  </td>
-
 
                   <td class="p-2">
                     <button class="button light square large jogbtn zP" id="zP">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                         <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
+                      </span>
+                    </button>
+                  </td>  
+                  
+                  <td rowspan="3" >
+                    <button class="button light jogbtn metricbtn distbtn" style="width: 65%; height: 50%; margin:2px">
+                        <span  style="font-weight:600; font-family: Arial; font-size: 12px; text-align: center;color: rgb(15, 15, 62);">Jog Distance</span>
+                    </button>
+
+                    <button class="button light jogbtn metricbtn distbtn" id="dist01" style="width: 65%; height: 50%; margin:2px">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
+                      </span>
+                    </button>
+              
+
+                    <button class="button light jogbtn metricbtn distbtn" id="dist1" style="width: 65%; height: 50%; margin:2px">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
+                      </span>
+                    </button>
+
+                    <button class="button light jogbtn distbtn metricbtn bd-openbuilds" id="dist10" style="width: 65%; height: 50%; margin:2px">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
+                      </span>
+                    </button>
+
+                    <button class="button light jogbtn distbtn metricbtn" id="dist100" style="width: 65%; height: 50%; margin:2px">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
                       </span>
                     </button>
                   </td>
@@ -278,14 +342,11 @@
                   </td>
 
                   <td class="p-2">
-                    <button class="button light square large jogbtn yM" id="yM">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
-                        <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
-                      </span>
+                    <button class="button light square large jogbtn">
+                      <span class="fa-layers fa-fw"></span>
                     </button>
-                  </td>
-
+                  </td>  
+        
                   <td class="p-2">
                     <button class="button light square large jogbtn xP" id="xP">
                       <span class="fa-layers fa-fw">
@@ -294,6 +355,28 @@
                       </span>
                     </button>
                   </td>
+
+
+                  </tr>
+                  <tr>
+
+                    <td class="p-2">
+                      <button class="button light square large jogbtn aM" id="aM">
+                        <span class="fa-layers fa-fw">
+                          <i class="fas fa-arrow-down fg-brown" data-fa-transform="shrink-2 down-8.5"></i>
+                          <span class="fa-layers-text fg-brown" data-fa-transform="shrink-5 up-8" style="font-weight:600">A-</span>
+                        </span>
+                      </button>
+                    </td>
+                  <td class="p-2">
+                    <button class="button light square large jogbtn yM" id="yM">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-arrow-down fg-green" data-fa-transform="shrink-2 down-8.5"></i>
+                        <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y-</span>
+                      </span>
+                    </button>
+                  </td>
+
                   <td class="p-2">
                     <button class="button light square large jogbtn zM" id="zM">
                       <span class="fa-layers fa-fw">
@@ -321,36 +404,7 @@
                     </table>
                   </td>
                 </tr>
-                <tr>
-                  <td class="p-2">
-                    <button class="button light jogbtn distbtn" id="dist01" style="width: 100%; height: 30px; line-height: 28px;">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
-                      </span>
-                    </button>
-                  </td>
-                  <td class="p-2">
-                    <button class="button light jogbtn distbtn" id="dist1" style="width: 100%; height: 30px; line-height: 28px;">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
-                      </span>
-                    </button>
-                  </td>
-                  <td class="p-2">
-                    <button class="button light jogbtn distbtn" id="dist10" style="width: 100%; height: 30px; line-height: 28px;">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
-                      </span>
-                    </button>
-                  </td>
-                  <td class="p-2">
-                    <button class="button light jogbtn distbtn" id="dist100" style="width: 100%; height: 30px; line-height: 28px;">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
-                      </span>
-                    </button>
-                  </td>
-                </tr>
+               
                 <tr>
                   <td colspan="4">
                     <div id="jrocell">
