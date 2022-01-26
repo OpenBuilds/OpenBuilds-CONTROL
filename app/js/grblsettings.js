@@ -115,18 +115,18 @@ function grblSettings(data) {
 
 
   if (grblParams['$22'] == 1) {
-    $('#gotozeroMPos').removeClass('disabled')
     $('#homeBtn').attr('disabled', false)
     $('#gotoXzeroMpos').removeClass('disabled')
     $('#gotoYzeroMpos').removeClass('disabled')
     $('#gotoZzeroMpos').removeClass('disabled')
+    $('#gotoAzeroMpos').removeClass('disabled')
     $('.PullOffMPos').html("-" + grblParams['$27'])
   } else {
-    $('#gotozeroMPos').addClass('disabled')
-    $('#homeBtn').attr('disabled', true)
+     $('#homeBtn').attr('disabled', true)
     $('#gotoXzeroMpos').addClass('disabled')
     $('#gotoYzeroMpos').addClass('disabled')
     $('#gotoZzeroMpos').addClass('disabled')
+    $('#gotoAzeroMpos').removeClass('disabled')
   }
 
   if (grblParams['$32'] == 1) {
@@ -416,11 +416,9 @@ function grblPopulate() {
 
     if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
       $('#limitsinstalled:checkbox').prop('checked', true);
-      $('#gotozeroMPos').removeClass('disabled')
       $('#homeBtn').attr('disabled', false)
     } else {
       $('#limitsinstalled:checkbox').prop('checked', false);
-      $('#gotozeroMPos').addClass('disabled')
       $('#homeBtn').attr('disabled', true)
     }
 

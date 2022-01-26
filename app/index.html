@@ -29,7 +29,7 @@
       <div id="windowtitlebar" class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
         <!-- <span class="icon mif-cog"></span> -->
         <span class="icon"><img src="splash.png" /></span>
-        <span class="title" id="windowtitle">BobsCNC Basic SENDER</span>
+        <span class="title" id="windowtitle">Basic SENDER</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
           <span class="btn-min" onclick="socket.emit('minimize')"></span>
           <span class="btn-max" onclick="socket.emit('maximize')"></span>
@@ -175,32 +175,6 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                    <li>
-                      <a href="#" class="dropdown-toggle">Variable Speed Spindle On (M3 Sxxx)</a>
-                      <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 5% RPM (M3 S<span class="ToolOnS5">50</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 10% RPM (M3 S<span class="ToolOnS10">100</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 25% RPM (M3 S<span class="ToolOnS25">250</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 50% RPM (M3 S<span class="ToolOnS50">500</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 75% RPM (M3 S<span class="ToolOnS75">750</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 100% RPM (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="#" class="dropdown-toggle">Laser On (M3 Sxxx)</a>
-                      <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.01).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 1% Power (M3 S<span class="ToolOnS1">10</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                      </ul>
-                    </li>
-                    <!-- <li class="divider"></li> -->
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                    <li class="divider fg-lightGray"></li>
                     <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
                     <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
@@ -220,7 +194,7 @@
                     <span class="caption">Tool<br>Off</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Router / Spindle / Laser / Plasma Off (M5)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Router Off (M5)</a></li>
                     <li class="divider fg-lightGray"></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M9')">Coolant Off (M9)</a></li>
 
@@ -451,13 +425,12 @@
                           <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" data-editable="true" title="Enter to Go, Shift+Enter to Set" />
                         </div>
                       </td>
-
                       <td>
                         <div class="pos-relative" id="xPosGT">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
-                            <li id="gotoXzeroMpos"><a href="#"><span class="fas fa-chart-line fg-red icon"></span>Goto X<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 X0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coordinates) (G0 X0)</a></li>
+                            <li id="gotoXzeroMpos"><a href="#"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Machine Coordinates) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe XYZ-Zero Wizard</a></li>
@@ -489,13 +462,12 @@
                           <input id="yPosInput" class="m-0 p-0 droInput float-right fg-green" data-editable="true" title="Enter to Go, Shift+Enter to Set" />
                         </div>
                       </td>
-
                       <td>
                         <div class="pos-relative" id="yPosGT">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
-                            <li id="gotoYzeroMpos"><a href="#"><span class="fas fa-chart-line fg-green icon"></span>Goto Y<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Y0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coordinates) (G0 Y0)</a></li>
+                            <li id="gotoYzeroMpos"><a href="#"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Machine Coordinates) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe XYZ-Zero Wizard</a></li>
@@ -528,11 +500,11 @@
                         </div>
                       </td>
                       <td>
-                      <div class="pos-relative"id="zPosGT">
+                      <div class="pos-relative" id="zPosGT">
                         <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                         <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                          <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
-                          <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Z0)</a></li>
+                          <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coordinates) (G0 Z0)</a></li>
+                          <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Machine Coordinates) (G53 G0 Z0)</a></li>
                           <li class="divider"></li>
                           <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
                           <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li>
@@ -541,8 +513,6 @@
                       </div>
                      </td>
                     </tr>
-
-
                     <tr>
                       <td>
                         <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 94px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
@@ -569,14 +539,14 @@
                         <div class="pos-relative" id="aPosGT">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-brown icon"></span>Goto A0 (Work Coord) (G0 A0)</a></li>
-                     <!--     <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-brown icon"></span>Goto Z<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 A0)</a></li>  -->  
+                            <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-brown icon"></span>Goto A0 (Work Coordinates) (G0 A0)</a></li>
+                            <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-brown icon"></span>Goto A(Machine Coordinates) (G53 G0 A0)</a></li>
                             <li class="divider"></li>
                           </ul>
                         </div>
                       </td>
                     </tr>
-                    </tr> 
+           
 
 
 
@@ -597,22 +567,17 @@
                             <span class="fa-layers fa-fw">
                               <i class="fas fa-chart-line fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                               <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-2 right-70"></i>
-                              <span class="fa-layers-text fg-fg-openbuilds" data-fa-transform="down-9 right-12" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
+                              <span class="fa-layers-text fg-openbuilds" data-fa-transform="down-9 right-12" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
                               <span class="fa-layers-text fg-openbuilds" data-fa-transform="up-8 " style="font-weight:900; font-family: Arial; font-size: 12px;">gotozero</span>
                             </span>
                           </button>
                           <ul class="d-menu context drop-shadow" data-role="dropdown">
                             <li id="gotozeroWPos">
-                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Work Coord) (G0 Z5, G0 X0 Y0, G0 Z0) (Retract Z to Work Coord Z5)
+                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO Work Coordinates (G54-59)
                               </a>
                             </li>
                             <li id="gotozeroZmPosXYwPos">
-                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Z Machine Coord, XYA Work Coord) (G53 G0 Z<span class="PullOffMPos">0</span>, G0 X0 Y0 A0, G0 Z0) (Retract Z to
-                                Machine Coord)
-                              </a>
-                            </li>
-                            <li id="gotozeroMPos">
-                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO (Machine Coord) (G53 G0 Z<span class="PullOffMPos">0</span>, G53 G0 X<span class="PullOffMPos">0</span> Y<span class="PullOffMPos">0</span>)
+                              <a href="#"><span class="fas fa-chart-line fg-openbuilds icon"></span>GOTOZERO Machine Coordinates (G53)
                               </a>
                             </li>
                           </ul>
@@ -644,7 +609,7 @@
                 <table class="jogtable">                 
                   <tr>
                       <td>
-                        <button class="button light square xlarge jogbtn aP jogcursorbtn" id="aP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square xlarge jogbtn aP jogcursorbtn" id="aPm" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-brown" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-brown" data-fa-transform="shrink-5 up-8" style="font-weight:600">A+</span>
@@ -653,7 +618,7 @@
                       </td>
 
                       <td>
-                        <button class="button light square xlarge jogbtn yP jogcursorbtn" id="yP" data-role="ripple" data-ripple-color="#5de21b" >
+                        <button class="button light square xlarge jogbtn yP jogcursorbtn" id="yPm" data-role="ripple" data-ripple-color="#5de21b" >
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-green" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="shrink-5 up-8" style="font-weight:600">Y+</span>
@@ -663,7 +628,7 @@
 
 
                       <td>
-                        <button class="button light square xlarge jogbtn zP jogcursorbtn" id="zP" data-role="ripple" data-ripple-color="#1ba1e2">
+                        <button class="button light square xlarge jogbtn zP jogcursorbtn" id="zPm" data-role="ripple" data-ripple-color="#1ba1e2">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-arrow-up fg-blue" data-fa-transform="shrink-2 down-8.5"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="shrink-5 up-8" style="font-weight:600">Z+</span>
