@@ -81,20 +81,13 @@ function axisDisplayChange(){
       $("#xM").show();
      }else if($("#XAxisDisplay").is(':checked')===false){
       localStorage.setItem('XaxisDRO', "false");
-   //   $("#xPosSetZ").hide();
-   //   $("#xPosDro").hide();
-   //   $("#xPosGT").hide();
-   //   $("#xP").hide();
-   //   $("#xM").hide();
+      $("#xPosSetZ").hide();
+      $("#xPosDro").hide();
+      $("#xPosGT").hide();
+      $("#xP").hide();
+      $("#xM").hide();
       }
-     
-
-
-
-
-
-
-      
+         
     if($("#YAxisDisplay").is(':checked')){
       localStorage.setItem('YaxisDRO', "true");
       $("#yPosSetZ").show();
@@ -104,11 +97,11 @@ function axisDisplayChange(){
       $("#yM").show();
      }else if($("#YAxisDisplay").is(':checked')===false){
       localStorage.setItem('YaxisDRO', "false");
-     // $("#yPosSetZ").hide();
-    //  $("#yPosDro").hide();
-   //   $("#yPosGT").hide();
-   //   $("#yP").hide();
-   //   $("#yM").hide();
+      $("#yPosSetZ").hide();
+      $("#yPosDro").hide();
+      $("#yPosGT").hide();
+      $("#yP").hide();
+      $("#yM").hide();
       }
      
 
@@ -121,11 +114,11 @@ function axisDisplayChange(){
       $("#zM").show();
      }else if($("#ZAxisDisplay").is(':checked')===false){
       localStorage.setItem('ZaxisDRO', "false");
- //     $("#zPosSetZ").hide();
- //     $("#zPosDro").hide();
-   //   $("#zPosGT").hide();
-  //    $("#zP").hide();
- //     $("#zM").hide();
+      $("#zPosSetZ").hide();
+      $("#zPosDro").hide();
+      $("#zPosGT").hide();
+      $("#zP").hide();
+      $("#zM").hide();
      }
 
     if($("#AAxisDisplay").is(':checked')){
@@ -137,11 +130,11 @@ function axisDisplayChange(){
       $("#aM").show();
      }else if($("#AAxisDisplay").is(':checked')===false){
       localStorage.setItem('AaxisDRO', "false");
-  //    $("#aPosSetZ").hide();
-   //   $("#aPosDro").hide();
-  //    $("#aPosGT").hide();
-   //   $("#aP").hide();
-  //    $("#aM").hide();
+      $("#aPosSetZ").hide();
+      $("#aPosDro").hide();
+      $("#aPosGT").hide();
+      $("#aP").hide();
+      $("#aM").hide();
      }
 
 }
