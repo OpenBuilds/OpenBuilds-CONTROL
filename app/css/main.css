@@ -144,6 +144,10 @@ select {
 }
 
 /* OpenBuilds Navbar for MetroWindows */
+.fg-bobscncGray {
+  color: rgb(90, 90, 90) !important;
+}
+
 .fg-openbuilds {
   color: rgb(74, 78, 81) !important;
 }

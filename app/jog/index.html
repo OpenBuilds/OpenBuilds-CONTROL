@@ -78,9 +78,24 @@
               </ul>
             </nav>
             <table class="drotable mt-2">
+
+
+              <tr>
+
+                <td colspan="3"class="cell border-right bd-lightGray  fg-bobscncGray" style="  text-align: center; border: 1px solid ;
+                  font-weight:900;font-family: Arial; font-size: 16px;">Feed Rate:
+                  <span id="realFeed"></span>
+
+                </td>
+              <tr>
+              </tr>
+                <td>
+
+
+
               <tr>
                 <td class="p-1">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 82px;" data-role="ripple" data-ripple-color="#e21b1b" Id="xPosSetZ">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 62px;" data-role="ripple" data-ripple-color="#e21b1b" Id="xPosSetZ">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -89,7 +104,7 @@
                   </button>
                 </td>
                 <td class="p-1">
-                  <div class="dro" id="xPosDro">
+                  <div class="dro" style="width: 150px;" id="xPosDro">
                     <div class="float-left fg-red" data-fa-transform="right-15">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
@@ -116,7 +131,7 @@
               </tr>
               <tr>
                 <td class="p-1">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 82px;" data-role="ripple" data-ripple-color="#5de21b"Id=yPosSetZ>
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 62px;" data-role="ripple" data-ripple-color="#5de21b"Id=yPosSetZ>
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
@@ -125,7 +140,7 @@
                   </button>
                 </td>
                 <td class="p-1">
-                  <div class="dro" id="yPosDro">
+                  <div class="dro" style="width: 150px;" id="yPosDro">
                     <div class="float-left fg-green">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
@@ -151,7 +166,7 @@
               </tr>
               <tr>
                 <td class="p-1">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 82px;" data-role="ripple" data-ripple-color="#1ba1e2"Id=zPosSetZ>
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 62px;" data-role="ripple" data-ripple-color="#1ba1e2"Id=zPosSetZ>
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
@@ -160,7 +175,7 @@
                   </button>
                 </td>
                 <td  class="p-1" >
-                  <div class="dro" id="zPosDro">
+                  <div class="dro" style="width: 150px;"id="zPosDro">
                     <div class="float-left fg-blue">
                       <span class="fa-layers fa-fw">
                         <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
@@ -186,7 +201,7 @@
               </tr> 
               <tr>
                 <td  class="p-1">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 82px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
+                  <button class="button light jogbtn"  onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 62px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                       <span class="fa-layers-text fg-brown" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">A</span>
@@ -195,7 +210,7 @@
                   </button>
                 </td>
                   <td class="p-1">
-                    <div class="dro" id="aPosDro" >
+                    <div class="dro" style="width: 150px;"id="aPosDro" >
                       <div class="float-left fg-brown">
                         <span class="fa-layers fa-fw">
                           <span class="fa-layers-text fg-brown" data-fa-transform="right-3">A</span>
@@ -219,7 +234,7 @@
               </tr>
               <tr>
                 <td class="p-1">
-                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0 Y0 Z0')" style="width: 82px;" data-role="ripple">
+                  <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0 Y0 Z0')" style="width: 62px;" data-role="ripple">
                     <span class="fa-layers fa-fw">
                       <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-18"></i>
                       <span class="fa-layers-text fg-openbuilds" data-fa-transform="down-9 right-5" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
@@ -228,8 +243,8 @@
                   </button>
                 </td>
                 <td class="p-1">
-                  <div class="pos-relative">
-                    <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
+                  <div class="pos-relative" >
+                    <button class="button light jogbtn" style="width: 150px;" data-role="ripple">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-chart-line fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                         <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-5 right-70"></i>
@@ -300,36 +315,7 @@
                     </button>
                   </td>  
                   
-                  <td rowspan="3" >
-                    <button class="button light jogbtn metricbtn distbtn" style="width: 65%; height: 50%; margin:2px">
-                        <span  style="font-weight:600; font-family: Arial; font-size: 12px; text-align: center;color: rgb(15, 15, 62);">Jog Distance</span>
-                    </button>
-
-                    <button class="button light jogbtn metricbtn distbtn" id="dist01" style="width: 65%; height: 50%; margin:2px">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
-                      </span>
-                    </button>
-              
-
-                    <button class="button light jogbtn metricbtn distbtn" id="dist1" style="width: 65%; height: 50%; margin:2px">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
-                      </span>
-                    </button>
-
-                    <button class="button light jogbtn distbtn metricbtn bd-openbuilds" id="dist10" style="width: 65%; height: 50%; margin:2px">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
-                      </span>
-                    </button>
-
-                    <button class="button light jogbtn distbtn metricbtn" id="dist100" style="width: 65%; height: 50%; margin:2px">
-                      <span class=" fa-layers fa-fw">
-                        <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
-                      </span>
-                    </button>
-                  </td>
+                 
                 </tr>
                 <tr>
                   <td class="p-2">
@@ -406,15 +392,71 @@
                 </tr>
                
                 <tr>
-                  <td colspan="4">
-                    <div id="jrocell">
+                </tr>
+                <table style="width: 70%; " class=" mt-3">
+                  <td colspan='3' class="cell border-right bd-lightGray  fg-black"  style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Speed
+                  <td >
+                   <tr>
 
-                      <input id="jro" data-on-stop="jogOverride(arguments[0])" data-role="slider" data-accuracy="1" data-vertical="false" data-min="1" data-max="100" data-value="100" data-hint="true" data-hint-always="true"
-                        data-hint-position="bottom" data-hint-mask="Jog Rate: $1%" data-cls-hint="bg-light
-                            fg-dark shadow-1" data-cls-complete="bg-openbuilds">
-                      <button class="button light mini mb-1" onclick="jogOverride(100);">reset</button>
-                    </div>
+                   </tr>
+                   <td >
+                    <button class="button light mb-2 spdbtn" id="lowJog" style="width: 90px; margin:5px">
+                        <span id="lowlabel" class="fa-layers-text fg-gray jogspd" data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Low</span>
+                    </button>
                   </td>
+                  <td>
+                  <button class="button light mb-2 bd-openbuilds spdbtn" id="normalJog" style="width: 90px; margin:5px">
+                      <span id="normallabel"class="fa-layers-text fg-openbuilds jogspd"data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Normal</span>
+                  </button>
+                  </td>
+                  <td>
+                    <button class="button light mb-2 spdbtn" id="highJog" style="width: 90px; margin:5px">
+                        <span id="highlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">High</span>
+           
+                    </button>
+                    </td>
+                  </table>
+                </tr>
+
+
+                <tr>
+                  <table style="width: 70%; " class=" mt-3">
+                    <td colspan='4' class=" distbtn cell border-right bd-lightGray  fg-black" style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Distance
+                      <td >
+                       <tr>
+
+                       </tr>
+                  <td>
+                    <button class="button light jogbtn metricbtn distbtn" id="dist01" style="width: 100%; height: 40px; line-height: 40px;">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="button light jogbtn metricbtn distbtn" id="dist1" style="width: 100%; height: 40px; line-height: 40px;">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="button light jogbtn distbtn metricbtn bd-openbuilds" id="dist10" style="width: 100%; height: 40px; line-height: 40px;">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="button light jogbtn distbtn metricbtn" id="dist100" style="width: 100%; height: 40px; line-height: 40px;">
+                      <span class=" fa-layers fa-fw">
+                        <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
+                      </span>
+                    </button>
+                  </td>
+                </table>
+                </tr>
+          </table>
                 </tr>
               </table>
             </center>

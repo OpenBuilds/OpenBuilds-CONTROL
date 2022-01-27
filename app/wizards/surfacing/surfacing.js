@@ -156,3 +156,62 @@ G1 X` +
   //
   // $("#gcode").html(gcode.replace(/(?:\r\n|\r|\n)/g, "<br>"));
 }
+
+
+
+function populateRoundingToolForm() {
+  $("#gcode").empty();
+
+  if (localStorage.getItem("lastRoundingTool")) {
+    var data = JSON.parse(localStorage.getItem("lastRoundingTool"));
+  } else {
+    var data = {
+      roundingDiameter: 6.35,
+      roundingStepover: 40,
+      roundingFeedrate: 800,
+      roundingX: 200,
+      roundingStartA: 165,
+      roundingFinishA: 150,
+      roundingDepth: 3,
+    };
+  }
+  $("#roundDiameter").val(data.roundingDiameter);
+  $("#roundStepover").val(data.roundingStepover);
+  $("#roundFeedrate").val(data.roundingFeedrate);
+  $("#roundX").val(data.roundingX);
+  $("#roundStartA").val(data.roundingStartA);
+  $("#roundFinishA").val(data.roundingFinishA);
+  $("#rouneDepth").val(data.roundingDepth);
+  var $radios = $("input:radio[name=surfaceType]");
+  $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
+  Metro.dialog.open("#roundingDialog");
+}
+
+
+function createRoundingGcode() {
+  var data = {
+    roundingDiameter: $("#roundDiameter").val(),
+    roundingStepover: $("#roundStepover").val(),
+    roundingFeedrate: $("#roundFeedrate").val(),
+    roundingX: $("#roundX").val(),
+    roundingStartA: $("#roundStartA").val(),
+    roundingFinishA: $("#roundFinishA").val(),
+    roundingDepth: $("#roundDepth").val(),
+
+  };
+  console.log(data);
+  localStorage.setItem("lastRoundingTool", JSON.stringify(data));
+
+
+  var gcode =""
+ 
+
+
+
+  gcode += `M5 S0\n`;
+
+  editor.session.setValue(gcode);
+  parseGcodeInWebWorker(gcode)
+  printLog("<span class='fg-red'>[ Rounding Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
+
+}
