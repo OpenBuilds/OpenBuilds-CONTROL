@@ -240,8 +240,8 @@
                     <span class="caption">Wizards<br>& Tools</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
-                    <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Round Stock Wizard</a></li>
+                    <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing Wizard</a></li>
+                    <li><a href="#" onclick="populateRoundingToolForm();"><i class="fas fa-exchange-alt"></i> Rounding Wizard</a></li>
                       <li class="divider fg-lightGray"></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                     <li class="divider fg-lightGray"></li>
@@ -370,13 +370,21 @@
               <div class="row flex-justify-center flex-align-start" style="width: 100%; height: 100%;">
                 <div class="cell border-right bd-lightGray ">
 
-                  <table class="drotable mt-1">
+                  <table class="drotable mt-3">
                     <tr>
+
+                      <td colspan="3"class="cell border-right bd-lightGray  fg-bobscncGray" style="  text-align: center; border: 1px solid ;
+                        font-weight:900;font-family: Arial; font-size: 16px;">Feed Rate:
+                        <span id="realFeed"></span>
+   
+                      </td>
+                    <tr>
+                    </tr>
                       <td>
 
 
-                        <div class="pos-relative">
-                          <button class="button mini light jogbtn" style="width: 94px; height: 24px;" id="wcsBtn">
+                        <div class="pos-relative mt-3">
+                          <button class="button mini light jogbtn" style="width: 60px; height: 24px;" id="wcsBtn">
                             <span title="Show/change current Work Coordinate System" class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G54
                           </button>
                           <ul class="ribbon-dropdown drop-shadow" data-role="dropdown">
@@ -394,8 +402,8 @@
                       <td colspan="3">
                         <nav data-role="ribbonmenu" class="mt-1">
                           <ul class="tabs-holder">
-                            <li onclick="mmMode();"><a id="mmMode" href="#tab-mm">mm-mode</a></li>
-                            <li onclick="inMode();"><a id="inMode" href="#tab-inch">inch-mode</a></li>
+                            <li onclick="mmMode();"><a id="mmMode" href="#tab-mm">mm</a></li>
+                            <li onclick="inMode();"><a id="inMode" href="#tab-inch">inch</a></li>
                           </ul>
                         </nav>
                       </td>
@@ -404,7 +412,7 @@
                     
                     <tr>
                       <td>
-                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 94px;" data-role="ripple" data-ripple-color="#e21b1b" Id="xPosSetZ">
+                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 X0')" style="width: 60px;" data-role="ripple" data-ripple-color="#e21b1b" Id="xPosSetZ">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                             <span class="fa-layers-text fg-red" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">X</span>
@@ -413,7 +421,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro" id="xPosDro">
+                        <div class="dro" style="width: 150px" id="xPosDro">
                           <div class="float-left fg-red" data-fa-transform="right-15">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-red" data-fa-transform="right-3">X</span>
@@ -421,7 +429,7 @@
                               <!-- <span class="fa-layers-text fg-red" data-fa-transform="left-20 rotate--90" style="font-family: Arial; font-size: 11px;">work</span> -->
                             </span>
                           </div>
-                          <div class="float-right fg-red" id="xPos" data-editable>0.000</div>
+                          <div class="float-right fg-red"  class="fg-darkGray mt-5" id="xPos" data-editable>0.000</div>
                           <input id="xPosInput" class="m-0 p-0 droInput float-right fg-red" data-editable="true" title="Enter to Go, Shift+Enter to Set" />
                         </div>
                       </td>
@@ -442,7 +450,7 @@
 
                     <tr>
                       <td>
-                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 94px;" data-role="ripple" data-ripple-color="#5de21b" Id="yPosSetZ">
+                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Y0')" style="width: 60px;" data-role="ripple" data-ripple-color="#5de21b" Id="yPosSetZ">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                             <span class="fa-layers-text fg-green" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Y</span>
@@ -451,7 +459,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro" id="yPosDro">
+                        <div class="dro" style="width: 150px" id="yPosDro">
                           <div class="float-left fg-green">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-green" data-fa-transform="right-3">Y</span>
@@ -479,7 +487,7 @@
 
                     <tr>
                       <td>
-                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 94px;" data-role="ripple" data-ripple-color="#1ba1e2" Id="zPosSetZ">
+                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 Z0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2" Id="zPosSetZ">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                             <span class="fa-layers-text fg-blue" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">Z</span>
@@ -488,7 +496,7 @@
                         </button>
                       </td>
                       <td>
-                        <div class="dro" id="zPosDro">
+                        <div class="dro" style="width: 150px" id="zPosDro">
                           <div class="float-left fg-blue">
                             <span class="fa-layers fa-fw">
                               <span class="fa-layers-text fg-blue" data-fa-transform="right-3">Z</span>
@@ -515,7 +523,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 94px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
+                        <button class="button light jogbtn" onclick="sendGcode( 'G10 P0 L20 A0')" style="width: 60px;" data-role="ripple" data-ripple-color="#1ba1e2" Id=aPosSetZ>
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                             <span class="fa-layers-text fg-brown" data-fa-transform="down-9 right-8" style="font-weight:900; font-family: Arial; font-size: 12px;">A</span>
@@ -524,7 +532,7 @@
                         </button>
                       </td>
                         <td>
-                          <div class="dro" id="aPosDro" >
+                          <div class="dro" style="width: 150px" id="aPosDro" >
                             <div class="float-left fg-brown">
                               <span class="fa-layers fa-fw">
                                 <span class="fa-layers-text fg-brown" data-fa-transform="right-3">A</span>
@@ -553,7 +561,7 @@
 
                   <tr>
                       <td>
-                        <button class="button light jogbtn" onclick="SetActiveZeros()" style="width: 94px;" data-role="ripple">
+                        <button class="button light jogbtn" onclick="SetActiveZeros()" style="width: 60px;" data-role="ripple">
                           <span class="fa-layers fa-fw">
                             <i class="fas fa-crosshairs fg-openbuilds" data-fa-transform="shrink-2 down-8 left-18"></i>
                             <span class="fa-layers-text fg-openbuilds" data-fa-transform="down-9 right-5" style="font-weight:900; font-family: Arial; font-size: 12px;">All</span>
@@ -563,7 +571,7 @@
                       </td>
                       <td>
                         <div class="pos-relative">
-                          <button class="button light jogbtn" style="width: 161px;" data-role="ripple">
+                          <button class="button light jogbtn" style="width: 150px;" data-role="ripple">
                             <span class="fa-layers fa-fw">
                               <i class="fas fa-chart-line fg-openbuilds" data-fa-transform="shrink-2 down-8 left-12"></i>
                               <i class="fas fa-caret-down fg-openbuilds" data-fa-transform="shrink-2 right-70"></i>
@@ -636,36 +644,7 @@
                         </button>
                       </td>
                 
-                      <td rowspan="4" >
-                        <button class="button light jogbtn metricbtn distbtn" style="width: 100%; height: 50%; margin:2px">
-                            <span  style="font-weight:600; font-family: Arial; font-size: 12px; text-align: center;color: rgb(15, 15, 62);">Jog Distance</span>
-                        </button>
-
-                        <button class="button light jogbtn metricbtn distbtn" id="dist01" style="width: 100%; height: 50%; margin:2px">
-                          <span class=" fa-layers fa-fw">
-                            <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
-                          </span>
-                        </button>
-                  
-
-                        <button class="button light jogbtn metricbtn distbtn" id="dist1" style="width: 100%; height: 50%; margin:2px">
-                          <span class=" fa-layers fa-fw">
-                            <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
-                          </span>
-                        </button>
-
-                        <button class="button light jogbtn distbtn metricbtn bd-openbuilds" id="dist10" style="width: 100%; height: 50%; margin:2px">
-                          <span class=" fa-layers fa-fw">
-                            <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
-                          </span>
-                        </button>
-
-                        <button class="button light jogbtn distbtn metricbtn" id="dist100" style="width: 100%; height: 50%; margin:2px">
-                          <span class=" fa-layers fa-fw">
-                            <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
-                          </span>
-                        </button>
-                      </td>
+                     
 
                   </tr>
 
@@ -733,7 +712,7 @@
                   
                      
                   <tr>
-                    <td colspan='5'>
+                    <td colspan='5' class=" mt-5">
 
                       <table style="width: 100%;">
                         <tr>
@@ -750,32 +729,75 @@
                         </tr>
                       </table>
                     </td>
+
+
                   </tr>
-          
+                    <table style="width: 100%; " class=" mt-4">
+                      <td colspan='3' class="cell border-right bd-lightGray  fg-black"  style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Speed
+                      <td >
+                       <tr>
 
-                  <tr>
-                      <td colspan='3'>
-                        <div class="cell border-left bd-lightGray" id="jrocell">
-                          <button class="button light mini mb-1" onclick="jogOverride(100);">reset</button>
-                          <input id="jro" data-on-stop="jogOverride(arguments[0])" data-role="slider" data-accuracy="1" data-vertical="true" data-size="140" data-min="1" data-max="100" data-value="100" data-hint="true" data-hint-always="true"
-                            data-hint-position="bottom" data-hint-mask="Jog: $1%" data-cls-hint="bg-light
-                          fg-dark shadow-1" data-cls-complete="bg-openbuilds"  style="height: 25px">                 
-                          <span class="tally text-small bg-openbuilds fg-white" id="realJog"></span>
-                        </div>
+                       </tr>
+                       <td >
+                        <button class="button light mb-2 spdbtn" id="lowJog" style="width: 90px; margin:5px">
+                            <span id="lowlabel" class="fa-layers-text fg-gray jogspd" data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Low</span>
+                        </button>
                       </td>
-
                       <td>
-                        <div class="cell border-left bd-lightGray" id="frocell">
-                          <button class="button light mini mb-1" onclick="feedOverride(100);">reset</button>
-                          <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="140" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
-                            data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%" data-cls-hint="bg-light
-                            fg-dark shadow-1" data-cls-complete="bg-openbuilds"style="height: 25px">
-                          <span class="tally text-small bg-openbuilds fg-white" id="realFeed"></span>
-                        </div>
+                      <button class="button light mb-2 bd-openbuilds spdbtn" id="normalJog" style="width: 90px; margin:5px">
+                          <span id="normallabel"class="fa-layers-text fg-openbuilds jogspd"data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Normal</span>
+                      </button>
                       </td>
+                      <td>
+                        <button class="button light mb-2 spdbtn" id="highJog" style="width: 90px; margin:5px">
+                            <span id="highlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">High</span>
+               
+                        </button>
+                        </td>
+                      </table>
                     </tr>
 
+
+                    <tr>
+                      <table style="width: 100%; " class=" mt-4">
+                        <td colspan='4' class=" distbtn cell border-right bd-lightGray  fg-black" style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Distance
+                          <td >
+                           <tr>
+    
+                           </tr>
+                      <td>
+                        <button class="button light jogbtn metricbtn distbtn" id="dist01" style="width: 100%; height: 40px; line-height: 40px;">
+                          <span class=" fa-layers fa-fw">
+                            <span id="dist01label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">0.1mm</span>
+                          </span>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="button light jogbtn metricbtn distbtn" id="dist1" style="width: 100%; height: 40px; line-height: 40px;">
+                          <span class=" fa-layers fa-fw">
+                            <span id="dist1label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">1mm</span>
+                          </span>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="button light jogbtn distbtn metricbtn bd-openbuilds" id="dist10" style="width: 100%; height: 40px; line-height: 40px;">
+                          <span class=" fa-layers fa-fw">
+                            <span id="dist10label" class="fa-layers-text fg-openbuilds jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">10mm</span>
+                          </span>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="button light jogbtn distbtn metricbtn" id="dist100" style="width: 100%; height: 40px; line-height: 40px;">
+                          <span class=" fa-layers fa-fw">
+                            <span id="dist100label" class="fa-layers-text fg-gray jogdist" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">100mm</span>
+                          </span>
+                        </button>
+                      </td>
+                    </table>
+                    </tr>
               </table>
+
+
             </div>     
         <divdiv>
               </div>
@@ -1078,8 +1100,8 @@
 
  
 
-      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
-        <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Flattening / Surfacing Tool</div>
+      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="50%" data-actions-align="right" data-overlay-click-close="true">
+        <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Surfacing Wizard</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <form>
             <div class="row mb-2">
@@ -1165,6 +1187,98 @@
           <button class="button js-dialog-close">Cancel</button>
         </div>
       </div>
+
+      <div class="dialog dark" data-role="dialog" id="roundingDialog" data-width="50%" data-actions-align="right" data-overlay-click-close="true">
+        <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Rounding Wizard</div>
+        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
+          <form>
+            <div class="row mb-2">
+              <div class="cell-sm-7">
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Router Bit Diameter</label>
+                  <div class="cell-sm-6">
+                    <input id="roundDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="6.35" data-editable="true">
+                    <small class="text-muted">Diameter of your bit</small>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Stepover</label>
+                  <div class="cell-sm-6">
+                    <input id="roundStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
+                    <small class="text-muted">Stepover between passes </small>
+                  </div>
+                </div>
+
+                <div class="row mb-2 border-bottom bd-lightGray">
+                  <label class="cell-sm-6">Feedrate</label>
+                  <div class="cell-sm-6">
+                    <input id="roundFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                    <small class="text-muted">Cutting speed</small>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="cell-sm-6">Length<br> <small class="text-muted">X-Axis</small></label>
+                  <div class="cell-sm-6">
+                    <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="600" data-editable="true">
+                  </div>
+                </div>
+
+                <div class="row mb-2 border-bottom bd-lightGray">
+                  <label class="cell-sm-6">Start Diameter<br> <small class="text-muted">A-Axis</small></label>
+                  <div class="cell-sm-6">
+                    <input id="roundStartA" type="number" data-role="input" data-append="mm" data-clear-button="false" value="165" data-editable="true">
+                    <small class="text-muted">Length and Diameter of the area to machine round</small>
+                  </div>
+                </div>
+
+                <div class="row mb-2 border-bottom bd-lightGray">
+                  <label class="cell-sm-6">Finish Diameter<br> <small class="text-muted">A-Axis</small></label>
+                  <div class="cell-sm-6">
+                    <input id="roundFinishA" type="number" data-role="input" data-append="mm" data-clear-button="false" value="150" data-editable="true">
+                    <small class="text-muted">Length and Diameter of the area to machine round</small>
+                  </div>
+                </div>
+
+                <div class="row mb-2 border-bottom bd-lightGray">
+                  <label class="cell-sm-6">Depth Per Pass</label>
+                  <div class="cell-sm-6">
+                    <input id="roundDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
+                    <small class="text-muted">How much material to remove</small>
+                  </div>
+                </div>
+
+                
+
+              </div>
+              <div class="cell-sm-5">
+                <small class="text-muted">NB: make sure your spindle is 100% perpendicular (trammed) to your centerline, before running a Rounding operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
+                  uneven surface finish
+                </small>
+                <hr>
+
+              
+                <center>
+                  <img src="img/surfacing/wizard2.png" alt="diameter" border="0" style="max-width: calc(100% - 10px); ">
+                </center>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="dialog-actions">
+          <button class="button success js-dialog-close" onclick="createRoundingGcode()">Proceed</button>
+          <button class="button js-dialog-close">Cancel</button>
+        </div>
+      </div>
+
+
+
+
+
+
+
 
       <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
         <div class="dialog-title">Update Ready</div>

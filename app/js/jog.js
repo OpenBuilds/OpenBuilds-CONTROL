@@ -997,3 +997,39 @@ function SetActiveZeros(){
 }
 
 
+$('#lowJog').on('click', function(ev) {
+
+  $('.spdbtn').removeClass('bd-openbuilds')
+  $('#lowJog').addClass('bd-openbuilds')
+  $('.jogspd').removeClass('fg-openbuilds')
+  $('.jogspd').addClass('fg-gray')
+  $('#lowlabel').removeClass('fg-gray')
+  $('#lowlabel').addClass('fg-openbuilds')
+  jogOverride(3);
+})
+
+
+$('#normalJog').on('click', function(ev) {
+
+  $('.spdbtn').removeClass('bd-openbuilds')
+  $('#normalJog').addClass('bd-openbuilds')
+  $('.jogspd').removeClass('fg-openbuilds')
+  $('.jogspd').addClass('fg-gray')
+  $('#normallabel').removeClass('fg-gray')
+  $('#normallabel').addClass('fg-openbuilds')
+  jogOverride(50);
+})
+
+
+
+$('#highJog').on('click', function(ev) {
+
+  $('.spdbtn').removeClass('bd-openbuilds')
+  $('#highJog').addClass('bd-openbuilds')
+  $('.jogspd').removeClass('fg-openbuilds')
+  $('.jogspd').addClass('fg-gray')
+  $('#highlabel').removeClass('fg-gray')
+  $('#lowlabel').addClass('fg-openbuilds')
+  jogOverride(100);
+
+})
