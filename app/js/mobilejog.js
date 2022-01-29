@@ -45,4 +45,41 @@ function openFullscreen() {
     elem.msRequestFullscreen();
   }
   axisDisplayChange();
+  $("#axesDisplayMobile").Hide();
 }
+
+
+
+$('#XAxisDisplay').change(function() {
+  axisDisplayChange()
+});5
+
+$('#YAxisDisplay').change(function() {
+  axisDisplayChange()
+});
+
+$('#ZAxisDisplay').change(function() {
+  axisDisplayChange()
+});
+
+$('#AAxisDisplay').change(function() {
+  axisDisplayChange()
+
+});
+
+$('#axesDisplayBtn').click(function() {
+
+  var x = document.getElementById("axesDisplayMobile");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+
+ 
+
+});
+
+
+
+
