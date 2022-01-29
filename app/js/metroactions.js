@@ -36,28 +36,28 @@ $(document).ready(function() {
   var A = (localStorage.getItem('AaxisDRO')) 
 
 
-if (X!='true'){
-    $('#XAxisDisplay').prop('checked',false) 
-  }else{
+if (X!='false'){
     $('#XAxisDisplay').prop('checked',true) 
+  }else{
+    $('#XAxisDisplay').prop('checked',false) 
   }
 
-  if (Y!='true'){
-    $('#YAxisDisplay').prop('checked',false) 
-  }else{
+  if (Y!='false'){
     $('#YAxisDisplay').prop('checked',true) 
+  }else{
+    $('#YAxisDisplay').prop('checked',false) 
   }
 
-  if (Z!='true'){
-    $('#ZAxisDisplay').prop('checked',false) 
-  }else{
+  if (Z!='false'){
     $('#ZAxisDisplay').prop('checked',true) 
+  }else{
+    $('#ZAxisDisplay').prop('checked',false) 
   }
   
-  if (A!='true'){
-    $('#AAxisDisplay').prop('checked',false) 
-  }else{
+  if (A!='false'){
     $('#AAxisDisplay').prop('checked',true) 
+  }else{
+    $('#AAxisDisplay').prop('checked',false) 
   }
   
 
