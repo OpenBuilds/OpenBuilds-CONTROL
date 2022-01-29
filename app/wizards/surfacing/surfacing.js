@@ -168,7 +168,7 @@ function populateRoundingToolForm() {
     var data = {
       roundingDiameter: 6.35,
       roundingStepover: 40,
-      roundingFeedrate: 800,
+      roundingFeedrate: 1500,
       roundingX: 200,
       roundingStartA: 165,
       roundingFinishA: 150,
@@ -181,7 +181,7 @@ function populateRoundingToolForm() {
   $("#roundX").val(data.roundingX);
   $("#roundStartA").val(data.roundingStartA);
   $("#roundFinishA").val(data.roundingFinishA);
-  $("#rouneDepth").val(data.roundingDepth);
+  $("#roundDepth").val(data.roundingDepth);
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
   Metro.dialog.open("#roundingDialog");
@@ -203,12 +203,67 @@ function createRoundingGcode() {
   localStorage.setItem("lastRoundingTool", JSON.stringify(data));
 
 
-  var gcode =""
- 
+  var stepOver=parseFloat(data.roundingStepover)/100.0
+  var rotationCount=Math.ceil(data.roundingX/data.roundingDiameter*stepOver);
+  var passCount= Math.floor(0.5*(data.roundingStartA-data.roundingFinishA)/data.roundingDepth);
+  var passRadius=parseFloat(data.roundingStartA)/2.0
+  var passDepth=parseFloat(data.roundingDepth)
+  var Xvalue=parseFloat(data.roundingX)
+  var FinishRadius=parseFloat(data.roundingFinishA)/2.0
+  var FR= parseFloat(data.roundingFeedrate)
 
 
+  console.log(data);
+  var gcode =
+`; Surfacing / Flattening Operation
+; Endmill Diameter: ` +  data.roundingDiameter +`mm
+; Stepover: ` + data.roundingStepover + `%
+; Feedrate: ` + data.roundingFeedrate + `mm/min
+; X: ` +  data.roundingX + `
+; Start Diameter: ` + data.roundingStartA + `mm
+; Project Diameter: ` + data.roundingFinishA +`mm
 
+G54; Work Coordinates
+G21; mm-mode
+G90; Absolute Positioning
+M3 S1000 ;Spindle On
+G4 P1.8 ; Wait for spindle to come up to speed\n`
+
+  gcode +=`G0 Z` + (passRadius+5) + `\n`
+  gcode += `G0 X0 A0\n`
+  gcode +=`G0 Z`+ (passRadius+1) +`\n` 
+
+  for(i=0;i<passCount;i++){
+    gcode +=`G1 Z`+ (passRadius-passDepth*(i+1)) + ` F`+ FR +`\n`;
+    gcode += 'G1 X' + Xvalue + ` A` + rotationCount*360 + `\n`;
+    gcode += `G10 P0 L20 A0 ; reset A0\n`
+    gcode += `G0 Z` + (passRadius+5) + `A0\n`
+    gcode += 'G0 X0\n'
+    gcode += `G0 Z`+ (passRadius+1) +`\n`
+
+  }
+
+  if(passRadius-passDepth*passCount>FinishRadius){  // partial pass depth if needed
+      gcode +=`G1 Z`+ (FinishRadius).toFixed(4) + ` F`+ FR +`\n`;
+      gcode += 'G1 X' + Xvalue + ` A` + rotationCount*360 + `\n`;
+      gcode += `G10 P0 L20 A0 ; reset A0\n`
+      gcode += `G0 Z` + (passRadius+5) + `A0\n`
+      gcode += 'G0 X0\n'
+  }
+
+  gcode += `G0 Z`+ (passRadius+5).toFixed(4) +`\n`;
+  gcode += `G0 X0 A0\n`;
   gcode += `M5 S0\n`;
+
+
+
+
+
+  console.log(gcode);
+
+
+
+
 
   editor.session.setValue(gcode);
   parseGcodeInWebWorker(gcode)
