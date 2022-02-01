@@ -491,7 +491,7 @@ app.get('/activate', (req, res) => {
   if (jogWindow === null) {
     createJogWindow();
     jogWindow.show()
-    // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
+  // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
     jogWindow.setAlwaysOnTop(true);
     jogWindow.focus();
     jogWindow.setAlwaysOnTop(false);
@@ -591,12 +591,12 @@ app.post('/upload', function(req, res) {
     debug_log('Uploaded ' + file.path);
 
     if (jogWindow === null) {
-      createJogWindow();
-      jogWindow.show()
+   //   createJogWindow();
+  //    jogWindow.show()
       // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
+  //    jogWindow.setAlwaysOnTop(true);
+ //     jogWindow.focus();
+ //     jogWindow.setAlwaysOnTop(false);
     } else {
       jogWindow.show()
       jogWindow.setAlwaysOnTop(true);
@@ -711,7 +711,7 @@ io.on("connection", function(socket) {
     const {
       shell
     } = require('electron')
-    shell.openExternal('https://cam.openbuilds.com')
+    shell.openExternal('https://cam.bobscnc.com')
   });
 
 
@@ -1896,7 +1896,7 @@ function readFile(filePath) {
               const {
                 shell
               } = require('electron')
-              shell.openExternal('https://cam.openbuilds.com')
+              shell.openExternal('https://cam.bobscnc.com')
             } else { // GCODE
               var payload = {
                 gcode: data,
