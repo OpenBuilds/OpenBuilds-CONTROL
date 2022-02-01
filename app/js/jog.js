@@ -1,7 +1,6 @@
 var allowContinuousJog = false;
 var continuousJogRunning = false;
 var jogdist = 10;
-var safeToUpdateSliders = true;
 var jogRateX = 4000
 var jogRateY = 4000
 var jogRateZ = 2000
@@ -14,7 +13,7 @@ function jogOverride(newVal) {
     jogRateZ = (grblParams['$112'] * (newVal / 100)).toFixed(0);
     jogRateA = (grblParams['$111'] * (newVal / 100)).toFixed(0);
     
-    $('#jro').data('slider').val(newVal)
+
   }
   localStorage.setItem('jogOverride', newVal);
 }
@@ -146,9 +145,7 @@ $(document).ready(function() {
   }
 
   $(document).mousedown(function(e) {
-    safeToUpdateSliders = false;
   }).mouseup(function(e) {
-    safeToUpdateSliders = true;
     // Added to cancel Jog moves even when user moved the mouse off the button before releasing
     if (allowContinuousJog) {
       if (continuousJogRunning) {
@@ -156,7 +153,6 @@ $(document).ready(function() {
       }
     }
   }).mouseleave(function(e) {
-    safeToUpdateSliders = true;
   });
 
   $("#xPosDro").click(function() {

@@ -364,7 +364,6 @@ function bindKeys() {
     if (keyboardShortcuts.jogSpeedM.length) {
       $(document).bind('keydown', keyboardShortcuts.jogSpeedM, function(e) {
         e.preventDefault();
-    //    var currentJogOverride = $('#jro').data('slider').val();
         var newVal = currentJogOverride - 10
         if (newVal < 10) {
           newVal = 10;
@@ -376,8 +375,7 @@ function bindKeys() {
     if (keyboardShortcuts.jogSpeedP.length) {
       $(document).bind('keydown', keyboardShortcuts.jogSpeedP, function(e) {
         e.preventDefault();
-     //   var currentJogOverride = $('#jro').data('slider').val();
-        var newVal = currentJogOverride + 10
+         var newVal = currentJogOverride + 10
         if (newVal > 100) {
           newVal = 100;
         }
