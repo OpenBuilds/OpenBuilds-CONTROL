@@ -488,6 +488,19 @@ app.get('/activate', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send('Host: ' + req.hostname + ' asked to activate Basic SENDER v' + require('./package').version);
+  if (jogWindow === null) {
+    createJogWindow();
+    jogWindow.show()
+    // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  } else {
+    jogWindow.show()
+    jogWindow.setAlwaysOnTop(true);
+    jogWindow.focus();
+    jogWindow.setAlwaysOnTop(false);
+  }
   setTimeout(function() {
     io.sockets.emit('activate', req.hostname);
   }, 1500);
@@ -576,6 +589,20 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     debug_log('Uploaded ' + file.path);
+
+    if (jogWindow === null) {
+      createJogWindow();
+      jogWindow.show()
+      // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
+      jogWindow.setAlwaysOnTop(true);
+      jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
+    } else {
+      jogWindow.show()
+      jogWindow.setAlwaysOnTop(true);
+      jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
+    }
     readFile(file.path)
   });
 
@@ -684,7 +711,7 @@ io.on("connection", function(socket) {
     const {
       shell
     } = require('electron')
-    shell.openExternal('https://cam.bobscnc.com')
+    shell.openExternal('https://cam.openbuilds.com')
   });
 
 
@@ -1677,7 +1704,6 @@ io.on("connection", function(socket) {
             }
           }
           addQRealtime("?");
-
           status.machine.overrides.feedOverride = parseInt(reqfro); // Set now, but will be overriden from feedback from Grbl itself in next queryloop
           break;
       }
@@ -1870,7 +1896,7 @@ function readFile(filePath) {
               const {
                 shell
               } = require('electron')
-              shell.openExternal('https://cam.bobscnc.com')
+              shell.openExternal('https://cam.openbuilds.com')
             } else { // GCODE
               var payload = {
                 gcode: data,
@@ -2537,7 +2563,20 @@ if (isElectron()) {
         }
       }
 
-
+      if (lauchGUI) {
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      }
 
 
 
@@ -2565,7 +2604,20 @@ if (isElectron()) {
         status.driver.operatingsystem = 'windows';
       }
 
-     
+      if (process.platform == 'darwin' || uploadedgcode.length > 1) {
+        if (jogWindow === null) {
+          createJogWindow();
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        } else {
+          jogWindow.show()
+          jogWindow.setAlwaysOnTop(true);
+          jogWindow.focus();
+          jogWindow.setAlwaysOnTop(false);
+        }
+      }
 
     }
 
@@ -2646,7 +2698,18 @@ if (isElectron()) {
           label: 'Open User Interface (GUI)',
           click() {
             // debug_log("Clicked Systray")
-        
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            }
           }
         }, {
           label: 'Quit Basic SENDER (Disables all integration until started again)',
@@ -2659,14 +2722,37 @@ if (isElectron()) {
         }])
         if (appIcon) {
           appIcon.on('click', function() {
-          
+            // debug_log("Clicked Systray")
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            }
           })
         }
 
         if (appIcon) {
           appIcon.on('balloon-click', function() {
             // debug_log("Clicked Systray")
-           
+            if (jogWindow === null) {
+              createJogWindow();
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            } else {
+              jogWindow.show()
+              jogWindow.setAlwaysOnTop(true);
+              jogWindow.focus();
+              jogWindow.setAlwaysOnTop(false);
+            }
           })
         }
 
@@ -2696,7 +2782,56 @@ if (isElectron()) {
 
     }
 
+    function createJogWindow() {
+      // Create the browser window.
+      jogWindow = new BrowserWindow({
+        // 1366 * 768 == minimum to cater for
+        width: 1025,
+        height: 850,
+        fullscreen: false,
+        center: true,
+        resizable: true,
+        maximizable: true,
+        title: "Basic Sender ",
+        frame: false,
+        autoHideMenuBar: true,
+        //icon: '/app/favicon.png',
+        icon: nativeImage.createFromPath(
+          path.join(__dirname, "/app/favicon.png")
+        ),
+        webgl: true,
+        experimentalFeatures: true,
+        experimentalCanvasFeatures: true,
+        offscreen: true,
+      });
 
+      jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
+      var ipaddr = ip.address();
+      // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
+      jogWindow.loadURL("http://localhost:3000/");
+      //jogWindow.webContents.openDevTools()
+
+      jogWindow.on('close', function(event) {
+        if (!forceQuit) {
+          jogWindow.hide();
+          return false;
+        }
+      });
+
+      // Emitted when the window is closed.
+      jogWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        jogWindow = null;
+      });
+      jogWindow.once('ready-to-show', () => {
+        jogWindow.show()
+        jogWindow.setAlwaysOnTop(true);
+        jogWindow.focus();
+        jogWindow.setAlwaysOnTop(false);
+      })
+    }
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
