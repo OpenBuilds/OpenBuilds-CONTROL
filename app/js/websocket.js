@@ -4,7 +4,6 @@ var programBoard = {};
 var grblParams = {}
 var smoothieParams = {}
 var nostatusyet = true;
-var safeToUpdateSliders = false;
 var laststatus
 var simstopped = false;
 var bellstate = false;
@@ -622,8 +621,8 @@ function initSocket() {
               cone.position.x = status.machine.position.work.x
               cone.position.y = status.machine.position.work.y
               cone.position.z = status.machine.position.work.z + 20
-
-              // }
+              
+                            // }
             }
 
           }
@@ -631,12 +630,7 @@ function initSocket() {
       }
     }
 
-    if (safeToUpdateSliders) {
-      if ($('#fro').data('slider') && $('#tro').data('slider')) {
-        $('#fro').data('slider').val(status.machine.overrides.feedOverride)
-        $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
-      }
-    }
+
 
     if (unit == "mm") {
       $("#realFeed").html(status.machine.overrides.realFeed + "mm/min");
@@ -645,7 +639,9 @@ function initSocket() {
       $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "in/min");
       //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
     }
+    $("#fDro").html(status.machine.overrides.feedOverride + "%");
 
+    
     //console.log(JSON.stringify(status.machine.overrides, null, 4));
 
 
@@ -1023,14 +1019,15 @@ function sendGcode(gcode) {
 function feedOverride(step) {
   if (socket) {
     socket.emit('feedOverride', step);
-    $('#fro').data('slider').buff(((step - 10) * 100) / (200 - 10))
+
   }
+
 }
 
 function spindleOverride(step) {
   if (socket) {
     socket.emit('spindleOverride', step);
-    $('#tro').data('slider').buff(((step - 10) * 100) / (200 - 10))
+  
   }
 }
 
