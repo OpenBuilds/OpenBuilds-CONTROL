@@ -573,7 +573,7 @@ function initSocket() {
         var xpos = status.machine.position.work.x.toFixed(2) + unit;
         var ypos = status.machine.position.work.y.toFixed(2) + unit;
         var zpos = status.machine.position.work.z.toFixed(2) + unit;
-        var apos = status.machine.position.work.a.toFixed(3) + "&#176;"; // degree symbol
+        var apos = status.machine.position.work.a.toFixed(2) + "&#176;"; // degree symbol
 
         $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(2) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(2) + unit + "/ Y Work: " + ypos);
@@ -583,12 +583,12 @@ function initSocket() {
         var xpos = (status.machine.position.work.x / 25.4).toFixed(3) + unit;
         var ypos = (status.machine.position.work.y / 25.4).toFixed(3) + unit;
         var zpos = (status.machine.position.work.z / 25.4).toFixed(3) + unit;
-        var apos = (status.machine.position.work.a / 25.4).toFixed(3) + "&#176;"; // degree symbol
+        var apos = (status.machine.position.work.a).toFixed(2) + "&#176;"; // degree symbol
 
         $(" #xPos ").attr('title', 'X Machine: ' + ((status.machine.position.work.x / 25.4) + (status.machine.position.offset.x / 25.4)).toFixed(3) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + ((status.machine.position.work.y / 25.4) + (status.machine.position.offset.y / 25.4)).toFixed(3) + unit + "/ Y Work: " + ypos);
         $(" #zPos ").attr('title', 'Z Machine: ' + ((status.machine.position.work.z / 25.4) + (status.machine.position.offset.z / 25.4)).toFixed(3) + unit + "/ Z Work: " + zpos);
-        $(" #zPos ").attr('title', 'A Machine: ' + ((status.machine.position.work.a) + (status.machine.position.offset.a )).toFixed(3) + unit + "/ A Work: " + apos);
+        $(" #aPos ").attr('title', 'A Machine: ' + ((status.machine.position.work.a) + (status.machine.position.offset.a )).toFixed(2) + "&#176; / A Work: " + apos);
 
       }
 
