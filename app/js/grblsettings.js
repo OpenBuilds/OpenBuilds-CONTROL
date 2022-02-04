@@ -145,7 +145,7 @@ function grblSettings(data) {
   }
 }
 
-function grblPopulate() {
+/*function grblPopulate() {
   if (!isJogWidget) {
     $('#grblconfig').show();
     $('#grblconfig').empty();
@@ -427,7 +427,7 @@ function grblPopulate() {
     }, 500)
   }
 
-}
+}*/
 
 function checkifchanged() {
   var hasChanged = false;
@@ -532,7 +532,7 @@ function refreshGrblSettings() {
     sendGcode('$$');
     sendGcode('$I');
     setTimeout(function() {
-      grblPopulate();
+    //  grblPopulate();
     }, 500);
   }, 50);
 

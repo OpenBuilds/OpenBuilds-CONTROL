@@ -199,12 +199,12 @@ function createRoundingGcode() {
     roundingDepth: $("#roundDepth").val(),
 
   };
-  console.log(data);
+  //console.log(data);
   localStorage.setItem("lastRoundingTool", JSON.stringify(data));
 
 
-  var stepOver=parseFloat(data.roundingStepover)/100.0
-  var rotationCount=Math.ceil(data.roundingX/data.roundingDiameter*stepOver);
+  var RoundingStepOver=parseFloat(data.roundingStepover)/100.0
+  var rotationCount=Math.ceil(data.roundingX/(data.roundingDiameter*RoundingStepOver));
   var passCount= Math.floor(0.5*(data.roundingStartA-data.roundingFinishA)/data.roundingDepth);
   var passRadius=parseFloat(data.roundingStartA)/2.0
   var passDepth=parseFloat(data.roundingDepth)
@@ -213,7 +213,7 @@ function createRoundingGcode() {
   var FR= parseFloat(data.roundingFeedrate)
 
 
-  console.log(data);
+  //console.log(data);
   var gcode =
 `; Surfacing / Flattening Operation
 ; Endmill Diameter: ` +  data.roundingDiameter +`mm

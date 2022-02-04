@@ -71,14 +71,34 @@
             </div>
             <div class="section" id="section-two">
               <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
+                <button class="ribbon-button"  onclick="openAboutDialog();">
                   <span class="icon">
                     <img src="splash.png">
                   </span>
                   <span class="caption">BobsCNC</span>
-                </button>
-                <span class="title">Visit</span>
+                </button > 
+                <span class="title">About</span>
               </div>
+
+              <div class="dialog" data-role="dialog" id="aboutDialog">
+                <div class="dialog-title">About BobsCNC Basic SENDER</div>
+                <div class="dialog-content">
+                  BobsCNC's Basic SENDER is software that will:       
+                    <ul>
+                      <li>send gcode to BobsCNC machines</li>
+                      <li>upload BobsCNC Firmware</li>
+                      <li>troubleshoot setup and runtime</li>
+                    </ul>
+                   Basic Sender is based on open source software created by OpenBuilds.com"
+                </div>
+              <div class="dialog-actions">
+              </div>  
+              </div>
+
+
+
+
+
               <div class="group">
                 <div class="form-group">
                   <form class="form">
@@ -1524,6 +1544,11 @@
           <button class="button success js-dialog-close disabled" onclick="runProbeNew();" id="runNewProbeBtn">Probe</button>
 
         </div>
+
+        
+
+
+        
       </div>
       <!-- End XYZ Probe -->
 
@@ -1554,6 +1579,9 @@
         </div>
       </div>
       <!-- end job completion confirmation -->
+
+      
+    </div>
 
     </div>
   </body>
