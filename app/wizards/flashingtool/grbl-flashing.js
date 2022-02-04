@@ -80,28 +80,28 @@ function installFirmware(){
   if ($("#flashController").val() =="E3") {
    var data = {
       port: $("#portUSB2").val(),
-      file: "grblE3.hex",
+      file: "E3.hex",
       board: "uno",
       customImg: false
       }
   }else if($("#flashController").val() =="E4"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "grblE4.hex",
+      file: "E4.hex",
       board: "uno",
       customImg: false
       }
   }else if($("#flashController").val() =="E3SS"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "grblE3ss.hex",
+      file: "E3SS.hex",
       board: "uno",
       customImg: false
       }
   }else if($("#flashController").val() =="E4SS"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "grblE4ss.hex",
+      file: "E4SS.hex",
       board: "uno",
       customImg: false
       }
@@ -122,7 +122,7 @@ function installFirmware(){
   }else if($("#flashController").val() =="Evo5"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "Evolution4.hex",
+      file: "Evolution5.hex",
       board: "uno",
       customImg: false
       }
@@ -136,21 +136,21 @@ function installFirmware(){
   }else if($("#flashController").val() =="KL733"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "KL733(250).hex",
+      file: "KL733.hex",
       board: "uno",
       customImg: false
       }
   }else if($("#flashController").val() =="KL744"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "KL744(250).hex",
+      file: "KL744.hex",
       board: "uno",
       customImg: false
       }
   }else if($("#flashController").val()=="KL744E"){
    var data = {
       port: $("#portUSB2").val(),
-      file: "KL744(250).hex",
+      file: "KL744E.hex",
       board: "uno",
       customImg: false
       }
