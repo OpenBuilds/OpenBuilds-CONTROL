@@ -219,7 +219,10 @@ function startFlash(){
 
   socket.on('progStatus', function(data) {
     if (data.string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
+     // log.console(data.string)
       installFirmware();
+    }else{
+      log.console(data.string)
     }
   });
 
