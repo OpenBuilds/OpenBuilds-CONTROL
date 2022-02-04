@@ -1,6 +1,7 @@
 # Basic SENDER
 Basic SENDER - Grbl Host / Interface for all CNC style machines running Grbl
-Basic Send is based on open source software created by OpenBuilds.com
+
+Basic SENDER is based on open source software created by OpenBuilds.com
 
 ## Download
 
