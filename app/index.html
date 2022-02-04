@@ -1396,7 +1396,7 @@
 
               <td>
                 <div id="xyzprobeimages">
-                  <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz"class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/x.png" alt="probe-x" height="350" id="img-probe-x" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/y.png" alt="probe-y" height="350" id="img-probe-y" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/z.png" alt="probe-z" height="350" id="img-probe-z" class="img-probe" style="display: none;">
@@ -1473,9 +1473,8 @@
                     </tr>
                   </table>
                 </div>
-                <hr>
-                
-                <hr>
+                <div class="pos-relative">
+                <div data-role="collapse" data-toggle-element="#toggle-probe-advanced" data-collapsed="true" id="toggle-probe-advanced-content">
                     <div id="zplatesettings" class="probe-tab-content">
                       <label>Plate Thickness</label>
                       <input id="z0platethickness" type="number" value="20" data-role="input" data-append="mm" data-prepend="<i class='fas fa-ruler-vertical'></i>" data-clear-button="false">
@@ -1487,8 +1486,8 @@
                         probing? </small>
                       <br>
 
-                      <img src:="./img/xyzprobe/all.png" width="400" height="172" id="img-probe-xyz" >
-                                
+            <!--       <img src:="./img/xyzprobe/all.png" width="400" height="172" id="img-probe-xyz" >
+               -->                    
 
                       <br>
                       <small>If the origin is not Front, Left (Default): Then provide stock dimensions to calculate correct
