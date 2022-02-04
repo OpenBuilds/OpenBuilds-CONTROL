@@ -407,3 +407,10 @@ function timeConvert(n) {
   }
   return rhours + "h:" + rminutes + "m";
 }
+
+
+
+function openAboutDialog() {
+  Metro.dialog.open("#aboutDialog");
+}
+
