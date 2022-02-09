@@ -171,7 +171,9 @@ function probexyztab() {
   $("#zplatesettings").hide();
   $(".img-probe").hide();
   $("#img-probe-xyz").show();
+  $("#toggle-probe-advanced").show();
   $("#endmilldiameterform").show();
+  $("#toggle-probe-advanced-content").data('collapse').expand()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -189,7 +191,9 @@ function probextab() {
   $("#zplatesettings").hide();
   $(".img-probe").hide();
   $("#img-probe-x").show();
+  $("#toggle-probe-advanced").show();
   $("#endmilldiameterform").show();
+  $("#toggle-probe-advanced-content").data('collapse').expand()
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
   $('#jogTypeContinuous').prop('checked', true)
@@ -205,7 +209,6 @@ function probeytab() {
   $("#zplatesettings").hide();
   $(".img-probe").hide();
   $("#img-probe-y").show();
-
   $("#endmilldiameterform").show();
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
@@ -239,6 +242,7 @@ function probezplatetab() {
   $("#zplatesettings").show();
   $(".img-probe").hide();
   $("#img-probe-zplate").show();
+  $("#toggle-probe-advanced").show();
   $("#endmilldiameterform").hide();
   $('#runNewProbeBtn').addClass("disabled")
   $('#confirmNewProbeBtn').removeClass("disabled")
@@ -247,6 +251,7 @@ function probezplatetab() {
   $('#z0platethickness').val(zprobeplate.zoffset)
   $('.probetabxyz').removeClass('active');
   $('#probezplatetab').addClass('active');
+  $("#toggle-probe-advanced-content").data('collapse').expand()
  
 }
 
@@ -296,8 +301,8 @@ function probetype(type) {
     $(".probetabz").show();
     $("#editCustomProbeBtn").hide()
     $("#ProbeButtonBarSpacer").show()
+    probezplatetab()
 
-    probezplatetab();
   } else if (type == "custom") {
     $(".needsXYZProbe").show()
     probemode.probe = customprobeplate // customprobeplate, zprobeplate
