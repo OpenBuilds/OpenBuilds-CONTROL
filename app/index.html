@@ -36,7 +36,7 @@
           <span class="btn-close" onclick="socket.emit('minimisetotray')"></span>
         </div>
       </div>
-      <div class="window-content" style="height: 100%; overflow: hidden  !important;">
+      <div class="window-content" style="height: 100%; overflow-x:auto ;  overflow-y: auto   !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
@@ -884,7 +884,7 @@
                     <div class="fixed-bottom m-3 mb-9">
                       <form class="inline-form" id="commandform" autocomplete="off">
                         <input title="Tip: Press F6 anywhere on the CONTROL window to quickly jump to this input" data-prepend="&nbsp;<i class='fas fa-terminal'></i>" data-role="input" data-clear-button="false" data-role="input" id="command"
-                          type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 170px);" data-editable="true" />
+                          type="text" autocomplete="on" class=" dark needs-connection" style="width: calc(100vw - 400px); " data-editable="true" />
                         <button id="sendCommand" class="button dark needs-connection" type="button" title="Execute command">
                           <i class="fa fa-play" style="margin-right: 10px;"></i> Send
                         </button>
@@ -1423,7 +1423,7 @@
                   <img src="./img/xyzprobe/y.png" alt="probe-y" height="350" id="img-probe-y" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/z.png" alt="probe-z" height="350" id="img-probe-z" class="img-probe" style="display: none;">
                   <img src="./img/xyzprobe/zplate.png" alt="probe-zplate" height="350" id="img-probe-zplate" class="img-probe" style="display: none;">
-               
+  
                 </div>
 
               </td>
@@ -1431,30 +1431,41 @@
               <td style="padding: 4px; padding-left: 15px; vertical-align: top;">
 
                 <div id="probe-xyz" class="probe-tab-content">
-                  <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
+                  <small>XYZ Probe Routine: This routine is used to find the XYZ zeros</small>
                   <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
+                  <small>Position the router bit above the hole in the probe plate as shown to the left just above the plate,secure the lead to the router bit,
+                   then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-x" class="probe-tab-content" style="display: none;">
-                  <small>X Probe Routine: This routine is used to find the X origin</small>
+                  <small>X Probe Routine: This routine is used to find the X zero</small>
                   <hr>
-                  <small>Position the endmill to the left of the probe plate as shown, clip on the magnetic connecting clip,
+                  <small>Position the router bit to the left of the probe plate as shown, secure the lead to the router bitp,
                     then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-y" class="probe-tab-content" style="display: none;">
-                  <small>Y Probe Routine: This routine is used to find the Y origin</small>
+                  <small>Y Probe Routine: This routine is used to find the Y zero</small>
                   <hr>
-                  <small>Position the endmill in front of the probe plate as shown, clip on the magnetic connecting clip, then
+                  <small>Position the router bit in front of the probe plate as shown, secure the lead to the router bit, then
                     click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-z" class="probe-tab-content" style="display: none;">
-                  <small>Z Probe Routine: This routine is used to find the Z origin</small>
+                  <small>Z Probe Routine: This routine is used to find the Z zero</small>
                   <hr>
-                  <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
+                  <small>Position the router bit above the probe plate as shown, secure the lead to the router bit, then click
                     the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
-                
+                <div id="probe-endmill" class="probe-tab-content" style="display: none;">
+                  <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
+                  <hr>
+                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
+                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
+                  <hr>
+                  <small>
+                    This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
+                    it will measure and calculate the Endmill Diameter and display it onscreen. <br>This operation will NOT set
+                    any work-coordinates!
+                  </small>
+                </div>
                 <div id="probeJogWindow">
                   <hr>
                   <table>
@@ -1495,31 +1506,97 @@
                     </tr>
                   </table>
                 </div>
+                <div id="endmilldiameterform">
+                  <label>Endmill Diameter</label>
+                  <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-append="mm" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>"
+                    data-clear-button="false">
+                </div>
+                <hr>
+                
                 <div class="pos-relative">
-                <div data-role="collapse" data-toggle-element="#toggle-probe-advanced" data-collapsed="true" id="toggle-probe-advanced-content">
+                <div  id="toggle-probe-advanced-content">
+
                     <div id="zplatesettings" class="probe-tab-content">
+                      <br>
                       <label>Plate Thickness</label>
                       <input id="z0platethickness" type="number" value="20" data-role="input" data-append="mm" data-prepend="<i class='fas fa-ruler-vertical'></i>" data-clear-button="false">
                     </div>
 
                     <div id="xyzdatum" class="probe-tab-content">
 
-                      <small>Where is the XY Zero Datum / Origin in your CAM setup, relative to the front-left corner we are
+                      <small>Where is the XY Zero Datum / Origin in your CAM setup, relative to the home corner we are
                         probing? </small>
                       <br>
 
-            <!--       <img src:="./img/xyzprobe/all.png" width="400" height="172" id="img-probe-xyz" >
-               -->                    
+                      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 90 48">
+                        <style>
 
+                        </style>
+                        <defs>
+                          <marker id="A" orient="auto" class="J">
+                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
+                          </marker>
+                          <marker id="B" orient="auto" class="J">
+                            <path transform="matrix(.4 0 0 .4 2.96 .4)" d="m-2.5-1c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" class="D K L" />
+                          </marker>
+                          <marker id="C" orient="auto" class="J">
+                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
+                          </marker>
+                          <marker id="D" orient="auto" class="J">
+                            <path transform="matrix(.8 0 0 .8 10 0)" d="M0 0l5-5-17.5 5L5 5z" class="D K L" />
+                          </marker>
+                        </defs>
+                        <g fill="#fff" class="D">
+                          <g stroke-width=".132" class="B">
+                            <path d="M7.195 7.363l15.94 28.46L70.758 31.1 47.99 5.015z" fill="#999" />
+                            <path d="M23.133 35.823l-1.257 8.313 47.7-5.284 1.172-7.752z" fill="#ececec" />
+                            <path d="M7.195 7.363l15.94 28.46-1.257 8.313-15.722-29.89z" fill="#ccc" />
+                          </g>
+                          <g stroke-width=".049" class="C N">
+                            <path d="M7.198 7.363l63.74 25.952" />
+                            <path d="M23.322 38.1L47.993 5.093" />
+                          </g>
+                          <g fill="none" stroke-width=".197" class="N">
+                            <path d="M3.942 15.993L19.16 45.07" marker-start="url(#C)" marker-end="url(#A)" />
+                            <path d="M70.118 41.003l-47.624 5.73" marker-start="url(#D)" marker-end="url(#B)" />
+                          </g>
+                          <g transform="matrix(.24595 -.020313 .020313 .24595 108.29 -158.287)">
+                            <rect class="probe-label" id="probe-c" rx="5.925" height="16.422" width="59.717" y="682.21" x="-368.93" stroke-width=".987" class="B" />
+                            <text id="probe-c-text" xml:space="preserve" letter-spacing="-0.1" font-size="2.229" y="694.532" x="-339.852" class="C E F G H">
+                              <tspan y="694.532" x="-330.852" class="I">CENTER</tspan>
+                            </text>
+                            <rect class="probe-label areaactive" id="probe-fl" rx="6.543" height="30.532" width="55" y="742.64" x="-423.17" class="B M" />
+                            <text id="probe-fl-text" xml:space="preserve" letter-spacing="-0.2" y="755.631" x="-401.459" class="C E F G H I">
+                              <tspan y="755.631" x="-350">HOME</tspan>
+                              <tspan y="768.172" x="-350">CORNER</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-fr" rx="6.543" height="30.532" width="50" y="733.68" x="-239.82" class="B M" />
+                            <text id="probe-fr-text" xml:space="preserve" letter-spacing="-0.2" y="746.284" x="-217.439" class="C E F G H I">
+                              <tspan y="746.284" x="-166">FRONT</tspan>
+                              <tspan y="758.824" x="-169">LEFT</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-rr" rx="6.543" height="30.532" width="50" y="621.52" x="-312.72" class="B M" />
+                            <text id="probe-rr-text" xml:space="preserve" letter-spacing="-0.2" y="633.759" x="-290.442" class="C E F G H I">
+                              <tspan y="633.759" x="-239.442">FRONT</tspan>
+                              <tspan y="646.3" x="-242.442">RIGHT</tspan>
+                            </text>
+                            <rect class="probe-label" id="probe-rl" rx="6.543" height="30.532" width="50" y="616.07" x="-476.33" class="B M" />
+                            <text id="probe-rl-text" xml:space="preserve" letter-spacing="-0.2" y="628.815" x="-455.49" class="C E F G H I">
+                              <tspan y="628.815" x="-404">BACK</tspan>
+                              <tspan y="641.356" x="-404">RIGHT</tspan>
+                            </text></g>
+                        </g>
+                      </svg>
                       <br>
-                      <small>If the origin is not Front, Left (Default): Then provide stock dimensions to calculate correct
+                                  
+                      <small>If the origin is not Back, Left (Home Corner): Then provide workpiece dimensions to calculate correct
                         offset of X0, Y0:</small>
                       <br>
-                      <label>Width</label>
-                      <input id="stockwidth" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
-                      <label>Length</label>
-                      <input id="stocklength" type="number" value="200" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-v'></i>" data-clear-button="false">
-
+                      <label>Length X</label>
+                      <input id="stocklength" type="number" value="0" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-h'></i>" data-clear-button="false">
+                      <label>Width Y</label>
+                      <input id="stockwidth" type="number" value="0" data-role="input" data-append="mm" data-prepend="<i class='fas fa-arrows-alt-v'></i>" data-clear-button="false">
+                     
                     </div>
                     <!-- end xyzdatum-->
                   </div>
