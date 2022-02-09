@@ -341,70 +341,44 @@ $(document).ready(function() {
   })
 
   $('#gotozeroWPos').on('click', function(ev) {
+    var jogString=[null];
+     sendGcode('G21 G90');
+     
+     if($("#XAxisDisplay").is(':checked')){jogString+=" X0"}
+     if($("#YAxisDisplay").is(':checked')){jogString+=" Y0"}
+     if($("#AAxisDisplay").is(':checked')){jogString+=" A0"}
+     sendGcode('G0'+ jogString);
+     if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z0')}
 
-    if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
-    sendGcode('G21 G90');
-    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z5')}
-    if($("#XAxisDisplay").is(':checked')&&$("#YAxisDisplay").is(':checked')){
-      sendGcode('G0 X0 Y0');
-    }else{
-      if($("#XAxisDisplay").is(':checked')){sendGcode('G0 X0')};
-      if($("#YAxisDisplay").is(':checked')){sendGcode('G0 Y0')};
-      if($("#AAxisDisplay").is(':checked')){sendGcode('G0 A0')};
-    }
-    if($("#ZAxisDisplay").is(':checked')){sendGcode('G0 Z0')}
   });
 
   $('#gotoXzeroMpos').on('click', function(ev) {
-    if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 X-' + grblParams["$27"]);
-    } else {
       sendGcode('G53 G0 X0');
-    }
   });
 
   $('#gotoYzeroMpos').on('click', function(ev) {
-    if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 Y-' + grblParams["$27"]);
-    } else {
       sendGcode('G53 G0 Y0');
-    }
   });
 
   $('#gotoZzeroMpos').on('click', function(ev) {
-    if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 Z-' + grblParams["$27"]);
-    } else {
       sendGcode('G53 G0 Z0');
-    }
+
   });
 
   $('#gotoAzeroMpos').on('click', function(ev) {
-    if (grblParams['$22'] == 1) {
-      sendGcode('G53 G0 A-' + grblParams["$27"]);
-    } else {
       sendGcode('G53 G0 A0');
-    }
+
   });
 
   $('#gotozeroZmPosXYwPos').on('click', function(ev) {
     var jogString=[null];
-
-    if($("#ZAxisDisplay").is(':checked')){
-        if (grblParams['$22'] == 1) {
-          sendGcode('G53 G0 Z-' + grblParams["$27"]);
-        } else {
-          sendGcode('G53 G0 Z0');
-        }
-    }
-    if($("#XAxisDisplay").is(':checked')){jogString=" X0"}
+    if($("#ZAxisDisplay").is(':checked')){sendGcode('G53 G0 Z0')}
+    if($("#XAxisDisplay").is(':checked')){jogString+=" X0"}
     if($("#YAxisDisplay").is(':checked')){jogString+=" Y0"}
     if($("#AAxisDisplay").is(':checked')){jogString+=" A0"}
     sendGcode('G53 G0'+ jogString);
     if($("#ZAxisDisplay").is(':checked')){sendGcode('G53 G0 Z0')}
 
-
-    
   });
 
  
