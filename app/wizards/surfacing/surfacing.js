@@ -150,7 +150,7 @@ G1 X` +
 
   editor.session.setValue(gcode);
   parseGcodeInWebWorker(gcode)
-  printLog("<span class='fg-red'>[ Surfacing Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
+  printLog("<span class='fg-red'>[ Surfacing / Flattening Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
 
   // console.log(gcode);
   //
