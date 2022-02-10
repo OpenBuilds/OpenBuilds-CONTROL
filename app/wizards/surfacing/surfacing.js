@@ -67,7 +67,7 @@ G54; Work Coordinates
 G21; mm-mode
 G90; Absolute Positioning
 M3 S` + data.surfaceRPM + `; Spindle On
-G4 P1.8 ; Wait for spindle to come up to speed
+G4 P1.8; Wait for spindle to come up to speed
 G0 Z10
 G0 X0 Y0
 G1 F` +
