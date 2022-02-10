@@ -80,12 +80,12 @@ G1 F` +
       `G0 X` +
       startpointX +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z10\n
 G1 X` +
       startpointX +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z-` +
       data.surfaceDepth +
       `\n`;
@@ -94,12 +94,12 @@ G1 X` +
       `G0 X` +
       endpointX +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z10\n
 G1 X` +
       endpointX +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z-` +
       data.surfaceDepth +
       `\n`;
@@ -120,14 +120,14 @@ G1 X` +
   }
 
   if (!reverse) {
-    gcode += `G1 Y` + endpointY + `\n`;
-    gcode += `G1 X` + startpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
-    gcode += `G1 X` + endpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
+    gcode += `G1 X` + startpointX + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 X` + endpointX + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
     reverse = true;
   } else {
-    gcode += `G1 Y` + endpointY + `\n`;
-    gcode += `G1 X` + endpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
-    gcode += `G1 X` + startpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
+    gcode += `G1 X` + endpointX + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 X` + startpointX + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
     reverse = false;
   }
 
@@ -135,13 +135,13 @@ G1 X` +
 
   // Framing Pass
   gcode += `; Framing pass\n`;
-  gcode += `G0 X` + startpointX + ` Y` + startpointY + ` Z10\n`; // position at start point
+  gcode += `G0 X` + startpointX + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-  gcode += `G1 X` + startpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G1 X` + startpointX + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`; // Cut side
   gcode += `G0 Z10\n`;
-  gcode += `G0 X` + endpointX + ` Y` + endpointY + `\n`; // position at start point
+  gcode += `G0 X` + endpointX + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-  gcode += `G1 X` + endpointX + ` Y` + startpointY + ` Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G1 X` + endpointX + ` Y` + startpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`; // Cut side
   gcode += `G0 Z10\n`;
   gcode += `G0 X0 Y0\n`;
 
