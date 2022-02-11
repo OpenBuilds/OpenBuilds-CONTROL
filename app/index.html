@@ -36,7 +36,7 @@
           <span class="btn-close" onclick="socket.emit('minimisetotray')"></span>
         </div>
       </div>
-      <div class="window-content" style="height: 100%; overflow-x:auto ;  overflow-y: auto   !important;">
+      <div class="window-content" style="height: calc(100vh - 100px); overflow-x: hidden;  overflow-y: auto   !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
@@ -780,7 +780,7 @@
                     
                       
                     <tr>
-                      <td colspan='5' class=" mt-5">
+                      <td colspan='5' class=" mt-3">
 
                         <table style="width: 100%;">
                           <tr>
@@ -800,7 +800,7 @@
 
 
                     </tr>
-                      <table style="width: 100%; " class=" mt-4">
+                      <table style="width: 100%; " class=" mt-3">
                         <td colspan='3' class="cell border-right bd-lightGray  fg-black"  style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Speed
                         <td >
                         <tr>
@@ -827,7 +827,7 @@
 
 
                       <tr>
-                        <table style="width: 100%; " class=" mt-4">
+                        <table style="width: 100%; " class=" mt-3">
                           <td colspan='4' class=" distbtn cell border-right bd-lightGray  fg-black" style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Distance
                             <td >
                             <tr>
@@ -871,7 +871,7 @@
      
             </div id="controlLogs" class="mt-0">
               <nav data-role="ribbonmenu" style="width: 100%;"><!-- Start controlLogs -->
-                <ul class="tabs-holder">
+                <ul class="tabs-holder" >
                   <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw" id="3dviewicon"></i><span id="3dviewlabel"> 3D View</span></a></li>
                   <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
                   <li><a href="#tab-four" id="macrostab"><i class="fas fa-th fa-fw"></i> Macros</a></li>

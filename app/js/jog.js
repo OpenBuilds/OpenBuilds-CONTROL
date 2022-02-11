@@ -999,7 +999,7 @@ $('#highJog').on('click', function(ev) {
   $('.jogspd').removeClass('fg-openbuilds')
   $('.jogspd').addClass('fg-gray')
   $('#highlabel').removeClass('fg-gray')
-  $('#lowlabel').addClass('fg-openbuilds')
+  $('#highlabel').addClass('fg-openbuilds')
   jogOverride(100);
 
 })
