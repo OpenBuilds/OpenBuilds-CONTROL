@@ -2,7 +2,7 @@
 Name=Basic-SENDER
 Version=1.0
 Comment=BasicSENDER
-Exec=bash -c "cd ~/Basic-SENDER; git fetch --all; git reset --hard origin/master; MESA_EXTENSION_OVERRIDE=-GL_MESA_framebuffer_flip_y ~/Basic-SENDER/node_modules/.bin/electron ~/Basic-SENDER"
+Exec=bash -c "cd ~/Basic-SENDER; git fetch --all; git reset --hard origin/master; MESA_EXTENSION_OVERRIDE=-GL_MESA_framebuffer_flip_y ~/Basic-SENDER/node_modules/.bin/electron --no-sandbox ~/Basic-SENDER"
 Icon=/home/pi/Basic-SENDER/build/icons/32x32.png
 Terminal=false
 Type=Application
