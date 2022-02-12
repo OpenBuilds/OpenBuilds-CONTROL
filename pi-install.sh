@@ -25,7 +25,7 @@ npm install
 echo "(9/10) Recompiling Basic-SENDER dependencies..."
 npm rebuild
 npm install electron-rebuild
-~/Basic SENDER/node_modules/.bin/electron-rebuild
+~/Basic-SENDER/node_modules/.bin/electron-rebuild
 echo "(10/10) Creating Menu and Desktop Shortcuts..."
 cp ~/Basic-SENDER/pi-shortcut.desktop ~/Desktop/Basic-SENDER.desktop
 sudo cp ~/Basic-SENDER/pi-shortcut.desktop /usr/share/applications/Basic-SENDERL.desktop
