@@ -236,7 +236,7 @@ G4 P1.8 ; Wait for spindle to come up to speed\n`
   for(i=0;i<passCount;i++){
     gcode +=`G1 Z`+ (passRadius-passDepth*(i+1)) + ` F`+ FR +`\n`;
     gcode += 'G1 X' + Xvalue + ` A` + rotationCount*360 + `\n`;
-    gcode += `G10 P0 L20 A0 ; reset A0\n`
+    gcode += `G92 A0 ; reset A0\n`
     gcode += `G0 Z` + (passRadius+5) + `A0\n`
     gcode += 'G0 X0\n'
     gcode += `G0 Z`+ (passRadius+1) +`\n`
@@ -246,7 +246,7 @@ G4 P1.8 ; Wait for spindle to come up to speed\n`
   if(passRadius-passDepth*passCount>FinishRadius){  // partial pass depth if needed
       gcode +=`G1 Z`+ (FinishRadius).toFixed(4) + ` F`+ FR +`\n`;
       gcode += 'G1 X' + Xvalue + ` A` + rotationCount*360 + `\n`;
-      gcode += `G10 P0 L20 A0 ; reset A0\n`
+      gcode += `G92 A0 ; reset A0\n`
       gcode += `G0 Z` + (passRadius+5) + `A0\n`
       gcode += 'G0 X0\n'
   }
