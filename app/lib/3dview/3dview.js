@@ -16,7 +16,9 @@ function convertParsedDataToObject(jsonData) {
     return;
   }
 
-
+  // save projectdiameter 
+  localStorage.setItem("projectdiameter",parsedData.Pd)
+  
   var geometry = new THREE.BufferGeometry();
 
   var material = new THREE.LineBasicMaterial({
@@ -32,6 +34,7 @@ function convertParsedDataToObject(jsonData) {
     var x = parsedData.linePoints[i].x;
     var y = parsedData.linePoints[i].y;
     var z = parsedData.linePoints[i].z;
+    var a = parsedData.linePoints[i].a;
     positions.push(x, y, z);
 
     if (parsedData.linePoints[i].g == 0) {
@@ -235,11 +238,14 @@ function sim() {
 }
 
 function runSim() {
+    var posa = object.userData.linePoints[simIdx].a*Math.PI/180;
 
   if (object.userData.inch) {
     var posx = object.userData.linePoints[simIdx].x * 25.4; //- (sizexmax/2);
     var posy = object.userData.linePoints[simIdx].y * 25.4; //- (sizeymax/2);
     var posz = object.userData.linePoints[simIdx].z * 25.4;
+    
+    
 
   } else {
     var posx = object.userData.linePoints[simIdx].x; //- (sizexmax/2);
@@ -247,6 +253,12 @@ function runSim() {
     var posz = object.userData.linePoints[simIdx].z;
 
   }
+    cone.rotation.x=-posa-Math.PI/2
+    posy = posy + 20*Math.sin(posa);
+    posz = posz + 20*Math.cos(posa);
+
+
+
 
 
   // Disabled as of 1.0.271:  object.userData.linePoints[simIdx] doesn't line up with gcode line numbers anymore as comments, etc are not added to linePoints[]
@@ -264,7 +276,7 @@ function runSim() {
         ease: Linear.easeNone,
         x: posx,
         y: posy,
-        z: posz + 20,
+        z: posz,
         onComplete: function() {
           if (simRunning == false) {
             //return
@@ -318,36 +330,7 @@ function simstop() {
   clearSceneFlag = true;
 }
 
-function simAnimate() {
-  if (simRunning) {
-    if (cone) {
-      // 160widthx200height offset?
-      if (cone.position) {
-        var conepos = toScreenPosition(cone, camera)
-        var offset = $("#renderArea").offset()
-        var farside = $("#renderArea").offset().left + $("#renderArea").outerWidth()
-        var bottomside = $("#renderArea").outerHeight()
-        // console.log(conepos)
-        // console.log(offset)
-        if (conepos.y < 25) {
-          conepos.y = 25;
-        }
-        if (conepos.y > bottomside - 40) {
-          conepos.y = bottomside - 40;
-        }
-        if (conepos.x < 0) {
-          conepos.x = 0;
-        }
 
-        if (conepos.x > farside - $("#conetext").outerWidth()) {
-          conepos.x = farside - $("#conetext").outerWidth();
-        }
-
-        $("#conetext").css('left', conepos.x + "px").css('top', conepos.y - 20 + "px");
-      }
-    }
-  }
-}
 
 function toScreenPosition(obj, camera) {
   var vector = new THREE.Vector3(obj.position.x, obj.position.y + 10, obj.position.z + 30);

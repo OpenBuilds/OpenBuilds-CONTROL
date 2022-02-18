@@ -1174,6 +1174,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
       inch: false,
       totalDist: this.totalDist,
       totalTime: this.totalTime,
+      Pd: this.projectDiameter,
     }
 
     if (!isUnitsMm) {

@@ -11,6 +11,9 @@ var toast = Metro.toast.create;
 var unit = "mm"
 var waitingForStatus = false;
 var openDialogs = [];
+var posa=0;
+
+
 
 $(document).ready(function() {
   initSocket();
@@ -612,17 +615,25 @@ function initSocket() {
       $('#zPos').html('disabled');
       $('#aPos').html('disabled');
     }
-
+    var pDiameter=localStorage.getItem('projectdiameter');
     if (webgl) {
       if (!disable3Drealtimepos) {
         if (!isJogWidget) {
           if (!simRunning) {
             if (object) {
-              cone.position.x = status.machine.position.work.x
-              cone.position.y = status.machine.position.work.y
-              cone.position.z = status.machine.position.work.z + 20
-              
-                            // }
+
+              if(pDiameter>0){
+                posa=status.machine.position.work.a*Math.PI/180
+                cone.rotation.x=-posa-Math.PI/2
+                cone.position.x = status.machine.position.work.x
+                cone.position.y = ((status.machine.position.work.z+20)*Math.sin(posa)).toFixed(4)
+                cone.position.z = (status.machine.position.work.z+20)*Math.cos(posa).toFixed(4)
+              }else{
+                cone.rotation.x=-Math.PI/2
+                cone.position.x = status.machine.position.work.x
+                cone.position.y = status.machine.position.work.y
+                cone.position.z = status.machine.position.work.z+20
+              }
             }
 
           }
