@@ -2793,6 +2793,7 @@ if (isElectron()) {
         resizable: true,
         maximizable: true,
         frame: false,
+        title: "Basic-SENDER ",
         autoHideMenuBar: true,
         //icon: '/app/favicon.png',
         icon: nativeImage.createFromPath(
