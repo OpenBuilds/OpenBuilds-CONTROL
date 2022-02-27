@@ -2792,7 +2792,6 @@ if (isElectron()) {
         center: true,
         resizable: true,
         maximizable: true,
-        title: "Basic Sender ",
         frame: false,
         autoHideMenuBar: true,
         //icon: '/app/favicon.png',
