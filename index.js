@@ -719,7 +719,7 @@ io.on("connection", function(socket) {
     const {
       shell
     } = require('electron')
-    shell.openExternal('https://docs.openbuilds.com/')
+    shell.openExternal('https://www.bobscnc.com/pages/basic-suite-software-videos')
   });
 
   socket.on("openforum", function(data) {
