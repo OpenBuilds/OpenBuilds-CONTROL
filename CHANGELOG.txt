@@ -1,3 +1,4 @@
+v.0.0.32: Update the code to look for updates
 v.0.0.31: Add inputs to cutomize the feed rate and jog distances
           Record and display last known line run on a gcode file to help with recovery.
           Add delay for erase EEPROM to run before loading the firmware

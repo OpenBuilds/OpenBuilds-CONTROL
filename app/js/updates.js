@@ -8,10 +8,10 @@ function checkUpdate() {
 
   if (!isMac && webgl) {
 
- /*   setTimeout(function() {
+    setTimeout(function() {
       // console.log('checking for update')
       printLog("<span class='fg-darkRed'>[ update ] </span><span class='fg-darkGray'>Checking for Updates</span>")
-      $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
+      $.getJSON("https://api.github.com/repos/rlwoodjr/Basic-SENDER/releases/latest", {
         crossDomain: true
       }).done(function(release) {
         if (release.name.indexOf("v") == 0) {
@@ -39,7 +39,7 @@ function checkUpdate() {
         } 
       }); 
     }, 1000) 
-  } */
+  } 
 }
 
 
