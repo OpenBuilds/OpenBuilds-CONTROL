@@ -214,7 +214,7 @@ if (isElectron()) {
 if (isElectron()) {
   var uploadsDir = electronApp.getPath('userData') + '/upload/';
 } else {
-  var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : '/var/local')
+  var uploadsDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local')
 }
 var jobStartTime = false;
 var jobCompletedMsg = ""; // message sent when job is done
@@ -591,12 +591,12 @@ app.post('/upload', function(req, res) {
     debug_log('Uploaded ' + file.path);
 
     if (jogWindow === null) {
-   //   createJogWindow();
-  //    jogWindow.show()
+      createJogWindow();
+      jogWindow.show()
       // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-  //    jogWindow.setAlwaysOnTop(true);
- //     jogWindow.focus();
- //     jogWindow.setAlwaysOnTop(false);
+      jogWindow.setAlwaysOnTop(true);
+      jogWindow.focus();
+      jogWindow.setAlwaysOnTop(false);
     } else {
       jogWindow.show()
       jogWindow.setAlwaysOnTop(true);
@@ -823,7 +823,7 @@ io.on("connection", function(socket) {
         }
         status.comms.connectionStatus = 0;
       });
-    }, 200)
+    }, 1000)
   })
 
   socket.on("flashInterface", function(data) {
@@ -2792,8 +2792,8 @@ if (isElectron()) {
         center: true,
         resizable: true,
         maximizable: true,
-        frame: false,
         title: "Basic-SENDER ",
+        frame: false,
         autoHideMenuBar: true,
         //icon: '/app/favicon.png',
         icon: nativeImage.createFromPath(

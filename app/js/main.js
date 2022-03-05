@@ -72,8 +72,15 @@ function getChangelog() {
 $(document).ready(function() {
 
   initDiagnostics(); // run second time to ensure checkboxes are ticked
+
+  if (localStorage.getItem('gcodeLineNumber')){
   var LineNumber=localStorage.getItem('gcodeLineNumber')
-  $('#lastLineRan').html(" "+ LineNumber)
+    $('#lastLineRan').html(" "+ LineNumber)
+  }else{
+    $('#lastLineRan').html('NA')
+  }
+
+
   if (!isJogWidget) {
     init3D();
   }
