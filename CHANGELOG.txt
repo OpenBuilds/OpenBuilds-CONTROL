@@ -1,3 +1,4 @@
+v.0.0.34: Update autoupdate
 v.0.0.33: Update code for startup window.
 v.0.0.32: Update the code to look for updates
 v.0.0.31: Add inputs to cutomize the feed rate and jog distances
