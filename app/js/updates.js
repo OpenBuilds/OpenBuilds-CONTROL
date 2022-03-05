@@ -61,4 +61,3 @@ function cancelTimer() {
   $('#countdown').html('cancelled')
   printLog("<span class='fg-darkRed'>[ Update Deferred! ] </span><span class='fg-darkGray'>No problem, we will ask you again next time</span>")
 }
-}
