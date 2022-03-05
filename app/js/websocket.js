@@ -41,8 +41,10 @@ function showGrbl(bool) {
     $("#firmwarename").html('')
   }
   if (localStorage.getItem('jogOverride')) {
-    jogOverride(localStorage.getItem('jogOverride'))
+    jogOverride(localStorage.getItem('NormalJog'))
   }
+
+
 
 }
 
@@ -319,11 +321,7 @@ function initSocket() {
 
   });
 
-  socket.on("machinename", function(data) {
-    if (typeof setMachineButton !== 'undefined') {
-      setMachineButton(data)
-    }
-  });
+
 
   socket.on("queueCount", function(data) {
     // calc percentage
@@ -354,6 +352,12 @@ function initSocket() {
       }
     }
     $('#gcodesent').html("Job Queue: " + data[0]);
+    if(total>done){
+      localStorage.setItem('gcodeLineNumber',done);
+    }else{
+      localStorage.setItem('gcodeLineNumber','NA');
+    }
+    
   })
 
   socket.on('toastErrorAlarm', function(data) {
@@ -476,7 +480,7 @@ function initSocket() {
           string = "waiting to install firmware"
       }
 
-      
+         
       //var string = string
       var printLogCls = "fg-dark"
       printLogModern(icon, source, string, printLogCls)

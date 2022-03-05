@@ -15,28 +15,17 @@ function jogOverride(newVal) {
     
 
   }
-  localStorage.setItem('jogOverride', newVal);
 }
 
 function mmMode() {
   unit = "mm";
   localStorage.setItem('unitsMode', unit);
-  $('#dist01label').html('0.1mm')
-  $('#dist1label').html('1mm')
-  $('#dist10label').html('10mm')
-  $('#dist100label').html('100mm')
-  if (jogdist == 0.0254) {
-    jogdist = 0.1
-  }
-  if (jogdist == 0.254) {
-    jogdist = 1
-  }
-  if (jogdist == 2.54) {
-    jogdist = 10
-  }
-  if (jogdist == 25.4) {
-    jogdist = 100
-  }
+  $('#dist01label').html($('#setTinyJogmm').val())
+  $('#dist1label').html($('#setSmallJogmm').val())
+  $('#dist10label').html($('#setMediumJogmm').val())
+  $('#dist100label').html($('#setLargeJogmm').val())
+  jogdist=$('#setMediumJogmm').val()
+
   if (typeof object !== 'undefined') {
     if (object.userData.inch) {
       if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
@@ -57,22 +46,11 @@ function mmMode() {
 function inMode() {
   unit = "in";
   localStorage.setItem('unitsMode', unit);
-  $('#dist01label').html('0.001"')
-  $('#dist1label').html('0.01"')
-  $('#dist10label').html('0.1"')
-  $('#dist100label').html('1"')
-  if (jogdist == 0.1) {
-    jogdist = 0.0254
-  }
-  if (jogdist == 1) {
-    jogdist = 0.254
-  }
-  if (jogdist == 10) {
-    jogdist = 2.54
-  }
-  if (jogdist == 100) {
-    jogdist = 25.4
-  }
+  $('#dist01label').html($('#setTinyJogin').val())
+  $('#dist1label').html($('#setSmallJogin').val())
+  $('#dist10label').html($('#setMediumJogin').val())
+  $('#dist100label').html($('#setLargeJogin').val())
+  jogdist=$('#setMediumJogin').val()*25.4
 
   if (typeof object !== 'undefined') {
     if (object.userData.inch) {
@@ -103,6 +81,78 @@ function cancelJog() {
 
 
 $(document).ready(function() {
+
+
+
+  // get jog feed rates
+  if (localStorage.getItem('SlowJog')) {
+    $('#setSlowJog').val(localStorage.getItem('SlowJog'))
+  }else{
+    $('#setSlowJog').val(2)
+  }
+
+  if (localStorage.getItem('NormalJog')) {
+    $('#setNormalJog').val(localStorage.getItem('NormalJog'))
+  }else{
+    $('#setNormalJog').val(40)
+  }
+
+  if (localStorage.getItem('FastJog')) {
+    $('#setFastJog').val(localStorage.getItem('FastJog'))
+  }else{
+    $('#setFastJog').val(80)
+  }
+
+
+  // get jog distances mm
+  if (localStorage.getItem('mmTinyJog')) {
+    $('#setTinyJogmm').val(localStorage.getItem('mmTinyJog'))
+  }else{
+    $('#setTinyJogmm').val(0.025)
+  }
+
+  if (localStorage.getItem('mmSmallJog')) {
+    $('#setSmallJogmm').val(localStorage.getItem('mmSmallJog'))
+  }else{
+    $('#setSmallJogmm').val(0.10)
+  }
+
+  if (localStorage.getItem('mmMediumJog')) {
+    $('#setMediumJogmm').val(localStorage.getItem('mmMediumJog'))
+  }else{
+    $('#setMediumJogmm').val(3)
+  }
+
+  if (localStorage.getItem('mmLargeJog')) {
+    $('#setLargeJogmm').val(localStorage.getItem('mmLargeJog'))
+  }else{
+    $('#setLargeJogmm').val(25)
+  }
+
+  // get jog distances inches
+  if (localStorage.getItem('inTinyJog')) {
+    $('#setTinyJogin').val(localStorage.getItem('inTinyJog'))
+  }else{
+    $('#setTinyJogin').val(0.001)
+  }
+
+  if (localStorage.getItem('inSmallJog')) {
+    $('#setSmallJogin').val(localStorage.getItem('inSmallJog'))
+  }else{
+    $('#setSmallJogin').val(0.01)
+  }
+
+  if (localStorage.getItem('inMediumJog')) {
+    $('#setMediumJogin').val(localStorage.getItem('inMediumJog'))
+  }else{
+    $('#setMediumJogin').val(0.1)
+  }
+
+  if (localStorage.getItem('inLargeJog')) {
+    $('#setLargeJogin').val(localStorage.getItem('inLargeJog'))
+  }else{
+    $('#setLargeJogin').val(1)
+  }
 
   if (localStorage.getItem('continuousJog')) {
     if (JSON.parse(localStorage.getItem('continuousJog')) == true) {
@@ -143,6 +193,9 @@ $(document).ready(function() {
     inMode();
     $('#inMode').click()
   }
+
+ 
+
 
   $(document).mousedown(function(e) {
   }).mouseup(function(e) {
@@ -286,23 +339,27 @@ $(document).ready(function() {
 
   $('#dist01').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 0.1;
+      jogdist = $('#setTinyJogmm').val()
     } else if (unit == "in") {
-      jogdist = 0.0254;
+      jogdist = $('#setTinyJogin').val()*25.4
     }
+
+    
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist01').addClass('bd-openbuilds')
     $('.jogdist').removeClass('fg-openbuilds')
     $('.jogdist').addClass('fg-gray')
     $('#dist01label').removeClass('fg-gray')
     $('#dist01label').addClass('fg-openbuilds')
+
+    
   })
 
   $('#dist1').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 1;
+      jogdist = $('#setSmallJogmm').val()
     } else if (unit == "in") {
-      jogdist = 0.254;
+      jogdist = $('#setSmallJogin').val()*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist1').addClass('bd-openbuilds')
@@ -314,9 +371,9 @@ $(document).ready(function() {
 
   $('#dist10').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 10;
+      jogdist = $('#setMediumJogmm').val()
     } else if (unit == "in") {
-      jogdist = 2.54;
+      jogdist = $('#setMediumJogin').val()*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist10').addClass('bd-openbuilds')
@@ -328,9 +385,9 @@ $(document).ready(function() {
 
   $('#dist100').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 100;
+      jogdist = $('#setLargeJogmm').val()
     } else if (unit == "in") {
-      jogdist = 25.4;
+      jogdist = $('#setLargeJogin').val()*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist100').addClass('bd-openbuilds')
@@ -822,6 +879,9 @@ $('.aP').on('touchend mouseup', function(ev) {
 
 });
 
+
+///this fuction is for the keyboard
+
 function changeStepSize(dir) {
   if (jogdist == 0.1 || jogdist == 0.0254) {
     if (dir == 1) {
@@ -975,7 +1035,7 @@ $('#lowJog').on('click', function(ev) {
   $('.jogspd').addClass('fg-gray')
   $('#lowlabel').removeClass('fg-gray')
   $('#lowlabel').addClass('fg-openbuilds')
-  jogOverride(3);
+  jogOverride($('#setSlowJog').val());
 })
 
 
@@ -987,7 +1047,7 @@ $('#normalJog').on('click', function(ev) {
   $('.jogspd').addClass('fg-gray')
   $('#normallabel').removeClass('fg-gray')
   $('#normallabel').addClass('fg-openbuilds')
-  jogOverride(50);
+  jogOverride($('#setNormalJog').val());
 })
 
 
@@ -1000,6 +1060,103 @@ $('#highJog').on('click', function(ev) {
   $('.jogspd').addClass('fg-gray')
   $('#highlabel').removeClass('fg-gray')
   $('#highlabel').addClass('fg-openbuilds')
+  jogOverride($('#setFastJog').val());
+
+})
+
+
+$('#rapidJog').on('click', function(ev) {
+
+  $('.spdbtn').removeClass('bd-openbuilds')
+  $('#rapidJog').addClass('bd-openbuilds')
+  $('.jogspd').removeClass('fg-openbuilds')
+  $('.jogspd').addClass('fg-gray')
+  $('#rapidlabel').removeClass('fg-gray')
+  $('#rapidlabel').addClass('fg-openbuilds')
   jogOverride(100);
 
 })
+
+// jog feed reate for slow, normal, and fast as a precentage of rapid (100%)
+function setJogS(){
+  localStorage.setItem('SlowJog',$('#setSlowJog').val())
+  jogOverride($('#setSlowJog').val());
+}
+
+function setJogN(){
+  localStorage.setItem('NormalJog',$('#setNormalJog').val())
+  jogOverride($('#setNormalJog').val());
+}
+
+function setJogF(){
+  localStorage.setItem('FastJog',$('#setFastJog').val())
+  jogOverride($('#setFastJog').val());
+
+}
+
+//Jog distances Tiny, Small, Meduim, and Large for mm and inches
+
+function setJogTmm() {
+  localStorage.setItem('mmTinyJog',$('#setTinyJogmm').val())
+  $('#dist01label').html($('#setTinyJogmm').val());
+  var distclass = $('#dist01label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist01label').text());
+}
+function setJogSmm() {
+  localStorage.setItem('mmSmallJog',$('#setSmallJogmm').val())
+  $('#dist1label').html($('#setSmallJogmm').val())
+  var distclass = $('#dist1label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist1label').text());
+}
+function setJogMmm() {
+  localStorage.setItem('mmMediumJog',$('#setMediumJogmm').val())
+  $('#dist10label').html($('#setMediumJogmm').val());
+  var distclass = $('#dist10label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist10label').text());
+}
+function setJogLmm() {
+  localStorage.setItem('mmLargeJog',$('#setLargeJogmm').val())
+  $('#dist100label').html($('#setLargeJogmm').val());
+  var distclass = $('#dist100label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist100label').text());
+}
+
+
+
+function setJogTin() {
+  localStorage.setItem('inTinyJog',$('#setTinyJogin').val())
+  $('#dist01label').html($('#setTinyJogin').val());
+  var distclass = $('#dist01label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist01label').text())*25.4;
+}
+function setJogSin() {
+  localStorage.setItem('inSmallJog',$('#setSmallJogin').val())
+  $('#dist1label').html($('#setSmallJogin').val());
+  var distclass = $('#dist1label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist11label').text())*25.4;
+}
+function setJogMin() {
+  localStorage.setItem('inMediumJog',$('#setMediumJogin').val())
+  $('#dist10label').html($('#setMediumJogin').val());
+  var distclass = $('#dist10label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist10label').text())*25.4;
+}
+
+function setJogLin() {
+  localStorage.setItem('inLargeJog',$('#setLargeJogin').val())
+  $('#dist100label').html($('#setLargeJogin').val());
+  var distclass = $('#dist100label').attr("class");
+  var classtext=distclass.includes("fg-openbuilds");
+  if(classtext) jogdist=parseFloat($('#dist100label').text())*25.4;
+}
+
+
+
+

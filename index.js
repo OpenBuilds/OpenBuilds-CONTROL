@@ -1022,7 +1022,7 @@ io.on("connection", function(socket) {
               } else {
                 var output = {
                   'command': 'connect',
-                  'response': `ERROR!:  No supported firmware detected - See https://docs.openbuilds.com/doku.php?id=docs:blackbox:faq-usb-connection-failed
+                  'response': `ERROR!:  No supported firmware detected - Please flash the controller.Please see: https://www.bobscnc.com/pages/basic-suite-software-videos
                   for more details. Closing port ` + port.path,
                   'type': 'error'
                 }

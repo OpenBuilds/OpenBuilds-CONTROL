@@ -219,12 +219,19 @@ function startFlash(){
 
   socket.on('progStatus', function(data) {
     if (data.string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
-     // log.console(data.string)
+      sleep(8000); // allow time for clear EEPROM to run
       installFirmware();
-    }else{
-      log.console(data.string)
-    }
+         }
   });
 
 }
 
+
+function sleep(num) {
+  let now = new Date();
+  let stop = now.getTime() + num;
+  while(true) {
+      now = new Date();
+      if(now.getTime() > stop) return;
+  }
+}

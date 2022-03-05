@@ -196,7 +196,7 @@
                     <span class="caption">Tool<br>On</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Router On (M3 S1000)</a></li>
                     <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
                     <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
@@ -801,27 +801,32 @@
 
                     </tr>
                       <table style="width: 100%; " class=" mt-3">
-                        <td colspan='3' class="cell border-right bd-lightGray  fg-black"  style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Speed
+                        <td colspan='4' class="cell border-right bd-lightGray  fg-black"  style="text-align: center; font-weight:900; font-family: Arial; font-size: 12px; ">Jog Speed
                         <td >
                         <tr>
 
                         </tr>
                         <td >
-                          <button class="button light mb-2 spdbtn" id="lowJog" style="width: 90px; margin:5px">
+                          <button class="button light mb-2 spdbtn" id="lowJog" style="width: 100%; margin:10px">
                               <span id="lowlabel" class="fa-layers-text fg-gray jogspd" data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Low</span>
                           </button>
                         </td>
                         <td>
-                        <button class="button light mb-2 bd-openbuilds spdbtn" id="normalJog" style="width: 90px; margin:5px">
+                        <button class="button light mb-2 bd-openbuilds spdbtn" id="normalJog" style="width: 100%; margin:10px">
                             <span id="normallabel"class="fa-layers-text fg-openbuilds jogspd"data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Normal</span>
                         </button>
                         </td>
                         <td>
-                          <button class="button light mb-2 spdbtn" id="highJog" style="width: 90px; margin:5px">
+                          <button class="button light mb-2 spdbtn" id="highJog" style="width: 100%; margin:10px">
                               <span id="highlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">High</span>
                 
                           </button>
                           </td>
+                          <td>
+                            <button class="button light mb-2 spdbtn" id="rapidJog" style="width: 100%; margin:10px">
+                                <span id="rapidlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">Rapid</span>
+                              </button>
+                            </td>
                         </table>
                       </tr>
 
@@ -938,8 +943,14 @@
         <div id="troubleshootingPanel" style="display: none;">
           <div class="grid p-0 m-0">
             <div class="row  p-0 m-0">
-              <div class="cell p-0 m-0">
-                                
+              <div class="cell-4 p-0 m-0">
+                
+                <div class="card">
+                  <div class="card-header  p-1 m-0">
+                    <i class="fa fa-edit"></i> Recovery: Last line ran found from earlier job run:<spam id="lastLineRan"></spam>
+                  </div>    
+                </div>  
+
                 <div class="card">
                   <div class="card-header p-1">
                     <i class="fas fa-th-list"></i>DRO Axis Display
@@ -961,7 +972,7 @@
                   <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-bolt"></i>Inputs / Home Switches
                   </div>
-                  <div class="card-content">
+                  <div class="card-content" style="height: calc(100vh - 750px); min-height: 120px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
@@ -971,15 +982,15 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">X-Home</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Y-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Y-Home</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Z-Limit</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Z-Home</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
                         </tr>
                         <tr>
@@ -1008,7 +1019,7 @@
                   <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-tty"></i>Communications
                   </div>
-                  <div class="card-content" style="height: calc(100vh - 650px); min-height: 90px; overflow-x: auto;">
+                  <div class="card-content" style="height: calc(100vh - 750px); min-height: 120px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
@@ -1045,14 +1056,115 @@
                     </table>
                   </div>
                 </div>
-
               </div>
-              <div class="cell p-0 m-0">
- 
+
+              <div class="cell-4 p-0 m-0">
+                <div class="card">
+                  <div class="card-header  p-1 m-0">
+                    <i class="fas fa-tachometer-alt"></i>- Jog Speed Setup 
+                  </div>
+
+
+                  <div class="card-content" style="height: calc(100vh - 760px); min-height: 120px; overflow-x: auto;">
+                    <table class="table striped compact">
+                      <thead>
+                        <tr>
+                          <th style="width: 60%;">Descrpition</th>
+                          <th style="width: 40%;">Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <td class="pt-1 mt-0 pb-0 pt-0" style="font-size: 12px">Slow Jog Speed (%)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"> <input id="setSlowJog" onchange="setJogS();" style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="2" data-editable="true"></td>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Meduim Jog Speed (%)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setNormalJog" onchange="setJogN();" style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Fast Jog Speed (%)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setFastJog" onchange="setJogF();" style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="80" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <tr>
+                            <td class="pt-1 mt-0 pb-0 pt-0">Rapid Jog Speed (%)</td>
+                            <td class="pt-1 mt-0 pb-0 pt-0"><input id="setRapidJog"  style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="100" data-editable="true" readonly></td>
+                          </tr>
+                          <tr>
+
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+   
+
+                <div class="card">
+                  <div class="card-header  p-1 m-0">
+                    <i class="fas fa-sort-amount-down-alt"></i>- Jog Distance Setup
+                  </div>
+
+
+                  <div class="card-content" style="height: calc(100vh - 650px); min-height: 120px; overflow-x: auto;">
+                    <table class="table striped compact">
+                      <thead>
+                        <tr>
+                          <th style="width: 60%;">Descrpition</th>
+                          <th style="width: 40%;">Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <td class="pt-1 mt-0 pb-0 pt-0" style="font-size: 12px">Tiny (mm)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"> <input id="setTinyJogmm" onchange="setJogTmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value="0.03" data-editable="true"></td>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Small (mm)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setSmallJogmm" onchange="setJogSmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value=".1" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Mediam (mm)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setMediumJogmm" onchange="setJogMmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value="3" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Large (mm)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setLargeJogmm" onchange="setJogLmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value="25" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Tiny (inch)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"> <input id="setTinyJogin" onchange="setJogTin();"style="font-size: small;" type="number" data-role="input" data-append="inch" data-clear-button="false" value="0.001" data-editable="true"></td>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Small (inch)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setSmallJogin" onchange="setJogSin();"style="font-size: small;" type="number" data-role="input" data-append="inch" data-clear-button="false" value="0.01" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Medium (inch)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setMediumJogin"onchange="setJogMin();" style="font-size: small;" type="number" data-role="input" data-append="inch" data-clear-button="false" value="0.1" data-editable="true"></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Large (inch)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><input id="setLargeJogin" onchange="setJogLin();" style="font-size: small;" type="number" data-role="input" data-append="inch" data-clear-button="false" value="1" data-editable="true"></td>
+                        </tr>
+                      
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+
+              <div class="cell-4 p-0 m-0">
+
+                <div class="card">
+                  <div class="card-header  p-1 m-0">
+                    <i class="fas fa-fw fa-history"></i> Changelog
+                  </div>
+                  <div class="card-content" style="height: calc(100vh - 320px); min-height: 220px; overflow-x: auto;">
+                    <div id="changelog" class="text-small"></div>
+                  </div>
+                </div>
+              </div>
+
+         
+
+            </div><!--Row-->
+          </div> <!--Grid-->
         </div>
 
         <!-- Bottom StatusBar -->

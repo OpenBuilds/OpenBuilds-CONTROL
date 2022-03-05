@@ -41,14 +41,14 @@ function getChangelog() {
   // Splash Screen Begin
   $("#splashAd").html(`<img src="splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
 
- /* $("#changelog").empty()
+  $("#changelog").empty()
   var template2 = `<ul>`
-  $.get("https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
+  $.get("https://raw.githubusercontent.com/rlwoodjr/Basic-SENDER/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
     var lines = data.split('\n');
     if (lines.length < 12) {
       var count = lines.length - 1
     } else {
-      var count = 12
+      var count = 30
     }
     for (var line = 0; line < count - 1; line++) {
       template2 += '<li>' + lines[line] + '</li>'
@@ -66,13 +66,14 @@ function getChangelog() {
     $("#changelogupdate").html(template3);
 
 
-  });*/
+  });
 }
 
 $(document).ready(function() {
 
   initDiagnostics(); // run second time to ensure checkboxes are ticked
-
+  var LineNumber=localStorage.getItem('gcodeLineNumber')
+  $('#lastLineRan').html(" "+ LineNumber)
   if (!isJogWidget) {
     init3D();
   }
