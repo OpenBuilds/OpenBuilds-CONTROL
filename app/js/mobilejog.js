@@ -70,10 +70,10 @@ $('#AAxisDisplay').change(function() {
 $('#axesDisplayBtn').click(function() {
 
   var x = document.getElementById("axesDisplayMobile");
-  if (x.style.display === "none") {
-    x.style.display = "block";
+  if (x.hidden) {
+      x.hidden=false;
   } else {
-    x.style.display = "none";
+      x.hidden=true;
   }
 
  

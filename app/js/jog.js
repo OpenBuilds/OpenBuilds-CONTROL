@@ -88,19 +88,19 @@ $(document).ready(function() {
   if (localStorage.getItem('SlowJog')) {
     $('#setSlowJog').val(localStorage.getItem('SlowJog'))
   }else{
-    $('#setSlowJog').val(2)
+    $('#setSlowJog').val(1)
   }
 
   if (localStorage.getItem('NormalJog')) {
     $('#setNormalJog').val(localStorage.getItem('NormalJog'))
   }else{
-    $('#setNormalJog').val(40)
+    $('#setNormalJog').val(20)
   }
 
   if (localStorage.getItem('FastJog')) {
     $('#setFastJog').val(localStorage.getItem('FastJog'))
   }else{
-    $('#setFastJog').val(80)
+    $('#setFastJog').val(60)
   }
 
 

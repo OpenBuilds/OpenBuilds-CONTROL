@@ -32,7 +32,7 @@
 
     <div class="window" style="height: 100vh;">
       <div class="window-caption bg-openbuilds" style="-webkit-app-region: drag;">
-        <span class="icon"><img src="../icon-transparent.png" /></span>
+        <span class="icon"><img src="../icon.png" /></span>
         <span class="title" id="windowtitle">Basic Sender Pendent</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
         </div>
@@ -404,21 +404,25 @@
                     <button class="button light mb-2 spdbtn" id="lowJog" style="width: 100%; margin:1px">
                         <span id="lowlabel" class="fa-layers-text fg-gray jogspd" data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Low</span>
                     </button>
+                    <span id="setSlowJog"></span>
                   </td>
                   <td>
                   <button class="button light mb-2 bd-openbuilds spdbtn" id="normalJog" style="width: 100%; margin:1px">
                       <span id="normallabel"class="fa-layers-text fg-openbuilds jogspd"data-fa-transform=""  style="font-weight:900; font-family: Arial; font-size: 12px;">Normal</span>
                   </button>
+                  <span id="setNormalJog"></span>
                   </td>
                   <td>
                     <button class="button light mb-2 spdbtn" id="highJog" style="width: 100%; margin:1px">
                         <span id="highlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">High</span>
                     </button>
+                    <span id="setFastJog"></span>
                     </td>
                     <td> 
                     <button class="button light mb-2 spdbtn" id="rapidJog" style="width: 100%; margin:1px">
                       <span id="rapidlabel" class=" fa-layers-text  fg-gray jogspd" data-fa-transform="" style="font-weight:900; font-family: Arial; font-size: 12px;">Rapid</span>
                    </button>
+                   
                    </td>
                   </table>
                 </tr>
@@ -505,7 +509,7 @@
 
       </div>
 
-    	<div class="text-left drop-shadow" id="axesDisplayMobile" style="z-index: 200; width: 110px; display: block; position: absolute; bottom:200px; right:20px; background: rgba(240, 240, 240, 0.85);" >
+    	<div class="text-left drop-shadow" id="axesDisplayMobile" style="z-index: 200; width: 110px; display: block; position: absolute; bottom:200px; right:20px; background: rgba(240, 240, 240, 0.85);" hidden >
    
       <div>
    
