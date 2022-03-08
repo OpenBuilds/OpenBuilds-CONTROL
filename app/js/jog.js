@@ -95,6 +95,8 @@ $(document).ready(function() {
     $('#setNormalJog').val(localStorage.getItem('NormalJog'))
   }else{
     $('#setNormalJog').val(20)
+    jogOverride(20);
+
   }
 
   if (localStorage.getItem('FastJog')) {

@@ -422,3 +422,13 @@ function openAboutDialog() {
   Metro.dialog.open("#aboutDialog");
 }
 
+
+function ConfirmDelete() {
+  var x = confirm("Are you sure you want to clear memory?");
+  if (x) {
+    window.localStorage.clear()
+    return true;
+  } else {
+    return false;
+  }
+}
