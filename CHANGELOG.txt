@@ -1,3 +1,4 @@
+v.0.0.37: Update flashing code for slower computers
 v.0.0.36: Add reset memory button to clear settings
 v.0.0.35: Update jog pendant to hide axis config and set jog rates
 v.0.0.34: Update autoupdate
