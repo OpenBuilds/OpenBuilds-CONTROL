@@ -217,12 +217,6 @@ function startFlash(){
     socket.emit('flashGrbl', data)
   } 
 
-  socket.on('progStatus', function(data) {
-    if (data.string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
-      sleep(8000); // allow time for clear EEPROM to run
-      installFirmware();
-         }
-  });
 
 }
 
