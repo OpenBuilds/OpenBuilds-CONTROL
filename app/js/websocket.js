@@ -40,8 +40,10 @@ function showGrbl(bool) {
     $("#grblButtons").hide()
     $("#firmwarename").html('')
   }
-  if (localStorage.getItem('jogOverride')) {
+  if (localStorage.getItem('NormalJog')) {
     jogOverride(localStorage.getItem('NormalJog'))
+  }else{
+    jogOverride(20);
   }
 
 
@@ -451,7 +453,7 @@ function initSocket() {
       string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
       string = string.replace('[39m', "</span>");
       if (string.indexOf("Hash of data verified") != -1) {
-        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>";
+        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
       }
       if (string.indexOf("could not open port") != -1) {
         string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
@@ -478,6 +480,8 @@ function initSocket() {
 
       if(data.file == 'eepromclear.hex' && firmwareErased ){
           string = "waiting to install firmware"
+          sleep(6000); // allow time for clear EEPROM to run
+          installFirmware();
       }
 
          
@@ -896,7 +900,7 @@ function initSocket() {
 
   socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
-    populateGrblBuilderToolForm();
+    //populateGrblBuilderToolForm();
     var select = $("#flashController").data("select").val("interface")
     //status.interface.firmware.installedVersion
     //status.interface.firmware.availVersion
