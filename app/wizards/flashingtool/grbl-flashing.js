@@ -66,12 +66,6 @@ $(document).ready(function() {
 
 function populateGrblBuilderToolForm() {
   Metro.dialog.open("#grblFlashDialog");
-  var opts = `<option value="custom">Custom: firmware binary file</option>`;
-  if (parseFloat(laststatus.interface.firmware.availVersion) > 0) {
-    opts += `<option value="online" selected>Latest available v` + laststatus.interface.firmware.availVersion + `</option>`;
-  }
-  var select = $("#interfaceFirmwareVer").data("select");
-  select.data(opts);
 }
 
 // install bobscnc hex files

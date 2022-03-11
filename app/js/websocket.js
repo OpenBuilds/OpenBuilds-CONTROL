@@ -442,7 +442,9 @@ function initSocket() {
     var string = data.string
     if (string) {
       if (string.indexOf('flash complete') != -1  && data.file == 'eepromclear.hex'){
-        var firmwareErased=true;
+        string = "waiting to install firmware"
+        sleep(6000); // allow time for clear EEPROM to run
+        installFirmware();
 
       }else if(string.indexOf('flash complete') != -1 ){
         setTimeout(function() {
@@ -478,12 +480,7 @@ function initSocket() {
         var source = " Installing Firmware"
       }
 
-      if(data.file == 'eepromclear.hex' && firmwareErased ){
-          string = "waiting to install firmware"
-          sleep(6000); // allow time for clear EEPROM to run
-          installFirmware();
-      }
-
+     
          
       //var string = string
       var printLogCls = "fg-dark"
@@ -898,7 +895,7 @@ function initSocket() {
     }
   })
 
-  socket.on("interfaceOutdated", function(status) {
+ /* socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
     //populateGrblBuilderToolForm();
     var select = $("#flashController").data("select").val("interface")
@@ -911,7 +908,7 @@ function initSocket() {
     `
 
     $("#FlashDialogMsg").html(template);
-  })
+  })*/
 
   $('#sendCommand').on('click', function() {
     var commandValue = $('#command').val();
