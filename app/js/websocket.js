@@ -40,8 +40,8 @@ function showGrbl(bool) {
     $("#grblButtons").hide()
     $("#firmwarename").html('')
   }
-  if (localStorage.getItem('NormalJog')) {
-    jogOverride(localStorage.getItem('NormalJog'))
+  if (localStorage.getItem('normalJog')) {
+    jogOverride(localStorage.getItem('normalJog'))
   }else{
     jogOverride(20);
   }
@@ -341,6 +341,8 @@ function initSocket() {
       }
       if (typeof object !== 'undefined' && done > 0) {
         if (object.userData !== 'undefined' && object.userData && object.userData.linePoints.length > 2) {
+          //object.geometry.attributes.color.array[data[1]-data[0]] = 0
+          //object.geometry.addAttribute('color', 0);
           var timeremain = object.userData.totalTime;
           if (!isNaN(timeremain)) {
             if (lastJobStartTime) {
@@ -392,7 +394,7 @@ function initSocket() {
     });
     openDialogs.push(dialog);
     setTimeout(function() {
-      $(".closeAlarmBtn").focus();
+     $(".closeAlarmBtn").focus();
     }, 200, )
     //
   });
@@ -406,11 +408,11 @@ function initSocket() {
     var printLogCls = "fg-darkRed"
     printLogModern(icon, source, string, printLogCls)
 
-    var dialog = Metro.dialog.create({
+      var dialog = Metro.dialog.create({
       title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
       content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
       clsDialog: 'dark',
-      actions: [{
+        actions: [{
         caption: "OK",
         cls: "js-dialog-close alert closeErrorBtn",
         onclick: function() {
@@ -424,7 +426,7 @@ function initSocket() {
     }, 200, )
     //
   });
-
+ 
   socket.on("errorsCleared", function(data) {
     if (data) {
       for (i = 0; i < openDialogs.length; i++) {
@@ -774,7 +776,17 @@ function initSocket() {
     setConsole(status.comms.connectionStatus, status)
     if (status.comms.connectionStatus != 5) {
       bellstate = false
-    };
+      $('#MachineMode').removeClass('machinestatusbtn1')
+      $('#MachineMode').addClass('machinestatusbtn2')
+      $('#MachineMode').text('READY')
+    }else{
+      $('#MachineMode').removeClass('machinestatusbtn2')
+      $('#MachineMode').addClass('machinestatusbtn1')
+      $('#MachineMode').text('ALARM')
+    }
+
+
+
     if (status.comms.connectionStatus == 0) {
       showGrbl(false)
     }

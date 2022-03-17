@@ -91,8 +91,8 @@ $(document).ready(function() {
     $('#setSlowJog').val(1)
   }
 
-  if (localStorage.getItem('NormalJog')) {
-    $('#setNormalJog').val(localStorage.getItem('NormalJog'))
+  if (localStorage.getItem('normalJog')) {
+    $('#setNormalJog').val(localStorage.getItem('normalJog'))
   }else{
     $('#setNormalJog').val(20)
     jogOverride(20);
@@ -1086,7 +1086,7 @@ function setJogS(){
 }
 
 function setJogN(){
-  localStorage.setItem('NormalJog',$('#setNormalJog').val())
+  localStorage.setItem('normalJog',$('#setNormalJog').val())
   jogOverride($('#setNormalJog').val());
 }
 

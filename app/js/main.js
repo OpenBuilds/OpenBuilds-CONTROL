@@ -432,3 +432,22 @@ function ConfirmDelete() {
     return false;
   }
 }
+
+
+function softlimits(){
+  if (grblParams['$20'] == 1){
+      sendGcode('$20=0')
+      document.getElementById('softlimitsbtn').innerHTML = 'Soft' + '<br>' + 'Limits Off'
+      $('#softlimiticon').removeClass('fg-green')
+      $('#softlimiticon').addClass('fg-red')
+  }else{
+      sendGcode('$20=1')
+      document.getElementById('softlimitsbtn').innerHTML = 'Soft' + '<br>' + 'Limits On'
+      $('#softlimiticon').removeClass('fg-red')
+      $('#softlimiticon').addClass('fg-green')
+ 
+  }
+  
+
+  
+}

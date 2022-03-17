@@ -179,4 +179,35 @@
   background: #4a4e51;
 }
 
+
+
+.machinestatusbtn1 {
+  background-color:#CE352C;
+  color: white;
+  text-align: center;
+  width: 100px;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 16px;
+  
+}
+
+.machinestatusbtn1:hover {
+  background-color:#ad2c25;
+  border-color: #ad2c25;
+
+}
+
+
+
+.machinestatusbtn2 {
+  background-color:#60a917; 
+  text-align: center;
+  color: white;
+  width: 100px;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 16px;
+}
+
 /* End CSS mini Switch */

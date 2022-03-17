@@ -824,7 +824,7 @@ io.on("connection", function(socket) {
         status.comms.connectionStatus = 0;
       });
     }, 1000)
-  });
+  })
 
   socket.on("flashInterface", function(data) {
     if (status.comms.connectionStatus > 0) {

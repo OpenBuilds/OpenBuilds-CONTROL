@@ -278,7 +278,7 @@
                 <span class="title">Wizards</span>
               </div>
 
-              <div class="group">
+              <div class="group  estop">
 
                 <div>
                   <button class="ribbon-icon-button" onclick="feedOverride(laststatus.machine.overrides.feedOverride + 10);">
@@ -329,30 +329,39 @@
                
                 </div>
 
-                <span class="title">Feed rate Overide</span>
+                <span class="title">Feed Rate Override</span>
               </div>
 
-              <div class="group estop" style="width: 100px;">
-                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
-                  <span class="icon">
-                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                      <i id="navbellBtn2" class="fas fa-bell fg-red" style="display: none;"></i>
-                      <i class="far fa-bell"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Unlock<br>Alarm</span>
-                </button>
-                <button class="ribbon-button" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                    </span>
-                  </span>
-                  <span class="caption">STOP</span>
+
+              <div class="group estop" style="width: 120px;">
+                <table style="margin-left:auto;margin-right:auto;">
+                  <tr>
+                    <td >X -<span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
+                  </tr>
+                  <tr>
+                    <td>Y -<span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
+                  </tr>
+                  <tr>
+                    <td>Z -<span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
+                  </tr>
+                </table>
+
+                <span class="title">Home Switch Status</span>
+              </div>
+
+              <div class="group estop"  >
+                <button  id="MachineMode"  class="ribbon-button machinestatusbtn1" style=" pointer-events: none;" ><strong>ALARM</strong></button>
+                <span class="title">Machine Status</span>
+              </div>
+
+              <div class="group estop" style="width: 120px;">
+                <button class="ribbon-button machinestatusbtn1" style="margin-left:auto;margin-right:auto;" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
+                    <span class="fa-inverse far fa-hand-paper" style="background:fg-red" data-fa-transform="grow-5 up-2 left-24"></span>
+                    <span class="fa-layers-text fa-inverse" data-fa-transform="right-14" style="font-weight:900">STOP</span>
                 </button>
                 <span class="title">E-Stop</span>
               </div>
+
               <div class="group">
               </div>
             </div>
@@ -382,7 +391,15 @@
                 </div>
                 <span class="title">Settings</span>
               </div>
-              <div class="group" style="width: 100px;">
+              <div class="group estop" style="width: 170px;">
+
+                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2);softlimits()">
+                    <span class="icon">
+                      <i id="softlimiticon" class="fas fa-tools fg-green"></i>
+                    </span>
+                    <span id="softlimitsbtn" class="caption">Soft<br>Limits On</span>
+                 </button>
+            
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
                     <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
@@ -392,6 +409,8 @@
                   </span>
                   <span class="caption">Unlock<br>Alarm</span>
                 </button>
+
+
                 <button class="ribbon-button" onclick="socket.emit('stop', { stop: false, jog: false, abort: true})">
                   <span class="icon">
                     <span class="fa-layers fa-fw">
@@ -401,13 +420,15 @@
                   </span>
                   <span class="caption">Abort</span>
                 </button>
-                <span class="title">E-Stop</span>
+                <span class="title">Diagnostic Settings</span>
               </div>
-              <div class="group">
+
+
+              <div class="group estop">
                 <div class="ribbon-group">
                   <button class="ribbon-icon-button" Id="clearSettings"onclick="clearSettings();">
                     <span class="icon">
-                      <i class="fas fa-sliders-h"></i>
+                    <i class="fas fa-sliders-h"></i>
                     </span>
                     <span class="caption">Reset&nbsp;Settings</span>
                   </button><br>
@@ -442,7 +463,7 @@
                   <span class="icon">
                     <i class="fas fa-exclamation-triangle"></i>
                   </span>
-                  <span class="caption">Clear<br>Memory</span>
+                  <span class="caption">Clear<br>Cache</span>
                 </button>
               <span class="title">Reset</span>
               </div>
@@ -1088,7 +1109,7 @@
                           <td class="pt-1 mt-0 pb-0 pt-0" style="font-size: 12px">Slow Jog Speed (%)</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"> <input id="setSlowJog" onchange="setJogS();" style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="2" data-editable="true"></td>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Meduim Jog Speed (%)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Medium Jog Speed (%)</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><input id="setNormalJog" onchange="setJogN();" style="font-size: small;" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true"></td>
                         </tr>
                         <tr>
@@ -1131,7 +1152,7 @@
                           <td class="pt-1 mt-0 pb-0 pt-0"><input id="setSmallJogmm" onchange="setJogSmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value=".1" data-editable="true"></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Mediam (mm)</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Medium (mm)</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><input id="setMediumJogmm" onchange="setJogMmm();"style="font-size: small;" type="number" data-role="input" data-append="mm" data-clear-button="false" value="3" data-editable="true"></td>
                         </tr>
                         <tr>

@@ -49,7 +49,8 @@ var grblAlarmCodes = {
   6: "Homing fail. Reset during active homing cycle.",
   7: "Homing fail. Safety door was opened during active homing cycle.",
   8: "Homing fail. Cycle failed to clear limit switch when pulling off. Try increasing pull-off setting or check wiring.",
-  9: "Homing fail. Could not find limit switch within search distance. Defined as 1.5 * max_travel on search and 5 * pulloff on locate phases."
+  9: "Homing fail. Could not find limit switch within search distance. Defined as 1.5 * max_travel on search and 5 * pulloff on locate phases.",
+  10: "Homing fail. On dual axis machines, could not find the second limit switch for self-squaring."
 };
 
 var grblSettingCodes = {
