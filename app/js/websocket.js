@@ -382,7 +382,11 @@ function initSocket() {
         }
       ]
     });
-    openDialogs.push(dialog);
+
+    if (data.indexOf("ALARM: 9") == -1) {
+      openDialogs.push(dialog);
+    }
+
     setTimeout(function() {
       $(".closeAlarmBtn").focus();
     }, 200, )

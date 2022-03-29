@@ -115,6 +115,7 @@ function edit(i, evt) {
   }
 
   var macroTemplate = `<form id="macroEditForm">
+  <div class="p-1 m-0" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 280px);">
       <div class="row mb-2">
           <label class="cell-sm-3">Icon</label>
           <div class="cell-sm-9">
@@ -188,6 +189,7 @@ function edit(i, evt) {
           </div>
       </div>
       <input type="hidden" id="macroseq" value="` + i + `" />
+      </div>
   </form>`
 
   Metro.dialog.create({

@@ -1197,7 +1197,7 @@
 
     <div id="hiddendivs" style="display:none;">
 
-      <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
+      <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="false">
         <div class="dialog-title"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
 
@@ -1290,7 +1290,7 @@
         </div>
       </div>
 
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="true">
+      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="false">
         <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
           This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
@@ -1329,7 +1329,7 @@
         </div>
       </div>
 
-      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="true">
+      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="false">
         <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Flattening / Surfacing Tool</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <form>
@@ -1417,7 +1417,7 @@
         </div>
       </div>
 
-      <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="true" data-to-top="true">
+      <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title">Update Ready</div>
         <div class="dialog-content">
           Updated version <code><span id="availVersion">1.0.100</span></code> has finished downloading and is ready to be installed!<br> Note that proceeding will:
@@ -1435,7 +1435,7 @@
         </div>
       </div>
 
-      <div class="dialog dark" data-overlay-click-close="true" data-role="dialog" id="jogWidgetDialog">
+      <div class="dialog dark" data-overlay-click-close="false" data-role="dialog" id="jogWidgetDialog">
         <div class="dialog-title"><i class="fas fa-mobile-alt"></i> Jog Widget</div>
         <div class="dialog-content" style="max-height: calc(100vh - 200px);overflow-y: auto; overflow-x: hidden;">
           <div class="row">
@@ -1468,7 +1468,7 @@
       </div>
 
       <!-- XYZ Probe -->
-      <div class="dialog dark" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="true" data-to-top="true" data-width="800">
+      <div class="dialog dark" id="xyzProbeWindow" data-role="dialog" data-overlay-click-close="false" data-to-top="true" data-width="800">
         <div class="dialog-title">Probing Wizard</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <nav data-role="ribbonmenu">
@@ -1707,7 +1707,7 @@
       <!-- End XYZ Probe -->
 
       <!-- Edit Custom Probe -->
-      <div class="dialog dark" data-role="dialog" id="editCustomProbeDialog" data-role="dialog" data-overlay-click-close="true">
+      <div class="dialog dark" data-role="dialog" id="editCustomProbeDialog" data-role="dialog" data-overlay-click-close="false">
         <div class="dialog-title"><i class="fas fa-cogs"></i> Edit Custom Probe</div>
         <div class="dialog-content">
           <input type="text" data-role="input" class="mb-1" data-prepend="X Offset" data-append="mm" id="customProbeXOffset">
@@ -1722,7 +1722,7 @@
       <!-- End Edit Custom Probe -->
 
       <!-- job completion confirmation -->
-      <div class="dialog dark" id="completeMsgModal" data-role="dialog" data-overlay-click-close="true">
+      <div class="dialog dark" id="completeMsgModal" data-role="dialog" data-overlay-click-close="false" style="z-index: 100;">
         <div class="dialog-title"><i class='far fa-check-square'></i> Completed</div>
         <div class="dialog-content" id="completeMsgDiv">
         </div>

@@ -353,7 +353,7 @@ var status = {
       }
     },
     modals: {
-      motionmode: "G0", // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+      //motionmode: "G0", // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
       coordinatesys: "G54", // G54, G55, G56, G57, G58, G59
       plane: "G17", // G17, G18, G19
       distancemode: "G90", // G90, G91
@@ -362,12 +362,12 @@ var status = {
       unitsmode: "G21", // G20, G21
       radiuscomp: "G40", // G40
       tlomode: "G49", // G43.1, G49
-      programmode: "M0", // M0, M1, M2, M30
+      // programmode: "M0", // M0, M1, M2, M30
       spindlestate: "M5", // M3, M4, M5
-      coolantstate: "M9", // M7, M8, M9
-      tool: "0",
-      spindle: "0",
-      feedrate: "0"
+      coolantstate: "M9" // M7, M8, M9
+      // tool: "0",
+      // spindle: "0",
+      // feedrate: "0"
     },
     probe: {
       x: 0.00,
@@ -2232,33 +2232,33 @@ function gotModals(data) {
   data = data.split(/:|\[|\]/)[2].split(" ")
 
   for (i = 0; i < data.length; i++) {
-    if (data[i] == "G0") {
-      status.machine.modals.motionmode = "G0";
-    }
-    if (data[i] == "G1") {
-      status.machine.modals.motionmode = "G1";
-    }
-    if (data[i] == "G2") {
-      status.machine.modals.motionmode = "G2";
-    }
-    if (data[i] == "G3") {
-      status.machine.modals.motionmode = "G3";
-    }
-    if (data[i] == "G38.2") {
-      status.machine.modals.motionmode = "G38.2";
-    }
-    if (data[i] == "G38.3") {
-      status.machine.modals.motionmode = "G38.3";
-    }
-    if (data[i] == "G38.4") {
-      status.machine.modals.motionmode = "G38.4";
-    }
-    if (data[i] == "G38.5") {
-      status.machine.modals.motionmode = "G38.5";
-    }
-    if (data[i] == "G80") {
-      status.machine.modals.motionmode = "G80";
-    }
+    // if (data[i] == "G0") {
+    //   status.machine.modals.motionmode = "G0";
+    // }
+    // if (data[i] == "G1") {
+    //   status.machine.modals.motionmode = "G1";
+    // }
+    // if (data[i] == "G2") {
+    //   status.machine.modals.motionmode = "G2";
+    // }
+    // if (data[i] == "G3") {
+    //   status.machine.modals.motionmode = "G3";
+    // }
+    // if (data[i] == "G38.2") {
+    //   status.machine.modals.motionmode = "G38.2";
+    // }
+    // if (data[i] == "G38.3") {
+    //   status.machine.modals.motionmode = "G38.3";
+    // }
+    // if (data[i] == "G38.4") {
+    //   status.machine.modals.motionmode = "G38.4";
+    // }
+    // if (data[i] == "G38.5") {
+    //   status.machine.modals.motionmode = "G38.5";
+    // }
+    // if (data[i] == "G80") {
+    //   status.machine.modals.motionmode = "G80";
+    // }
 
     //   status.machine.modals.coordinatesys = "G54"; // G54, G55, G56, G57, G58, G59
     if (data[i] == "G54") {
@@ -2334,18 +2334,18 @@ function gotModals(data) {
     }
 
     //   status.machine.modals.programmode = "M0"; // M0, M1, M2, M30
-    if (data[i] == "M0") {
-      status.machine.modals.programmode = "M0";
-    }
-    if (data[i] == "M1") {
-      status.machine.modals.programmode = "M1";
-    }
-    if (data[i] == "M2") {
-      status.machine.modals.programmode = "M2";
-    }
-    if (data[i] == "M30") {
-      status.machine.modals.programmode = "M30";
-    }
+    // if (data[i] == "M0") {
+    //   status.machine.modals.programmode = "M0";
+    // }
+    // if (data[i] == "M1") {
+    //   status.machine.modals.programmode = "M1";
+    // }
+    // if (data[i] == "M2") {
+    //   status.machine.modals.programmode = "M2";
+    // }
+    // if (data[i] == "M30") {
+    //   status.machine.modals.programmode = "M30";
+    // }
 
     //   status.machine.modals.spindlestate = "M5"; // M3, M4, M5
     if (data[i] == "M3") {
@@ -2369,20 +2369,20 @@ function gotModals(data) {
       status.machine.modals.coolantstate = "M9";
     }
 
-    //   status.machine.modals.tool = "0",
-    if (data[i].indexOf("T") === 0) {
-      status.machine.modals.tool = parseFloat(data[i].substr(1))
-    }
-
-    //   status.machine.modals.spindle = "0"
-    if (data[i].indexOf("S") === 0) {
-      status.machine.modals.spindle = parseFloat(data[i].substr(1))
-    }
-
-    //   status.machine.modals.feedrate = "0"
-    if (data[i].indexOf("F") === 0) {
-      status.machine.modals.feedrate = parseFloat(data[i].substr(1))
-    }
+    // //   status.machine.modals.tool = "0",
+    // if (data[i].indexOf("T") === 0) {
+    //   status.machine.modals.tool = parseFloat(data[i].substr(1))
+    // }
+    //
+    // //   status.machine.modals.spindle = "0"
+    // if (data[i].indexOf("S") === 0) {
+    //   status.machine.modals.spindle = parseFloat(data[i].substr(1))
+    // }
+    //
+    // //   status.machine.modals.feedrate = "0"
+    // if (data[i].indexOf("F") === 0) {
+    //   status.machine.modals.feedrate = parseFloat(data[i].substr(1))
+    // }
   }
 } // end gotModals
 
@@ -2500,10 +2500,18 @@ function send1Q() {
   // console.timeEnd('send1Q');
 }
 
+var modalCommands = ['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G17', 'G18', 'G19', 'G90', 'G91', 'G91.1', 'G93', 'G94', 'G20', 'G21', 'G40', 'G43.1', 'G49', 'M0', 'M1', 'M2', 'M30', 'M3', 'M4', 'M5', 'M7', 'M8', 'M9']
+
 function addQToEnd(gcode) {
   // debug_log('added ' + gcode)
   gcodeQueue.push(gcode);
-  if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1) {
+  // if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1) {
+  //   gcodeQueue.push("$G");
+  // }
+  if (new RegExp(modalCommands.join("|")).test(gcode)) {
+    gcodeQueue.push("$G");
+  }
+  if (gcode.match(/T([\d.]+)/i)) {
     gcodeQueue.push("$G");
   }
 }

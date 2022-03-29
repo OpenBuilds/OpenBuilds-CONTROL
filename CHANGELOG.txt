@@ -1,3 +1,5 @@
+v1.0.314: Updated SSL Certificates,  #240 Increased modal data availability for custom macros, Fixed dialog window close bug #228, Fixed alarm dialog bug #241, Fixed Z-index bug #229
+v1.0.313: Added scrollbars to Macro Editor to cater for smaller screens
 v1.0.312: Updated SSL Certificates
 v1.0.311: Fix cosmetics Bug
 v1.0.310: Updated startup message, Updated SSL certificates
