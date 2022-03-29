@@ -383,7 +383,7 @@ function initSocket() {
       ]
     });
 
-    if (data.indexOf("ALARM: 9") == -1) {
+    if (data.indexOf("ALARM: 6") == -1 && data.indexOf("ALARM: 7") == -1 && data.indexOf("ALARM: 8") == -1 && data.indexOf("ALARM: 9") == -1 && data.indexOf("ALARM: 10") == -1) {
       openDialogs.push(dialog);
     }
 
