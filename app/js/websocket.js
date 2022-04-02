@@ -392,7 +392,10 @@ function initSocket() {
         }
       ]
     });
-    openDialogs.push(dialog);
+    if (data.indexOf("ALARM: 6") == -1 && data.indexOf("ALARM: 7") == -1 && data.indexOf("ALARM: 8") == -1 && data.indexOf("ALARM: 9") == -1 && data.indexOf("ALARM: 10") == -1) {
+      openDialogs.push(dialog);
+    }
+    
     setTimeout(function() {
      $(".closeAlarmBtn").focus();
     }, 200, )
@@ -426,6 +429,16 @@ function initSocket() {
     }, 200, )
     //
   });
+
+
+  socket.on("errorsCleared", function(data) {
+    if (data) {
+      for (i = 0; i < openDialogs.length; i++) {
+        Metro.dialog.close(openDialogs[i]);
+      }
+      openDialogs.length = 0;
+    }
+  })
  
   socket.on("errorsCleared", function(data) {
     if (data) {

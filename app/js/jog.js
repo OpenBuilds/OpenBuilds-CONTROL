@@ -1,6 +1,20 @@
 var allowContinuousJog = false;
 var continuousJogRunning = false;
 var jogdist = 10;
+
+var jogDistTmm ='0.025'
+var jogDistSmm ='0.1'
+var jogDistMmm = '3'
+var jogDistLmm = '25'
+
+var jogDistTin = '0.001'
+var jogDistSin = '0.01'
+var jogDistMin = '0.1'
+var jogDistLin ='1'
+
+
+
+
 var jogRateX = 4000
 var jogRateY = 4000
 var jogRateZ = 2000
@@ -20,11 +34,12 @@ function jogOverride(newVal) {
 function mmMode() {
   unit = "mm";
   localStorage.setItem('unitsMode', unit);
-  $('#dist01label').html($('#setTinyJogmm').val())
-  $('#dist1label').html($('#setSmallJogmm').val())
-  $('#dist10label').html($('#setMediumJogmm').val())
-  $('#dist100label').html($('#setLargeJogmm').val())
-  jogdist=$('#setMediumJogmm').val()
+
+  $('#dist01label').html(jogDistTmm)  
+  $('#dist1label').html(jogDistSmm)
+  $('#dist10label').html(jogDistMmm)
+  $('#dist100label').html(jogDistLmm)
+  jogdist=jogDistMmm
 
   if (typeof object !== 'undefined') {
     if (object.userData.inch) {
@@ -46,11 +61,11 @@ function mmMode() {
 function inMode() {
   unit = "in";
   localStorage.setItem('unitsMode', unit);
-  $('#dist01label').html($('#setTinyJogin').val())
-  $('#dist1label').html($('#setSmallJogin').val())
-  $('#dist10label').html($('#setMediumJogin').val())
-  $('#dist100label').html($('#setLargeJogin').val())
-  jogdist=$('#setMediumJogin').val()*25.4
+  $('#dist01label').html(jogDistTin)
+  $('#dist1label').html(jogDistSin)
+  $('#dist10label').html(jogDistMin)
+  $('#dist100label').html(jogDistLin)
+  jogdist=jogDistMin*25.4
 
   if (typeof object !== 'undefined') {
     if (object.userData.inch) {
@@ -109,51 +124,44 @@ $(document).ready(function() {
   // get jog distances mm
   if (localStorage.getItem('mmTinyJog')) {
     $('#setTinyJogmm').val(localStorage.getItem('mmTinyJog'))
-  }else{
-    $('#setTinyJogmm').val(0.025)
+    jogDistTmm = localStorage.getItem('mmTinyJog')
   }
+
 
   if (localStorage.getItem('mmSmallJog')) {
     $('#setSmallJogmm').val(localStorage.getItem('mmSmallJog'))
-  }else{
-    $('#setSmallJogmm').val(0.10)
+    jogDistSmm = localStorage.getItem('mmSmallJog')
   }
 
   if (localStorage.getItem('mmMediumJog')) {
     $('#setMediumJogmm').val(localStorage.getItem('mmMediumJog'))
-  }else{
-    $('#setMediumJogmm').val(3)
+    jogDistMmm = localStorage.getItem('mmMediumJog')
   }
 
   if (localStorage.getItem('mmLargeJog')) {
     $('#setLargeJogmm').val(localStorage.getItem('mmLargeJog'))
-  }else{
-    $('#setLargeJogmm').val(25)
+    jogDistLmm = localStorage.getItem('mmLargeJog')
   }
 
   // get jog distances inches
   if (localStorage.getItem('inTinyJog')) {
     $('#setTinyJogin').val(localStorage.getItem('inTinyJog'))
-  }else{
-    $('#setTinyJogin').val(0.001)
+    jogDistTin = localStorage.getItem('inTinyJog')
   }
 
   if (localStorage.getItem('inSmallJog')) {
     $('#setSmallJogin').val(localStorage.getItem('inSmallJog'))
-  }else{
-    $('#setSmallJogin').val(0.01)
+    jogDistSin = localStorage.getItem('inSmallJog')
   }
 
   if (localStorage.getItem('inMediumJog')) {
     $('#setMediumJogin').val(localStorage.getItem('inMediumJog'))
-  }else{
-    $('#setMediumJogin').val(0.1)
+    jogDistMin = localStorage.getItem('inMediumJog')
   }
 
   if (localStorage.getItem('inLargeJog')) {
     $('#setLargeJogin').val(localStorage.getItem('inLargeJog'))
-  }else{
-    $('#setLargeJogin').val(1)
+    jogDistLin = localStorage.getItem('inLargeJog')
   }
 
   if (localStorage.getItem('continuousJog')) {
@@ -341,11 +349,10 @@ $(document).ready(function() {
 
   $('#dist01').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = $('#setTinyJogmm').val()
+      jogdist = jogDistTmm
     } else if (unit == "in") {
-      jogdist = $('#setTinyJogin').val()*25.4
+      jogdist = jogDistTin*25.4
     }
-
     
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist01').addClass('bd-openbuilds')
@@ -359,9 +366,9 @@ $(document).ready(function() {
 
   $('#dist1').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = $('#setSmallJogmm').val()
+      jogdist = jogDistSmm
     } else if (unit == "in") {
-      jogdist = $('#setSmallJogin').val()*25.4
+      jogdist = jogDistSin*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist1').addClass('bd-openbuilds')
@@ -373,9 +380,9 @@ $(document).ready(function() {
 
   $('#dist10').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = $('#setMediumJogmm').val()
+      jogdist = jogDistMmm
     } else if (unit == "in") {
-      jogdist = $('#setMediumJogin').val()*25.4
+      jogdist =jogDistMin*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist10').addClass('bd-openbuilds')
@@ -387,9 +394,9 @@ $(document).ready(function() {
 
   $('#dist100').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = $('#setLargeJogmm').val()
+      jogdist = jogDistLmm
     } else if (unit == "in") {
-      jogdist = $('#setLargeJogin').val()*25.4
+      jogdist = jogDistLin*25.4
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist100').addClass('bd-openbuilds')

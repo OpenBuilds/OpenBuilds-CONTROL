@@ -1,6 +1,8 @@
+v.0.0.39: Add update from OBC code 3.0.314 to 1.0.317
+          Fix mobile incremental jog
 v.0.0.38: Add ALARM/READY display in menu. 
           Add home switch status to Control Tab
-          Add button to turn on/off soft limits
+          Add button to turn on/off soft limits to Status tab
 v.0.0.37: Update flashing code for slower computers
 v.0.0.36: Add reset memory button to clear settings
 v.0.0.35: Update jog pendant to hide axis config and set jog rates
