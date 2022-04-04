@@ -2612,7 +2612,7 @@ if (isElectron()) {
         status.driver.operatingsystem = 'windows';
       }
 
-      if (process.platform == 'darwin' || uploadedgcode.length > 1) {
+      
         if (jogWindow === null) {
           createJogWindow();
           jogWindow.show()
@@ -2627,7 +2627,7 @@ if (isElectron()) {
         }
       }
 
-    }
+    
 
     function createMenu() {
 
