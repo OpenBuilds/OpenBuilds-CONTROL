@@ -98,6 +98,7 @@ function applycalibrationy() {
 function ystepscalibrate() {
   Metro.dialog.create({
     title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for Y-Axis ($101)",
+    toTop: true,
     content: ycaltemplate,
     width: 750,
     clsDialog: 'dark',

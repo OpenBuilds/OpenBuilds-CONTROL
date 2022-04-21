@@ -96,6 +96,7 @@ function applycalibrationz() {
 function zstepscalibrate() {
   Metro.dialog.create({
     title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for Z-Axis ($102)",
+    toTop: true,
     content: zcaltemplate,
     width: 750,
     clsDialog: 'dark',

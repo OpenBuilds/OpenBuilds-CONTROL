@@ -139,7 +139,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.xM, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#xMprobe'), "#e21b1b")
+          rippleEffect($('.xM'), "#e21b1b")
           $('#xM').mousedown();
         }
       });
@@ -153,7 +153,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.xP, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#xPprobe'), "#e21b1b")
+          rippleEffect($('.xP'), "#e21b1b")
           $('#xP').mousedown();
         }
       });
@@ -167,7 +167,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.yM, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#yMprobe'), "#5de21b")
+          rippleEffect($('.yM'), "#5de21b")
           $('#yM').mousedown();
         }
       });
@@ -181,7 +181,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.yP, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#yPprobe'), "#5de21b")
+          rippleEffect($('.yP'), "#5de21b")
           $('#yP').mousedown();
         }
       });
@@ -195,7 +195,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.zM, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#zMprobe'), "#1ba1e2")
+          rippleEffect($('.zM'), "#1ba1e2")
           $('#zM').mousedown();
         }
       });
@@ -208,7 +208,7 @@ function bindKeys() {
       $(document).bind('keydown', keyboardShortcuts.zP, function(event) {
         event.preventDefault();
         if (!event.originalEvent.repeat) {
-          rippleEffect($('#zPprobe'), "#1ba1e2")
+          rippleEffect($('.zP'), "#1ba1e2")
           $('#zP').mousedown();
         }
       });
@@ -537,6 +537,7 @@ function keyboardShortcutsEditor() {
 
   Metro.dialog.create({
     title: "<i class='far fa-keyboard fa-fw'></i> Customize Keyboard Shortcuts",
+    toTop: true,
     content: template,
     width: 600,
     clsDialog: 'dark',

@@ -4,6 +4,9 @@ var editor;
 var isJogWidget = false;
 var lastJobStartTime = false;
 
+// Load this early on
+$("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
+
 function setWindowTitle(status) {
 
   var string = "OpenBuilds CONTROL"
@@ -30,16 +33,15 @@ function setWindowTitle(status) {
 
 // splash screen ad-fade-in, and fade out after
 function showAndHideSplash() {
-  $('#splashAd').fadeIn(200)
+  $('#splashAd').fadeIn(50)
   setTimeout(function() {
-    $('#splash').fadeOut(500);
-  }, 2000)
+    $('#splash').fadeOut(200);
+  }, 1000)
 }
 
 function getChangelog() {
 
   // Splash Screen Begin
-  $("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
 
   $("#changelog").empty()
   var template2 = `<ul>`

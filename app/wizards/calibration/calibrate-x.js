@@ -100,6 +100,7 @@ function xstepscalibrate() {
   Metro.dialog.create({
     title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for X-Axis ($100)",
     content: xcaltemplate,
+    toTop: true,
     width: 750,
     clsDialog: 'dark',
     actions: [{

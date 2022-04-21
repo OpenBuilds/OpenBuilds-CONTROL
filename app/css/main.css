@@ -17,6 +17,12 @@ body {
   overflow-y: hidden;
 }
 
+/* Fix dialog-actions alignment */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end
+}
+
 /* X-Large button for Metro */
 .button.cycle.xlarge, .button.square.xlarge {
   width: 3.7rem;
@@ -106,7 +112,7 @@ body {
   max-height: calc(100vh - 215px);
   height: calc(100vh - 215px);
   width: 100%;
-  overflow-y: auto;
+  overflow-y: none;
   overflow-x: none;
   padding: 8px;
   -webkit-touch-callout: text;

@@ -29,9 +29,15 @@ $(document).ready(function() {
 
 function showGrbl(bool) {
   if (bool) {
-    sendGcode('$$')
-    sendGcode('$I')
-    sendGcode('$G')
+    setTimeout(function() {
+      sendGcode('$$')
+    }, 500);
+    setTimeout(function() {
+      sendGcode('$I')
+    }, 700);
+    setTimeout(function() {
+      sendGcode('$G')
+    }, 900);
     $("#grblButtons").show()
     $("#firmwarename").html('Grbl')
   } else {
@@ -41,7 +47,9 @@ function showGrbl(bool) {
   if (localStorage.getItem('jogOverride')) {
     jogOverride(localStorage.getItem('jogOverride'))
   }
-
+  if (laststatus !== undefined) {
+    $("#firmwareversionstatus").html(laststatus.machine.firmware.platform + " " + laststatus.machine.firmware.version);
+  };
 }
 
 function printLogModern(icon, source, string, printLogCls) {
@@ -605,7 +613,7 @@ function initSocket() {
             if (object) {
               cone.position.x = status.machine.position.work.x
               cone.position.y = status.machine.position.work.y
-              cone.position.z = status.machine.position.work.z + 20
+              cone.position.z = status.machine.position.work.z
               // }
             }
 
@@ -668,28 +676,28 @@ function initSocket() {
         switch (status.machine.inputs[i]) {
           case 'X':
             // console.log('PIN: X-LIMIT');
-            $('#xpin').removeClass('success').addClass('alert').html('ON')
+            $('#xpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'Y':
             // console.log('PIN: Y-LIMIT');
-            $('#ypin').removeClass('success').addClass('alert').html('ON')
+            $('#ypin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'Z':
             // console.log('PIN: Z-LIMIT');
-            $('#zpin').removeClass('success').addClass('alert').html('ON')
+            $('#zpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'P':
             // console.log('PIN: PROBE');
-            $('#prbpin').removeClass('success').addClass('alert').html('ON')
+            $('#prbpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'D':
             // console.log('PIN: DOOR');
-            $('#doorpin').removeClass('success').addClass('alert').html('ON')
+            $('#doorpin').removeClass('success').addClass('alert').html('DOOR OPEN')
 
             break;
           case 'H':
             // console.log('PIN: HOLD');
-            $('#holdpin').removeClass('success').addClass('alert').html('HOLD:ON')
+            $('#holdpin').removeClass('success').addClass('alert').html('HOLD/DOOR:ON')
             break;
           case 'R':
             // console.log('PIN: SOFTRESET');

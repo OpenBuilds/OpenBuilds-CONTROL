@@ -1,6 +1,46 @@
 var sectionNum = 0;
 var toolchanges = [];
 
+// Skeleton script to replace the Visualiser cone with an STL of an endmill
+function replaceConeWith(toolid) {
+  if (toolid = "635mmendmill") {
+    workspace.remove(cone);
+    var loader = new THREE.STLLoader();
+    loader.load("./img/tools/endmill635.stl", function(geometry) {
+
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xaaaaaa,
+        specular: 0x111111,
+        shininess: 200
+      })
+      cone = new THREE.Mesh(geometry, material)
+      // geometry.center()
+      cone.overdraw = true;
+      //cone.rotation.x = -90 * Math.PI / 180;
+      cone.position.x = 0;
+      cone.position.y = 0;
+      cone.position.z = 0;
+      cone.material.opacity = 0.6;
+      cone.material.transparent = true;
+      cone.castShadow = false;
+      cone.visible = false;
+      cone.name = "Simulation Marker"
+      workspace.add(cone)
+    })
+  }
+}
+
+// Skeleton code to spin endmill if spindle is on
+function toolAnimate() {
+  // if (laststatus !== undefined) {
+  //   if (laststatus.machine.modals.spindlestate == "M3") {
+  //     cone.rotation.z += -3.5;
+  //   } else if (laststatus.machine.modals.spindlestate == "M4") {
+  //     cone.rotation.z += 3.5;
+  //   }
+  // }
+}
+
 function populateToolChanges(gcode) {
 
   // toolChanges

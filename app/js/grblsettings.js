@@ -60,43 +60,6 @@ function backupGrblSettings() {
 
 }
 
-var grblSettingCodes = {
-  0: "Step pulse time, microseconds",
-  1: "Step idle delay, milliseconds",
-  2: "Step pulse invert, mask",
-  3: "Step direction invert, mask",
-  4: "Invert step enable pin, boolean",
-  5: "Invert limit pins, boolean",
-  6: "Invert probe pin, boolean",
-  10: "Status report options, mask",
-  11: "Junction deviation, millimeters",
-  12: "Arc tolerance, millimeters",
-  13: "Report in inches, boolean",
-  20: "Soft limits enable, boolean",
-  21: "Hard limits enable, boolean",
-  22: "Homing cycle enable, boolean",
-  23: "Homing direction invert, mask",
-  24: "Homing locate feed rate, mm/min",
-  25: "Homing search seek rate, mm/min",
-  26: "Homing switch debounce delay, milliseconds",
-  27: "Homing switch pull-off distance, millimeters",
-  30: "Maximum spindle speed, RPM",
-  31: "Minimum spindle speed, RPM",
-  32: "Laser-mode enable, boolean",
-  100: "X-axis steps per millimeter",
-  101: "Y-axis steps per millimeter",
-  102: "Z-axis steps per millimeter",
-  110: "X-axis maximum rate, mm/min",
-  111: "Y-axis maximum rate, mm/min",
-  112: "Z-axis maximum rate, mm/min",
-  120: "X-axis acceleration, mm/sec^2",
-  121: "Y-axis acceleration, mm/sec^2",
-  122: "Z-axis acceleration, mm/sec^2",
-  130: "X-axis maximum travel, millimeters",
-  131: "Y-axis maximum travel, millimeters",
-  132: "Z-axis maximum travel, millimeters"
-};
-
 function grblSettings(data) {
   // console.log(data)
   var template = ``
@@ -150,225 +113,371 @@ function grblPopulate() {
     $('#grblconfig').show();
     $('#grblconfig').empty();
     var template = `
-          <form id="grblSettingsTable">
-          <ul class="step-list">
+    <form id="grblSettingsTable">
+<h6 class="fg-dark"><i class="fas fa-tasks fg-blue"></i> 1. Load Machine Profile<br>
+<small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters below. Remember to click SAVE when done</small>
+</h6>
 
+<div class="grid">
+   <div class="row">
+      <div class="cell-8">
+         <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
+         <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  Custom Machine</a></li>
             <li>
-              <h6 class="fg-openbuilds">Load Default Settings<br><small>Populate Grbl parameters from machine-type defaults. You can customize values as needed below. Remember to click Save above to apply</small></h6>
-              <hr class="bg-openbuilds">
-              <div>
-
-              <div class="grid">
-                <div class="row">
-                  <div class="cell-8">
-                    <a style="width: 100%;" class="button dropdown-toggle bd-openbuilds secondary outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
-                    <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                      <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  Custom Machine</a></li>
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55</a></li>
-                          <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510</a></li>
-                          <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010</a></li>
-                          <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510</a></li>
-                          <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515</a></li>
-                        </ul>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro with Servo Pen Attachment</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('acro55pen');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55  with Servo Pen Attachment</a></li>
-                          <li onclick="selectMachine('acro510pen');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510  with Servo Pen Attachment</a></li>
-                          <li onclick="selectMachine('acro1010pen');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010  with Servo Pen Attachment</a></li>
-                          <li onclick="selectMachine('acro1510pen');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510  with Servo Pen Attachment</a></li>
-                          <li onclick="selectMachine('acro1515pen');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515  with Servo Pen Attachment</a></li>
-                        </ul>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a></li>
-                          <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png" width="16px"/>  OpenBuilds C-Beam XL</a></li>
-                        </ul>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds LEAD Machine</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010</a></li>
-                          <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img src="img/mch/leadmachine1010laser.png" width="16px"/>OpenBuilds LEAD 1010 with Laser Module</a></li>
-                          <li onclick="selectMachine('leadmachine1515');"><a href="#"><img src="img/mch/leadmachine1515.png" width="16px"/>OpenBuilds LEAD 1515</a></li>
-                        </ul>
-                      </li>
-                      <li><a href="#" onclick="selectMachine('minimill');"><img src="img/mch/minimill.png" width="16px"/>  OpenBuilds MiniMill</a></li>
-
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx 55</a></li>
-                          <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png" width="16px"/>  OpenBuilds Sphinx 1050</a></li>
-                        </ul>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-toggle"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee</a>
-                        <ul class="ribbon-dropdown" data-role="dropdown">
-                          <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee 1010</a></li>
-                          <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png" width="16px"/>  OpenBuilds WorkBee 1050</a></li>
-                          <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png" width="16px"/>  OpenBuilds WorkBee 1510</a></li>
-                        </ul>
-                      </li>
-
-                    </ul>
-
-                  </div>
-                  <div class="cell-4">
-                    <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-
+               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55</a></li>
+                  <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510</a></li>
+                  <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010</a></li>
+                  <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510</a></li>
+                  <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515</a></li>
+               </ul>
+            </li>
             <li>
-              <h6 class="fg-openbuilds">Advanced Settings<br><small>Customise your Grbl settings below</small></h6>
-              <hr class="bg-openbuilds">
-              <div>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro with Servo Pen Attachment</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('acro55pen');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55  with Servo Pen Attachment</a></li>
+                  <li onclick="selectMachine('acro510pen');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510  with Servo Pen Attachment</a></li>
+                  <li onclick="selectMachine('acro1010pen');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010  with Servo Pen Attachment</a></li>
+                  <li onclick="selectMachine('acro1510pen');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510  with Servo Pen Attachment</a></li>
+                  <li onclick="selectMachine('acro1515pen');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515  with Servo Pen Attachment</a></li>
+               </ul>
+            </li>
+            <li>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a></li>
+                  <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png" width="16px"/>  OpenBuilds C-Beam XL</a></li>
+               </ul>
+            </li>
+            <li>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds LEAD Machine</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010</a></li>
+                  <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img src="img/mch/leadmachine1010laser.png" width="16px"/>OpenBuilds LEAD 1010 with Laser Module</a></li>
+                  <li onclick="selectMachine('leadmachine1515');"><a href="#"><img src="img/mch/leadmachine1515.png" width="16px"/>OpenBuilds LEAD 1515</a></li>
+               </ul>
+            </li>
+            <li><a href="#" onclick="selectMachine('minimill');"><img src="img/mch/minimill.png" width="16px"/>  OpenBuilds MiniMill</a></li>
+            <li>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx 55</a></li>
+                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png" width="16px"/>  OpenBuilds Sphinx 1050</a></li>
+               </ul>
+            </li>
+            <li>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee</a>
+               <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee 1010</a></li>
+                  <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png" width="16px"/>  OpenBuilds WorkBee 1050</a></li>
+                  <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png" width="16px"/>  OpenBuilds WorkBee 1510</a></li>
+               </ul>
+            </li>
+         </ul>
+      </div>
+      <div class="cell-4">
+         <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
+      </div>
+   </div>
+</div>
 
-            <div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px); ">
-            <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
-            <thead>
-              <tr>
-                  <th>Key</th>
-                  <th>Parameter</th>
-                  <th style="width: 250px; min-width: 240px !important;">Value</th>
-                  <th style="width: 110px; min-width: 110px !important;">Utility</th>
-              </tr>
-            </thead>
+<hr class="bg-openbuilds">
 
-            <tbody>
-            <tr title="` + grblConfigDesc['$0'] + `"><td>$0</td><td>Step pulse time, microseconds</td><td><input data-role="input" data-clear-button="false" data-append="&micro;s" type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$1'] + `"><td>$1</td><td>Step idle delay, milliseconds</td><td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$2'] + `"><td>$2</td>
+<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't loose your customized settings</small></h6>
+
+<div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px);">
+   <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
+      <thead>
+         <tr>
+            <th>Key</th>
+            <th>Parameter</th>
+            <th style="width: 250px; min-width: 240px !important;">Value</th>
+            <th style="width: 110px; min-width: 110px !important;">Utility</th>
+         </tr>
+      </thead>
+      <tbody>
+         <tr title="` + grblConfigDesc['$0'] + `">
+            <td>$0</td>
+            <td>Step pulse time, microseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="&micro;s" type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$1'] + `">
+            <td>$1</td>
+            <td>Step idle delay, milliseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$2'] + `">
+            <td>$2</td>
             <td>Step pulse invert</td>
-            <td>
-              <select id="val-` + 2 + `-input" value="` + grblParams['$2'] + `">
-                <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
-                <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
-                <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
-                <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
-                <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
-                <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
-                <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
-                <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
-              </select>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$2'] + `" id="val-` + 2 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$3'] + `">
+            <td>$3</td>
+            <td>Step direction invert</td>
+            <td><input readonly type="hidden" id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
+               <input data-cls-caption="fg-openbuilds" id="xdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert X Direction"><br>
+               <input data-cls-caption="fg-openbuilds" id="ydirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Y Direction"><br>
+               <input data-cls-caption="fg-openbuilds" id="zdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Z Direction">
             </td>
             <td></td>
-            </tr>
-            <tr title="` + grblConfigDesc['$3'] + `"><td>$3</td><td>Step direction invert</td><td><input readonly type="hidden" id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
-            <input data-cls-caption="fg-openbuilds" id="xdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert X Direction"><br>
-            <input data-cls-caption="fg-openbuilds" id="ydirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Y Direction"><br>
-            <input data-cls-caption="fg-openbuilds" id="zdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Z Direction">
-            </td><td></td></tr>
-            <tr title="` + grblConfigDesc['$4'] + `"><td>$4</td><td>Invert step enable pin</td><td><select id="val-` + 4 + `-input" value="` + grblParams['$4'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$5'] + `"><td>$5</td><td>Invert limit pins</td><td><select id="val-` + 5 + `-input" value="` + grblParams['$5'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$6'] + `"><td>$6</td><td>Invert probe pin</td><td><select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$10'] + `"><td>$10</td><td>Status report options</td><td><select id="val-` + 10 + `-input" value="` + grblParams['$10'] + `">
-              <option value="0">[0] WPos:&#9899; MPos:&#9898; Buf:&#9898;</option>
-              <option value="1">[1] WPos:&#9898; MPos:&#9899; Buf:&#9898;</option>
-              <option value="2">[2] WPos:&#9899; MPos:&#9898; Buf:&#9899;</option>
-            </select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$11'] + `"><td>$11</td><td>Junction deviation, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$12'] + `"><td>$12</td><td>Arc tolerance, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$13'] + `"><td>$13</td><td>Report in inches (NB CONTROL handles the conversion, set to Disabled)</td><td><select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `"><option value="0">&#9898; Disable</option><option value="1">&#9899; Enable</option></select></td><td></td></tr>
+         </tr>
+         <tr title="` + grblConfigDesc['$4'] + `">
+            <td>$4</td>
+            <td>Invert step enable pin</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$4'] + `" id="val-` + 4 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$5'] + `">
+            <td>$5</td>
+            <td>Invert limit pins, mask</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$5'] + `" id="val-` + 5 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$6'] + `">
+            <td>$6</td>
+            <td>Invert probe pin</td>
+            <td>
+               <select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$10'] + `">
+            <td>$10</td>
+            <td>Status report options</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$10'] + `" id="val-` + 10 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$11'] + `">
+            <td>$11</td>
+            <td>Junction deviation, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$12'] + `">
+            <td>$12</td>
+            <td>Arc tolerance, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$13'] + `">
+            <td>$13</td>
+            <td>Report in inches (NB CONTROL handles the conversion, set to Disabled)</td>
+            <td>
+               <select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `">
+                  <option value="0">&#9898; Disable</option>
+                  <option value="1">&#9899; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$20'] + `">
+            <td>$20</td>
+            <td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td>
+            <td>
+               <select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits">
+            <td>$21</td>
+            <td>Hard limits enable</td>
+            <td>
+               <select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$22'] + `">
+            <td>$22</td>
+            <td>Homing cycle enable</td>
+            <td>
+               <select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$23'] + `">
+            <td>$23</td>
+            <td>Homing direction invert</td>
+            <td>
+               <select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
+                  <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
+                  <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
+                  <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
+                  <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
+                  <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
+                  <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
+                  <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
+                  <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$24'] + `">
+            <td>$24</td>
+            <td>Homing locate feed rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$24'] + `" id="val-` + 24 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$25'] + `">
+            <td>$25</td>
+            <td>Homing search seek rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$25'] + `" id="val-` + 25 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$26'] + `">
+            <td>$26</td>
+            <td>Homing switch debounce delay, milliseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$26'] + `" id="val-` + 26 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$27'] + `">
+            <td>$27</td>
+            <td>Homing switch pull-off distance, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$27'] + `" id="val-` + 27 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$30'] + `">
+            <td>$30</td>
+            <td>Maximum spindle speed, RPM</td>
+            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$30'] + `" id="val-` + 30 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$31'] + `">
+            <td>$31</td>
+            <td>Minimum spindle speed, RPM</td>
+            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$32'] + `">
+            <td>$32</td>
+            <td>Laser-mode enable</td>
+            <td>
+               <select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$100'] + `">
+            <td>$100</td>
+            <td>X-axis steps per millimeter</td>
+            <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td>
+            <td>
+               <button title="Calculate X-Axis Steps per mm" class="button " type="button" onclick="xstepspermm()">
+               <span class="fa-layers fa-fw">
+               <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
+               <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
+               <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
+               </span>
+               </button>
+            </td>
+         </tr>
+         <tr title="` + grblConfigDesc['$101'] + `">
+            <td>$101</td>
+            <td>Y-axis steps per millimeter</td>
+            <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$101'] + `" id="val-` + 101 + `-input"></td>
+            <td>
+               <button title="Calculate Y-Axis Steps per mm" class="button" type="button" onclick="ystepspermm()">
+               <span class="fa-layers fa-fw">
+               <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
+               <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
+               <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
+               </span>
+               </button>
+            </td>
+         </tr>
+         <tr title="` + grblConfigDesc['$102'] + `">
+            <td>$102</td>
+            <td>Z-axis steps per millimeter</td>
+            <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$102'] + `" id="val-` + 102 + `-input"></td>
+            <td>
+               <button title="Calculate Z-Axis Steps per mm" class="button" type="button" onclick="zstepspermm()">
+               <span class="fa-layers fa-fw">
+               <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
+               <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
+               <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
+               </span>
+               </button>
+            </td>
+         </tr>
+         <tr title="` + grblConfigDesc['$110'] + `">
+            <td>$110</td>
+            <td>X-axis maximum rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$110'] + `" id="val-` + 110 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$111'] + `">
+            <td>$111</td>
+            <td>Y-axis maximum rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$111'] + `" id="val-` + 111 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$112'] + `">
+            <td>$112</td>
+            <td>Z-axis maximum rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$112'] + `" id="val-` + 112 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$120'] + `">
+            <td>$120</td>
+            <td>X-axis acceleration, mm/sec<sup>2</sup></td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$120'] + `" id="val-` + 120 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$121'] + `">
+            <td>$121</td>
+            <td>Y-axis acceleration, mm/sec<sup>2</sup></td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$121'] + `" id="val-` + 121 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$122'] + `">
+            <td>$122</td>
+            <td>Z-axis acceleration, mm/sec<sup>2</sup></td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$122'] + `" id="val-` + 122 + `-input"></td>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$130'] + `">
+            <td>$130</td>
+            <td>X-axis maximum travel, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$130'] + `" id="val-` + 130 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$131'] + `">
+            <td>$131</td>
+            <td>Y-axis maximum travel, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$131'] + `" id="val-` + 131 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$132'] + `">
+            <td>$132</td>
+            <td>Z-axis maximum travel, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$132'] + `" id="val-` + 132 + `-input"></td>
+            <td></td>
+         </tr>
+      </tbody>
+   </table>
+</div> <!-- End of grblSettingsTableView -->
 
-            <tr title="` + grblConfigDesc['$20'] + `"><td>$20</td><td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td><td><select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits"><td>$21</td><td>Hard limits enable</td><td><select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$22'] + `"><td>$22</td><td>Homing cycle enable</td><td><select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$23'] + `"><td>$23</td><td>Homing direction invert</td><td><select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
-              <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
-              <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
-              <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
-              <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
-              <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
-              <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
-              <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
-              <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
-            </select></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$24'] + `"><td>$24</td><td>Homing locate feed rate, mm/min</td><td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$24'] + `" id="val-` + 24 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$25'] + `"><td>$25</td><td>Homing search seek rate, mm/min</td><td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$25'] + `" id="val-` + 25 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$26'] + `"><td>$26</td><td>Homing switch debounce delay, milliseconds</td><td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$26'] + `" id="val-` + 26 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$27'] + `"><td>$27</td><td>Homing switch pull-off distance, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$27'] + `" id="val-` + 27 + `-input"></td><td></td></tr>
-
-            <tr title="` + grblConfigDesc['$30'] + `"><td>$30</td><td>Maximum spindle speed, RPM</td><td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$30'] + `" id="val-` + 30 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$31'] + `"><td>$31</td><td>Minimum spindle speed, RPM</td><td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$32'] + `"><td>$32</td><td>Laser-mode enable</td><td><select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `"><option value="0">&#x2717; Disable</option><option value="1">&#x2713; Enable</option></select></td><td></td></tr>
-
-            <tr title="` + grblConfigDesc['$100'] + `">
-              <td>$100</td>
-              <td>X-axis steps per millimeter</td>
-              <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td>
-              <td>
-                <button title="Calculate X-Axis Steps per mm" class="button " type="button" onclick="xstepspermm()">
-                  <span class="fa-layers fa-fw">
-                    <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
-                    <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
-                    <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
-                  </span>
-                </button>
-              </td>
-            </tr>
-
-            <tr title="` + grblConfigDesc['$101'] + `">
-              <td>$101</td>
-              <td>Y-axis steps per millimeter</td>
-              <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$101'] + `" id="val-` + 101 + `-input"></td>
-              <td>
-                <button title="Calculate Y-Axis Steps per mm" class="button" type="button" onclick="ystepspermm()">
-                <span class="fa-layers fa-fw">
-                    <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
-                    <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
-                    <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
-                  </span>
-                </button>
-              </td>
-            </tr>
-
-            <tr title="` + grblConfigDesc['$102'] + `">
-              <td>$102</td>
-              <td>Z-axis steps per millimeter</td>
-              <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$102'] + `" id="val-` + 102 + `-input"></td>
-              <td>
-                <button title="Calculate Z-Axis Steps per mm" class="button" type="button" onclick="zstepspermm()">
-                <span class="fa-layers fa-fw">
-                    <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
-                    <span class="fa-layers-text" data-fa-transform="up-16" style="font-weight:600; font-family: Arial; font-size: 10px;">Calc</span>
-                    <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
-                  </span>
-                </button>
-              </td>
-            </tr>
-
-            <tr title="` + grblConfigDesc['$110'] + `"><td>$110</td><td>X-axis maximum rate, mm/min</td><td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$110'] + `" id="val-` + 110 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$111'] + `"><td>$111</td><td>Y-axis maximum rate, mm/min</td><td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$111'] + `" id="val-` + 111 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$112'] + `"><td>$112</td><td>Z-axis maximum rate, mm/min</td><td><input data-role="input" data-clear-button="false" data-append="mm/min"  type="text" value="` + grblParams['$112'] + `" id="val-` + 112 + `-input"></td><td></td></tr>
-
-            <tr title="` + grblConfigDesc['$120'] + `"><td>$120</td><td>X-axis acceleration, mm/sec<sup>2</sup></td><td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$120'] + `" id="val-` + 120 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$121'] + `"><td>$121</td><td>Y-axis acceleration, mm/sec<sup>2</sup></td><td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$121'] + `" id="val-` + 121 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$122'] + `"><td>$122</td><td>Z-axis acceleration, mm/sec<sup>2</sup></td><td><input data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text" value="` + grblParams['$122'] + `" id="val-` + 122 + `-input"></td></td><td></td></tr>
-
-            <tr title="` + grblConfigDesc['$130'] + `"><td>$130</td><td>X-axis maximum travel, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$130'] + `" id="val-` + 130 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$131'] + `"><td>$131</td><td>Y-axis maximum travel, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$131'] + `" id="val-` + 131 + `-input"></td><td></td></tr>
-            <tr title="` + grblConfigDesc['$132'] + `"><td>$132</td><td>Z-axis maximum travel, millimeters</td><td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$132'] + `" id="val-` + 132 + `-input"></td><td></td></tr>
-
-            </tbody>
-            </table>
-            </div>
-          </div>
-        </li>
-      </ul>
-          </form>
-        </div>
-    </div>`
+</form>
+        `
     $('#grblconfig').append(template)
 
     setTimeout(function() {
@@ -382,7 +491,6 @@ function grblPopulate() {
       $("#val-2-input").val(parseInt(grblParams['$2'])).trigger("change");
       $("#val-3-input").val(parseInt(grblParams['$3'])).trigger("change");
       $("#val-4-input").val(parseInt(grblParams['$4'])).trigger("change");
-      $("#val-10-input").val(parseInt(grblParams['$10'])).trigger("change");
     }, 100);;
 
     $('#grblSettingsTable').on('keyup paste click change', 'input, select', function() {
@@ -437,27 +545,30 @@ function checkifchanged() {
     if (grblParams.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
-      // Only send values that changed
-      if (parseFloat(newVal) != parseFloat(grblParams[key])) {
-        hasChanged = true;
-        if (!$("#val-" + j + "-input").parent().is('td')) {
-          $("#val-" + j + "-input").parent().addClass('alert')
-        } else if ($("#val-" + j + "-input").is('select')) {
-          $("#val-" + j + "-input").addClass('alert')
-        } else if (j == 3) { // Endstops
-          $('#xdirinvert').parent().children('.check').addClass('bd-red')
-          $('#ydirinvert').parent().children('.check').addClass('bd-red')
-          $('#zdirinvert').parent().children('.check').addClass('bd-red')
-        }
-      } else {
-        if (!$("#val-" + j + "-input").parent().is('td')) {
-          $("#val-" + j + "-input").parent().removeClass('alert')
-        } else if ($("#val-" + j + "-input").is('select')) {
-          $("#val-" + j + "-input").removeClass('alert')
-        } else if (j == 3) {
-          $('#xdirinvert').parent().children('.check').removeClass('bd-red')
-          $('#ydirinvert').parent().children('.check').removeClass('bd-red')
-          $('#zdirinvert').parent().children('.check').removeClass('bd-red')
+
+      if (newVal !== undefined) {
+        // Only send values that changed
+        if (parseFloat(newVal) != parseFloat(grblParams[key])) {
+          hasChanged = true;
+          if (!$("#val-" + j + "-input").parent().is('td')) {
+            $("#val-" + j + "-input").parent().addClass('alert')
+          } else if ($("#val-" + j + "-input").is('select')) {
+            $("#val-" + j + "-input").addClass('alert')
+          } else if (j == 3) { // Endstops
+            $('#xdirinvert').parent().children('.check').addClass('bd-red')
+            $('#ydirinvert').parent().children('.check').addClass('bd-red')
+            $('#zdirinvert').parent().children('.check').addClass('bd-red')
+          }
+        } else {
+          if (!$("#val-" + j + "-input").parent().is('td')) {
+            $("#val-" + j + "-input").parent().removeClass('alert')
+          } else if ($("#val-" + j + "-input").is('select')) {
+            $("#val-" + j + "-input").removeClass('alert')
+          } else if (j == 3) {
+            $('#xdirinvert').parent().children('.check').removeClass('bd-red')
+            $('#ydirinvert').parent().children('.check').removeClass('bd-red')
+            $('#zdirinvert').parent().children('.check').removeClass('bd-red')
+          }
         }
       }
     }
@@ -473,56 +584,140 @@ function checkifchanged() {
   }
 }
 
-
 function grblSaveSettings() {
-  var commands = ""
+  var toSaveCommands = [];
+  var saveProgressBar = $("#grblSaveProgress").data("progress");
   for (var key in grblParams) {
     if (grblParams.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
       // Only send values that changed
-      if (parseFloat(newVal) != parseFloat(grblParams[key])) {
-        // console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
-        commands += key + '=' + newVal + "\n"
-        // sendGcode(key + '=' + newVal);
+      if (newVal !== undefined) {
+        if (parseFloat(newVal) != parseFloat(grblParams[key])) {
+          // console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
+          toSaveCommands.push(key + '=' + newVal);
+        }
       }
     }
   }
-  console.log("commands", commands)
-  socket.emit('runJob', {
-    data: commands,
-    isJob: false,
-    fileName: ""
-  });
-  grblParams = {};
+  if (toSaveCommands.length > 0) {
+    //console.log("commands", toSaveCommands)
+    let counter = 0;
+    // Blank the dialog
+    if (saveProgressBar) {
+      saveProgressBar.val(0);
+    }
+    $("#grblNewParam").html("")
+    $("#grblNewParamVal").html("")
+    // Open Dialog savingGrblSettingsProgress
+    Metro.dialog.open('#savingGrblSettingsProgress')
+    const i = setInterval(function() {
+      //console.log(counter, toSaveCommands[counter]);
+      var newParam = toSaveCommands[counter].split("=")[0];
+      var newParamKey = newParam.substr(1);
+      var newParamName = grblSettingCodes[newParamKey]
+      var newParamVal = toSaveCommands[counter].split("=")[1];
+      $("#grblNewParam").html("<code>" + newParam + " : " + newParamName + "</code>")
+      $("#grblNewParamVal").html("<code>" + newParamVal + "</code>")
 
-  Metro.dialog.create({
-    title: "Configuration Updated. Reset Grbl?",
-    content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
-    actions: [{
-        caption: "Yes",
-        cls: "js-dialog-close secondary",
-        onclick: function() {
-          setTimeout(function() {
-            sendGcode(String.fromCharCode(0x18));
-            setTimeout(function() {
-              refreshGrblSettings()
-            }, 1000);
-          }, 400);
-        }
-      },
-      {
-        caption: "Later",
-        cls: "js-dialog-close",
-        onclick: function() {
-          console.log("Do nothing")
-          refreshGrblSettings();
-        }
+      if (saveProgressBar) {
+        saveProgressBar.val(counter / toSaveCommands.length * 100);
       }
-    ]
-  });
-  $('#grblSettingsBadge').hide();
+      //
+      sendGcode(toSaveCommands[counter] + "\n");;
+      counter++;
+      if (counter === toSaveCommands.length) {
+        // Finished running
+        clearInterval(i);
+        grblParams = {};
+        toSaveCommands = [];
+        Metro.dialog.close('#savingGrblSettingsProgress')
+        Metro.dialog.create({
+          title: "Configuration Updated. Reset Grbl?",
+          content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+          clsDialog: 'dark',
+          actions: [{
+              caption: "Yes",
+              cls: "js-dialog-close success",
+              onclick: function() {
+                setTimeout(function() {
+                  sendGcode(String.fromCharCode(0x18));
+                  setTimeout(function() {
+                    refreshGrblSettings()
+                  }, 1000);
+                }, 400);
+              }
+            },
+            {
+              caption: "Later",
+              cls: "js-dialog-close",
+              onclick: function() {
+                console.log("Do nothing")
+                refreshGrblSettings();
+              }
+            }
+          ]
+        });
+        $('#grblSettingsBadge').hide();
+      }
+    }, 200);
+  }
+
 }
+
+
+// Old Gnea-Grbl way
+// function grblSaveSettings() {
+//   var commands = ""
+//   for (var key in grblParams) {
+//     if (grblParams.hasOwnProperty(key)) {
+//       var j = key.substring(1)
+//       var newVal = $("#val-" + j + "-input").val();
+//       // Only send values that changed
+//       if (newVal !== undefined) {
+//         if (parseFloat(newVal) != parseFloat(grblParams[key])) {
+//           // console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
+//           commands += key + '=' + newVal + "\n"
+//           // sendGcode(key + '=' + newVal) + "\n";
+//         }
+//       }
+//     }
+//   }
+//   console.log("commands", commands)
+//   socket.emit('runJob', {
+//     data: commands,
+//     isJob: false,
+//     fileName: ""
+//   });
+//   grblParams = {};
+//
+//   Metro.dialog.create({
+//     title: "Configuration Updated. Reset Grbl?",
+//     content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+//     actions: [{
+//         caption: "Yes",
+//         cls: "js-dialog-close secondary",
+//         onclick: function() {
+//           setTimeout(function() {
+//             sendGcode(String.fromCharCode(0x18));
+//             setTimeout(function() {
+//               refreshGrblSettings()
+//             }, 1000);
+//           }, 400);
+//         }
+//       },
+//       {
+//         caption: "Later",
+//         cls: "js-dialog-close",
+//         onclick: function() {
+//           console.log("Do nothing")
+//           refreshGrblSettings();
+//         }
+//       }
+//     ]
+//   });
+//   $('#grblSettingsBadge').hide();
+// }
 
 function refreshGrblSettings() {
   $('#saveBtn').attr('disabled', true).addClass('disabled');
@@ -536,7 +731,7 @@ function refreshGrblSettings() {
     setTimeout(function() {
       grblPopulate();
     }, 500);
-  }, 50);
+  }, 200);
 
 }
 
@@ -688,8 +883,81 @@ function updateToolOnSValues() {
 }
 
 
+var grblSettingCodes = {
+  0: "Step pulse time, microseconds",
+  1: "Step idle delay, milliseconds",
+  2: "Step pulse invert, mask",
+  3: "Step direction invert, mask",
+  4: "Invert step enable pin, boolean",
+  5: "Invert limit pins, boolean",
+  6: "Invert probe pin, boolean",
+  10: "Status report options, mask",
+  11: "Junction deviation, millimeters",
+  12: "Arc tolerance, millimeters",
+  13: "Report in inches, boolean",
+  20: "Soft limits enable, boolean",
+  21: "Hard limits enable, boolean",
+  22: "Homing cycle enable, boolean",
+  23: "Homing direction invert, mask",
+  24: "Homing locate feed rate, mm/min",
+  25: "Homing search seek rate, mm/min",
+  26: "Homing switch debounce delay, milliseconds",
+  27: "Homing switch pull-off distance, millimeters",
+  30: "Maximum spindle speed, RPM",
+  31: "Minimum spindle speed, RPM",
+  32: "Laser-mode enable, boolean",
+  100: "X-axis steps per millimeter",
+  101: "Y-axis steps per millimeter",
+  102: "Z-axis steps per millimeter",
+  110: "X-axis maximum rate, mm/min",
+  111: "Y-axis maximum rate, mm/min",
+  112: "Z-axis maximum rate, mm/min",
+  120: "X-axis acceleration, mm/sec^2",
+  121: "Y-axis acceleration, mm/sec^2",
+  122: "Z-axis acceleration, mm/sec^2",
+  130: "X-axis maximum travel, millimeters",
+  131: "Y-axis maximum travel, millimeters",
+  132: "Z-axis maximum travel, millimeters",
+  // GrblHAL Specific parameters
+  14: "Limit pins invert, mask",
+  15: "Coolant pins invert, mask",
+  16: "Spindle pins invert, mask",
+  17: "Control pins pullup disable, mask",
+  18: "Limit pins pullup disable, mask",
+  19: "Probe pin pullup disable, boolean",
+  28: "G73 retract distance, in mm",
+  29: "Step pulse delay",
+  33: "Spindle PWM frequency",
+  34: "Spindle off",
+  35: "Spindle min value",
+  36: "Spindle max value",
+  37: "Stepper deenergize mask",
+  38: "Spindle encoder pulses per revolution",
+  39: "Enable printable realtime command characters.",
+  40: "Apply soft limits for jog commands",
+  43: "Homing cycles",
+  44: "Homing cycle 1",
+  45: "Homing cycle 2",
+  46: "Homing cycle 3",
+  47: "Homing cycle 4",
+  48: "Homing cycle 5",
+  49: "Homing cycle 6",
+  62: "",
+  63: "",
+  64: "",
+  65: "",
+  341: "",
+  342: "",
+  343: "",
+  344: "",
+  345: "",
+  370: "",
+  384: ""
+};
+
 // Strings from https://github.com/gnea/grbl/wiki/Grbl-v1.1-Configuration
 var grblConfigDesc = {
+  // Grbl 1.1 / GrblHAL Parameters
   $0: "Stepper drivers are rated for a certain minimum step pulse length. Check the data sheet or just try some numbers. You want the shortest pulses the stepper drivers can reliably recognize. If the pulses are too long, you might run into trouble when running the system at very high feed and pulse rates, because the step pulses can begin to overlap each other. We recommend something around 10 microseconds, which is the default value",
   $1: "Every time your steppers complete a motion and come to a stop, Grbl will delay disabling the steppers by this value. OR, you can always keep your axes enabled (powered so as to hold position) by setting this value to the maximum 255 milliseconds. Again, just to repeat, you can keep all axes always enabled by setting $1=255. The stepper idle lock time is the time length Grbl will keep the steppers locked before disabling. Depending on the system, you can set this to zero and disable it. On others, you may need 25-50 milliseconds to make sure your axes come to a complete stop before disabling. This is to help account for machine motors that do not like to be left on for long periods of time without doing something. Also, keep in mind that some stepper drivers don't remember which micro step they stopped on, so when you re-enable, you may witness some 'lost' steps due to this. In this case, just keep your steppers enabled via $1=255",
   $2: "This setting inverts the step pulse signal. By default, a step signal starts at normal-low and goes high upon a step pulse event. After a step pulse time set by $0, the pin resets to low, until the next step pulse event. When inverted, the step pulse behavior switches from normal-high, to low during the pulse, and back to high. Most users will not need to use this setting, but this can be useful for certain CNC-stepper drivers that have peculiar requirements. For example, an artificial delay between the direction pin and step pulse can be created by inverting the step pin.",

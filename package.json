@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.317",
+  "version": "1.0.318",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Interface Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -16,6 +16,7 @@
     "directory-tree": "^2.2.4",
     "drivelist": "^9.2.4",
     "electron-builder-notarize": "^1.2.0",
+    "electron-rebuild": "^3.2.7",
     "electron-updater": "^4.3.8",
     "express": "^4.17.1",
     "formidable": "^1.2.2",

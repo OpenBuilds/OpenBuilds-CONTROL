@@ -22,7 +22,7 @@ function setConnectBar(val, status) {
     }
     $('#portUSB').parent(".select").addClass('success')
     $('#portUSB').parent(".select").removeClass('alert')
-    $('.macrobtn').addClass('disabled')
+    $('.macrobtn').removeClass('disabled')
     $('.grblCalibrationMenu').addClass("disabled")
     // Set Port Dropdown to Current Value
     // Not applicable to Status 0 as its set by populatePortsMenu();
@@ -82,7 +82,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent(".select").addClass('alert')
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
-    $('.macrobtn').addClass('disabled')
+    $('.macrobtn').removeClass('disabled')
     $('.grblCalibrationMenu').addClass("disabled")
 
   } else if (val == 5) { // Alarm State
@@ -101,7 +101,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent(".select").addClass('alert')
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
-    $('.macrobtn').addClass('disabled')
+    $('.macrobtn').removeClass('disabled')
     $('.grblCalibrationMenu').addClass("disabled")
   } else if (val == 6) { // Firmware Upgrade State
     // Status Badge
@@ -119,7 +119,7 @@ function setConnectBar(val, status) {
     $('#portUSB').parent(".select").addClass('alert')
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
-    $('.macrobtn').addClass('disabled')
+    $('.macrobtn').removeClass('disabled')
     $('.grblCalibrationMenu').addClass("disabled")
   }
 }

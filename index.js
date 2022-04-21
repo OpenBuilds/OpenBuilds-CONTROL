@@ -307,6 +307,7 @@ var queueCounter;
 var listPortsLoop;
 
 var GRBL_RX_BUFFER_SIZE = 127; // 128 characters
+var GRBLHAL_RX_BUFFER_SIZE = 1023; // 128 characters
 var sentBuffer = [];
 
 var xPos = 0.00;
@@ -394,6 +395,7 @@ var status = {
     },
     firmware: {
       type: "",
+      platform: "",
       version: "",
       date: "",
       buffer: [],
@@ -1227,8 +1229,15 @@ io.on("connection", function(socket) {
         if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
           debug_log(data)
           status.comms.blocked = false;
-          status.machine.firmware.type = "grbl";
-          status.machine.firmware.version = data.substr(5, 4); // get version
+          if (data.indexOf("GrblHAL") === 0) {
+            status.machine.firmware.type = "grbl";
+            status.machine.firmware.platform = "grblHAL"
+            status.machine.firmware.version = data.substr(8, 4); // get version
+          } else {
+            status.machine.firmware.type = "grbl";
+            status.machine.firmware.platform = "gnea"
+            status.machine.firmware.version = data.substr(5, 4); // get version
+          }
           if (parseFloat(status.machine.firmware.version) < 1.1) { // If version is too old
             if (status.machine.firmware.version.length < 3) {
               debug_log('invalid version string, stay connected')
@@ -1251,7 +1260,8 @@ io.on("connection", function(socket) {
           debug_log("GRBL detected");
           setTimeout(function() {
             io.sockets.emit('grbl')
-            io.sockets.emit('errorsCleared', true);
+            //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
+            //io.sockets.emit('errorsCleared', true);
           }, 600)
           // Start interval for status queries
           clearInterval(statusLoop);
@@ -1259,7 +1269,7 @@ io.on("connection", function(socket) {
             if (status.comms.connectionStatus > 0) {
               addQRealtime("?");
             }
-          }, 100);
+          }, 200);
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
@@ -1830,9 +1840,13 @@ io.on("connection", function(socket) {
           debug_log('Clearing Lockout');
           switch (status.machine.firmware.type) {
             case 'grbl':
+              clearInterval(queueCounter);
+              clearInterval(statusLoop);
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-              addQRealtime('$X\n');
-              debug_log('Sent: $X');
+              setTimeout(function() {
+                addQRealtime('$X\n');
+                debug_log('Sent: $X');
+              }, 500);
               status.comms.blocked = false;
               status.comms.paused = false;
               break;
@@ -2437,7 +2451,11 @@ function BufferSpace(firmware) {
     total += sentBuffer[i].length;
   }
   if (firmware == "grbl") {
-    return GRBL_RX_BUFFER_SIZE - total;
+    if (status.machine.firmware.platform == "grblHAL") {
+      return GRBLHAL_RX_BUFFER_SIZE - total;
+    } else {
+      return GRBL_RX_BUFFER_SIZE - total;
+    }
   }
 }
 
@@ -2508,7 +2526,8 @@ function addQToEnd(gcode) {
   // if (gcode.indexOf("G54") != -1 || gcode.indexOf("G55") != -1 || gcode.indexOf("G56") != -1 || gcode.indexOf("G57") != -1 || gcode.indexOf("G58") != -1 || gcode.indexOf("G59") != -1) {
   //   gcodeQueue.push("$G");
   // }
-  if (new RegExp(modalCommands.join("|")).test(gcode)) {
+  var testGcode = gcode.toUpperCase()
+  if (new RegExp(modalCommands.join("|")).test(testGcode)) {
     gcodeQueue.push("$G");
   }
   if (gcode.match(/T([\d.]+)/i)) {
@@ -2925,6 +2944,7 @@ function stop(data) {
         debug_log('Cleaning Queue');
         if (!data.jog) {
           setTimeout(function() {
+            clearInterval(statusLoop);
             addQRealtime(String.fromCharCode(0x18)); // ctrl-x
             debug_log('Sent: Code(0x18)');
           }, 200);

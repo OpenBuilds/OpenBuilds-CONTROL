@@ -182,6 +182,7 @@ function probeautotab() {
   $(".img-probe").hide();
   $("#img-probe-auto").show();
   $("#toggle-probe-advanced").hide();
+  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $("#endmilldiameterform").hide();
   probemode.stock.position == "fl"
   $('#runNewProbeBtn').addClass("disabled")
@@ -201,6 +202,7 @@ function probexyztab() {
   $(".img-probe").hide();
   $("#img-probe-xyz").show();
   $("#toggle-probe-advanced").show();
+  $("#toggle-probe-advanced-content").data('collapse').collapse()
   $("#endmilldiameterform").show();
   if (probemode.stock.position == "fl") {
     $("#toggle-probe-advanced-content").data('collapse').collapse()

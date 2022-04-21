@@ -73,6 +73,7 @@ function showJobLog() {
   Metro.dialog.create({
     title: "<i class='far fa-keyboard fa-fw'></i> Log: Jobs",
     content: template,
+    toTop: true,
     width: 600,
     clsDialog: 'dark',
     actions: [{

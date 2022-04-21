@@ -58,7 +58,7 @@
 
                 <button class="ribbon-button" onclick="backupGrblSettings();">
                   <span class="icon">
-                    <i class="fas fa-download"></i>
+                    <i class="fas fa-download fg-lightOrange"></i>
                   </span>
                   <span class="caption">Backup<br>Settings</span>
                 </button>
@@ -176,7 +176,7 @@
                   </form>
 
                 </div>
-                <span class="title">Machine Interface</span>
+                <span class="title">Machine Connection</span>
               </div>
 
               <div class="group">
@@ -284,7 +284,7 @@
                     </li>
                     <!-- <li class="divider"></li> -->
                     <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
                     <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
@@ -305,7 +305,7 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Router / Spindle / Laser / Plasma Off (M5)</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li><a class="grblmode" href="#" onclick="sendGcode('M9')">Coolant Off (M9)</a></li>
 
                   </ul>
@@ -352,17 +352,17 @@
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Keyboard Shortcuts</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li onclick="populateGrblBuilderToolForm();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
                     <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
-                    <li class="divider fg-lightGray"></li>
+                    <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
                   </ul>
                 </div>
@@ -391,22 +391,6 @@
                 <span class="title">E-Stop</span>
               </div>
 
-              <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('fabber', true);">
-                  <span class="icon">
-                    <img src="affiliates/fabber/fabber.svg">
-                  </span>
-                  <span class="caption">Fabber</span>
-                </button>
-                <button class="ribbon-button" onclick="socket.emit('carveco', true);">
-                  <span class="icon">
-                    <img src="affiliates/carveco/carveco.svg">
-                  </span>
-                  <span class="caption">Carveco</span>
-                </button>
-
-                <span class="title">CAM Tools</span>
-              </div>
             </div>
 
             <div class="section" id="section-troubleshooting">
@@ -434,6 +418,26 @@
                 </div>
                 <span class="title">Settings</span>
               </div>
+
+              <div class="group">
+                <button class="ribbon-button" onclick="socket.emit('opendocs', true);">
+                  <span class="icon">
+                    <i class="fas fa-book" data-fa-transform=""></i>
+                  </span>
+                  <span class="caption">OpenBuilds<br>Documentation</span>
+                </button>
+                <button class="ribbon-button" onclick="socket.emit('openforum', true);">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="far fa-comment-alt" data-fa-transform=""></i>
+                      <i class="fas fa-question" data-fa-transform="shrink-8 up-1"></i>
+                    </span>
+                  </span>
+                  <span class="caption">OpenBuilds<br>Forum</span>
+                </button>
+                <span class="title">Support</span>
+              </div>
+
               <div class="group" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -455,24 +459,7 @@
                 </button>
                 <span class="title">E-Stop</span>
               </div>
-              <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('opendocs', true);">
-                  <span class="icon">
-                    <i class="fas fa-book" data-fa-transform=""></i>
-                  </span>
-                  <span class="caption">OpenBuilds<br>Documentation</span>
-                </button>
-                <button class="ribbon-button" onclick="socket.emit('openforum', true);">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="far fa-comment-alt" data-fa-transform=""></i>
-                      <i class="fas fa-question" data-fa-transform="shrink-8 up-1"></i>
-                    </span>
-                  </span>
-                  <span class="caption">OpenBuilds<br>Forum</span>
-                </button>
-                <span class="title">Support</span>
-              </div>
+
             </div>
 
           </div>
@@ -482,7 +469,7 @@
           <center>
             <div id="jogcontrols" class="mt-1">
               <div class="row flex-justify-center flex-align-start" style="width: 100%; height: 100%;">
-                <div class="cell border-right bd-lightGray ">
+                <div class="cell border-right bd-gray ">
 
                   <table class="drotable mt-1">
                     <tr>
@@ -673,9 +660,9 @@
                           </button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode('G28')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G28)</a></li>
-                            <li><a href="#" onclick="sendGcode('G28.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G28.1)</a></li>
-                            <li class="divider"></li>
                             <li><a href="#" onclick="sendGcode('G30')"><span class="fas fa-layer-group fg-grayBlue icon"></span>Go to Pre-Defined Position (G30)</a></li>
+                            <li class="divider fg-gray bg-gray bd-gray"></li>
+                            <li><a href="#" onclick="sendGcode('G28.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G28.1)</a></li>
                             <li><a href="#" onclick="sendGcode('G30.1')"><span class="fas fa-tasks fg-grayBlue icon"></span>Set Pre-Defined Position (G30.1)</a></li>
                           </ul>
                         </div>
@@ -819,7 +806,7 @@
                   </table>
                 </div>
 
-                <div class="cell border-left bd-lightGray" id="jrocell">
+                <div class="cell border-left bd-gray" id="jrocell">
                   <button class="button light mini mb-1" onclick="jogOverride(100);">reset</button>
                   <input id="jro" data-on-stop="jogOverride(arguments[0])" data-role="slider" data-accuracy="1" data-vertical="true" data-size="140" data-min="1" data-max="100" data-value="100" data-hint="true" data-hint-always="true"
                     data-hint-position="bottom" data-hint-mask="Jog: $1%" data-cls-hint="bg-light
@@ -827,14 +814,14 @@
                   <span class="tally text-small bg-openbuilds fg-white" id="realJog"></span>
                 </div>
 
-                <div class="cell border-left bd-lightGray" id="frocell">
+                <div class="cell border-left bd-gray" id="frocell">
                   <button class="button light mini mb-1" onclick="feedOverride(100);">reset</button>
                   <input id="fro" data-on-stop="feedOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="140" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
                     data-hint-always="true" data-hint-position="bottom" data-hint-mask="Feed: $1%" data-cls-hint="bg-light
                         fg-dark shadow-1" data-cls-complete="bg-openbuilds">
                   <span class="tally text-small bg-openbuilds fg-white" id="realFeed"></span>
                 </div>
-                <div class="cell border-left bd-lightGray" id="trocell">
+                <div class="cell border-left bd-gray" id="trocell">
                   <button class="button light mini  mb-1" onclick="spindleOverride(100);">reset</button>
                   <input id="tro" data-on-stop="spindleOverride(arguments[0])" data-role="slider" data-accuracy="5" data-vertical="true" data-size="140" data-accuracy="1" data-min="10" data-max="200" data-value="100" data-hint="true"
                     data-hint-always="true" data-hint-position="bottom" data-hint-mask="Tool: $1%" data-cls-hint="bg-light
@@ -849,10 +836,10 @@
 
               <nav data-role="ribbonmenu">
                 <ul class="tabs-holder">
-                  <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw" id="3dviewicon"></i><span id="3dviewlabel"> 3D View</span></a></li>
-                  <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal"></i> Serial Console</a></li>
-                  <li><a href="#tab-four" id="macrostab"><i class="fas fa-th fa-fw"></i> Macros</a></li>
-                  <li><a href="#tab-two" id="gcodeeditortab"><i class="far fa-fw fa-edit"></i> GCODE Editor</a></li>
+                  <li><a href="#tab-three" id="gcodeviewertab" onclick="fixRenderSize();"><i class="mif-3d-rotation fa-fw fg-darkCobalt" id="3dviewicon"></i><span id="3dviewlabel"> 3D View</span></a></li>
+                  <li><a href="#tab-one" id="consoletab"><i class="fas fa-fw fa-terminal fg-darkGreen"></i> Serial Console</a></li>
+                  <li><a href="#tab-four" id="macrostab"><i class="fas fa-th fa-fw fg-darkOrange"></i> Macros</a></li>
+                  <li><a href="#tab-two" id="gcodeeditortab"><i class="far fa-fw fa-edit fg-darkLime"></i> GCODE Editor</a></li>
                 </ul>
 
                 <div class="content-holder">
@@ -938,6 +925,9 @@
                       </thead>
                       <tbody>
                         <tr>
+                          <td class="pt-1 mt-1 mb-1 pb-0 pt-0" colspan="2">Manually activate inputs you want to test</td>
+                        </tr>
+                        <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
                         </tr>
@@ -975,7 +965,7 @@
                   <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-tty"></i>Communications
                   </div>
-                  <div class="card-content" style="height: calc(100vh - 650px); min-height: 90px; overflow-x: auto;">
+                  <div class="card-content" style="height: calc(100vh - 630px); min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
@@ -1007,6 +997,10 @@
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Websocket Status</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Firmware</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="firmwareversionstatus">NOCOMM</span></td>
                         </tr>
                       </tbody>
                     </table>
@@ -1117,6 +1111,9 @@
                       </thead>
                       <tbody>
                         <tr>
+                          <td class="pt-1 mt-1 mb-1 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
+                        </tr>
+                        <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on AC Power</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
                         </tr>
@@ -1124,9 +1121,7 @@
                           <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
                         </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
-                        </tr>
+
                       </tbody>
                     </table>
                   </div>
@@ -1197,7 +1192,7 @@
 
     <div id="hiddendivs" style="display:none;">
 
-      <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="false">
+      <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
 
@@ -1290,7 +1285,7 @@
         </div>
       </div>
 
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-actions-align="right" data-overlay-click-close="false">
+      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
           This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
@@ -1316,20 +1311,20 @@
               Port
             </div>
             <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true">
+              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true" data-to-top="true">
                 <option value="">Waiting for USB Flashdrive</option>
               </select>
             </div>
           </div>
 
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
           <button id="copyToUsbBtn" class="button success js-dialog-close" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
           <button class="button js-dialog-close">Cancel</button>
         </div>
       </div>
 
-      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-actions-align="right" data-overlay-click-close="false">
+      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Flattening / Surfacing Tool</div>
         <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
           <form>
@@ -1339,7 +1334,7 @@
                   <label class="cell-sm-6">Router Bit Diameter</label>
                   <div class="cell-sm-6">
                     <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="22" data-editable="true">
-                    <small class="text-muted">Diameter of your bit / endmill</small>
+                    <small class="dark">Diameter of your bit / endmill</small>
                   </div>
                 </div>
 
@@ -1347,59 +1342,59 @@
                   <label class="cell-sm-6">Stepover</label>
                   <div class="cell-sm-6">
                     <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
-                    <small class="text-muted">Stepover between passes </small>
+                    <small class="dark">Stepover between passes </small>
                   </div>
                 </div>
 
-                <div class="row mb-2 border-bottom bd-lightGray">
+                <div class="row mb-2 border-bottom bd-gray">
                   <label class="cell-sm-6">Feedrate</label>
                   <div class="cell-sm-6">
                     <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
-                    <small class="text-muted">Cutting speed</small>
+                    <small class="dark">Cutting speed</small>
                   </div>
                 </div>
 
                 <div class="row mb-2">
-                  <label class="cell-sm-6">Width<br> <small class="text-muted">X-Axis</small></label>
+                  <label class="cell-sm-6">Width<br> <small class="dark">X-Axis</small></label>
                   <div class="cell-sm-6">
                     <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="200" data-editable="true">
                   </div>
                 </div>
 
-                <div class="row mb-2 border-bottom bd-lightGray">
-                  <label class="cell-sm-6">Length<br> <small class="text-muted">Y-Axis</small></label>
+                <div class="row mb-2 border-bottom bd-gray">
+                  <label class="cell-sm-6">Length<br> <small class="dark">Y-Axis</small></label>
                   <div class="cell-sm-6">
                     <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="300" data-editable="true">
-                    <small class="text-muted">Width and Length of the area to machine flat</small>
+                    <small class="dark">Width and Length of the area to machine flat</small>
                   </div>
                 </div>
 
-                <div class="row mb-2 border-bottom bd-lightGray">
+                <div class="row mb-2 border-bottom bd-gray">
                   <label class="cell-sm-6">Skim Depth</label>
                   <div class="cell-sm-6">
                     <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
-                    <small class="text-muted">How much material to remove</small>
+                    <small class="dark">How much material to remove</small>
                   </div>
                 </div>
 
-                <div class="row mb-2 border-bottom bd-lightGray">
+                <div class="row mb-2 border-bottom bd-gray">
                   <label class="cell-sm-6">Spindle RPM</label>
                   <div class="cell-sm-6">
                     <input id="surfaceRPM" type="number" data-role="input" data-append="mm" data-clear-button="false" value="1000" data-editable="true">
-                    <small class="text-muted">Spindle RPM for variable spindles</small>
+                    <small class="dark">Spindle RPM for variable spindles</small>
                   </div>
                 </div>
 
               </div>
               <div class="cell-sm-5">
-                <small class="text-muted">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
+                <small class="dark">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
                   uneven surface finish
                 </small>
                 <hr>
 
-                <small class="text-muted">You can use the Surfacing Tool to
-                  <ul class="text-muted">
+                <small class="dark">You can use the Surfacing Tool to
+                  <ul class="dark">
                     <li>Prepare / flatten your spoilboard</li>
                     <li>Level off stock</li>
                   </ul></small>
@@ -1429,13 +1424,13 @@
           <small>You may want to wait until your machine is idle, and it it's a convenient time for you to do this, before continuing</small>
           <small id="changelogupdate"></small>
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
           <button class="button js-dialog-close">Not right now (snooze for 1hr)</button>
           <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
         </div>
       </div>
 
-      <div class="dialog dark" data-overlay-click-close="false" data-role="dialog" id="jogWidgetDialog">
+      <div class="dialog dark" data-overlay-click-close="false" data-role="dialog" data-to-top="true" id="jogWidgetDialog">
         <div class="dialog-title"><i class="fas fa-mobile-alt"></i> Jog Widget</div>
         <div class="dialog-content" style="max-height: calc(100vh - 200px);overflow-y: auto; overflow-x: hidden;">
           <div class="row">
@@ -1449,7 +1444,7 @@
                     <small>You can use your mobile device as an handheld Jog interface. To get started, open a web-browser on your Mobile device and navigate to <br></small><span id="jogip">http://0.0.0.0:3000/jog.html<span><br><small> or scan the QR
                           Code below</small>
                   </center>
-                  <hr class='thin bg-lightGray'>
+                  <hr class='thin bg-gray'>
                 </div>
               </div>
               <div class="row">
@@ -1462,7 +1457,7 @@
 
           </div>
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
           <button class="button js-dialog-close">Close</button>
         </div>
       </div>
@@ -1488,13 +1483,13 @@
 
               <td>
                 <div id="xyzprobeimages">
-                  <img src="./img/xyzprobe/auto.png" alt="probe-auto" height="350" id="img-probe-auto" class="img-probe">
-                  <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="350" id="img-probe-xyz" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/x.png" alt="probe-x" height="350" id="img-probe-x" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/y.png" alt="probe-y" height="350" id="img-probe-y" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/z.png" alt="probe-z" height="350" id="img-probe-z" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/zplate.png" alt="probe-zplate" height="350" id="img-probe-zplate" class="img-probe" style="display: none;">
-                  <img src="./img/xyzprobe/endmill.png" alt="probe-endmill" height="350" id="img-probe-endmill" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/auto.png" alt="probe-auto" height="450" id="img-probe-auto" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/xyz.png" alt="probe-xyz" height="450" id="img-probe-xyz" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/x.png" alt="probe-x" height="450" id="img-probe-x" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/y.png" alt="probe-y" height="450" id="img-probe-y" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/z.png" alt="probe-z" height="450" id="img-probe-z" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/zplate.png" alt="probe-zplate" height="450" id="img-probe-zplate" class="img-probe" style="display: none;">
+                  <img src="./img/xyzprobe/endmill.png" alt="probe-endmill" height="450" id="img-probe-endmill" class="img-probe" style="display: none;">
                 </div>
 
               </td>
@@ -1505,38 +1500,38 @@
                   <small>Automatic Probe Routine: This routine is used to find the XYZ origins, as well as automatically
                     determine endmill diameter. </small>
                   <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
+                  <small>Position the endmill above the hole in the probe plate as shown, just above the plate, clip
+                    the magnet to the collet, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-xyz" class="probe-tab-content">
                   <small>XYZ Probe Routine: This routine is used to find the XYZ origins</small>
                   <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
+                  <small>Position the endmill above the hole in the probe plate as shown, just above the plate, clip
+                    the magnet to the collet, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-x" class="probe-tab-content" style="display: none;">
                   <small>X Probe Routine: This routine is used to find the X origin</small>
                   <hr>
-                  <small>Position the endmill to the left of the probe plate as shown, clip on the magnetic connecting clip,
+                  <small>Position the endmill to the left of the probe plate as shown, clip the magnet to the collet,
                     then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-y" class="probe-tab-content" style="display: none;">
                   <small>Y Probe Routine: This routine is used to find the Y origin</small>
                   <hr>
-                  <small>Position the endmill in front of the probe plate as shown, clip on the magnetic connecting clip, then
+                  <small>Position the endmill in front of the probe plate as shown, clip the magnet to the collet, then
                     click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-z" class="probe-tab-content" style="display: none;">
                   <small>Z Probe Routine: This routine is used to find the Z origin</small>
                   <hr>
-                  <small>Position the endmill above the probe plate as shown, clip on the magnetic connecting clip, then click
+                  <small>Position the endmill above the probe plate as shown, clip the magnet to the collet or the alligator clip to the bit, then click
                     the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                 </div>
                 <div id="probe-endmill" class="probe-tab-content" style="display: none;">
                   <small>Endmill Probe Routine: This routine is used to find the Endmill Diameter</small>
                   <hr>
-                  <small>Position the endmill above the hole in the probe plate as shown to the left just above the plate, clip
-                    on the magnetic connecting clip, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
+                  <small>Position the endmill above the hole in the probe plate as shown, just above the plate, clip
+                    the magnet to the collet, then click the <span class="fg-grayBlue">Confirm Probe Position</span> button to continue...</small>
                   <hr>
                   <small>
                     This operation will perform an XYZ probe to establish the plate position, then using the hole in the plate,
@@ -1552,27 +1547,27 @@
                         &nbsp;
                       </td>
                       <td>
-                        <button class="button success small rounded outline m-1 yP" id="yPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y+</button>
+                        <button class="button success small rounded outline m-1 yP" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y+</button>
                       </td>
                       <td>
                         &nbsp;
                       </td>
                       <td>
-                        <button class="button primary small rounded outline m-1 zP" id="zPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z+</button>
+                        <button class="button primary small rounded outline m-1 zP" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z+</button>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <button class="button alert small rounded outline m-1 xM" id="xMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X-</button>
+                        <button class="button alert small rounded outline m-1 xM" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X-</button>
                       </td>
                       <td>
-                        <button class="button success small rounded outline m-1 yM" id="yMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y-</button>
+                        <button class="button success small rounded outline m-1 yM" style="width: 40px;" data-role="ripple" data-ripple-color="#5de21b">Y-</button>
                       </td>
                       <td>
-                        <button class="button alert small rounded outline m-1 xP" id="xPprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X+</button>
+                        <button class="button alert small rounded outline m-1 xP" style="width: 40px;" data-role="ripple" data-ripple-color="#e21b1b">X+</button>
                       </td>
                       <td>
-                        <button class="button primary small rounded outline m-1 zM" id="zMprobe" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z-</button>
+                        <button class="button primary small rounded outline m-1 zM" style="width: 40px;" data-role="ripple" data-ripple-color="#1ba1e2">Z-</button>
                       </td>
                     </tr>
                     <tr>
@@ -1683,7 +1678,7 @@
             </tr>
           </table>
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
 
           <label>Probe Type: </label>
 
@@ -1714,7 +1709,7 @@
           <input type="text" data-role="input" class="mb-1" data-prepend="Y Offset" data-append="mm" id="customProbeYOffset">
           <input type="text" data-role="input" class="mb-1" data-prepend="Z Offset" data-append="mm" id="customProbeZOffset">
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
           <button class="button js-dialog-close" onclick="resetJogModeAfterProbe()">Cancel</button>
           <button class="button primary js-dialog-close" onclick="saveEditCustomProbe();">Save</button>
         </div>
@@ -1726,13 +1721,45 @@
         <div class="dialog-title"><i class='far fa-check-square'></i> Completed</div>
         <div class="dialog-content" id="completeMsgDiv">
         </div>
-        <div class="dialog-actions">
+        <div class="dialog-actions ">
           <div class="float-right">
             <button class="button primary js-dialog-close" id="jobCompleteBtnOk">OK</button>
           </div>
         </div>
       </div>
       <!-- end job completion confirmation -->
+
+      <!-- Saving Grbl Parameters Progress -->
+      <div class="dialog dark" data-role="dialog" id="savingGrblSettingsProgress" data-role="dialog" data-overlay-click-close="false" data-close-button="false">
+        <div class="dialog-title"><i class="fas fa-microchip"></i> Saving Grbl Settings</div>
+        <div class="dialog-content">
+
+          Writing changed parameters to controller:<p>
+
+            <table class="table striped compact">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>New Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="pt-1 mt-0 pb-0 pt-0"><span id="grblNewParam"></span></td>
+                  <td class="pt-1 mt-0 pb-0 pt-0"><span id="grblNewParamVal"></span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div data-role="progress" id="grblSaveProgress" data-value="0"></div>
+
+        </div>
+        <div class="dialog-actions ">
+          <button class="button" disabled>please wait..</button>
+
+        </div>
+      </div>
+      <!-- End Saving Grbl Parameters Progress -->
 
     </div>
   </body>
@@ -1777,6 +1804,7 @@
   <script type="text/javascript" src="lib/threejs/CanvasRenderer.js"></script>
   <script type="text/javascript" src="lib/threejs/TransformControls.js"></script>
   <script type="text/javascript" src="lib/threejs/TweenMax.min.js"></script>
+  <script type="text/javascript" src="lib/threejs/STLLoader.js"></script>
   <script type="text/javascript" src="js/viewer.js"></script>
   <script type="text/javascript" src="js/viewer-ruler.js"></script>
 
