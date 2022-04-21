@@ -93,7 +93,6 @@ function grblSettings(data) {
   }
 
   if (grblParams['$32'] == 1) {
-    console.log('Laser Mode Enabled')
     $('#enLaser').removeClass('alert').addClass('success').html('ON')
   } else {
     $('#enLaser').removeClass('success').addClass('alert').html('OFF')
@@ -114,9 +113,11 @@ function grblPopulate() {
     $('#grblconfig').empty();
     var template = `
     <form id="grblSettingsTable">
-<h6 class="fg-dark"><i class="fas fa-tasks fg-blue"></i> 1. Load Machine Profile<br>
-<small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters below. Remember to click SAVE when done</small>
-</h6>
+
+      <div id="grblProfileSection">
+      <h6 class="fg-dark"><i class="fas fa-tasks fg-blue"></i> 1. Load Machine Profile<br>
+      <small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters below. Remember to click SAVE when done</small>
+      </h6>
 
 <div class="grid">
    <div class="row">
@@ -184,202 +185,31 @@ function grblPopulate() {
 </div>
 
 <hr class="bg-openbuilds">
-
+</div> <!-- End grblProfileSection -->
 <h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't loose your customized settings</small></h6>
 
 <div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px);">
    <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
-      <thead>
+
+      <tbody>
+
          <tr>
-            <th>Key</th>
-            <th>Parameter</th>
+           <td colspan="4" class="dark">1. Motion Settings</td>
+         </tr>
+
+         <tr>
+            <th style="text-align: left;">Key</th>
+            <th style="text-align: left;">Parameter</th>
             <th style="width: 250px; min-width: 240px !important;">Value</th>
             <th style="width: 110px; min-width: 110px !important;">Utility</th>
          </tr>
-      </thead>
-      <tbody>
-         <tr title="` + grblConfigDesc['$0'] + `">
-            <td>$0</td>
-            <td>Step pulse time, microseconds</td>
-            <td><input data-role="input" data-clear-button="false" data-append="&micro;s" type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$1'] + `">
-            <td>$1</td>
-            <td>Step idle delay, milliseconds</td>
-            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$2'] + `">
-            <td>$2</td>
-            <td>Step pulse invert</td>
-            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$2'] + `" id="val-` + 2 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$3'] + `">
-            <td>$3</td>
-            <td>Step direction invert</td>
-            <td><input readonly type="hidden" id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
-               <input data-cls-caption="fg-openbuilds" id="xdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert X Direction"><br>
-               <input data-cls-caption="fg-openbuilds" id="ydirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Y Direction"><br>
-               <input data-cls-caption="fg-openbuilds" id="zdirinvert" class="secondary" type="checkbox" data-role="switch" data-caption="Invert Z Direction">
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$4'] + `">
-            <td>$4</td>
-            <td>Invert step enable pin</td>
-            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$4'] + `" id="val-` + 4 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$5'] + `">
-            <td>$5</td>
-            <td>Invert limit pins, mask</td>
-            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$5'] + `" id="val-` + 5 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$6'] + `">
-            <td>$6</td>
-            <td>Invert probe pin</td>
-            <td>
-               <select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `">
-                  <option value="0">&#x2717; Disable</option>
-                  <option value="1">&#x2713; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$10'] + `">
-            <td>$10</td>
-            <td>Status report options</td>
-            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$10'] + `" id="val-` + 10 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$11'] + `">
-            <td>$11</td>
-            <td>Junction deviation, millimeters</td>
-            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$12'] + `">
-            <td>$12</td>
-            <td>Arc tolerance, millimeters</td>
-            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$13'] + `">
-            <td>$13</td>
-            <td>Report in inches (NB CONTROL handles the conversion, set to Disabled)</td>
-            <td>
-               <select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `">
-                  <option value="0">&#9898; Disable</option>
-                  <option value="1">&#9899; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$20'] + `">
-            <td>$20</td>
-            <td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td>
-            <td>
-               <select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `">
-                  <option value="0">&#x2717; Disable</option>
-                  <option value="1">&#x2713; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits">
-            <td>$21</td>
-            <td>Hard limits enable</td>
-            <td>
-               <select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `">
-                  <option value="0">&#x2717; Disable</option>
-                  <option value="1">&#x2713; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$22'] + `">
-            <td>$22</td>
-            <td>Homing cycle enable</td>
-            <td>
-               <select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `">
-                  <option value="0">&#x2717; Disable</option>
-                  <option value="1">&#x2713; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$23'] + `">
-            <td>$23</td>
-            <td>Homing direction invert</td>
-            <td>
-               <select id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
-                  <option value="0">[0] X:&#9898; Y:&#9898; Z:&#9898;</option>
-                  <option value="1">[1] X:&#9899; Y:&#9898; Z:&#9898;</option>
-                  <option value="2">[2] X:&#9898; Y:&#9899; Z:&#9898;</option>
-                  <option value="3">[3] X:&#9899; Y:&#9899; Z:&#9898;</option>
-                  <option value="4">[4] X:&#9898; Y:&#9898; Z:&#9899;</option>
-                  <option value="5">[5] X:&#9899; Y:&#9898; Z:&#9899;</option>
-                  <option value="6">[6] X:&#9898; Y:&#9899; Z:&#9899;</option>
-                  <option value="7">[7] X:&#9899; Y:&#9899; Z:&#9899;</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$24'] + `">
-            <td>$24</td>
-            <td>Homing locate feed rate, mm/min</td>
-            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$24'] + `" id="val-` + 24 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$25'] + `">
-            <td>$25</td>
-            <td>Homing search seek rate, mm/min</td>
-            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$25'] + `" id="val-` + 25 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$26'] + `">
-            <td>$26</td>
-            <td>Homing switch debounce delay, milliseconds</td>
-            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$26'] + `" id="val-` + 26 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$27'] + `">
-            <td>$27</td>
-            <td>Homing switch pull-off distance, millimeters</td>
-            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$27'] + `" id="val-` + 27 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$30'] + `">
-            <td>$30</td>
-            <td>Maximum spindle speed, RPM</td>
-            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$30'] + `" id="val-` + 30 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$31'] + `">
-            <td>$31</td>
-            <td>Minimum spindle speed, RPM</td>
-            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td>
-            <td></td>
-         </tr>
-         <tr title="` + grblConfigDesc['$32'] + `">
-            <td>$32</td>
-            <td>Laser-mode enable</td>
-            <td>
-               <select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `">
-                  <option value="0">&#x2717; Disable</option>
-                  <option value="1">&#x2713; Enable</option>
-               </select>
-            </td>
-            <td></td>
-         </tr>
+
          <tr title="` + grblConfigDesc['$100'] + `">
             <td>$100</td>
             <td>X-axis steps per millimeter</td>
             <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$100'] + `" id="val-` + 100 + `-input"></td>
             <td>
+               <center>
                <button title="Calculate X-Axis Steps per mm" class="button " type="button" onclick="xstepspermm()">
                <span class="fa-layers fa-fw">
                <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
@@ -387,6 +217,7 @@ function grblPopulate() {
                <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
                </span>
                </button>
+               </center>
             </td>
          </tr>
          <tr title="` + grblConfigDesc['$101'] + `">
@@ -394,6 +225,7 @@ function grblPopulate() {
             <td>Y-axis steps per millimeter</td>
             <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$101'] + `" id="val-` + 101 + `-input"></td>
             <td>
+               <center>
                <button title="Calculate Y-Axis Steps per mm" class="button" type="button" onclick="ystepspermm()">
                <span class="fa-layers fa-fw">
                <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
@@ -401,6 +233,7 @@ function grblPopulate() {
                <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
                </span>
                </button>
+               </center>
             </td>
          </tr>
          <tr title="` + grblConfigDesc['$102'] + `">
@@ -408,6 +241,7 @@ function grblPopulate() {
             <td>Z-axis steps per millimeter</td>
             <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" value="` + grblParams['$102'] + `" id="val-` + 102 + `-input"></td>
             <td>
+               <center>
                <button title="Calculate Z-Axis Steps per mm" class="button" type="button" onclick="zstepspermm()">
                <span class="fa-layers fa-fw">
                <i class="fas fa-calculator" data-fa-transform="shrink-2"></i>
@@ -415,6 +249,7 @@ function grblPopulate() {
                <span class="fa-layers-text" data-fa-transform="down-19" style="font-weight:600; font-family: Arial; font-size: 10px;">Steps</span>
                </span>
                </button>
+               </center>
             </td>
          </tr>
          <tr title="` + grblConfigDesc['$110'] + `">
@@ -454,6 +289,190 @@ function grblPopulate() {
             </td>
             <td></td>
          </tr>
+         <tr title="` + grblConfigDesc['$3'] + `">
+            <td>$3</td>
+            <td>Axis Direction</td>
+            <td><input readonly type="hidden" id="val-` + 3 + `-input" value="` + grblParams['$3'] + `">
+
+            <table style="width: 100%;">
+              <tr>
+                <td><span class="text-small">X</span>
+                </td>
+                <td><span class="text-small">Normal</span>
+                </td>
+                <td class="pb-1">
+                  <label class="toggle">
+                    <input type="checkbox" id="xdirinvert" />
+                    <div>app-notification</div>
+                  </label>
+                </td>
+                <td><span class="text-small">Reversed</span>
+                </td>
+              </tr>
+               <tr>
+               <td><span class="text-small">Y</span>
+               </td>
+                <td><span class="text-small">Normal</span>
+                </td>
+                <td class="pb-1">
+                  <label class="toggle">
+                    <input type="checkbox" id="ydirinvert" />
+                    <div>app-notification</div>
+                  </label>
+                </td>
+                <td><span class="text-small">Reversed</span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="text-small">Z</span>
+                </td>
+                <td><span class="text-small">Normal</span>
+                </td>
+                <td class="pb-1">
+                  <label class="toggle">
+                    <input type="checkbox" id="zdirinvert" />
+                    <div>app-notification</div>
+                  </label>
+                </td>
+                <td><span class="text-small">Reversed</span>
+                </td>
+              </tr>
+            </table>
+            </td>
+            <td></td>
+         </tr>
+
+
+         <tr>
+           <td colspan="4" class="dark">2. Homing and Endstop Settings</td>
+         </tr>
+
+         <tr>
+            <th style="text-align: left;">Key</th>
+            <th style="text-align: left;">Parameter</th>
+            <th style="width: 250px; min-width: 240px !important;">Value</th>
+            <th style="width: 110px; min-width: 110px !important;">Utility</th>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$5'] + `">
+            <td>$5</td>
+            <td>Invert limit pins, mask</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$5'] + `" id="val-` + 5 + `-input"></td>
+            <td></td>
+         </tr>
+
+
+         <tr title="` + grblConfigDesc['$21'] + `" id="grblSettingsLimits">
+            <td>$21</td>
+            <td>Hard limits enable</td>
+            <td>
+               <select id="val-` + 21 + `-input" value="` + grblParams['$21'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$22'] + `">
+            <td>$22</td>
+            <td>Homing cycle enable</td>
+            <td>
+               <select id="val-` + 22 + `-input" value="` + grblParams['$22'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$23'] + `">
+            <td>$23</td>
+            <td>Homing direction</td>
+            <td>
+               <input readonly type="hidden" id="val-` + 23 + `-input" value="` + grblParams['$23'] + `">
+               <table style="width: 100%;">
+                 <tr>
+                   <td><span class="text-small">X</span>
+                   </td>
+                   <td><span class="text-small">Min</span>
+                   </td>
+                   <td class="pb-1">
+                     <label class="toggle">
+                       <input type="checkbox" id="xHomeDir" />
+                       <div>app-notification</div>
+                     </label>
+                   </td>
+                   <td><span class="text-small">Max</span>
+                   </td>
+                 </tr>
+                  <tr>
+                   <td><span class="text-small">Y</span>
+                   </td>
+                   <td><span class="text-small">Min</span>
+                   </td>
+                   <td class="pb-1">
+                     <label class="toggle">
+                       <input type="checkbox" id="yHomeDir" />
+                       <div>app-notification</div>
+                     </label>
+                   </td>
+                   <td><span class="text-small">Max</span>
+                   </td>
+                 </tr>
+                 <tr>
+                   <td><span class="text-small">Z</span>
+                   </td>
+                   <td><span class="text-small">Min</span>
+                   </td>
+                   <td class="pb-1">
+                     <label class="toggle">
+                       <input type="checkbox" id="zHomeDir" />
+                       <div>app-notification</div>
+                     </label>
+                   </td>
+                   <td><span class="text-small">Max</span>
+                   </td>
+                 </tr>
+               </table>
+            </td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$24'] + `">
+            <td>$24</td>
+            <td>Homing locate feed rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$24'] + `" id="val-` + 24 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$25'] + `">
+            <td>$25</td>
+            <td>Homing search seek rate, mm/min</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm/min" type="text" value="` + grblParams['$25'] + `" id="val-` + 25 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$26'] + `">
+            <td>$26</td>
+            <td>Homing switch debounce delay, milliseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$26'] + `" id="val-` + 26 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$27'] + `">
+            <td>$27</td>
+            <td>Homing switch pull-off distance, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$27'] + `" id="val-` + 27 + `-input"></td>
+            <td></td>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$20'] + `">
+            <td>$20</td>
+            <td>Soft limits enable <br><small>(Enable and Save Homing first before enabling)<small></td>
+            <td>
+               <select id="val-` + 20 + `-input" value="` + grblParams['$20'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+
          <tr title="` + grblConfigDesc['$130'] + `">
             <td>$130</td>
             <td>X-axis maximum travel, millimeters</td>
@@ -472,6 +491,131 @@ function grblPopulate() {
             <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$132'] + `" id="val-` + 132 + `-input"></td>
             <td></td>
          </tr>
+
+         <tr>
+           <td colspan="4" class="dark">3. Spindle / Laser / Toolhead Settings</td>
+         </tr>
+
+         <tr>
+            <th style="text-align: left;">Key</th>
+            <th style="text-align: left;">Parameter</th>
+            <th style="width: 250px; min-width: 240px !important;">Value</th>
+            <th style="width: 110px; min-width: 110px !important;">Utility</th>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$30'] + `">
+            <td>$30</td>
+            <td>Maximum spindle speed, RPM</td>
+            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$30'] + `" id="val-` + 30 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$31'] + `">
+            <td>$31</td>
+            <td>Minimum spindle speed, RPM</td>
+            <td><input data-role="input" data-clear-button="false" data-append="RPM" type="text" value="` + grblParams['$31'] + `" id="val-` + 31 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$32'] + `">
+            <td>$32</td>
+            <td>Laser-mode enable</td>
+            <td>
+               <select id="val-` + 32 + `-input" value="` + grblParams['$32'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$6'] + `">
+            <td>$6</td>
+            <td>Invert probe pin</td>
+            <td>
+               <select id="val-` + 6 + `-input" value="` + grblParams['$6'] + `">
+                  <option value="0">&#x2717; Disable</option>
+                  <option value="1">&#x2713; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+
+         <tr>
+           <td colspan="4" class="dark">4. Stepper Driver Settings (Please keep the default values)</td>
+         </tr>
+
+         <tr>
+            <th style="text-align: left;">Key</th>
+            <th style="text-align: left;">Parameter</th>
+            <th style="width: 250px; min-width: 240px !important;">Value</th>
+            <th style="width: 110px; min-width: 110px !important;">Utility</th>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$0'] + `">
+            <td>$0</td>
+            <td>Step pulse time, microseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="&micro;s" type="text" value="` + grblParams['$0'] + `" id="val-` + 0 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$1'] + `">
+            <td>$1</td>
+            <td>Step idle delay, milliseconds</td>
+            <td><input data-role="input" data-clear-button="false" data-append="ms" type="text" value="` + grblParams['$1'] + `" id="val-` + 1 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$2'] + `">
+            <td>$2</td>
+            <td>Step pulse invert</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$2'] + `" id="val-` + 2 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$4'] + `">
+            <td>$4</td>
+            <td>Invert step enable pin</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$4'] + `" id="val-` + 4 + `-input"></td>
+            <td></td>
+         </tr>
+
+         <tr>
+           <td colspan="4" class="dark">5. Advanced Settings (Please keep the default values)</td>
+         </tr>
+
+         <tr>
+            <th style="text-align: left;">Key</th>
+            <th style="text-align: left;">Parameter</th>
+            <th style="width: 250px; min-width: 240px !important;">Value</th>
+            <th style="width: 110px; min-width: 110px !important;">Utility</th>
+         </tr>
+
+         <tr title="` + grblConfigDesc['$10'] + `">
+            <td>$10</td>
+            <td>Status report options</td>
+            <td><input data-role="input" data-clear-button="false" type="text" value="` + grblParams['$10'] + `" id="val-` + 10 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$11'] + `">
+            <td>$11</td>
+            <td>Junction deviation, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$11'] + `" id="val-` + 11 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$12'] + `">
+            <td>$12</td>
+            <td>Arc tolerance, millimeters</td>
+            <td><input data-role="input" data-clear-button="false" data-append="mm" type="text" value="` + grblParams['$12'] + `" id="val-` + 12 + `-input"></td>
+            <td></td>
+         </tr>
+         <tr title="` + grblConfigDesc['$13'] + `">
+            <td>$13</td>
+            <td>Report in inches (NB CONTROL handles the conversion, set to Disabled)</td>
+            <td>
+               <select id="val-` + 13 + `-input" value="` + grblParams['$13'] + `">
+                  <option value="0">&#9898; Disable</option>
+                  <option value="1">&#9899; Enable</option>
+               </select>
+            </td>
+            <td></td>
+         </tr>
+
       </tbody>
    </table>
 </div> <!-- End of grblSettingsTableView -->
@@ -497,6 +641,23 @@ function grblPopulate() {
       checkifchanged()
     });
 
+    $("#grblSettingsTableView").scroll(function() {
+      var scroll = $("#grblSettingsTableView").scrollTop();
+      console.log('scrolling: ', scroll)
+      if (scroll > 200) {
+        if (allowGrblSettingsViewScroll) {
+          $("#grblProfileSection").slideUp();
+          $("#grblSettingsTableView").css("max-height", "calc(100vh - 320px)")
+          $("#grblSettingsTableView").css("height", "calc(100vh - 320px)")
+        }
+      } else if (scroll < 200) {
+        $("#grblProfileSection").slideDown()
+        $("#grblSettingsTableView").css("max-height", "calc(100vh - 460px)")
+        $("#grblSettingsTableView").css("height", "calc(100vh - 460px)")
+      }
+    });
+
+
     // Event Handlers for Switch Checkboxes
     setTimeout(function() {
       $('#limitsinstalled:checkbox').change(function() {
@@ -513,8 +674,19 @@ function grblPopulate() {
         changeDirInvert();
       });
 
+      $('#xHomeDir:checkbox').change(function() {
+        changeProbeDirInvert();
+      });
+      $('#yHomeDir:checkbox').change(function() {
+        changeProbeDirInvert();
+      });
+      $('#zHomeDir:checkbox').change(function() {
+        changeProbeDirInvert();
+      });
+
       // populare Direction Invert Checkboxes
       displayDirInvert()
+      displayProbeDirInvert()
 
     }, 100)
 
@@ -631,36 +803,38 @@ function grblSaveSettings() {
         clearInterval(i);
         grblParams = {};
         toSaveCommands = [];
-        Metro.dialog.close('#savingGrblSettingsProgress')
-        Metro.dialog.create({
-          title: "Configuration Updated. Reset Grbl?",
-          content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
-          clsDialog: 'dark',
-          actions: [{
-              caption: "Yes",
-              cls: "js-dialog-close success",
-              onclick: function() {
-                setTimeout(function() {
-                  sendGcode(String.fromCharCode(0x18));
+        setTimeout(function() {
+          Metro.dialog.close('#savingGrblSettingsProgress')
+          Metro.dialog.create({
+            title: "Configuration Updated. Reset Grbl?",
+            content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+            clsDialog: 'dark',
+            actions: [{
+                caption: "Yes",
+                cls: "js-dialog-close success",
+                onclick: function() {
                   setTimeout(function() {
-                    refreshGrblSettings()
-                  }, 1000);
-                }, 400);
+                    sendGcode(String.fromCharCode(0x18));
+                    setTimeout(function() {
+                      refreshGrblSettings()
+                    }, 1000); // refresh grbl settings
+                  }, 400); // reset
+                }
+              },
+              {
+                caption: "Later",
+                cls: "js-dialog-close",
+                onclick: function() {
+                  console.log("Do nothing")
+                  refreshGrblSettings();
+                }
               }
-            },
-            {
-              caption: "Later",
-              cls: "js-dialog-close",
-              onclick: function() {
-                console.log("Do nothing")
-                refreshGrblSettings();
-              }
-            }
-          ]
-        });
-        $('#grblSettingsBadge').hide();
+            ]
+          });
+          $('#grblSettingsBadge').hide();
+        }, 1000); // Just to show settings was written
       }
-    }, 200);
+    }, 200); // send another command every 200ms
   }
 
 }
@@ -784,6 +958,24 @@ function calcMaskFromDec(dec) {
     z: (num.charAt(0) == 0 ? false : true)
   }
   return invertmask
+}
+
+function changeProbeDirInvert() {
+  var xticked = $('#xHomeDir').is(':checked');
+  var yticked = $('#yHomeDir').is(':checked');
+  var zticked = $('#zHomeDir').is(':checked');
+  var value = calcDecFromMask(!xticked, !yticked, !zticked)
+  console.log("Homing Dir $23=" + value)
+  $("#val-23-input").val(value).trigger("change");
+  checkifchanged();
+}
+
+function displayProbeDirInvert() {
+  var dir = calcMaskFromDec($("#val-23-input").val())
+  $('#xHomeDir:checkbox').prop('checked', !dir.x);
+  $('#yHomeDir:checkbox').prop('checked', !dir.y);
+  $('#zHomeDir:checkbox').prop('checked', !dir.z);
+  checkifchanged();
 }
 
 function changeDirInvert() {

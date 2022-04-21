@@ -158,6 +158,7 @@ function initSocket() {
     } else {
       $('#gcodeeditortab').click()
     }
+    jobNeedsHoming();
   });
 
   socket.on('gcodeupload', function(data) {

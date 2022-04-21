@@ -764,7 +764,7 @@
                             <td class="pb-1">
                               <label class="toggle">
                                 <input type="checkbox" id="jogTypeContinuous" />
-                                <div>app-notifition</div>
+                                <div>app-notification</div>
                               </label>
                             </td>
                             <td><span class="text-small">Continuous Jog</span>
@@ -960,57 +960,43 @@
                   </div>
                 </div>
 
-
-                <div class="card">
+                <div class="card" id="powerSettingsCard">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-tty"></i>Communications
+                    <i class="fas fa-fw fa-power-off"></i>Power Settings
                   </div>
-                  <div class="card-content" style="height: calc(100vh - 630px); min-height: 90px; overflow-x: auto;">
+                  <div class="card-content">
                     <table class="table striped compact">
                       <thead>
                         <tr>
-                          <th style="width: 40%;">Value</th>
-                          <th style="width: 60%;">Status</th>
+                          <th style="width: 70%;">Setting</th>
+                          <th style="width: 30%;">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Installed Version</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
+                          <td class="pt-1 mt-1 mb-1 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Backend Queue Blocked</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on AC Power</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Connection Status</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
                         </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Connected To</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Serial Queue</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Websocket Status</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
-                        </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Firmware</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="firmwareversionstatus">NOCOMM</span></td>
-                        </tr>
+
                       </tbody>
                     </table>
                   </div>
                 </div>
 
+
+
+
               </div>
               <div class="cell p-0 m-0">
 
-                <div class="card">
+                <!-- <div class="card">
                   <div class="card-header  p-1 m-0">
                     <i class="fas fa-fw fa-microchip"></i>Firmware Compiled with Parameters
                   </div>
@@ -1095,33 +1081,49 @@
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div> -->
 
-                <div class="card" id="powerSettingsCard">
+                <div class="card">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-power-off"></i>Power Settings
+                    <i class="fas fa-fw fa-tty"></i>Communications
                   </div>
-                  <div class="card-content">
+                  <div class="card-content" style="height: calc(100vh - 630px); min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
-                          <th style="width: 70%;">Setting</th>
-                          <th style="width: 30%;">Status</th>
+                          <th style="width: 40%;">Value</th>
+                          <th style="width: 60%;">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="pt-1 mt-1 mb-1 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Installed Version</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on AC Power</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Backend Queue Blocked</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Connection Status</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
                         </tr>
-
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Connected To</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Serial Queue</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Websocket Status</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
+                        </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Firmware</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="firmwareversionstatus">NOCOMM</span></td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

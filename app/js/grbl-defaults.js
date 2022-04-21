@@ -1,4 +1,5 @@
 var lastSelectedMachine = '';
+var allowGrblSettingsViewScroll = true;
 
 function selectMachine(type) {
   if (type == "sphinx55") {
@@ -864,10 +865,19 @@ function selectMachine(type) {
     if (grblParams_def.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
+      if (j == "10" && laststatus.machine.firmware.platform == "grblHAL") {
+        newVal = 511;
+      }
       // console.log("$" + j + " = " + newVal)
       $("#val-" + j + "-input").val(parseFloat(grblParams_def[key]))
     }
   }
+
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+
   checkifchanged();
   enableLimits(); // Enable or Disable
   displayDirInvert();

@@ -141,6 +141,7 @@ $(document).ready(function() {
       } else {
         $('#gcodeeditortab').click()
       }
+      jobNeedsHoming();
     }
 
   });
@@ -259,9 +260,31 @@ function loadFile(f) {
         printLog(`<span class="fg-red">[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE File Loaded </span>`);
       }
       parseGcodeInWebWorker(this.result)
-
+      jobNeedsHoming();
     };
     // }
+  }
+}
+
+function jobNeedsHoming() {
+
+  if (editor.getValue().lastIndexOf("G53") != -1 || editor.getValue().lastIndexOf("g53") != -1) {
+    if (laststatus !== undefined) {
+      if (laststatus.machine.modals.homedRecently == false) {
+        var dialog = Metro.dialog.create({
+          clsDialog: 'dark',
+          title: "<i class='fas fa-exclamation-triangle'></i> Job uses Machine Coordinates:",
+          content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i> Tip: The GCODE file you loaded, contains G53 commands. Please make sure to HOME the machine to establish the Machine Coordinate (G53) System properly to prevent crashes.",
+          actions: [{
+            caption: "Close",
+            cls: "js-dialog-close",
+            onclick: function() {
+              //
+            }
+          }]
+        });
+      }
+    }
   }
 }
 

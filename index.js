@@ -365,7 +365,8 @@ var status = {
       tlomode: "G49", // G43.1, G49
       // programmode: "M0", // M0, M1, M2, M30
       spindlestate: "M5", // M3, M4, M5
-      coolantstate: "M9" // M7, M8, M9
+      coolantstate: "M9", // M7, M8, M9
+      homedRecently: false
       // tool: "0",
       // spindle: "0",
       // feedrate: "0"
@@ -1270,6 +1271,7 @@ io.on("connection", function(socket) {
               addQRealtime("?");
             }
           }, 200);
+          status.machine.modals.homedRecently = false;
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
@@ -2527,6 +2529,9 @@ function addQToEnd(gcode) {
   //   gcodeQueue.push("$G");
   // }
   var testGcode = gcode.toUpperCase()
+  if (testGcode.indexOf("$H") != -1) {
+    status.machine.modals.homedRecently = true;
+  }
   if (new RegExp(modalCommands.join("|")).test(testGcode)) {
     gcodeQueue.push("$G");
   }

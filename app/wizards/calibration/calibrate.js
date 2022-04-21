@@ -1,29 +1,29 @@
 var grblcalctemplate = `<div>
-  <div class="card">
-    <div class="card-content">
+      Use the wizard below to calculate theoretical steps-per-mm values for this axis. This will get you quite close and ready for initial testing. To fine tune final calibration, make use of the Calibration Wizards under Wizards and Tools.
+      <hr>
       <table class="table striped compact">
         <tbody>
           <tr id="actuatorrow">
             <td>Actuator Type</td>
             <td>
               <select data-role="select" data-filter="false" id="actuatorselect"  data-on-change="actuatorselect();">
-                <option value="belt" selected>Belt Driven</option>
-                <option value="lead">Leadscrew Driven</option>
+                <option value="belt">Belt Driven</option>
+                <option value="lead" selected>Leadscrew Driven</option>
               </select>
             </td>
           </tr>
-          <tr id="leadscrewrow" style="display: none;">
+          <tr id="leadscrewrow">
             <td>Leadscrew Type</td>
             <td>
               <select data-role="select" data-filter="false" id="leadscrewselect" data-on-change="processpreset();">
-                <option value="8">Openbuilds ACME Screw (8mm pitch: 2mm x 4start)</option>
+                <option value="8" selected>Openbuilds ACME Screw (8mm pitch: 2mm x 4start)</option>
                 <option value="4">Ballscrew 1204/1604/2004 (4mm pitch)</option>
                 <option value="5">Ballscrew 1605/2005 (5mm pitch)</option>
                 <option value="10">Ballscrew 1610 (10mm pitch)</option>
               </select>
             </td>
           </tr>
-          <tr id="beltrow">
+          <tr id="beltrow"  style="display: none;">
             <td>Belt Type</td>
             <td>
               <select data-role="select" data-filter="false" id="beltselect" data-on-change="processpreset();">
@@ -66,12 +66,11 @@ var grblcalctemplate = `<div>
           </tr>
           <tr>
             <td><b>Calculated Value</b></td>
-            <td><input type="text" id="calculatedstepspermm" readonly></td>
+            <td><input data-role="input" data-clear-button="false" data-append="steps/mm" type="text" id="calculatedstepspermm" readonly></td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
+
 </div>`
 
 function xstepspermm() {
