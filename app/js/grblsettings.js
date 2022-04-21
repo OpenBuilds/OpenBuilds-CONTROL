@@ -646,12 +646,12 @@ function grblPopulate() {
       console.log('scrolling: ', scroll)
       if (scroll > 200) {
         if (allowGrblSettingsViewScroll) {
-          $("#grblProfileSection").slideUp();
+          $("#grblProfileSection").slideUp('slow');
           $("#grblSettingsTableView").css("max-height", "calc(100vh - 320px)")
           $("#grblSettingsTableView").css("height", "calc(100vh - 320px)")
         }
       } else if (scroll < 200) {
-        $("#grblProfileSection").slideDown()
+        $("#grblProfileSection").slideDown('slow')
         $("#grblSettingsTableView").css("max-height", "calc(100vh - 460px)")
         $("#grblSettingsTableView").css("height", "calc(100vh - 460px)")
       }
@@ -930,9 +930,14 @@ function enableLimits() {
       $("#val-" + j + "-input").val(parseFloat(grblParams_lim[key]))
     }
   }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
   checkifchanged();
   var elm = document.getElementById("grblSettingsLimits");
   elm.scrollIntoView(true);
+
 }
 
 // Calc Grbl 1.1 Invert Masks
