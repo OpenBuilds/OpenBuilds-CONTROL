@@ -67,7 +67,7 @@ G54; Work Coordinates
 G21; mm-mode
 G90; Absolute Positioning
 M3 S` + data.surfaceRPM + `; Spindle On
-G4 P1.8 ; Wait for spindle to come up to speed
+G4 P1.8; Wait for spindle to come up to speed
 G0 Z10
 G0 X0 Y0
 G1 F` +
@@ -78,28 +78,28 @@ G1 F` +
   if (!reverse) {
     gcode +=
       `G0 X` +
-      startpointX +
+      startpointX.toFixed(4) +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z10\n
 G1 X` +
-      startpointX +
+      startpointX.toFixed(4) +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z-` +
       data.surfaceDepth +
       `\n`;
   } else {
     gcode +=
       `G0 X` +
-      endpointX +
+      endpointX.toFixed(4) +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z10\n
 G1 X` +
-      endpointX +
+      endpointX.toFixed(4) +
       ` Y` +
-      startpointY +
+      startpointY.toFixed(4) +
       ` Z-` +
       data.surfaceDepth +
       `\n`;
@@ -108,26 +108,26 @@ G1 X` +
   for (i = startpointY; i.toFixed(4) < endpointY; i += lineOver) {
     if (!reverse) {
       gcode += `G1 Y` + i.toFixed(4) + `\n`;
-      gcode += `G1 X` + startpointX + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
-      gcode += `G1 X` + endpointX + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
       reverse = true;
     } else {
       gcode += `G1 Y` + i.toFixed(4) + `\n`;
-      gcode += `G1 X` + endpointX + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
-      gcode += `G1 X` + startpointX + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
       reverse = false;
     }
   }
 
   if (!reverse) {
-    gcode += `G1 Y` + endpointY + `\n`;
-    gcode += `G1 X` + startpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
-    gcode += `G1 X` + endpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
+    gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
     reverse = true;
   } else {
-    gcode += `G1 Y` + endpointY + `\n`;
-    gcode += `G1 X` + endpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
-    gcode += `G1 X` + startpointX + ` Y` + endpointY + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
+    gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
+    gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`;
     reverse = false;
   }
 
@@ -135,13 +135,13 @@ G1 X` +
 
   // Framing Pass
   gcode += `; Framing pass\n`;
-  gcode += `G0 X` + startpointX + ` Y` + startpointY + `Z10\n`; // position at start point
+  gcode += `G0 X` + startpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-  gcode += `G1 X` + startpointX + ` Y` + endpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`; // Cut side
   gcode += `G0 Z10\n`;
-  gcode += `G0 X` + endpointX + ` Y` + endpointY + `\n`; // position at start point
+  gcode += `G0 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
   gcode += `G1 Z-` + data.surfaceDepth + `\n`; // plunge
-  gcode += `G1 X` + endpointX + ` Y` + startpointY + `Z-` + data.surfaceDepth + `\n`; // Cut side
+  gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z-` + data.surfaceDepth + `\n`; // Cut side
   gcode += `G0 Z10\n`;
   gcode += `G0 X0 Y0\n`;
 
@@ -150,7 +150,7 @@ G1 X` +
 
   editor.session.setValue(gcode);
   parseGcodeInWebWorker(gcode)
-  printLog("<span class='fg-red'>[ Surfacing Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
+  printLog("<span class='fg-red'>[ Surfacing / Flattening Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
 
   // console.log(gcode);
   //
