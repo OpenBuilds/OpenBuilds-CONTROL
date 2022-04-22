@@ -865,11 +865,20 @@ function selectMachine(type) {
     if (grblParams_def.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
-      if (j == "10" && laststatus.machine.firmware.platform == "grblHAL") {
-        newVal = 511;
+      $("#val-" + j + "-input").val(parseFloat(grblParams_def[key]))
+
+      if (laststatus.machine.firmware.platform == "grblHAL") { //  Workaround for HAL profiles required changes, without creating entirely new profiles for GrblHAL
+        if (j == "10") {
+          $("#val-" + j + "-input").val(511)
+        }
+        if (j == "5") {
+          $("#val-" + j + "-input").val(7)
+        }
+        if (j == "6") {
+          $("#val-" + j + "-input").val(1)
+        }
       }
       // console.log("$" + j + " = " + newVal)
-      $("#val-" + j + "-input").val(parseFloat(grblParams_def[key]))
     }
   }
 
