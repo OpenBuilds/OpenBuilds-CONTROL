@@ -1872,7 +1872,6 @@ io.on("connection", function(socket) {
           switch (status.machine.firmware.type) {
             case 'grbl':
               clearInterval(queueCounter);
-              clearInterval(statusLoop);
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               setTimeout(function() {
                 addQRealtime('$X\n');
@@ -2035,7 +2034,6 @@ function runJob(object) {
 
 function stopPort() {
   clearInterval(queueCounter);
-  clearInterval(statusLoop);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -2978,7 +2976,6 @@ function stop(data) {
         debug_log('Cleaning Queue');
         if (!data.jog) {
           setTimeout(function() {
-            clearInterval(statusLoop);
             addQRealtime(String.fromCharCode(0x18)); // ctrl-x
             debug_log('Sent: Code(0x18)');
           }, 200);
