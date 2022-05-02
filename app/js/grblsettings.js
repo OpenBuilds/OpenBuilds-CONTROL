@@ -186,7 +186,7 @@ function grblPopulate() {
 
 <hr class="bg-openbuilds">
 </div> <!-- End grblProfileSection -->
-<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't loose your customized settings</small></h6>
+<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't lose your customized settings</small></h6>
 
 <div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px);">
    <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
