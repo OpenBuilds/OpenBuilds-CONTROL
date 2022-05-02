@@ -671,7 +671,7 @@ io.on("connection", function(socket) {
     //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconAlarm), 'Alarm');
     //   }
     // }
-  }, 50);
+  }, 100);
 
 
 
@@ -923,7 +923,8 @@ io.on("connection", function(socket) {
       console.log("Connecting via " + data[0] + " to " + data[1] + " at baud " + data[2]);
 
       port = new SerialPort(data[1], {
-        baudRate: parseInt(data[2])
+        baudRate: parseInt(data[2]),
+        hupcl: false // Don't set DTR - useful for X32 Reset
       });
 
       parser = port.pipe(new Readline({
@@ -973,7 +974,7 @@ io.on("connection", function(socket) {
           'type': 'info'
         }
         io.sockets.emit('data', output);
-        addQRealtime("\n"); // this causes smoothie to send the welcome string
+        addQRealtime("\n"); // this causes smoothie and grblHAL to send the welcome string
 
         var output = {
           'command': 'connect',
@@ -1009,6 +1010,34 @@ io.on("connection", function(socket) {
             debug_log("Sent: version");
           }
         }, config.grblWaitTime * 2000);
+
+        setTimeout(function() {
+          if (status.machine.firmware.type.length > 1) {
+            if (status.machine.firmware.type === "grbl") {
+              debug_log("GRBL detected");
+              var output = {
+                'command': 'connect',
+                'response': "Detecting Firmware: Detected Grbl Succesfully",
+                'type': 'info'
+              }
+              setTimeout(function() {
+                io.sockets.emit('grbl')
+                //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
+                //io.sockets.emit('errorsCleared', true);
+              }, 600)
+              // Start interval for status queries
+              clearInterval(statusLoop);
+              statusLoop = setInterval(function() {
+                if (status.comms.connectionStatus > 0) {
+                  addQRealtime("?");
+                }
+              }, 200);
+              status.machine.modals.homedRecently = false;
+            }
+          }
+
+
+        }, config.grblWaitTime * 3000)
 
         if (config.firmwareWaitTime > 0) {
           setTimeout(function() {
@@ -1258,20 +1287,20 @@ io.on("connection", function(socket) {
             }
           }
           status.machine.firmware.date = "";
-          debug_log("GRBL detected");
-          setTimeout(function() {
-            io.sockets.emit('grbl')
-            //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
-            //io.sockets.emit('errorsCleared', true);
-          }, 600)
-          // Start interval for status queries
-          clearInterval(statusLoop);
-          statusLoop = setInterval(function() {
-            if (status.comms.connectionStatus > 0) {
-              addQRealtime("?");
-            }
-          }, 200);
-          status.machine.modals.homedRecently = false;
+          // debug_log("GRBL detected");
+          // setTimeout(function() {
+          //   io.sockets.emit('grbl')
+          //   //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
+          //   //io.sockets.emit('errorsCleared', true);
+          // }, 600)
+          // // Start interval for status queries
+          // clearInterval(statusLoop);
+          // statusLoop = setInterval(function() {
+          //   if (status.comms.connectionStatus > 0) {
+          //     addQRealtime("?");
+          //   }
+          // }, 200);
+          // status.machine.modals.homedRecently = false;
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
