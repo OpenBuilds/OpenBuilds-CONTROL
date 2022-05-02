@@ -303,6 +303,8 @@ var lastCommand = false
 var gcodeQueue = [];
 var queuePointer = 0;
 var statusLoop;
+var frontEndUpdateLoop
+
 var queueCounter;
 var listPortsLoop;
 
@@ -653,27 +655,12 @@ io.on("connection", function(socket) {
     }
   }
 
-  var interval = setInterval(function() {
+
+  // Global Update loop
+  clearInterval(frontEndUpdateLoop);
+  frontEndUpdateLoop = setInterval(function() {
     io.sockets.emit("status", status);
-    // v1.0.210 - testing if this caused hangs
-    // if (jogWindow) {
-    //   if (status.comms.connectionStatus == 0) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconNoComm), 'Not Connected');
-    //   } else if (status.comms.connectionStatus == 1) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconStop), 'Port Connected');
-    //   } else if (status.comms.connectionStatus == 2) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconStop), 'Connected, and Firmware');
-    //   } else if (status.comms.connectionStatus == 3) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPlay), 'Playing');
-    //   } else if (status.comms.connectionStatus == 4) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPause), 'Paused');
-    //   } else if (status.comms.connectionStatus == 5) {
-    //     jogWindow.setOverlayIcon(nativeImage.createFromPath(iconAlarm), 'Alarm');
-    //   }
-    // }
   }, 100);
-
-
 
   socket.on("openbuilds", function(data) {
     const {
@@ -1300,7 +1287,7 @@ io.on("connection", function(socket) {
           //     addQRealtime("?");
           //   }
           // }, 200);
-          // status.machine.modals.homedRecently = false;
+          status.machine.modals.homedRecently = false;
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
