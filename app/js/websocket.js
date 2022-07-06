@@ -198,6 +198,7 @@ function initSocket() {
     // 6 = Firmware Upgrade State
     if (laststatus.comms.connectionStatus < 3 && !continuousJogRunning) {
       $('#availVersion').html(data)
+      getReleaseStats()
       getChangelog();
       Metro.dialog.open('#downloadUpdate')
     }
@@ -226,7 +227,11 @@ function initSocket() {
       if (typeof grblSettings !== 'undefined') {
         grblSettings(data.response)
         var key = data.response.split('=')[0].substr(1);
-        var descr = grblSettingCodes[key];
+        if (grblSettingsTemplate2[key] !== undefined) {
+          var descr = grblSettingsTemplate2[key].title
+        } else {
+          var descr = "unknown"
+        }
         toPrint = data.response + "  ;" + descr
         var icon = ''
         var source = data.command
@@ -481,13 +486,14 @@ function initSocket() {
         var icon = ''
         var source = " Firmware Upgrade"
         if (data.code == 0) {
-          var string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the Interface now, to reboot it with the new firmware. "
+          var string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the device now, to reboot it with the new firmware. "
           var printLogCls = "fg-darkGreen"
         } else {
           var string = "<i class='fas fa-times fa-fw fg-darkRed fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
           var printLogCls = "fg-darkRed"
         }
         printLogModern(icon, source, string, printLogCls)
+        populatePortsMenu()
       }
 
     }
@@ -506,6 +512,11 @@ function initSocket() {
 
     // if (!_.isEqual(status, laststatus)) {
     if (laststatus !== undefined) {
+
+      if (!_.isEqual(status.machine.position.offset, laststatus.machine.position.offset) || machineCoordinateSpace == false) {
+        drawMachineCoordinates(status);
+      }
+
       if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
         var string = "Detected a change in available ports: ";
         for (i = 0; i < status.comms.interfaces.ports.length; i++) {
@@ -521,6 +532,24 @@ function initSocket() {
         var printLogCls = "fg-dark"
         printLogModern(icon, source, string, printLogCls)
         laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
+        populatePortsMenu();
+      }
+
+      if (!_.isEqual(status.comms.interfaces.networkDevices, laststatus.comms.interfaces.networkDevices)) {
+        var string = "Detected a change in IP devices: ";
+        for (i = 0; i < status.comms.interfaces.networkDevices.length; i++) {
+          string += "[" + status.comms.interfaces.networkDevices[i].ip + "]"
+        }
+
+        if (!status.comms.interfaces.networkDevices.length) {
+          string += "[ No IP devices ]"
+        }
+        var icon = ''
+        var source = "network ports"
+        //var string = string
+        var printLogCls = "fg-dark"
+        printLogModern(icon, source, string, printLogCls)
+        laststatus.comms.interfaces.networkDevices = status.comms.interfaces.networkDevices;
         populatePortsMenu();
       }
 
@@ -611,13 +640,9 @@ function initSocket() {
       if (!disable3Drealtimepos) {
         if (!isJogWidget) {
           if (!simRunning) {
-            if (object) {
-              cone.position.x = status.machine.position.work.x
-              cone.position.y = status.machine.position.work.y
-              cone.position.z = status.machine.position.work.z
-              // }
-            }
-
+            cone.position.x = status.machine.position.work.x
+            cone.position.y = status.machine.position.work.y
+            cone.position.z = status.machine.position.work.z
           }
         }
       }
@@ -677,36 +702,36 @@ function initSocket() {
         switch (status.machine.inputs[i]) {
           case 'X':
             // console.log('PIN: X-LIMIT');
-            $('#xpin').removeClass('success').addClass('alert').html('TRIGGERED')
+            $('.xpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'Y':
             // console.log('PIN: Y-LIMIT');
-            $('#ypin').removeClass('success').addClass('alert').html('TRIGGERED')
+            $('.ypin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'Z':
             // console.log('PIN: Z-LIMIT');
-            $('#zpin').removeClass('success').addClass('alert').html('TRIGGERED')
+            $('.zpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'P':
             // console.log('PIN: PROBE');
-            $('#prbpin').removeClass('success').addClass('alert').html('TRIGGERED')
+            $('.prbpin').removeClass('success').addClass('alert').html('TRIGGERED')
             break;
           case 'D':
             // console.log('PIN: DOOR');
-            $('#doorpin').removeClass('success').addClass('alert').html('DOOR OPEN')
+            $('.doorpin').removeClass('success').addClass('alert').html('DOOR OPEN')
 
             break;
           case 'H':
             // console.log('PIN: HOLD');
-            $('#holdpin').removeClass('success').addClass('alert').html('HOLD/DOOR:ON')
+            $('.holdpin').removeClass('success').addClass('alert').html('HOLD/DOOR:ON')
             break;
           case 'R':
             // console.log('PIN: SOFTRESET');
-            $('#resetpin').removeClass('success').addClass('alert').html('RST:ON')
+            $('.resetpin').removeClass('success').addClass('alert').html('RST:ON')
             break;
           case 'S':
             // console.log('PIN: CYCLESTART');
-            $('#startpin').removeClass('success').addClass('alert').html('START:ON')
+            $('.startpin').removeClass('success').addClass('alert').html('START:ON')
             break;
         }
       }
@@ -877,7 +902,7 @@ function initSocket() {
 
   socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
-    populateGrblBuilderToolForm();
+    openFlashingTool();
     var select = $("#flashController").data("select").val("interface")
     //status.interface.firmware.installedVersion
     //status.interface.firmware.availVersion
@@ -935,15 +960,39 @@ function initSocket() {
 
 };
 
-function selectPort() {
+function selectPort(port) {
   $('#consoletab').click();
-  socket.emit('connectTo', 'usb,' + $("#portUSB").val() + ',' + '115200');
+  if (port == undefined) {
+    port = $("#portUSB").val()
+  }
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(port)) {
+    var data = {
+      ip: port,
+      port: false,
+      baud: false,
+      type: "telnet"
+    };
+    localStorage.setItem("lastip", port);
+  } else {
+    var data = {
+      port: port,
+      baud: 115200,
+      type: "usb"
+    };
+  }
+  if (port.length > 1) {
+    socket.emit('connectTo', data);
+  } else {
+    printLog("[connect] No Ports/IP selected/entered")
+  }
+  // socket.emit('connectTo', 'usb,' + $("#portUSB").val() + ',' + '115200');
 };
 
 function closePort() {
   socket.emit('closePort', 1);
   populatePortsMenu();
-  $('.mdata').val('');
+  $('#controlTab').click();
+  $('#consoletab').click();
 }
 
 function populateDrivesMenu() {
@@ -982,26 +1031,45 @@ function populateDrivesMenu() {
 
 function populatePortsMenu() {
   if (laststatus) {
-    var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Ports">`
-    for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
-      var port = friendlyPort(i)
-      response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
-    };
+    var response = ``
     if (!laststatus.comms.interfaces.ports.length) {
-      response += `<option value="">Waiting for USB</option>`
-      $("#driverBtn").show();
+      response += `<optgroup label="USB/Serial Ports">`
+      response += `<option value="">No USB/Serial Ports</option>`
     } else {
-      $("#driverBtn").hide();
+      response += `<optgroup label="USB Ports">`
+      for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
+        var port = friendlyPort(i)
+        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
+      };
     }
-    response += `</optgroup></select>`
-    var select = $("#portUSB").data("select");
-    select.data(response);
+    response += `</optgroup>`
+
+    // Set USB Ports menu for Firmware Flashing tool before we add the Network ports - you cannot flash over the network
     var select2 = $("#portUSB2").data("select");
     if (select2) {
       select2.data(response);
     }
-    $('#portUSB').parent(".select").removeClass('disabled')
     $('#portUSB2').parent(".select").removeClass('disabled')
+
+    // Add the Network Ports to the list then populate the Machine Connection selection
+    // if (!laststatus.comms.interfaces.networkDevices.length) {
+    //   response += `<optgroup label="Network Ports">`
+    //   response += `<option value="">No Network Ports</option>`
+    // } else {
+    //   response += `<optgroup label="Network Ports">`
+    //   for (i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
+    //     if (laststatus.comms.interfaces.networkDevices[i].type) {
+    //       response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
+    //     } else {
+    //       response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + `</option>`;
+    //     }
+    //   };
+    // }
+    // response += `</optgroup>`
+    var select = $("#portUSB").data("select");
+    select.data(response);
+
+    $('#portUSB').parent(".select").removeClass('disabled')
     $("#connectBtn").attr('disabled', false);
   }
 }

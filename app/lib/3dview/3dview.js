@@ -188,15 +188,14 @@ function sim() {
   } else {
     if (!disable3Drealtimepos) {
       $("#conetext").show();
-      cone.visible = true
       if (simIdx == 0) {
         var posx = object.userData.linePoints[0].x; //- (sizexmax/2);
         var posy = object.userData.linePoints[0].y; //- (sizeymax/2);
-        var posz = object.userData.linePoints[0].z + 20;
+        var posz = object.userData.linePoints[0].z;
       } else {
         var posx = object.userData.linePoints[simIdx - 1].x; //- (sizexmax/2);
         var posy = object.userData.linePoints[simIdx - 1].y; //- (sizeymax/2);
-        var posz = object.userData.linePoints[simIdx - 1].z + 20;
+        var posz = object.userData.linePoints[simIdx - 1].z;
       }
 
       cone.position.x = posx;
@@ -204,9 +203,9 @@ function sim() {
       cone.position.z = posz;
       cone.material = new THREE.MeshPhongMaterial({
         color: 0x28a745,
-        specular: 0x0000ff,
+        specular: 0x08701f,
         shininess: 100,
-        opacity: 0.9,
+        opacity: 0.6,
         transparent: true
       })
     }
@@ -264,7 +263,7 @@ function runSim() {
         ease: Linear.easeNone,
         x: posx,
         y: posy,
-        z: posz + 20,
+        z: posz,
         onComplete: function() {
           if (simRunning == false) {
             //return
@@ -311,11 +310,15 @@ function simstop() {
   // timefactor = 1;
   $('#simspeedval').text(timefactor);
   editor.gotoLine(0)
-  if (!disable3Drealtimepos) {
-    cone.visible = false;
-  }
   $("#conetext").hide();
   clearSceneFlag = true;
+  cone.material = new THREE.MeshPhongMaterial({
+    color: 0x0000ff,
+    specular: 0x0000ff,
+    shininess: 100,
+    opacity: 0.6,
+    transparent: true
+  })
 }
 
 function simAnimate() {

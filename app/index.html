@@ -19,9 +19,13 @@
   <body>
 
     <div class="pos-fixed pos-center" id="splash">
-      <div id="splashAd" style="display:none"></div>
-      <br>
-      <center>Starting&nbsp;OpenBuilds&nbsp;CONTROL...</center>
+      <center>
+        <div id="openbuildslogosplash" style="display: none;">
+          <img src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" />
+          <p>
+            <h1>OpenBuilds&reg;&nbsp;CONTROL</h1>
+        </div>
+      </center>
     </div>
 
 
@@ -159,9 +163,11 @@
                     <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" data-role="select" data-filter="false" id="portUSB" disabled>
                       <option value="">Waiting for USB</option>
                     </select>
+
                     <button class="button small success float-right" onclick="selectPort()" id="connectBtn" type="button" style="margin: 5px;" disabled>Connect</button>
-                    <button class="button alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button" style="margin: 5px;">Disconnect</button>
-                    <button class="button small secondary disabled" disabled style="display:none;" id="flashBtn" type="button" style="margin: 5px;">please wait...</button>
+                    <button class="button small alert" style="display:none;" onclick="closePort()" id="disconnectBtn" type="button" style="margin: 5px;">Disconnect</button>
+                    <button class="button small secondary disabled" disabled style="display:none;" id="flashBtn" type="button" style="margin: 5px;">Flashing: please wait...</button>
+
                     <div class="ribbon-group" id="grblButtons">
                       <hr>
                       <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
@@ -205,7 +211,7 @@
 
 
 
-              <div class="group">
+              <div class="group" id="controlBtnGrp">
 
 
                 <button id="runBtn" class="ribbon-button" onclick="runJobFile()" title="Run a Job">
@@ -360,7 +366,7 @@
                     <li class="divider fg-gray"></li>
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Keyboard Shortcuts</a></li>
                     <li class="divider fg-gray"></li>
-                    <li onclick="populateGrblBuilderToolForm();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
+                    <li onclick="openFlashingTool();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
                     <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
@@ -929,30 +935,30 @@
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus xpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Y-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus ypin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Z-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus zpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Probe</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus prbpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Door Sensor</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus doorpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Buttons</td>
                           <td class="pt-1 mt-0 pb-0 pt-0">
-                            <span class="tally alert pinstatus" id="startpin">NOCOMM</span>
-                            <span class="tally alert pinstatus" id="holdpin">NOCOMM</span>
-                            <span class="tally alert pinstatus" id="resetpin">NOCOMM</span>
+                            <span class="tally alert pinstatus startpin">NOCOMM</span>
+                            <span class="tally alert pinstatus holdpin">NOCOMM</span>
+                            <span class="tally alert pinstatus resetpin">NOCOMM</span>
                           </td>
                         </tr>
                       </tbody>
@@ -1194,98 +1200,7 @@
 
     <div id="hiddendivs" style="display:none;">
 
-      <div class="dialog dark" data-role="dialog" id="grblFlashDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
-        <div class="dialog-title"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</div>
-        <div class="dialog-content" style="height: calc(100% - 100px);">
 
-          <div id="FlashDialogMsg"></div>
-
-          <p class="text-small mb-4">You can use this wizard to flash Firmware onto compatible controllers<br>Only use with care, or when instructed by Support</p>
-
-          <div class="row">
-            <div class="cell-md-4 mb-1">
-              Controller Type
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="flashController" data-editable="true">
-                <option value="interface">OpenBuilds Interface</option>
-                <option value="uno" selected>OpenBuilds BlackBox 4X</option>
-                <option value="xprov4">Spark Concepts xPro v3/4</option>
-                <option value="uno">Arduino Uno</option>
-                <option value="nano">Arduino Nano</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" id="flash-tool-interface-fw-row" style="display: none;">
-            <div class="cell-md-4 mb-1">
-              Firmware Version
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="interfaceFirmwareVer" data-editable="true">
-                <option value="online">Latest available version</option>
-                <option value="custom">Custom: firmware binary file</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" id="flash-tool-machine-row">
-            <div class="cell-md-4 mb-1">
-              Machine Style
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
-                <option value="3axes">3 Axes</option>
-                <option value="2axes">2 Axes</option>
-                <option value="servo">2 Axes + RC Servo</option>
-                <option value="custom">Custom: firmware hex file</option>
-              </select>
-            </div>
-          </div>
-          <div class="row" id="flash-tool-door-row">
-            <div class="cell-md-4 mb-1">
-              Door Interlock
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-role="select" data-prepend="&nbsp;<i class='fas fa-door-open'></i>" data-role="select" data-filter="false" id="grblDoorEnable" data-editable="true">
-                <option value="nodoor">Disable Door Interlock</option>
-                <option value="opendoor">Door Interlock (Normally Open Switch)</option>
-                <option value="closeddoor">Door Interlock (Normally Closed Switch)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="cell-md-4 mb-1">
-              Port
-            </div>
-            <div class="cell-md-8 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="portUSB2" disabled data-editable="true">
-                <option value="">Waiting for USB</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" id="flash-tool-custom-row" style="display: none;">
-            <div class="cell-md-4 mb-1">
-              Firmware Image
-            </div>
-            <div class="cell-md-8 mb-1">
-              <form id="customFirmwareForm" enctype="multipart/form-data">
-                <button class="button alert shadow btn-file" action="#"><input class="btn-file" id="firmwareBin" type="file" accept=".bin, .hex" name="firmwareBin" /><i class="far fa-folder-open fa-fw"></i> Use custom firmware image</button>
-                <br>
-                <small id="customFirmwareSet"></small>
-              </form>
-            </div>
-          </div>
-
-
-        </div>
-        <div class="dialog-actions">
-          <button class="button success js-dialog-close" onclick="flashFirmwarefromWizard()">Flash</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
 
       <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
@@ -1417,14 +1332,17 @@
       <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title">Update Ready</div>
         <div class="dialog-content">
-          Updated version <code><span id="availVersion">1.0.100</span></code> has finished downloading and is ready to be installed!<br> Note that proceeding will:
-          <ul>
-            <li>Stop any running jobs</li>
-            <li>Shut down this instance of OpenBuilds CONTROL</li>
-            <li>Launch the installer for the new version</li>
-          </ul>
+          OpenBuilds-CONTROL v<span id="availVersion">1.0.100</span> has finished downloading and is ready to be installed!<br>
+          <small>Note that proceeding will:
+            <ul>
+              <li>Stop any running jobs</li>
+              <li>Shut down this instance of OpenBuilds CONTROL</li>
+              <li>Launch the installer for the new version</li>
+            </ul>
+          </small>
           <small>You may want to wait until your machine is idle, and it it's a convenient time for you to do this, before continuing</small>
-          <small id="changelogupdate"></small>
+          <p id="changelogupdate" class="text-small"></p>
+          This release has already been downloaded <span id="releaseStats">several</span> times since its release on <span id="releaseDate"></span>
         </div>
         <div class="dialog-actions ">
           <button class="button js-dialog-close">Not right now (snooze for 1hr)</button>
@@ -1757,7 +1675,7 @@
 
         </div>
         <div class="dialog-actions ">
-          <button class="button" disabled>please wait..</button>
+          <button class="button" disabled>please wait...</button>
 
         </div>
       </div>
@@ -1813,8 +1731,13 @@
   <script type="text/javascript" src="js/main.js"></script>
   <script type="text/javascript" src="js/updates.js"></script>
   <script type="text/javascript" src="js/ui.js"></script>
+
+  <script type="text/javascript" src="js/grbl-settings-defaults.js"></script>
+  <script type="text/javascript" src="js/grbl-settings-templates.js"></script>
+  <script type="text/javascript" src="js/grbl-settings.js"></script>
+
   <script type="text/javascript" src="js/websocket.js"></script>
-  <script type="text/javascript" src="js/grblsettings.js"></script>
+
   <script type="text/javascript" src="js/metroactions.js"></script>
   <script type="text/javascript" src="js/jog.js"></script>
   <script type="text/javascript" src="js/servo.js"></script>
@@ -1825,7 +1748,7 @@
 
   <script type="text/javascript" src="lib/3dview/3dview.js"></script>
 
-  <script type="text/javascript" src="js/grbl-defaults.js"></script>
+
 
   <!-- Wizards -->
   <script type="text/javascript" src="wizards/calibration/calibrate.js"></script>
@@ -1839,7 +1762,8 @@
 
   <script type="text/javascript" src="wizards/surfacing/surfacing.js"></script>
 
-  <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script>
+  <!-- <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script> -->
+  <script type="text/javascript" src="wizards/flashingtool2/flashingtool.js"></script>
 
   <script type="text/javascript" src="wizards/interface/usbprep.js"></script>
 

@@ -493,7 +493,7 @@ function runProbeNew() {
     G0 X` + (xoffset - 2).toFixed(3) + `
     `
 
-
+    socket.off('prbResult'); // Disable old listeners
     socket.emit('runJob', {
       data: xmacro,
       isJob: false,
@@ -518,6 +518,7 @@ function runProbeNew() {
     G10 P0 L20 Y` + yoffset + ` ; set Y as offset and half endmill diameter
     G0 Y` + (yoffset - 2).toFixed(3) + `
     `
+    socket.off('prbResult'); // Disable old listeners
     socket.emit('runJob', {
       data: ymacro,
       isJob: false,
@@ -543,6 +544,7 @@ function runProbeNew() {
     $J=G91G21Z5F1000 ; retract
     `
 
+    socket.off('prbResult'); // Disable old listeners
     socket.emit('runJob', {
       data: zmacro,
       isJob: false,
@@ -571,6 +573,7 @@ function runProbeNew() {
     $J=G91G21Z5F1000 ; retract
     `
 
+    socket.off('prbResult'); // Disable old listeners
     socket.emit('runJob', {
       data: zmacro,
       isJob: false,
@@ -624,6 +627,8 @@ function runProbeNew() {
       G0 X0 Y0 ; return
       `
     }
+
+    socket.off('prbResult'); // Disable old listeners
     socket.emit('runJob', {
       data: xyzmacro,
       isJob: false,

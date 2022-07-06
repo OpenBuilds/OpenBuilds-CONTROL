@@ -4,9 +4,6 @@ var editor;
 var isJogWidget = false;
 var lastJobStartTime = false;
 
-// Load this early on
-$("#splashAd").html(`<img src="http://openbuilds.com/uploadfiles/control/splash.png?date=` + new Date().getTime() + `" onerror="this.onerror=null;this.src='splashicon.png';showAndHideSplash()" style="display:block; margin:auto;" onload="showAndHideSplash()" />`)
-
 function setWindowTitle(status) {
 
   var string = "OpenBuilds CONTROL"
@@ -31,13 +28,34 @@ function setWindowTitle(status) {
 
 }
 
-// splash screen ad-fade-in, and fade out after
-function showAndHideSplash() {
-  $('#splashAd').fadeIn(50)
-  setTimeout(function() {
-    $('#splash').fadeOut(200);
-  }, 1000)
+
+function getReleaseStats() {
+  var url = "https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest";
+  $.getJSON(url, function(data) {
+    console.log(data)
+    var assets = data.assets;
+    var downloadCount = 0
+    for (i = 0; i < assets.length; i++) {
+      if (assets[i].name.indexOf("exe") != -1) {
+        downloadCount = downloadCount + assets[i].download_count;
+      }
+      if (assets[i].name.indexOf("dmg") != -1) {
+        downloadCount = downloadCount + assets[i].download_count;
+      }
+      if (assets[i].name.indexOf("zip") != -1) {
+        downloadCount = downloadCount + assets[i].download_count;
+      }
+      if (assets[i].name.indexOf("AppImage") != -1) {
+        downloadCount = downloadCount + assets[i].download_count;
+      }
+    }
+    console.log("Latest version has already been installed " + downloadCount + " times")
+    $("#releaseStats").html(downloadCount)
+    $("#releaseDate").html(data.published_at.split("T")[0])
+  });
+
 }
+
 
 function getChangelog() {
 

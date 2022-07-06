@@ -78,7 +78,7 @@ function showJobLog() {
     clsDialog: 'dark',
     actions: [{
         caption: "Close",
-        cls: "js-dialog-close alert",
+        cls: "js-dialog-close",
         onclick: function() {
           //
         }

@@ -1,3 +1,6 @@
+v1.0.324: Reverted to classic Grbl Settings layout, added more Grbl settings parameters, fixed bug in Firmware upload tool, changed Position Cone to be Always Visible, Added 3D view representation of Machine Coordinate space
+v1.0.323: Fixed Probe abort bug #248, Fixed Sim Cone bug #245, Updated Firmware Flashing tool
+v1.0.322: Telnet support, Re-worded update dialog and added Release statistics
 v1.0.319/320/321: Fix F5 Memory leak bug (public beta), Cleanup old unused libraries from source tree to decrease installer download time and installed disk usage
 v1.0.318: Improvements to Grbl Settings tab (cosmetics and functionality), Improved clearAlarm and Stop backend functionality, Removed Fabber and Carveco adbuttons from main toolbar, Added STL loader for issue #26, Cosmetic improvements and updated graphics for Probe Wizard, Fixed consistent button alignment of modal popups, added Cancel button to Servo calibration wizard, decoupled Probe Jog widget for re-use in other macros, Added Popup warning if job file contains G53 moves but machine has not been homed, Improved Machine Profiles
 v1.0.317: Fix Probe dialog bug introduced in 1.0.316. Please update to 1.0.317 to resolve

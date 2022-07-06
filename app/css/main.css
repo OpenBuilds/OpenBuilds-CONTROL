@@ -48,7 +48,7 @@ body {
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
   box-shadow: 0 0 2px 2px #ddd;
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 
 #renderArea {
@@ -58,7 +58,7 @@ body {
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
   box-shadow: 0 0 2px 2px #ddd;
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 
 #editor {
@@ -86,7 +86,7 @@ body {
   overflow-y: auto;
   overflow-x: none;
   text-align: left;
-  background-color: #fff;
+  /* background-color: #fff; */
   box-shadow: 0 0 2px 2px #ddd;
   padding: 0px;
   font-size: 12px;
@@ -166,24 +166,24 @@ select {
 
 /* OpenBuilds Navbar for MetroWindows */
 .fg-openbuilds {
-  color: rgb(74, 78, 81) !important;
+  color: rgb(64, 68, 71) !important;
 }
 
 .bg-openbuilds {
-  background-color: rgb(74, 78, 81) !important;
+  background-color: rgb(64, 68, 71) !important;
 }
 
 .bd-openbuilds {
-  border-color: rgb(74, 78, 81) !important;
+  border-color: rgb(64, 68, 71) !important;
 }
 
 .openbuilds-switch .check::after {
-  background: rgb(74, 78, 81) !important;
-  border-color: rgb(74, 78, 81) !important;
+  background: rgb(64, 68, 71) !important;
+  border-color: rgb(64, 68, 71) !important;
 }
 
 .openbuilds-switch input[type="checkbox"]:checked~.check {
-  background: rgb(74, 78, 81) !important;
+  background: rgb(64, 68, 71) !important;
 }
 
 .openbuilds-switch input[type="checkbox"]:checked~.check::after {
@@ -204,7 +204,7 @@ select {
 #splash {
   z-index: 2000;
   padding: 1000px;
-  background-color: #fff
+  /* background-color: #fff */
 }
 
 .macroedit {
@@ -263,4 +263,8 @@ select {
 
 .machineicon:hover {
   color: #CE352C !important;
+}
+
+#splash {
+  background-image: linear-gradient(to top, #888888, #ffffff, #888888);
 }

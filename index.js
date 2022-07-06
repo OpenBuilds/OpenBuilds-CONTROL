@@ -27,7 +27,7 @@ debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 var config = {};
 config.webPort = process.env.WEB_PORT || 3000;
 config.posDecimals = process.env.DRO_DECIMALS || 2;
-config.grblWaitTime = 1;
+config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
 
 var express = require("express");
@@ -45,6 +45,8 @@ const join = require('path').join;
 var mkdirp = require('mkdirp');
 const drivelist = require('drivelist');
 require('hazardous');
+
+
 
 app.use(express.static(path.join(__dirname, "app")));
 //app.use(express.limit('200M'));
@@ -96,11 +98,18 @@ io.attach(httpserver);
 io.attach(httpsserver);
 
 const grblStrings = require("./grblStrings.js");
+
+// Serial
 const serialport = require('serialport');
 var SerialPort = serialport;
 const Readline = SerialPort.parsers.Readline;
-var md5 = require('md5');
+
+// telnet
+const net = require('net');
 var ip = require("ip");
+const Evilscan = require('evilscan');
+
+var md5 = require('md5');
 var _ = require('lodash');
 var formidable = require('formidable')
 var lastsentuploadprogress = 0;
@@ -280,7 +289,7 @@ function checkPowerSettings() {
           debug_log('powercfg /q exited with exit code ' + code);
           setTimeout(function() {
             debug_log(status.driver.powersettings.usbselectiveDC, status.driver.powersettings.usbselectiveAC)
-          }, 200);
+          }, 100);
         })
       }
     });
@@ -289,7 +298,7 @@ function checkPowerSettings() {
 }
 
 
-var oldportslist;
+var oldportslist, oldiplist;
 var oldpinslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
@@ -415,7 +424,9 @@ var status = {
     paused: false,
     controllerBuffer: 0, // Seems like you are tracking available buffer?  Maybe nice to have in frontend?
     interfaces: {
+      type: "",
       ports: "",
+      networkDevices: [],
       activePort: "" // or activeIP in the case of wifi/telnet?
     },
     alarm: ""
@@ -470,10 +481,14 @@ var PortCheckinterval = setInterval(function() {
   findDisks();
 }, 1000);
 
+// var telnetCheckinterval = setInterval(function() {
+//   if (status.comms.connectionStatus == 0) {
+//     scanForTelnetDevices();
+//   }
+// }, 30000);
+// scanForTelnetDevices();
+
 checkPowerSettings()
-// var PowerSettingsInterval = setInterval(function() {
-//   checkPowerSettings()
-// }, 60 * 1000)
 
 
 // JSON API
@@ -508,7 +523,7 @@ app.get('/activate', (req, res) => {
   }
   setTimeout(function() {
     io.sockets.emit('activate', req.hostname);
-  }, 1500);
+  }, 500);
 })
 
 // Upload
@@ -662,6 +677,10 @@ io.on("connection", function(socket) {
     io.sockets.emit("status", status);
   }, 100);
 
+  socket.on("scannetwork", function(data) {
+    scanForTelnetDevices()
+  })
+
   socket.on("openbuilds", function(data) {
     const {
       shell
@@ -703,7 +722,6 @@ io.on("connection", function(socket) {
     } = require('electron')
     shell.openExternal('https://cam.openbuilds.com')
   });
-
 
   socket.on("opendocs", function(data) {
     const {
@@ -759,7 +777,7 @@ io.on("connection", function(socket) {
   socket.on("flashGrbl", function(data) {
 
     var port = data.port;
-    var file = data.file;
+    var firmwareImagePath = data.file;
     var board = data.board
     var customImg = data.customImg
     if (customImg) {
@@ -813,6 +831,17 @@ io.on("connection", function(socket) {
         status.comms.connectionStatus = 0;
       });
     }, 1000)
+  })
+
+  socket.on("flashGrblHal", function(data) {
+    if (status.comms.connectionStatus > 0) {
+      debug_log('WARN: Closing Port ' + port);
+      stopPort();
+    } else {
+      debug_log('ERROR: Machine connection not open!');
+    }
+    console.log(JSON.stringify(data), null, 4);
+    flashGrblHal(data)
   })
 
   socket.on("flashInterface", function(data) {
@@ -900,19 +929,26 @@ io.on("connection", function(socket) {
         }
         io.sockets.emit('data', output);
       }
-    }, 1000);
+    }, 500);
   });
 
   socket.on("connectTo", function(data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
 
     if (status.comms.connectionStatus < 1) {
-      data = data.split(",");
-      console.log("Connecting via " + data[0] + " to " + data[1] + " at baud " + data[2]);
 
-      port = new SerialPort(data[1], {
-        baudRate: parseInt(data[2]),
-        hupcl: false // Don't set DTR - useful for X32 Reset
-      });
+      if (data.type == "usb") {
+        console.log("connect", "Connecting to " + data.port + " via " + data.type);
+        port = new SerialPort(data.port, {
+          baudRate: parseInt(data.baud),
+          hupcl: false // Don't set DTR - useful for X32 Reset
+        });
+      } else if (data.type == "telnet") {
+        console.log("connect", "Connecting to " + data.ip + " via " + data.type);
+        port = net.connect(23, data.ip);
+        port.isOpen = true;
+      }
+
+
 
       parser = port.pipe(new Readline({
         delimiter: '\r\n'
@@ -944,7 +980,26 @@ io.on("connection", function(socket) {
       });
 
 
-      port.on("open", function() {
+      port.on("ready", function(e) {
+        portOpened(port, data)
+      });
+
+      port.on("open", function(e) {
+        portOpened(port, data)
+      });
+
+      port.on("close", function() { // open errors will be emitted as an error event
+        debug_log("PORT INFO: Port closed");
+        var output = {
+          'command': 'disconnect',
+          'response': "PORT INFO: Port closed",
+          'type': 'info'
+        }
+        io.sockets.emit('data', output);
+        status.comms.connectionStatus = 0;
+      }); // end port.onclose
+
+      function portOpened(port, data) {
         debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
           'command': 'connect',
@@ -1048,10 +1103,18 @@ io.on("connection", function(socket) {
               io.sockets.emit('data', output);
               stopPort();
             } else {
-              var output = {
-                'command': 'connect',
-                'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + port.path,
-                'type': 'success'
+              if (data.type == "usb") {
+                var output = {
+                  'command': 'connect',
+                  'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + port.path,
+                  'type': 'success'
+                }
+              } else if (data.type = "telnet") {
+                var output = {
+                  'command': 'connect',
+                  'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + data.ip,
+                  'type': 'success'
+                }
               }
               io.sockets.emit('data', output);
             }
@@ -1060,20 +1123,16 @@ io.on("connection", function(socket) {
 
 
         status.comms.connectionStatus = 2;
-        status.comms.interfaces.activePort = port.path;
-        status.comms.interfaces.activeBaud = port.baudRate;
-      }); // end port .onopen
-
-      port.on("close", function() { // open errors will be emitted as an error event
-        debug_log("PORT INFO: Port closed");
-        var output = {
-          'command': 'disconnect',
-          'response': "PORT INFO: Port closed",
-          'type': 'info'
+        if (data.type == "usb") {
+          status.comms.interfaces.activePort = port.path;
+          status.comms.interfaces.type = data.type
+          status.comms.interfaces.activeBaud = port.baudRate;
+        } else if (data.type = "telnet") {
+          status.comms.interfaces.activePort = data.ip;
+          status.comms.interfaces.type = data.type
+          status.comms.interfaces.activeBaud = "net";
         }
-        io.sockets.emit('data', output);
-        status.comms.connectionStatus = 0;
-      }); // end port.onclose
+      }
 
       parser.on("data", function(data) {
         //console.log(data)
@@ -1398,9 +1457,6 @@ io.on("connection", function(socket) {
               break;
           }
         }
-
-
-
 
 
         if (command) {
@@ -1902,6 +1958,11 @@ io.on("connection", function(socket) {
     }
   });
 
+  socket.on("refreshTelnetDevices", function(data) {
+    scanForTelnetDevices();
+  });
+
+
 });
 
 function readFile(filePath) {
@@ -2021,6 +2082,7 @@ function runJob(object) {
 
 function stopPort() {
   clearInterval(queueCounter);
+  clearInterval(statusLoop);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -2030,7 +2092,13 @@ function stopPort() {
   status.machine.firmware.buffer = "";
   gcodeQueue.length = 0;
   sentBuffer.length = 0; // dump bufferSizes
-  port.drain(port.close());
+  // port.drain(port.close());
+
+  if (status.comms.interfaces.type == "usb") {
+    port.drain(port.close());
+  } else if (status.comms.interfaces.type == "telnet") {
+    port.destroy();
+  }
 }
 
 function parseFeedback(data) {
@@ -2051,7 +2119,7 @@ function parseFeedback(data) {
   } else if (state == "Hold:0") {
     pause();
   }
-  if (status.machine.firmware.type == "grbl") {
+  if (status.machine.firmware.type == "grbl" || status.machine.firmware.type == "grblhal") {
     // Extract work offset (for Grbl > 1.1 only!)
     var startWCO = data.search(/wco:/i) + 4;
     var wco;
@@ -3214,5 +3282,160 @@ function flashInterface(data) {
 }
 // end Interface Programming
 
+function flashGrblHal(data) {
+
+  console.log(JSON.stringify(data))
+
+  status.comms.connectionStatus = 6;
+
+  var port = data.port;
+  var file = data.file;
+  var customImg = data.customImg
+
+  if (customImg == true) {
+    var firmwarePath = firmwareImagePath
+  } else {
+    var firmwarePath = path.join(__dirname, file)
+  }
+
+  console.log("Flashing BlackBoxX32 on " + port + " with file: " + path.resolve(firmwarePath))
+
+  var data = {
+    'port': port,
+    'string': "[Starting...]"
+  }
+  io.sockets.emit("progStatus", data);
+
+  var esptool_opts = [
+    '--port', port,
+    '--baud', '460800',
+    '--before', 'default_reset',
+    '--after', 'hard_reset',
+    '--chip', 'esp32',
+    'write_flash',
+    '--flash_mode', 'dio',
+    '--flash_size', 'detect',
+    '--flash_freq', '40m',
+    '0x1000', path.join(__dirname, "./grblhal-bootloader.bin"),
+    '0x8000', path.join(__dirname, "./grblhal-partition-table.bin"),
+    '0x10000', path.resolve(firmwarePath)
+  ];
+
+  if (process.platform != 'win32') {
+    fs.chmodSync(path.join(__dirname, "./esptool.py"), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py"), esptool_opts);
+  } else if (process.platform == 'win32') {
+    var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
+  }
+
+
+
+
+  child.stdout.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.stderr.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.on('close', (code) => {
+    var data = {
+      'port': port,
+      'string': `[exit:` + code + `]`,
+      'code': code
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 0;
+
+  });
+}
+// end BlackBoxX32 Programming
+
+
+// LAN Scanner for BlackBox X32, Interface, SwitchBlox etc //
+function scanForTelnetDevices() {
+  var localNetwork = ip.address().split('.');
+  var network = localNetwork[0] + '.' + localNetwork[1] + '.' + localNetwork[2];
+  var range = network + ".1-" + network + ".254"
+
+  var networkDevices = []
+  oldiplist = status.comms.interfaces.networkDevices;
+  const options = {
+    target: range,
+    port: '23',
+    status: 'TROU', // Timeout, Refused, Open, Unreachable
+    banner: true
+  };
+
+  new Evilscan(options, (err, scan) => {
+
+    if (err) {
+      //console.log(err);
+      return;
+    }
+
+    scan.on('result', data => {
+      // fired when item is matching options
+      //console.log(data);
+      if (data.status == "open") {
+        var type = false;
+        if (data.banner.indexOf("GrblHAL") != -1) {
+          type = "grblHAL"
+        } else if (data.banner.indexOf("Grbl") != -1) {
+          type = "grbl"
+        }
+        networkDevices.push({
+          ip: data.ip,
+          type: type,
+          banner: data.banner
+        })
+      }
+
+    });
+
+    scan.on('error', err => {
+      //throw new Error(data.toString());
+    });
+
+    scan.on('done', () => {
+      // finished !
+      networkDevices.sort((a, b) => {
+        return a.ip.split('.')[3] - b.ip.split('.')[3];
+      });
+      status.comms.interfaces.networkDevices = networkDevices;
+      if (!_.isEqual(status.comms.interfaces.networkDevices, oldiplist)) {
+        var newTelnetPorts = _.differenceWith(status.comms.interfaces.networkDevices, oldiplist, _.isEqual)
+        if (newTelnetPorts.length > 0) {
+          debug_log("Detected new device: " + newTelnetPorts[0].ip);
+        }
+        var removedTelnetPorts = _.differenceWith(oldiplist, status.comms.interfaces.networkDevices, _.isEqual)
+        if (removedTelnetPorts.length > 0) {
+          debug_log("No longer detecting device: " + removedTelnetPorts[0].ip);
+        }
+      }
+      oldiplist = status.comms.interfaces.networkDevices;
+    });
+
+    scan.run();
+  });
+}
+// end LAN Scanner
 
 process.on('exit', () => debug_log('exit'))
