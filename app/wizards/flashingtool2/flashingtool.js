@@ -33,7 +33,7 @@ function openFlashingTool() {
     <p class="small mb-4">You can use this wizard to flash Firmware onto compatible controllers. Only use with care, or when instructed by Support</p>
     <ul data-role="tabs" data-expand="true">
       <li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png"> BlackBox 4X</a></li>
-      <li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png"> BlackBox X32</a></li>
+      <!-- li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png"> BlackBox X32</a></li -->
       <li><a href="#" onclick="flashToolBoard('interfacev1');"><img src="/wizards/flashingtool2/img/interfacev1-icon.png"> Interface</a></li>
     </ul>
 
