@@ -1,3 +1,4 @@
+v1.0.325: Updated Electron-builder backend
 v1.0.324: Reverted to classic Grbl Settings layout, added more Grbl settings parameters, fixed bug in Firmware upload tool, changed Position Cone to be Always Visible, Added 3D view representation of Machine Coordinate space
 v1.0.323: Fixed Probe abort bug #248, Fixed Sim Cone bug #245, Updated Firmware Flashing tool
 v1.0.322: Telnet support, Re-worded update dialog and added Release statistics
