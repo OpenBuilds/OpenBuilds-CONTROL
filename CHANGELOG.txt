@@ -1,3 +1,4 @@
+v1.0.329: Testing version for random start bug
 v1.0.327/8: Updated GHA compile environment dependencies
 v1.0.326: Reverted to classic Grbl Settings layout, added more Grbl settings parameters, fixed bug in Firmware upload tool,
 v1.0.325: Updated Electron-builder backend

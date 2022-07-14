@@ -226,13 +226,33 @@ function runJobFile() {
     // Add any event handlers here...
     xhr.open('POST', '/runjob', true);
     xhr.send(formData);
+    printLog(`<span class="fg-red">[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE File (from memory) sent to backend </span>`);
 
   } else {
-    socket.emit('runJob', {
-      data: editor.getValue(),
-      isJob: true,
-      fileName: loadedFileName
+    // v1.0.329 Removed as a test for random issue with Websocket Disconnects on some files, using http post for both
+    // socket.emit('runJob', {
+    //   data: editor.getValue(),
+    //   isJob: true,
+    //   fileName: loadedFileName
+    // });
+    var formData = new FormData();
+    var blob = new Blob([editor.getValue()], {
+      type: 'text/plain'
     });
+
+    var fileOfBlob = new File([blob], 'upload.gcode');
+    formData.append("file", fileOfBlob);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        console.log(xhr.response)
+      }
+    };
+    // Add any event handlers here...
+    xhr.open('POST', '/runjob', true);
+    xhr.send(formData);
+    printLog(`<span class="fg-red">[ GCODE Parser ]</span><span class='fg-darkGray'> GCODE File (from gcode editor) sent to backend </span>`);
+
   }
 
   lastJobStartTime = new Date().getTime()
