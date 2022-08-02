@@ -753,7 +753,7 @@ class ESPLoader(object):
         # stub takes the new baud rate and the old one
         second_arg = self._port.baudrate if self.IS_STUB else 0
         self.command(self.ESP_CHANGE_BAUDRATE, struct.pack('<II', baud, second_arg))
-        print("Changed.")
+        print("Changed baud rate to %d successfully" % baud)
         self._set_port_baudrate(baud)
         time.sleep(0.05)  # get rid of crap sent during baud rate change
         self.flush_input()
