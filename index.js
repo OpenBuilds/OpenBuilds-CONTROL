@@ -780,10 +780,11 @@ io.on("connection", function(socket) {
     var firmwareImagePath = data.file;
     var board = data.board
     var customImg = data.customImg
+    console.log(__dirname, file, data.file)
     if (customImg) {
       var firmwarePath = firmwareImagePath
     } else {
-      var firmwarePath = path.join(__dirname, file)
+      var firmwarePath = path.join(__dirname, data.file)
     }
 
     const Avrgirl = require('avrgirl-arduino');
