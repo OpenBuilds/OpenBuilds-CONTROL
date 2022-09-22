@@ -49,3 +49,4 @@ node_modules
 # Local settings #
 ##################
 .env
+package-lock.json
