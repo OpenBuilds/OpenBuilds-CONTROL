@@ -100,9 +100,8 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 
 // Serial
-const serialport = require('serialport');
 const { SerialPort } = require('serialport')
-const Readline = require('@serialport/parser-readline');
+const { ReadlineParser } = require('@serialport/parser-readline');
 
 // telnet
 const net = require('net');
@@ -914,7 +913,8 @@ io.on("connection", function(socket) {
 
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
-        port = new SerialPort(data.port, {
+        port = new SerialPort({
+          path: data.port,
           baudRate: parseInt(data.baud),
           hupcl: false // Don't set DTR - useful for X32 Reset
         });
@@ -924,9 +924,7 @@ io.on("connection", function(socket) {
         port.isOpen = true;
       }
 
-
-
-      parser = port.pipe(new Readline({
+      parser = port.pipe(new ReadlineParser({
         delimiter: '\r\n'
       }));
 
