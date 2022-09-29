@@ -148,6 +148,27 @@ function installFirmware(){
       board: "uno",
       customImg: false
       }
+  }else if($("#flashController").val()=="QuantumMini"){
+    var data = {
+        port: $("#portUSB2").val(),
+        file: "QuantumMini.hex",
+        board: "uno",
+        customImg: false
+        }
+  }else if($("#flashController").val()=="Quantum"){
+    var data = {
+        port: $("#portUSB2").val(),
+        file: "Quantum.hex",
+        board: "uno",
+        customImg: false
+        }
+  }else if($("#flashController").val()=="QuantumMax"){
+    var data = {
+        port: $("#portUSB2").val(),
+        file: "QuantumMax.hex",
+        board: "uno",
+        customImg: false
+        }
   }
 
 
