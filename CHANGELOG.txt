@@ -1,3 +1,4 @@
+v.0.0.45: Add Quantum flash files
 v.0.0.40: Open when you start app
 v.0.0.39: Add update from OBC code 3.0.314 to 1.0.317
           Fix mobile incremental jog
