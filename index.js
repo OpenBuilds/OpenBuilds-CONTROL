@@ -2996,7 +2996,7 @@ if (isElectron()) {
   }
 } else { // if its not running under Electron, lets get Chrome up.
   var isPi = require('detect-rpi');
-  if (isPi() && config.startChrome) {
+  if (isPi() && config.startChrome === true) {
     DEBUG = true;
     debug_log('Running on Raspberry Pi!');
     status.driver.operatingsystem = 'rpi'
