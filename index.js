@@ -25,8 +25,10 @@ process.on("uncaughtException", (err) => {
 debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
-config.webPort = process.env.WEB_PORT || 3000;
+config.httpPort = process.env.HTTP_PORT || 3000;
+config.httpsPort = process.env.HTTPS_PORT || 3001;
 config.posDecimals = process.env.DRO_DECIMALS || 2;
+config.startChrome = process.env.START_CHROME || true;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
 
@@ -86,12 +88,12 @@ var httpsOptions = {
   cert: fs.readFileSync(path.join(__dirname, 'fullchain1.pem'))
 };
 
-const httpsserver = https.createServer(httpsOptions, app).listen(3001, function() {
-  debug_log('https: listening on:' + ip.address() + ":3001");
+const httpsserver = https.createServer(httpsOptions, app).listen(config.httpsPort, function() {
+  debug_log(`https:  listening on: ${ip.address()}:${config.httpsPort}`);
 });
 
 const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
-  debug_log('http:  listening on:' + ip.address() + ":" + config.webPort);
+  debug_log(`http:  listening on: ${ip.address()}:${config.webPort}`);
 });
 
 io.attach(httpserver);
@@ -498,7 +500,7 @@ app.get('/api/version', (req, res) => {
   data = {
     "application": "OMD",
     "version": require('./package').version,
-    "ipaddress": ip.address() + ":" + config.webPort
+    "ipaddress": ip.address() + ":" + config.httpPort
   }
   res.send(JSON.stringify(data), null, 2);
 })
@@ -2879,7 +2881,7 @@ if (isElectron()) {
           appIcon.displayBalloon({
             icon: nativeImage.createFromPath(iconPath),
             title: "OpenBuilds CONTROL Started",
-            // content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.webPort
+            // content: "OpenBuilds CONTROL has started successfully: Active on " + ip.address() + ":" + config.httpPort
             content: "OpenBuilds CONTROL has started successfully"
           })
         }
@@ -2922,7 +2924,7 @@ if (isElectron()) {
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
       var ipaddr = ip.address();
       // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
-      jogWindow.loadURL("http://localhost:3000/");
+      jogWindow.loadURL(`//${ipaddr}:${config.httpPort}/`);
       //jogWindow.webContents.openDevTools()
 
       jogWindow.on('close', function(event) {
@@ -2994,7 +2996,7 @@ if (isElectron()) {
   }
 } else { // if its not running under Electron, lets get Chrome up.
   var isPi = require('detect-rpi');
-  if (isPi()) {
+  if (isPi() && config.startChrome) {
     DEBUG = true;
     debug_log('Running on Raspberry Pi!');
     status.driver.operatingsystem = 'rpi'
@@ -3120,7 +3122,7 @@ function startChrome() {
     const {
       spawn
     } = require('child_process');
-    const chrome = spawn('chromium-browser', ['-app=http://127.0.0.1:3000']);
+    const chrome = spawn('chromium-browser', [`-app=http://127.0.0.1:${config.httpPort}`]);
     chrome.on('close', (code) => {
       debug_log(`Chromium process exited with code ${code}`);
       process.exit(0);
