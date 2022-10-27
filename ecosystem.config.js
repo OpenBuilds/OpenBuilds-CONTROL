@@ -8,7 +8,8 @@ module.exports = {
       "ignore_watch": ["node_modules"],
       "env": {
         "HTTP_PORT": 3000,
-        "HTTPS_PORT": 3001
+        "HTTPS_PORT": 3001,
+        "START_CHROME": true
       }
     }
   ]
