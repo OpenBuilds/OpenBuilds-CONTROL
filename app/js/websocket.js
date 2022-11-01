@@ -13,6 +13,7 @@ var unit = "mm"
 var waitingForStatus = false;
 var openDialogs = [];
 
+
 $(document).ready(function() {
   initSocket();
 
@@ -603,19 +604,23 @@ function initSocket() {
         var xpos = status.machine.position.work.x.toFixed(2) + unit;
         var ypos = status.machine.position.work.y.toFixed(2) + unit;
         var zpos = status.machine.position.work.z.toFixed(2) + unit;
+        var apos = status.machine.position.work.a.toFixed(2) + "deg";
 
         $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(2) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(2) + unit + "/ Y Work: " + ypos);
         $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(2) + unit + "/ Z Work: " + zpos);
+        $(" #aPos ").attr('title', 'A Machine: ' + (status.machine.position.work.a + status.machine.position.offset.a).toFixed(2) + "deg" + "/ A Work: " + apos);
 
       } else if (unit == "in") {
         var xpos = (status.machine.position.work.x / 25.4).toFixed(3) + unit;
         var ypos = (status.machine.position.work.y / 25.4).toFixed(3) + unit;
         var zpos = (status.machine.position.work.z / 25.4).toFixed(3) + unit;
+        var apos = status.machine.position.work.a.toFixed(2) + "deg";
 
         $(" #xPos ").attr('title', 'X Machine: ' + ((status.machine.position.work.x / 25.4) + (status.machine.position.offset.x / 25.4)).toFixed(3) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + ((status.machine.position.work.y / 25.4) + (status.machine.position.offset.y / 25.4)).toFixed(3) + unit + "/ Y Work: " + ypos);
         $(" #zPos ").attr('title', 'Z Machine: ' + ((status.machine.position.work.z / 25.4) + (status.machine.position.offset.z / 25.4)).toFixed(3) + unit + "/ Z Work: " + zpos);
+        $(" #aPos ").attr('title', 'A Machine: ' + ((status.machine.position.work.a) + (status.machine.position.offset.a)).toFixed(3) + "deg" + "/ A Work: " + apos);
 
 
       }
@@ -628,6 +633,9 @@ function initSocket() {
       }
       if ($('#zPos').html() != zpos) {
         $('#zPos').html(zpos);
+      }
+      if ($('#aPos').html() != apos) {
+        $('#aPos').html(apos);
       }
 
 
@@ -823,6 +831,13 @@ function initSocket() {
     }
 
 
+    // Enable or disable 4th axis UI elements
+    if (status.machine.has4thAxis) {
+      $(".4thaxis-active").show();
+    } else {
+      $(".4thaxis-active").hide();
+    }
+
 
     laststatus = status;
     waitingForStatus = false;
@@ -962,6 +977,59 @@ function initSocket() {
 
 };
 
+
+
+function scanNetwork() {
+
+  var currentIp = laststatus.driver.ipaddress.split(".")
+  var scanTemplate = `
+  <div class="row mt-2">
+    <div class="cell-md-12 mb-1">
+      Enter the IP address range to scan for devices.  <p>
+      <small>Warning: This may disconnect other running instances / open connections to/from other devices</small>
+    </div>
+  </div>
+  <hr>
+  <div class="row mt-2">
+    <div class="cell-md-3 mb-1">IP Range</div>
+    <div class="cell-md-9 mb-1">
+      <form class="inline-form">
+        <input id="scanIp1" type="number" data-clear-button="false" style="width: 80px;" data-append="." data-editable="true" value="` + currentIp[0] + `">.
+        <input id="scanIp2" type="number" data-clear-button="false" style="width: 80px;" data-append="." data-editable="true" value="` + currentIp[1] + `">.
+        <input id="scanIp3" type="number" data-clear-button="false" style="width: 80px;" data-append="." data-editable="true" value="` + currentIp[2] + `">.
+        <input type="text" readonly disabled value="1-254" data-clear-button="false"  style="width: 80px;" data-editable="true">
+      </form>
+    </div>
+  </div>
+  `
+
+  Metro.dialog.create({
+    title: "<i class='fas fa-network-wired fa-fw'></i> Network Scan",
+    content: scanTemplate,
+    toTop: true,
+    width: '75%',
+    clsDialog: 'dark',
+    actions: [{
+      caption: "Start Scan",
+      cls: "js-dialog-close success",
+      onclick: function() {
+        var network = $("#scanIp1").val() + '.' + $("#scanIp2").val() + '.' + $("#scanIp3").val();
+        var range = network + ".1-" + network + ".254"
+        socket.emit('scannetwork', range)
+        $('#controlTab').click();
+        $('#consoletab').click();
+      }
+    }, {
+      caption: "Cancel",
+      cls: "js-dialog-close",
+      onclick: function() {
+        //
+      }
+    }]
+  });
+
+}
+
 function selectPort(port) {
   $('#consoletab').click();
   if (port == undefined) {
@@ -1054,20 +1122,20 @@ function populatePortsMenu() {
     $('#portUSB2').parent(".select").removeClass('disabled')
 
     // Add the Network Ports to the list then populate the Machine Connection selection
-    // if (!laststatus.comms.interfaces.networkDevices.length) {
-    //   response += `<optgroup label="Network Ports">`
-    //   response += `<option value="">No Network Ports</option>`
-    // } else {
-    //   response += `<optgroup label="Network Ports">`
-    //   for (i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
-    //     if (laststatus.comms.interfaces.networkDevices[i].type) {
-    //       response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
-    //     } else {
-    //       response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + `</option>`;
-    //     }
-    //   };
-    // }
-    // response += `</optgroup>`
+    if (!laststatus.comms.interfaces.networkDevices.length) {
+      response += `<optgroup label="Network Ports">`
+      response += `<option value="">No Network Ports</option>`
+    } else {
+      response += `<optgroup label="Network Ports">`
+      for (i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
+        if (laststatus.comms.interfaces.networkDevices[i].type) {
+          response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
+        } else {
+          response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + `</option>`;
+        }
+      };
+    }
+    response += `</optgroup>`
     var select = $("#portUSB").data("select");
     select.data(response);
 

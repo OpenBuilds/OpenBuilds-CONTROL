@@ -1,3 +1,4 @@
+v1.0.333: BlackBox Support
 v1.0.332: Updated SSL certificates
 v1.0.331: Fixed bug in Firmware flashing tool
 v1.0.330: Fixed bug in Mobile Jog wizard, updated Pi install script

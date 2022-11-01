@@ -31,10 +31,16 @@ $(document).ready(function() {
     if (!keyboardShortcuts.jogSpeedM) {
       keyboardShortcuts.jogSpeedM = "0"
     }
-
     if (!keyboardShortcuts.jogSpeedP) {
       keyboardShortcuts.jogSpeedP = "."
     }
+    if (!keyboardShortcuts.aM) {
+      keyboardShortcuts.aM = "1"
+    }
+    if (!keyboardShortcuts.aP) {
+      keyboardShortcuts.aP = "2"
+    }
+
 
 
   } else {
@@ -45,6 +51,8 @@ $(document).ready(function() {
       yM: "down", //Y-
       zP: "pageup", //Z+
       zM: "pagedown", //Z-
+      aP: "2", //A+
+      aM: "1", //A-
       stepP: "+", // Increase Step Size
       stepM: "-", // Decrease Step Size
       estop: "esc", // Abort / Emergency
@@ -215,6 +223,33 @@ function bindKeys() {
       $(document).bind('keyup', keyboardShortcuts.zP, function(event) {
         event.preventDefault();
         $('#zP').mouseup();
+      });
+    }
+
+    if (keyboardShortcuts.aM.length) {
+      $(document).bind('keydown', keyboardShortcuts.aM, function(event) {
+        event.preventDefault();
+        if (!event.originalEvent.repeat) {
+          rippleEffect($('.aM'), "#fa6800")
+          $('#aM').mousedown();
+        }
+      });
+      $(document).bind('keyup', keyboardShortcuts.aM, function(event) {
+        event.preventDefault();
+        $('#aM').mouseup();
+      });
+    }
+    if (keyboardShortcuts.aP.length) {
+      $(document).bind('keydown', keyboardShortcuts.aP, function(event) {
+        event.preventDefault();
+        if (!event.originalEvent.repeat) {
+          rippleEffect($('.aP'), "#fa6800")
+          $('#aP').mousedown();
+        }
+      });
+      $(document).bind('keyup', keyboardShortcuts.aP, function(event) {
+        event.preventDefault();
+        $('#aP').mouseup();
       });
     }
     // END JOG KEYS
@@ -464,6 +499,18 @@ function keyboardShortcutsEditor() {
         </div>
       </div>
       <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-undo fg-orange fa-fw"></i> Jog A-</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="aMnewKey" value="` + keyboardShortcuts.aM + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#aMnewKey').addClass('primary').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
+        <label class="cell-sm-6"><i class="fas fa-redo fg-orange fa-fw"></i> Jog A+</label>
+        <div class="cell-sm-6">
+          <input type="text" class="keyboardshortcutinput" readonly id="aPnewKey" value="` + keyboardShortcuts.aP + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#aPnewKey').addClass('primary').addClass('newKeyAssignment')">
+        </div>
+      </div>
+      <div class="row mb-1 ml-1 mr-1">
         <label class="cell-sm-6"><i class="fas fa-minus fg-openbuilds fa-fw"></i> Decrease Step Size<br><span class="text-small">For Incremental Jogging</span></label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly id="stepMnewKey" value="` + keyboardShortcuts.stepM + `" onclick="$('.keyboardshortcutinput').removeClass('primary').removeClass('newKeyAssignment'); $('#stepMnewKey').addClass('primary').addClass('newKeyAssignment')">
@@ -552,6 +599,8 @@ function keyboardShortcutsEditor() {
           keyboardShortcuts.yM = $('#yMnewKey').val()
           keyboardShortcuts.zP = $('#zPnewKey').val()
           keyboardShortcuts.zM = $('#zMnewKey').val()
+          keyboardShortcuts.aP = $('#aPnewKey').val()
+          keyboardShortcuts.aM = $('#aMnewKey').val()
           keyboardShortcuts.stepP = $('#stepPnewKey').val()
           keyboardShortcuts.stepM = $('#stepMnewKey').val()
 
