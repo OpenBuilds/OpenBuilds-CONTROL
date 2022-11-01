@@ -6,6 +6,7 @@ function flashToolBoard(device) {
     $("#grblAxesCount").data("select").val("3axes-grbl")
     $("#flash-tool-grbl-row").show();
     $("#flash-tool-grblhal-row").hide();
+    $("#flash-tool-erase-row").hide();
     $("#flash-tool-interface-fw-row").hide();
     $("#flash-tool-custom-row").hide();
     $("#customFirmwareSet").html("Please select the Grbl Firmware hex file you want to flash");
@@ -13,6 +14,7 @@ function flashToolBoard(device) {
     $("#grblHalAxesCount").data("select").val("3axes-grblhal")
     $("#flash-tool-grbl-row").hide();
     $("#flash-tool-grblhal-row").show();
+    $("#flash-tool-erase-row").show();
     $("#flash-tool-interface-fw-row").hide();
     $("#flash-tool-custom-row").hide();
     $("#customFirmwareSet").html("Please select the GrblHAL Firmware binary file you want to flash");
@@ -20,6 +22,7 @@ function flashToolBoard(device) {
     $("#interfaceFirmwareVer").data("select").val("online")
     $("#flash-tool-grbl-row").hide();
     $("#flash-tool-grblhal-row").hide();
+    $("#flash-tool-erase-row").hide();
     $("#flash-tool-interface-fw-row").show();
     $("#customFirmwareSet").html("Please select the Interface Firmware binary file you want to flash");
   }
@@ -33,7 +36,7 @@ function openFlashingTool() {
     <p class="small mb-4">You can use this wizard to flash Firmware onto compatible controllers. Only use with care, or when instructed by Support</p>
     <ul data-role="tabs" data-expand="true">
       <li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png"> BlackBox 4X</a></li>
-      <!-- li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png"> BlackBox X32</a></li -->
+      <li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png"> BlackBox X32</a></li>
       <li><a href="#" onclick="flashToolBoard('interfacev1');"><img src="/wizards/flashingtool2/img/interfacev1-icon.png"> Interface</a></li>
     </ul>
 
@@ -74,9 +77,20 @@ function openFlashingTool() {
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblHalAxesCount" data-editable="true">
             <option value="3axes-grblhal">3 Axes CNC/Laser: Dual-Y with XYZ Axis Homing</option>
-            <!-- option value="2axes-grblhal">2 Axes CNC/Laser: Dual-Y with Z-Axis Homing Disabled</option>
-            <option value="4axes-grblhal">4 Axes CNC/Laser: with XYZ Axis Homing</option -->
+            <!-- option value="2axes-grblhal">2 Axes CNC/Laser: Dual-Y with Z-Axis Homing Disabled</option -->
+            <option value="4axes-grblhal">4 Axes CNC/Laser: with XYZA Axis Homing</option>
             <option value="custom">Custom: firmware hex file</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="flash-tool-erase-row" style="display: none;">
+      <div class="cell-md-3 mb-1">Erase Settings</div>
+        <div class="cell-md-9 mb-1">
+          <select data-prepend="&nbsp;<i class='fas fa-eraser'></i>" data-role="select" data-filter="false" id="flashErase" data-editable="true">
+            <option value="flashonly">Flash firmware, do not erase settings </option>
+            <option value="flasherase">Flash firmware and erase settings</option>
           </select>
         </div>
       </div>
@@ -229,13 +243,18 @@ function flashFirmwarefromWizard() {
     } else if ($("#grblAxesCount").val() == "2axes-grblhal") {
       var filename = "";
     } else if ($("#grblAxesCount").val() == "4axes-grblhal") {
-      var filename = "";
+      var filename = "grblhal-grbl4axis.bin";
     }
 
     var data = {
       port: $("#portUSB2").val(),
       file: filename,
+      erase: false,
       customImg: false
+    }
+
+    if ($("#flashErase").val() == "flasherase") {
+      data.erase = true;
     }
 
     if ($("#grblHalAxesCount").val() == "custom") {

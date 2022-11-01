@@ -17,33 +17,25 @@ body {
   overflow-y: hidden;
 }
 
+/* Implemented as default https://thayneco.com/expand-usb-port-selector-in-openbuilds-control/  */
+#section-two div:nth-child(2) label {
+  width: 350px;
+}
+
 /* Fix dialog-actions alignment */
 .dialog-actions {
   display: flex;
   justify-content: flex-end
 }
 
-/* X-Large button for Metro */
-.button.cycle.xlarge, .button.square.xlarge {
-  width: 3.7rem;
-  height: 3.7rem;
-}
-
-.button.xlarge {
-  font-size: 1.375rem;
-  padding: 0 1rem;
-  height: 3.7rem;
-  line-height: 3.7rem;
-}
-
 #jogcontrols {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: 200px;
+  height: 240px;
 }
 
 #macros {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 455px);
+  height: calc(100vh - 495px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -53,7 +45,7 @@ body {
 
 #renderArea {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 455px);
+  height: calc(100vh - 495px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -63,7 +55,7 @@ body {
 
 #editor {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
-  height: calc(100vh - 495px);
+  height: calc(100vh - 535px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */
@@ -268,3 +260,13 @@ select {
 #splash {
   background-image: linear-gradient(to top, #888888, #ffffff, #888888);
 }
+
+/* html {
+  background: black;
+  background-color: black;
+  filter: invert(1) hue-rotate(180deg);
+}
+
+img {
+  filter: invert(1) hue-rotate(180deg);
+} */
