@@ -100,9 +100,8 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 
 // Serial
-const serialport = require('serialport');
-var SerialPort = serialport;
-const Readline = SerialPort.parsers.Readline;
+const { SerialPort } = require('serialport')
+const { ReadlineParser } = require('@serialport/parser-readline');
 
 // telnet
 const net = require('net');
@@ -509,19 +508,7 @@ app.get('/activate', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send('Host: ' + req.hostname + ' asked to activate OpenBuilds CONTROL v' + require('./package').version);
-  if (jogWindow === null) {
-    createJogWindow();
-    jogWindow.show()
-    // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  } else {
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  }
+  showJogWindow()
   setTimeout(function() {
     io.sockets.emit('activate', req.hostname);
   }, 500);
@@ -610,20 +597,7 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     debug_log('Uploaded ' + file.path);
-
-    if (jogWindow === null) {
-      createJogWindow();
-      jogWindow.show()
-      // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    } else {
-      jogWindow.show()
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    }
+      showJogWindow()
     readFile(file.path)
   });
 
@@ -950,7 +924,8 @@ io.on("connection", function(socket) {
 
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
-        port = new SerialPort(data.port, {
+        port = new SerialPort({
+          path: data.port,
           baudRate: parseInt(data.baud),
           hupcl: false // Don't set DTR - useful for X32 Reset
         });
@@ -960,9 +935,7 @@ io.on("connection", function(socket) {
         port.isOpen = true;
       }
 
-
-
-      parser = port.pipe(new Readline({
+      parser = port.pipe(new ReadlineParser({
         delimiter: '\r\n'
       }));
 
@@ -2641,6 +2614,16 @@ function addQRealtime(gcode) {
   machineSend(gcode, true);
 }
 
+function showJogWindow() {
+  if (jogWindow === null) {
+    createJogWindow();
+  }
+  jogWindow.show()
+  jogWindow.setAlwaysOnTop(true);
+  jogWindow.focus();
+  jogWindow.setAlwaysOnTop(false);
+}
+
 // Electron
 function isElectron() {
   if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
@@ -2687,22 +2670,8 @@ if (isElectron()) {
       }
 
       if (lauchGUI) {
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
+        showJogWindow()
       }
-
-
-
     })
     // Create myWindow, load the rest of the app, etc...
     app.on('ready', () => {})
@@ -2728,18 +2697,7 @@ if (isElectron()) {
       }
 
       if (process.platform == 'darwin' || uploadedgcode.length > 1) {
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
+        showJogWindow()
       }
 
     }
@@ -2821,18 +2779,7 @@ if (isElectron()) {
           label: 'Open User Interface (GUI)',
           click() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           }
         }, {
           label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
@@ -2846,36 +2793,14 @@ if (isElectron()) {
         if (appIcon) {
           appIcon.on('click', function() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           })
         }
 
         if (appIcon) {
           appIcon.on('balloon-click', function() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           })
         }
 
@@ -2949,10 +2874,7 @@ if (isElectron()) {
         jogWindow = null;
       });
       jogWindow.once('ready-to-show', () => {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
+        showJogWindow()
       })
     }
 

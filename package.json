@@ -1,45 +1,46 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.333",
+  "version": "1.0.334",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
-    "copyfiles": "^2.3.0",
-    "electron": "^9.2.0",
-    "electron-builder": "^22.10.5",
-    "electron-rebuild": "^3.2.7",
+    "copyfiles": "^2.4.1",
+    "electron": "^19.0.17",
+    "electron-builder": "^23.3.3",
+    "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0"
   },
   "dependencies": {
-    "avrgirl-arduino": "^4.2.3",
+    "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
-    "directory-tree": "^2.2.4",
-    "drivelist": "^9.2.4",
-    "electron-builder-notarize": "^1.2.0",
-    "electron-updater": "^5.0.5",
+    "directory-tree": "^2.3.1",
+    "drivelist": "^11.0.0",
+    "electron-builder-notarize": "^1.5.0",
+    "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
-    "express": "^4.17.1",
-    "formidable": "^1.2.2",
+    "express": "^4.18.1",
+    "formidable": "^1.2.6",
     "hazardous": "^0.3.0",
     "https": "^1.0.0",
-    "ip": "^1.1.5",
+    "ip": "^1.1.8",
     "jscs-loader": "^0.3.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "mkdirp": "^1.0.4",
-    "multer": "^1.4.2",
+    "multer": "^1.4.4",
     "ncp": "^2.0.0",
-    "node-abi": "^2.18.0",
+    "node-abi": "^3.24.0",
     "rimraf": "^3.0.2",
-    "serialport": "^9.0.1",
-    "socket.io": "^2.4.0"
+    "serialport": "^10.4.0",
+    "socket.io": "^2.5.0"
   },
   "main": "index.js",
   "scripts": {
     "start": "echo \"Error: no start script specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.2.3)\" && echo \"2) Commit that change (git commit -am v1.2.3)\" && echo \"3) Tag your commit (git tag v1.2.3). Make sure your tag name's format is v*.*.*. Your workflow will use this tag to detect when to create a release\" && echo \"4) Push your changes to GitHub (git push && git push --tags)\""
+    "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.2.3)\" && echo \"2) Commit that change (git commit -am v1.2.3)\" && echo \"3) Tag your commit (git tag v1.2.3). Make sure your tag name's format is v*.*.*. Your workflow will use this tag to detect when to create a release\" && echo \"4) Push your changes to GitHub (git push && git push --tags)\"",
+    "run-local": "electron ."
   },
   "keywords": [
     "usb"
@@ -112,20 +113,20 @@
       }
     ],
     "files": [
-        "**/*",
-        "ssl/**/*",
-        "firmware/**/*",
-        ""
-      ],
-      "extraFiles": [
-        "ssl"
-      ],
-      "asarUnpack": [
-        "esptool.exe",
-        "esptool-mac",
-        "esptool.py",
-        "*.bin"
-      ],
+      "**/*",
+      "ssl/**/*",
+      "firmware/**/*",
+      ""
+    ],
+    "extraFiles": [
+      "ssl"
+    ],
+    "asarUnpack": [
+      "esptool.exe",
+      "esptool-mac",
+      "esptool.py",
+      "*.bin"
+    ],
     "win": {
       "target": [
         {
