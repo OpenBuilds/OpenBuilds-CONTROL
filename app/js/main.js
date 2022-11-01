@@ -312,7 +312,7 @@ function jobNeedsHoming() {
         var dialog = Metro.dialog.create({
           clsDialog: 'dark',
           title: "<i class='fas fa-exclamation-triangle'></i> Job uses Machine Coordinates:",
-          content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i> Tip: The GCODE file you loaded, contains G53 commands. Please make sure to HOME the machine to establish the Machine Coordinate (G53) System properly to prevent crashes.",
+          content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i> Tip: The GCODE file you loaded contains G53 commands. Please make sure to HOME the machine to establish the Machine Coordinate (G53) System properly to prevent crashes.",
           actions: [{
             caption: "Close",
             cls: "js-dialog-close",
