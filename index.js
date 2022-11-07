@@ -102,9 +102,8 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 
 // Serial
-const serialport = require('serialport');
-var SerialPort = serialport;
-const Readline = SerialPort.parsers.Readline;
+const { SerialPort } = require('serialport')
+const { ReadlineParser } = require('@serialport/parser-readline');
 
 // telnet
 const net = require('net');
@@ -331,7 +330,7 @@ var xOffset = 0.00;
 var yOffset = 0.00;
 var zOffset = 0.00;
 var aOffset = 0.00;
-var has4thAxis = false;
+
 
 var feedOverride = 100,
   spindleOverride = 100;
@@ -352,6 +351,7 @@ var status = {
   },
   machine: {
     name: '',
+    has4thAxis: false,
     inputs: [],
     overrides: {
       feedOverride: 100, //
@@ -510,19 +510,7 @@ app.get('/activate', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send('Host: ' + req.hostname + ' asked to activate OpenBuilds CONTROL v' + require('./package').version);
-  if (jogWindow === null) {
-    createJogWindow();
-    jogWindow.show()
-    // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  } else {
-    jogWindow.show()
-    jogWindow.setAlwaysOnTop(true);
-    jogWindow.focus();
-    jogWindow.setAlwaysOnTop(false);
-  }
+  showJogWindow()
   setTimeout(function() {
     io.sockets.emit('activate', req.hostname);
   }, 500);
@@ -611,20 +599,7 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     debug_log('Uploaded ' + file.path);
-
-    if (jogWindow === null) {
-      createJogWindow();
-      jogWindow.show()
-      // workaround from https://github.com/electron/electron/issues/2867#issuecomment-261067169 to make window pop over for focus
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    } else {
-      jogWindow.show()
-      jogWindow.setAlwaysOnTop(true);
-      jogWindow.focus();
-      jogWindow.setAlwaysOnTop(false);
-    }
+      showJogWindow()
     readFile(file.path)
   });
 
@@ -680,7 +655,7 @@ io.on("connection", function(socket) {
   }, 100);
 
   socket.on("scannetwork", function(data) {
-    scanForTelnetDevices()
+    scanForTelnetDevices(data)
   })
 
   socket.on("openbuilds", function(data) {
@@ -858,28 +833,40 @@ io.on("connection", function(socket) {
   })
 
   socket.on("writeInterfaceUsbDrive", function(data) {
-    //data = mountpoint dest
+
+    //data.drive = mountpoint dest
+    //data.controller = type of controller
+    if (data.controller == "blackbox4x" || data.controller == "genericgrbl") {
+      var probesrc = path.join(__dirname, './app/wizards/interface/PROBE/');
+      var profilesrc = path.join(__dirname, './app/wizards/interface/PROFILESGRBL/');
+    } else if (data.controller == "blackboxx32" || data.controller == "genericgrblhal") {
+      var probesrc = path.join(__dirname, './app/wizards/interface/PROBE/');
+      var profilesrc = path.join(__dirname, './app/wizards/interface/PROFILESHAL/');
+    }
+
+    var probedest = path.join(data.drive, "/PROBE/");
+    var profiledest = path.join(data.drive, "/PROFILES/");
+
     var ncp = require('ncp').ncp;
     ncp.limit = 16;
 
     var output = {
       'command': 'Interface USB Drive',
-      'response': "Starting to copy data to " + data,
+      'response': "Starting to copy data to " + data.drive,
       'type': 'info'
     }
     io.sockets.emit('data', output);
 
     var errorCount = 0;
 
-    var src = path.join(__dirname, './app/wizards/interface/PROBE/');
-    var dest = path.join(data, "/PROBE/");
 
-    ncp(src, dest,
+
+    ncp(probesrc, probedest,
       function(err) {
         if (err) {
           var output = {
             'command': 'Interface USB Drive',
-            'response': "Failed to copy PROBE macros to " + dest + ":  " + JSON.stringify(err),
+            'response': "Failed to copy PROBE macros to " + probedest + ":  " + JSON.stringify(err),
             'type': 'error'
           }
           io.sockets.emit('data', output);
@@ -887,22 +874,20 @@ io.on("connection", function(socket) {
         } else {
           var output = {
             'command': 'Interface USB Drive',
-            'response': "Copied PROBE macros to " + dest + " succesfully!",
+            'response': "Copied PROBE macros to " + probedest + " succesfully!",
             'type': 'success'
           }
           io.sockets.emit('data', output);
         }
       });
 
-    var src = path.join(__dirname, './app/wizards/interface/PROFILES/');
-    var dest = path.join(data, "/PROFILES/");
 
-    ncp(src, dest,
+    ncp(profilesrc, profiledest,
       function(err) {
         if (err) {
           var output = {
             'command': 'Interface USB Drive',
-            'response': "Failed to copy MACHINE PROFILES to " + dest + ":  " + JSON.stringify(err),
+            'response': "Failed to copy MACHINE PROFILES to " + profiledest + ":  " + JSON.stringify(err),
             'type': 'error'
           }
           io.sockets.emit('data', output);
@@ -910,7 +895,7 @@ io.on("connection", function(socket) {
         } else {
           var output = {
             'command': 'Interface USB Drive',
-            'response': "Copied MACHINE PROFILES to " + dest + " succesfully!",
+            'response': "Copied MACHINE PROFILES to " + profiledest + " succesfully!",
             'type': 'success'
           }
           io.sockets.emit('data', output);
@@ -921,7 +906,7 @@ io.on("connection", function(socket) {
       if (errorCount == 0) {
         var output = {
           'command': 'Interface USB Drive',
-          'response': "Finished copying supporting files to Drive " + data,
+          'response': "Finished copying supporting files to Drive " + data.drive,
           'type': 'success'
         }
         io.sockets.emit('data', output);
@@ -941,7 +926,8 @@ io.on("connection", function(socket) {
 
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
-        port = new SerialPort(data.port, {
+        port = new SerialPort({
+          path: data.port,
           baudRate: parseInt(data.baud),
           hupcl: false // Don't set DTR - useful for X32 Reset
         });
@@ -951,9 +937,7 @@ io.on("connection", function(socket) {
         port.isOpen = true;
       }
 
-
-
-      parser = port.pipe(new Readline({
+      parser = port.pipe(new ReadlineParser({
         delimiter: '\r\n'
       }));
 
@@ -1961,9 +1945,7 @@ io.on("connection", function(socket) {
     }
   });
 
-  socket.on("refreshTelnetDevices", function(data) {
-    scanForTelnetDevices();
-  });
+
 
 
 });
@@ -2133,7 +2115,7 @@ function parseFeedback(data) {
       xOffset = parseFloat(wco[0]).toFixed(config.posDecimals);
       yOffset = parseFloat(wco[1]).toFixed(config.posDecimals);
       zOffset = parseFloat(wco[2]).toFixed(config.posDecimals);
-      if (has4thAxis) {
+      if (status.machine.has4thAxis) {
         aOffset = parseFloat(wco[3]).toFixed(config.posDecimals);
         status.machine.position.offset.x = parseFloat(xOffset);
         status.machine.position.offset.y = parseFloat(yOffset);
@@ -2173,10 +2155,10 @@ function parseFeedback(data) {
       if (wPos.length > 3) {
         if (aPos !== parseFloat(wPos[3]).toFixed(config.posDecimals)) {
           aPos = parseFloat(wPos[3]).toFixed(config.posDecimals);
-          has4thAxis = true;
+          status.machine.has4thAxis = true;
         }
       }
-      if (has4thAxis) {
+      if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(xPos);
         status.machine.position.work.y = parseFloat(yPos);
         status.machine.position.work.z = parseFloat(zPos);
@@ -2201,10 +2183,10 @@ function parseFeedback(data) {
       if (mPos.length > 3) {
         if (aPos !== parseFloat(mPos[3]).toFixed(config.posDecimals)) {
           aPos = parseFloat(mPos[3]).toFixed(config.posDecimals);
-          has4thAxis = true;
+          status.machine.has4thAxis = true;
         }
       }
-      if (has4thAxis) {
+      if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals));
         status.machine.position.work.y = parseFloat(parseFloat(yPos - status.machine.position.offset.y).toFixed(config.posDecimals));
         status.machine.position.work.z = parseFloat(parseFloat(zPos - status.machine.position.offset.z).toFixed(config.posDecimals));
@@ -2634,6 +2616,16 @@ function addQRealtime(gcode) {
   machineSend(gcode, true);
 }
 
+function showJogWindow() {
+  if (jogWindow === null) {
+    createJogWindow();
+  }
+  jogWindow.show()
+  jogWindow.setAlwaysOnTop(true);
+  jogWindow.focus();
+  jogWindow.setAlwaysOnTop(false);
+}
+
 // Electron
 function isElectron() {
   if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
@@ -2680,22 +2672,8 @@ if (isElectron()) {
       }
 
       if (lauchGUI) {
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
+        showJogWindow()
       }
-
-
-
     })
     // Create myWindow, load the rest of the app, etc...
     app.on('ready', () => {})
@@ -2721,18 +2699,7 @@ if (isElectron()) {
       }
 
       if (process.platform == 'darwin' || uploadedgcode.length > 1) {
-        if (jogWindow === null) {
-          createJogWindow();
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        } else {
-          jogWindow.show()
-          jogWindow.setAlwaysOnTop(true);
-          jogWindow.focus();
-          jogWindow.setAlwaysOnTop(false);
-        }
+        showJogWindow()
       }
 
     }
@@ -2814,18 +2781,7 @@ if (isElectron()) {
           label: 'Open User Interface (GUI)',
           click() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           }
         }, {
           label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
@@ -2839,36 +2795,14 @@ if (isElectron()) {
         if (appIcon) {
           appIcon.on('click', function() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           })
         }
 
         if (appIcon) {
           appIcon.on('balloon-click', function() {
             // debug_log("Clicked Systray")
-            if (jogWindow === null) {
-              createJogWindow();
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            } else {
-              jogWindow.show()
-              jogWindow.setAlwaysOnTop(true);
-              jogWindow.focus();
-              jogWindow.setAlwaysOnTop(false);
-            }
+            showJogWindow()
           })
         }
 
@@ -2902,7 +2836,7 @@ if (isElectron()) {
       // Create the browser window.
       jogWindow = new BrowserWindow({
         // 1366 * 768 == minimum to cater for
-        width: 890,
+        width: 1000,
         height: 850,
         fullscreen: false,
         center: true,
@@ -2942,10 +2876,7 @@ if (isElectron()) {
         jogWindow = null;
       });
       jogWindow.once('ready-to-show', () => {
-        jogWindow.show()
-        jogWindow.setAlwaysOnTop(true);
-        jogWindow.focus();
-        jogWindow.setAlwaysOnTop(false);
+        showJogWindow()
       })
     }
 
@@ -3294,6 +3225,7 @@ function flashGrblHal(data) {
   var port = data.port;
   var file = data.file;
   var customImg = data.customImg
+  var erase = data.erase
 
   if (customImg == true) {
     var firmwarePath = firmwareImagePath
@@ -3324,15 +3256,16 @@ function flashGrblHal(data) {
     '0x10000', path.resolve(firmwarePath)
   ];
 
+  if (erase == true) {
+    esptool_opts.push('--erase-all');
+  }
+
   if (process.platform != 'win32') {
     fs.chmodSync(path.join(__dirname, "./esptool.py"), 0o755);
     var child = spawn(path.join(__dirname, "./esptool.py"), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
   }
-
-
-
 
   child.stdout.on('data', function(data) {
     var debugString = data.toString();
@@ -3373,23 +3306,36 @@ function flashGrblHal(data) {
 
 
 // LAN Scanner for BlackBox X32, Interface, SwitchBlox etc //
-function scanForTelnetDevices() {
-  var localNetwork = ip.address().split('.');
-  var network = localNetwork[0] + '.' + localNetwork[1] + '.' + localNetwork[2];
-  var range = network + ".1-" + network + ".254"
+function scanForTelnetDevices(range) {
+  //var localNetwork = ip.address().split('.');
+  //var network = localNetwork[0] + '.' + localNetwork[1] + '.' + localNetwork[2];
+  //var range = network + ".1-" + network + ".254"
 
   var networkDevices = []
   oldiplist = status.comms.interfaces.networkDevices;
-  const options = {
+  const telnetScanOptions = {
     target: range,
     port: '23',
     status: 'TROU', // Timeout, Refused, Open, Unreachable
     banner: true
   };
 
-  new Evilscan(options, (err, scan) => {
+  var output = {
+    'command': 'network',
+    'response': "Starting network scan for: " + telnetScanOptions.target,
+    'type': 'success'
+  }
+  io.sockets.emit('data', output);
+
+  new Evilscan(telnetScanOptions, (err, scan) => {
 
     if (err) {
+      var output = {
+        'command': 'network',
+        'response': "Network Scan error: " + err,
+        'type': 'success'
+      }
+      io.sockets.emit('data', output);
       //console.log(err);
       return;
     }
@@ -3434,6 +3380,21 @@ function scanForTelnetDevices() {
         }
       }
       oldiplist = status.comms.interfaces.networkDevices;
+      if (status.comms.interfaces.networkDevices.length > 0) {
+        var output = {
+          'command': 'network',
+          'response': "Network Scan completed. Found " + status.comms.interfaces.networkDevices.length + " devices.  Network addresses added to the Port selection dropdown.",
+          'type': 'success'
+        }
+      } else {
+        var output = {
+          'command': 'network',
+          'response': "Network Scan completed. Found " + status.comms.interfaces.networkDevices.length + " devices",
+          'type': 'error'
+        }
+      }
+
+      io.sockets.emit('data', output);
     });
 
     scan.run();

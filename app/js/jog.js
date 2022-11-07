@@ -1,19 +1,30 @@
 var allowContinuousJog = false;
 var continuousJogRunning = false;
-var jogdist = 10;
+var jogdistXYZ = 10;
+var jogdistA = 10;
 var safeToUpdateSliders = true;
 var jogRateX = 4000
 var jogRateY = 4000
 var jogRateZ = 2000
+var jogRateA = 2000
 
 function jogOverride(newVal) {
   if (grblParams.hasOwnProperty('$110')) {
     jogRateX = (grblParams['$110'] * (newVal / 100)).toFixed(0);
     jogRateY = (grblParams['$111'] * (newVal / 100)).toFixed(0);
     jogRateZ = (grblParams['$112'] * (newVal / 100)).toFixed(0);
+
     $('#jro').data('slider').val(newVal)
   }
+  if (grblParams.hasOwnProperty('$113')) {
+    jogRateA = (grblParams['$113'] * (newVal / 100)).toFixed(0);
+  }
   localStorage.setItem('jogOverride', newVal);
+}
+
+function setADist(newADist) {
+  $("#distAAxislabel").html("A: " + newADist + " deg")
+  jogdistA = newADist;
 }
 
 function mmMode() {
@@ -23,17 +34,17 @@ function mmMode() {
   $('#dist1label').html('1mm')
   $('#dist10label').html('10mm')
   $('#dist100label').html('100mm')
-  if (jogdist == 0.0254) {
-    jogdist = 0.1
+  if (jogdistXYZ == 0.0254) {
+    jogdistXYZ = 0.1
   }
-  if (jogdist == 0.254) {
-    jogdist = 1
+  if (jogdistXYZ == 0.254) {
+    jogdistXYZ = 1
   }
-  if (jogdist == 2.54) {
-    jogdist = 10
+  if (jogdistXYZ == 2.54) {
+    jogdistXYZ = 10
   }
-  if (jogdist == 25.4) {
-    jogdist = 100
+  if (jogdistXYZ == 25.4) {
+    jogdistXYZ = 100
   }
   if (typeof object !== 'undefined') {
     if (object.userData.inch) {
@@ -59,17 +70,17 @@ function inMode() {
   $('#dist1label').html('0.01"')
   $('#dist10label').html('0.1"')
   $('#dist100label').html('1"')
-  if (jogdist == 0.1) {
-    jogdist = 0.0254
+  if (jogdistXYZ == 0.1) {
+    jogdistXYZ = 0.0254
   }
-  if (jogdist == 1) {
-    jogdist = 0.254
+  if (jogdistXYZ == 1) {
+    jogdistXYZ = 0.254
   }
-  if (jogdist == 10) {
-    jogdist = 2.54
+  if (jogdistXYZ == 10) {
+    jogdistXYZ = 2.54
   }
-  if (jogdist == 100) {
-    jogdist = 25.4
+  if (jogdistXYZ == 100) {
+    jogdistXYZ = 25.4
   }
 
   if (typeof object !== 'undefined') {
@@ -281,56 +292,56 @@ $(document).ready(function() {
 
   $('#dist01').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 0.1;
+      jogdistXYZ = 0.1;
     } else if (unit == "in") {
-      jogdist = 0.0254;
+      jogdistXYZ = 0.0254;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist01').addClass('bd-openbuilds')
-    $('.jogdist').removeClass('fg-openbuilds')
-    $('.jogdist').addClass('fg-gray')
+    $('.jogdistXYZ').removeClass('fg-openbuilds')
+    $('.jogdistXYZ').addClass('fg-gray')
     $('#dist01label').removeClass('fg-gray')
     $('#dist01label').addClass('fg-openbuilds')
   })
 
   $('#dist1').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 1;
+      jogdistXYZ = 1;
     } else if (unit == "in") {
-      jogdist = 0.254;
+      jogdistXYZ = 0.254;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist1').addClass('bd-openbuilds')
-    $('.jogdist').removeClass('fg-openbuilds')
-    $('.jogdist').addClass('fg-gray')
+    $('.jogdistXYZ').removeClass('fg-openbuilds')
+    $('.jogdistXYZ').addClass('fg-gray')
     $('#dist1label').removeClass('fg-gray')
     $('#dist1label').addClass('fg-openbuilds')
   })
 
   $('#dist10').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 10;
+      jogdistXYZ = 10;
     } else if (unit == "in") {
-      jogdist = 2.54;
+      jogdistXYZ = 2.54;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist10').addClass('bd-openbuilds')
-    $('.jogdist').removeClass('fg-openbuilds')
-    $('.jogdist').addClass('fg-gray')
+    $('.jogdistXYZ').removeClass('fg-openbuilds')
+    $('.jogdistXYZ').addClass('fg-gray')
     $('#dist10label').removeClass('fg-gray')
     $('#dist10label').addClass('fg-openbuilds')
   })
 
   $('#dist100').on('click', function(ev) {
     if (unit == "mm") {
-      jogdist = 100;
+      jogdistXYZ = 100;
     } else if (unit == "in") {
-      jogdist = 25.4;
+      jogdistXYZ = 25.4;
     }
     $('.distbtn').removeClass('bd-openbuilds')
     $('#dist100').addClass('bd-openbuilds')
-    $('.jogdist').removeClass('fg-openbuilds')
-    $('.jogdist').addClass('fg-gray')
+    $('.jogdistXYZ').removeClass('fg-openbuilds')
+    $('.jogdistXYZ').addClass('fg-gray')
     $('#dist100label').removeClass('fg-gray')
     $('#dist100label').addClass('fg-openbuilds')
   })
@@ -428,7 +439,7 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('X', '-' + jogdist, jogRateX);
+      jog('X', '-' + jogdistXYZ, jogRateX);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -477,7 +488,7 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('X', jogdist, jogRateX);
+      jog('X', jogdistXYZ, jogRateX);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -528,7 +539,7 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('Y', '-' + jogdist, jogRateY);
+      jog('Y', '-' + jogdistXYZ, jogRateY);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -578,7 +589,7 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('Y', jogdist, jogRateY);
+      jog('Y', jogdistXYZ, jogRateY);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -628,7 +639,7 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('Z', '-' + jogdist, jogRateZ);
+      jog('Z', '-' + jogdistXYZ, jogRateZ);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -678,12 +689,112 @@ $(document).ready(function() {
         toastJogNotIdle();
       }
     } else {
-      jog('Z', jogdist, jogRateZ);
+      jog('Z', jogdistXYZ, jogRateZ);
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
   });
   $('.zP').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('.aM').on('touchstart mousedown', function(ev) {
+    if (ev.which > 1) { // Ignore middle and right click
+      return
+    }
+    ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
+    if (allowContinuousJog) { // startJog();
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+        var direction = "A-";
+        var distance = 1000;
+
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$133)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Negative move:
+          distance = (mindistance + (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("A-");
+          }
+        }
+
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.aM').click();
+        }
+      } else {
+        toastJogNotIdle();
+      }
+    } else {
+      jog('A', '-' + jogdistA, jogRateA);
+    }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
+  });
+  $('.aM').on('touchend mouseup', function(ev) {
+    ev.preventDefault();
+    if (allowContinuousJog) {
+      cancelJog()
+    }
+  });
+
+  $('.aP').on('touchstart mousedown', function(ev) {
+    if (ev.which > 1) { // Ignore middle and right click
+      return
+    }
+    ev.preventDefault();
+    var hasSoftLimits = false;
+    if (Object.keys(grblParams).length > 0) {
+      if (parseInt(grblParams.$20) == 1) {
+        hasSoftLimits = true;
+      }
+    }
+    if (allowContinuousJog) { // startJog();
+      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+        var direction = "A";
+        var distance = 1000;
+
+        if (hasSoftLimits) {
+          // Soft Limits is enabled so lets calculate maximum move distance
+          var mindistance = parseInt(grblParams.$133)
+          var maxdistance = 0; // Grbl all negative coordinates
+          // Positive move:
+          distance = (maxdistance - (parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a))) - 1
+          distance = distance.toFixed(3);
+          if (distance < 1) {
+            toastJogWillHit("A+");
+          }
+        }
+
+        if (distance >= 1) {
+          socket.emit('runCommand', "$J=G91 G21 " + direction + distance + " F" + jogRateA + "\n");
+          continuousJogRunning = true;
+          waitingForStatus = true;
+          $('.aP').click();
+        }
+      } else {
+        toastJogNotIdle();
+      }
+    } else {
+      jog('A', jogdistA, jogRateA);
+    }
+    $('#runNewProbeBtn').addClass("disabled")
+    $('#confirmNewProbeBtn').removeClass("disabled")
+  });
+  $('.aP').on('touchend mouseup', function(ev) {
     ev.preventDefault();
     if (allowContinuousJog) {
       cancelJog()
@@ -727,91 +838,91 @@ $(document).ready(function() {
 });
 
 function changeStepSize(dir) {
-  if (jogdist == 0.1 || jogdist == 0.0254) {
+  if (jogdistXYZ == 0.1 || jogdistXYZ == 0.0254) {
     if (dir == 1) {
       if (unit == "mm") {
-        jogdist = 1;
+        jogdistXYZ = 1;
       } else if (unit == "in") {
-        jogdist = .254;
+        jogdistXYZ = .254;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist1').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist1label').removeClass('fg-gray')
       $('#dist1label').addClass('fg-openbuilds')
     }
     if (dir == -1) {
       // do nothing
     }
-  } else if (jogdist == 1 || jogdist == 0.254) {
+  } else if (jogdistXYZ == 1 || jogdistXYZ == 0.254) {
     if (dir == 1) {
       if (unit == "mm") {
-        jogdist = 10;
+        jogdistXYZ = 10;
       } else if (unit == "in") {
-        jogdist = 2.54;
+        jogdistXYZ = 2.54;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist10').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist10label').removeClass('fg-gray')
       $('#dist10label').addClass('fg-openbuilds')
     }
     if (dir == -1) {
       if (unit == "mm") {
-        jogdist = 0.1;
+        jogdistXYZ = 0.1;
       } else if (unit == "in") {
-        jogdist = 0.0254;
+        jogdistXYZ = 0.0254;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist01').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist01label').removeClass('fg-gray')
       $('#dist01label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 10 || jogdist == 2.54) {
+  } else if (jogdistXYZ == 10 || jogdistXYZ == 2.54) {
     if (dir == 1) {
       if (unit == "mm") {
-        jogdist = 100;
+        jogdistXYZ = 100;
       } else if (unit == "in") {
-        jogdist = 25.4;
+        jogdistXYZ = 25.4;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist100').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist100label').removeClass('fg-gray')
       $('#dist100label').addClass('fg-openbuilds')
     }
     if (dir == -1) {
       if (unit == "mm") {
-        jogdist = 1;
+        jogdistXYZ = 1;
       } else if (unit == "in") {
-        jogdist = 0.254;
+        jogdistXYZ = 0.254;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist1').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist1label').removeClass('fg-gray')
       $('#dist1label').addClass('fg-openbuilds')
     }
-  } else if (jogdist == 100 || jogdist == 25.4) {
+  } else if (jogdistXYZ == 100 || jogdistXYZ == 25.4) {
     if (dir == 1) {
       // do nothing
     }
     if (dir == -1) {
       if (unit == "mm") {
-        jogdist = 10;
+        jogdistXYZ = 10;
       } else if (unit == "in") {
-        jogdist = 2.54;
+        jogdistXYZ = 2.54;
       }
       $('.distbtn').removeClass('bd-openbuilds')
       $('#dist10').addClass('bd-openbuilds')
-      $('.jogdist').removeClass('fg-openbuilds')
-      $('.jogdist').addClass('fg-gray')
+      $('.jogdistXYZ').removeClass('fg-openbuilds')
+      $('.jogdistXYZ').addClass('fg-gray')
       $('#dist10label').removeClass('fg-gray')
       $('#dist10label').addClass('fg-openbuilds')
     }

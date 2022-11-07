@@ -1,3 +1,16 @@
+/* X-Large button for Metro */
+.button.cycle.xlarge, .button.square.xlarge {
+  width: 75px;
+  height: 75px;
+}
+
+.button.xlarge {
+  font-size: 1.375rem;
+  padding: 0 1rem;
+  height: 3.7rem;
+  line-height: 3.7rem;
+}
+
 .drotable td, .jogtable td {
   padding: 2px;
   vertical-align: bottom;

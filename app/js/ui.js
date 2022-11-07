@@ -8,6 +8,7 @@ function setConnectBar(val, status) {
     $("#flashBtn").hide();
     $('#portUSB').parent().show();
     $("#connectBtn").show();
+    $("#scanBtn").show();
     $("#driverBtn").show();
     if ($('#portUSB').val() != "") {
       $("#connectBtn").attr('disabled', false);
@@ -26,6 +27,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $("#scanBtn").hide();
     $("#driverBtn").hide();
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
@@ -46,6 +48,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $("#scanBtn").hide();
     $("#driverBtn").hide();
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
@@ -65,6 +68,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $("#scanBtn").hide();
     $("#driverBtn").hide();
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
@@ -84,6 +88,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Connected");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $("#scanBtn").hide();
     $("#driverBtn").hide();
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);
@@ -102,6 +107,7 @@ function setConnectBar(val, status) {
     $('#connectStatus').html("Port: Flashing");
     // Connect/Disconnect Button
     $("#connectBtn").hide();
+    $("#scanBtn").hide();
     $("#driverBtn").hide();
     $('#portUSB').parent().hide();
     $("#connectBtn").attr('disabled', false);

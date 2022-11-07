@@ -1,5 +1,3 @@
-//TODO:  Merge Name, Description, Template into array under object
-
 var grblSettingsTemplate2 = {
   0: {
     key: `$0`,
@@ -308,6 +306,13 @@ var grblSettingsTemplate2 = {
             </button>
             </center>`
   },
+  103: {
+    key: `$103`,
+    title: `A-axis steps per degree`,
+    description: `Grbl needs to know how far each step will take the tool in reality.`,
+    template: `<input  id="val-103-input" data-role="input" data-clear-button="false" data-append="steps/deg" type="text">`,
+    utils: ``
+  },
   110: {
     key: `$110`,
     title: `X-axis maximum rate, mm/min`,
@@ -327,6 +332,13 @@ var grblSettingsTemplate2 = {
     title: `Z-axis maximum rate, mm/min`,
     description: `This sets the maximum rate each axis can move. Whenever Grbl plans a move, it checks whether or not the move causes any one of these individual axes to exceed their max rate. If so, it'll slow down the motion to ensure none of the axes exceed their max rate limits. This means that each axis has its own independent speed, which is extremely useful for limiting the typically slower Z-axis. The simplest way to determine these values is to test each axis one at a time by slowly increasing max rate settings and moving it. For example, to test the X-axis, send Grbl something like G0 X50 with enough travel distance so that the axis accelerates to its max speed. You'll know you've hit the max rate threshold when your steppers stall. It'll make a bit of noise, but shouldn't hurt your motors. Enter a setting a 10-20% below this value, so you can account for wear, friction, and the mass of your workpiece/tool. Then, repeat for your other axes. NOTE: This max rate setting also sets the G0 seek rates.`,
     template: `<input  id="val-112-input" data-role="input" data-clear-button="false" data-append="mm/min"  type="text">`,
+    utils: ``
+  },
+  113: {
+    key: `$113`,
+    title: `A-axis maximum rate, deg/min`,
+    description: `This sets the maximum rate each axis can move. Whenever Grbl plans a move, it checks whether or not the move causes any one of these individual axes to exceed their max rate. If so, it'll slow down the motion to ensure none of the axes exceed their max rate limits. This means that each axis has its own independent speed, which is extremely useful for limiting the typically slower Z-axis. The simplest way to determine these values is to test each axis one at a time by slowly increasing max rate settings and moving it. For example, to test the X-axis, send Grbl something like G0 X50 with enough travel distance so that the axis accelerates to its max speed. You'll know you've hit the max rate threshold when your steppers stall. It'll make a bit of noise, but shouldn't hurt your motors. Enter a setting a 10-20% below this value, so you can account for wear, friction, and the mass of your workpiece/tool. Then, repeat for your other axes. NOTE: This max rate setting also sets the G0 seek rates.`,
+    template: `<input  id="val-113-input" data-role="input" data-clear-button="false" data-append="deg/min"  type="text">`,
     utils: ``
   },
   120: {
@@ -350,6 +362,13 @@ var grblSettingsTemplate2 = {
     template: `<input  id="val-122-input" data-role="input" data-clear-button="false" data-append="mm/sec&sup2" type="text">`,
     utils: ``
   },
+  123: {
+    key: `$123`,
+    title: `A-axis acceleration, deg/sec^2`,
+    description: `This sets the axes acceleration parameters in mm/second/second. Simplistically, a lower value makes Grbl ease slower into motion, while a higher value yields tighter moves and reaches the desired feed rates much quicker. Much like the max rate setting, each axis has its own acceleration value and are independent of each other. This means that a multi-axis motion will only accelerate as quickly as the lowest contributing axis can. Again, like the max rate setting, the simplest way to determine the values for this setting is to individually test each axis with slowly increasing values until the motor stalls. Then finalize your acceleration setting with a value 10-20% below this absolute max value. This should account for wear, friction, and mass inertia. We highly recommend that you dry test some G-code programs with your new settings before committing to them. Sometimes the loading on your machine is different when moving in all axes together.`,
+    template: `<input  id="val-123-input" data-role="input" data-clear-button="false" data-append="deg/sec&sup2" type="text">`,
+    utils: ``
+  },
   130: {
     key: `$130`,
     title: `X-axis maximum travel, millimeters`,
@@ -369,6 +388,13 @@ var grblSettingsTemplate2 = {
     title: `Z-axis maximum travel, millimeters`,
     description: `This sets the maximum travel from end to end for each axis in mm. This is only useful if you have soft limits (and homing) enabled, as this is only used by Grbl's soft limit feature to check if you have exceeded your machine limits with a motion command.`,
     template: `<input id="val-132-input" data-role="input" data-clear-button="false" data-append="mm" type="text">`,
+    utils: ``
+  },
+  133: {
+    key: `$133`,
+    title: `A-axis maximum travel, degrees`,
+    description: `This sets the maximum travel from end to end for each axis. This is only useful if you have soft limits (and homing) enabled, as this is only used by Grbl's soft limit feature to check if you have exceeded your machine limits with a motion command.`,
+    template: `<input id="val-133-input" data-role="input" data-clear-button="false" data-append="deg" type="text">`,
     utils: ``
   },
   7: {
