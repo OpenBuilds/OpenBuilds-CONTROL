@@ -1,4 +1,5 @@
-v1.0.333: BlackBox Support
+v1.0.334: Dark Mode theme (based off /pull/#223), Added Fullscreen Mode button, Updated Dependencies (/pull/260), Fixed bug in ATmega Custom flash option (#268), Updated Wizard's Graphics
+v1.0.333: BlackBox X32 Support, 4th Axis support: A-Axis Jog and DRO, Updated firmware Flashing tool to support X32, Updated USB tool for Interface to support X32
 v1.0.332: Updated SSL certificates
 v1.0.331: Fixed bug in Firmware flashing tool
 v1.0.330: Fixed bug in Mobile Jog wizard, updated Pi install script

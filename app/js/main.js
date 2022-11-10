@@ -470,3 +470,9 @@ function timeConvert(n) {
   }
   return rhours + "h:" + rminutes + "m";
 }
+
+function toTitleCase(str) {
+  return str.replace(/(?:^|\s)\w/g, function(match) {
+    return match.toUpperCase();
+  });
+}

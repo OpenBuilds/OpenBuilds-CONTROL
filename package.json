@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.334",
+  "version": "1.0.335",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -15,7 +15,7 @@
     "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
     "directory-tree": "^2.3.1",
-    "drivelist": "^11.0.0",
+    "drivelist": "^11.0.4",
     "electron-builder-notarize": "^1.5.0",
     "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
@@ -30,7 +30,8 @@
     "mkdirp": "^1.0.4",
     "multer": "^1.4.4",
     "ncp": "^2.0.0",
-    "node-abi": "^3.24.0",
+    "node-abi": "^3.28.0",
+    "node-gyp": "^9.3.0",
     "rimraf": "^3.0.2",
     "serialport": "^10.4.0",
     "socket.io": "^2.5.0"

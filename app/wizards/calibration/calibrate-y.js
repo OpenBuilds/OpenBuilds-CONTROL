@@ -6,7 +6,7 @@ var ycaltemplate = `
       <table class="table">
          <tr>
             <td>
-              <img src="img/calibrate/y/pos1.png" style="border: 1px solid #f1f2f3;">
+              <img src="img/calibrate/y/pos1.png" border="0">
             </td>
             <td>
                Step 1:  Mark Initial Position<br>
@@ -100,7 +100,7 @@ function ystepscalibrate() {
     title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for Y-Axis ($101)",
     toTop: true,
     content: ycaltemplate,
-    width: 750,
+    width: 850,
     clsDialog: 'dark',
     actions: [{
       caption: "Cancel",

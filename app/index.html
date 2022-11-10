@@ -11,6 +11,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/splash.css" />
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
     <link rel="stylesheet" href="/lib/furcanIconPicker/iconpicker-1.5.0.css" />
@@ -18,12 +19,25 @@
 
   <body>
 
-    <div class="pos-fixed pos-center" id="splash">
+    <div class="pos-fixed pos-center" id="splash" onclick="socket.emit('adX32');">
       <center>
         <div id="openbuildslogosplash" style="display: none;">
-          <img src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" />
-          <p>
-            <h1>OpenBuilds&reg;&nbsp;CONTROL</h1>
+          <!-- <img id="openbuildslogosplashImg" src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" /> -->
+          <h1>OpenBuilds<sup>&reg;</sup>&nbsp;CONTROL</h1>
+          <img id="openbuildslogosplashImgX32" src="/img/x32splash.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 4000)" style="cursor:pointer" />
+          <h3 style="cursor:pointer">Check out the all NEW OpenBuilds<sup>&reg;</sup>&nbsp;BlackBox&nbsp;X32</h3>
+          <div class="waviy" style="cursor:pointer">
+            <span style="--i:1">C</span>
+            <span style="--i:2">L</span>
+            <span style="--i:3">I</span>
+            <span style="--i:4">C</span>
+            <span style="--i:5">K</span>
+            <span style="--i:6"> </span>
+            <span style="--i:7">H</span>
+            <span style="--i:8">E</span>
+            <span style="--i:9">R</span>
+            <span style="--i:10">E</span>
+          </div>
         </div>
       </center>
     </div>
@@ -35,15 +49,16 @@
         <span class="icon"><img src="icon-transparent.png" /></span>
         <span class="title" id="windowtitle">OpenBuilds CONTROL</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
-          <span class="btn-min" onclick="socket.emit('minimize')"></span>
-          <span class="btn-max" onclick="socket.emit('maximize')"></span>
-          <span class="btn-close" onclick="socket.emit('minimisetotray')"></span>
+          <span title="Minimize" class="btn-custom" onclick="socket.emit('minimize')"><i class="fas fa-window-minimize"></i></span>
+          <span title="Maximize" class="btn-custom" onclick="socket.emit('maximize')"><i class="fas fa-window-maximize"></i></span>
+          <span title="Toggle Fullscreen" class="btn-custom" onclick="socket.emit('fullscreen')"><i class="fas fa-desktop"></i></span>
+          <span title="Close to Tray" class="btn-custom" onclick="socket.emit('minimisetotray')"><i class="fas fa-window-close"></i></span>
         </div>
       </div>
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
-            <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
+            <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
             <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
             <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
@@ -197,7 +212,8 @@
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
                     <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a>
                     </li>
-                    <li class="divider"></li>
+                    <li class="divider fg-gray"></li>
+
                     <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
                     <li class=""><a href="#" onclick="socket.emit('fabber', true);"><img width="16" src="affiliates/fabber/fabber.svg"> Fabber</a></li>
                     <li class=""><a href="#" onclick="socket.emit('carveco', true);"><img width="16" src="affiliates/carveco/carveco.svg"> Carveco</a></li>
@@ -376,6 +392,21 @@
 
                 <span class="title">Wizards</span>
               </div>
+
+              <div class="group">
+
+                <div id="ddThemeButton">
+                  <button id="btnTheme" class="ribbon-button" onclick="Theme.toggle();">
+                    <span class="icon" id="currentThemeIcon">
+                      <i class="fas fa-paint-brush"></i>
+                    </span>
+                    <span class="caption" id="currentThemeName">Dark<br>Mode</span>
+                    <span class="h6 badge bg-green fg-white"> <i class="fas fa-brush  fa-spin"></i> New!</span>
+                  </button>
+                </div>
+                <span class="title">Theme</span>
+              </div>
+
               <div class="group estop" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -642,8 +673,8 @@
                         <div class="pos-relative">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto A0 (Work Coord) (G0 Z0)</a></li>
-                            <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto A<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 A0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Work Coord) (G0 Z0)</a></li>
+                            <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto A<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 A0)</a></li>
                             <!-- <li class="divider"></li> -->
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
                             <!-- <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
@@ -1290,7 +1321,7 @@
 
 
 
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false">
+      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
         <div class="dialog-content" style="height: calc(100% - 100px);">
           This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
@@ -1298,7 +1329,7 @@
           <div class="row">
             <div class="cell-md-3 mb-1">
 
-              <img src="img/interface/interf.png" width="120" class="mt-5" />
+              <img src="img/interface/interfacev1.png" width="150" class="mt-5" />
             </div>
             <div class="cell-md-9 mb-1">
               <ul>
@@ -1702,19 +1733,21 @@
             </tr>
           </table>
         </div>
-        <div class="dialog-actions ">
+        <div class="dialog-actions">
 
-          <label>Probe Type: </label>
+          <div class="pos-relative">
+            <label>Probe Type: </label>
 
-          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a>
-          <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
-            <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a></li>
-            <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
-            <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
+            <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a>
+            <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
+              <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a></li>
+              <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
+              <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
 
-            <li class="divider"></li>
-            <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
-          </ul>
+              <li class="divider"></li>
+              <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
+            </ul>
+          </div>
           <button title="Configure Custom Probe parameters" class="button" onclick="editCustomProbe();" id="editCustomProbeBtn" style="display: none;"><i class="fas fa-cogs"></i></button>
           <span style="padding-left: 50px;" id="ProbeButtonBarSpacer"></span>
           <button class="button alert js-dialog-close" onclick="resetJogModeAfterProbe(); Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
@@ -1803,6 +1836,9 @@
   <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
 
+  <!-- Theme  -->
+  <script type="text/javascript" src="js/theme.js"></script>
+
   <script type="text/javascript" src="js/diagnostics.js"></script>
 
   <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
@@ -1876,7 +1912,6 @@
   <script type="text/javascript" src="js/toolchange.js"></script>
 
   <script src="/lib/furcanIconPicker/iconpicker-1.5.0.js"></script>
-
 
 </html>
 <!--  -->

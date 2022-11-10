@@ -214,9 +214,11 @@ function flashFirmwarefromWizard() {
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {
           if (xhr.status == 200) {
+            console.log(xhr.response);
             $("#customFirmwareSet").html(xhr.response);
             data.customImg = true;
-            data.file = $("#firmwareBin").val();
+            data.file = xhr.response;
+            console.log(data);
             socket.emit('flashGrbl', data);
           }
         };

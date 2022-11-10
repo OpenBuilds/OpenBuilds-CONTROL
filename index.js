@@ -71,7 +71,7 @@ app.post('/uploadCustomFirmware', (req, res) => {
 
     // Display uploaded image for user validation
     firmwareImagePath = req.file.path;
-    res.send(`Using ` + req.file.path);
+    res.send(req.file.path);
   });
 });
 // end Interface Firmware flash
@@ -100,8 +100,12 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 
 // Serial
-const { SerialPort } = require('serialport')
-const { ReadlineParser } = require('@serialport/parser-readline');
+const {
+  SerialPort
+} = require('serialport')
+const {
+  ReadlineParser
+} = require('@serialport/parser-readline');
 
 // telnet
 const net = require('net');
@@ -597,7 +601,7 @@ app.post('/upload', function(req, res) {
 
   form.on('file', function(name, file) {
     debug_log('Uploaded ' + file.path);
-      showJogWindow()
+    showJogWindow()
     readFile(file.path)
   });
 
@@ -712,6 +716,13 @@ io.on("connection", function(socket) {
     shell.openExternal('https://openbuilds.com/threads/openbuilds-control-software.13121/')
   });
 
+  socket.on("adX32", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://openbuildspartstore.com/BlackBox-Motion-Control-System-X32')
+  });
+
   socket.on("minimisetotray", function(data) {
     jogWindow.hide();
   });
@@ -721,10 +732,21 @@ io.on("connection", function(socket) {
   });
 
   socket.on("maximize", function(data) {
+    if (jogWindow.isFullScreen()) {
+      jogWindow.setFullScreen(false);
+    }
     if (jogWindow.isMaximized()) {
       jogWindow.unmaximize();
     } else {
       jogWindow.maximize();
+    }
+  });
+
+  socket.on("fullscreen", function(data) {
+    if (jogWindow.isFullScreen()) {
+      jogWindow.setFullScreen(false);
+    } else {
+      jogWindow.setFullScreen(true);
     }
   });
 
@@ -757,10 +779,14 @@ io.on("connection", function(socket) {
     var customImg = data.customImg
     console.log(__dirname, file, data.file)
     if (customImg) {
-      var firmwarePath = firmwareImagePath
+      var firmwarePath = data.file
     } else {
       var firmwarePath = path.join(__dirname, data.file)
     }
+
+    console.log("-------------------------------------------")
+    console.log(firmwarePath)
+    console.log("-------------------------------------------")
 
     const Avrgirl = require('avrgirl-arduino');
 
@@ -2851,6 +2877,7 @@ if (isElectron()) {
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
         offscreen: true,
+        backgroundColor: "#fff"
       });
 
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
