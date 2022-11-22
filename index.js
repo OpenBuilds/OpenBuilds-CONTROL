@@ -120,19 +120,17 @@ var lastsentuploadprogress = 0;
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
-
+const {
+  dialog
+} = require('electron')
+electronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
+electronApp.commandLine.appendSwitch('enable-gpu-rasterization')
+electronApp.commandLine.appendSwitch('enable-zero-copy')
 
 if (isElectron()) {
   debug_log("Local User Data: " + electronApp.getPath('userData'))
-  electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
-  electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
-  electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
-  electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
-  electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
-  // Removing max-old-space-size switch (Introduced in 1.0.168 and removed in 1.0.169) due it causing High CPU load on some PCs.
-  //electronApp.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192')
-  debug_log('Command Line Arguments for Electron: Set OK')
 }
+
 const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
 const nativeImage = require('electron').nativeImage
@@ -658,6 +656,23 @@ io.on("connection", function(socket) {
 
   socket.on("scannetwork", function(data) {
     scanForTelnetDevices(data)
+  })
+
+  socket.on("openFile", function(data) {
+    dialog.showOpenDialog(jogWindow, {
+      properties: ['openFile']
+    }).then(result => {
+      console.log(result.canceled)
+      console.log(result.filePaths)
+      var openFilePath = result.filePaths[0];
+      if (openFilePath !== "") {
+        debug_log("path" + openFilePath);
+        readFile(openFilePath);
+      }
+
+    }).catch(err => {
+      console.log(err)
+    })
   })
 
   socket.on("openbuilds", function(data) {

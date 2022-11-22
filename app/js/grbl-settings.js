@@ -342,8 +342,11 @@ function checkifchanged() {
 
       if (newVal !== undefined) {
         // Only send values that changed
-        if (parseFloat(newVal) != parseFloat(grblParams[key]) && newVal != grblParams[key]) {
+        if (newVal != grblParams[key]) {
           hasChanged = true;
+          console.log("changed: " + key)
+          console.log("old: " + grblParams[key])
+          console.log("new: " + newVal)
           if (!$("#val-" + j + "-input").parent().is('td')) {
             $("#val-" + j + "-input").parent().addClass('alert')
           } else if ($("#val-" + j + "-input").is('select')) {

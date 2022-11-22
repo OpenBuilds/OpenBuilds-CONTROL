@@ -1,3 +1,5 @@
+v1.0.338: Beta testing alternative GPU blacklist switch config for older computers, Fixed a couple Grbl Settings bugs
+v1.0.337: Improved WebGL Detection
 v1.0.334/5/6: Dark Mode theme (based off /pull/#223), Added Fullscreen Mode button, Updated Dependencies (/pull/260), Fixed bug in ATmega Custom flash option (#268), Updated Wizard's Graphics
 v1.0.333: BlackBox Support, 4th Axis support: A-Axis Jog and DRO, Updated firmware Flashing tool, Updated USB tool for Interface
 v1.0.332: Updated SSL certificates

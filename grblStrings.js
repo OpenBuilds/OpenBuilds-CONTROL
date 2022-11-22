@@ -49,7 +49,15 @@ var grblAlarmCodes = {
   6: "Homing fail. Reset during active homing cycle.",
   7: "Homing fail. Safety door was opened during active homing cycle.",
   8: "Homing fail. Cycle failed to clear limit switch when pulling off. Try increasing pull-off setting or check wiring.",
-  9: "Homing fail. Could not find limit switch within search distance. Defined as 1.5 * max_travel on search and 5 * pulloff on locate phases."
+  9: "Homing fail. Could not find limit switch within search distance. Defined as 1.5 * max_travel on search and 5 * pulloff on locate phases.",
+  10: "EStop asserted. Clear and reset",
+  11: "Homing required. Execute homing command ($H) to continue.",
+  12: "Limit switch engaged. Clear before continuing.",
+  13: "Probe protection triggered. Clear before continuing.",
+  14: "Spindle at speed timeout. Clear before continuing.",
+  15: "Homing fail. Could not find second limit switch for auto squared axis within search distances. Try increasing max travel, decreasing pull-off distance, or check wiring.",
+  16: "Power on selftest (POS) failed.",
+  17: "Motor fault."
 };
 
 var grblSettingCodes = {
@@ -133,7 +141,9 @@ var grblSettingCodes = {
   307: "Websocket Port",
   73: "Wifi Mode", // Off/Station
   74: "SSID",
-  75: "PSK"
+  75: "PSK",
+  65: "Require homing sequence to be executed at startup"
+
 };
 
 exports.errors = function(id) {
