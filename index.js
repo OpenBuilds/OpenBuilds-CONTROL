@@ -1536,6 +1536,17 @@ io.on("connection", function(socket) {
     send1Q();
   });
 
+  socket.on('serialInject', function(data) {
+    // Inject a live command into Serial stream in real-time (dev tool) even while a job is running, etc (straight Port.write from machineSend)
+    machineSend(data, true);
+  });
+
+  socket.on("dump", function(data) {
+    console.log(queuePointer);
+    console.log(gcodeQueue);
+    console.log(sentBuffer);
+  })
+
   socket.on('runCommand', function(data) {
     debug_log('Run Command (' + data.replace('\n', '|') + ')');
     if (status.comms.connectionStatus > 0) {
@@ -1941,6 +1952,7 @@ io.on("connection", function(socket) {
           switch (status.machine.firmware.type) {
             case 'grbl':
               clearInterval(queueCounter);
+              jogWindow.setProgressBar(0);
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               setTimeout(function() {
                 addQRealtime('$X\n');
@@ -2048,6 +2060,7 @@ function machineSend(gcode, realtime) {
       io.sockets.emit("queueCount", data);
       // debug_log(gcode)
       port.write(gcode);
+      debug_log("SENT: " + gcode)
     }
   } else {
     debug_log("PORT NOT OPEN")
@@ -2093,6 +2106,7 @@ function runJob(object) {
         // Start interval for qCount messages to socket clients
         queueCounter = setInterval(function() {
           status.comms.queue = gcodeQueue.length - queuePointer
+          jogWindow.setProgressBar(queuePointer / gcodeQueue.length)
         }, 500);
         send1Q(); // send first line
         status.comms.connectionStatus = 3;
@@ -2107,6 +2121,7 @@ function runJob(object) {
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
+  jogWindow.setProgressBar(0);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -2126,7 +2141,7 @@ function stopPort() {
 }
 
 function parseFeedback(data) {
-  debug_log(data)
+  //debug_log(data)
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
@@ -2143,7 +2158,7 @@ function parseFeedback(data) {
   } else if (state == "Hold:0") {
     pause();
   }
-  if (status.machine.firmware.type == "grbl" || status.machine.firmware.type == "grblhal") {
+  if (status.machine.firmware.type == "grbl") {
     // Extract work offset (for Grbl > 1.1 only!)
     var startWCO = data.search(/wco:/i) + 4;
     var wco;
@@ -2614,6 +2629,7 @@ function send1Q() {
       }
       status.comms.connectionStatus = 2; // finished
       clearInterval(queueCounter);
+      jogWindow.setProgressBar(0);
       gcodeQueue.length = 0; // Dump the Queye
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
@@ -3013,6 +3029,7 @@ function stop(data) {
         break;
     }
     clearInterval(queueCounter);
+    jogWindow.setProgressBar(0);
     status.comms.queue = 0
     queuePointer = 0;
     gcodeQueue.length = 0; // Dump the queue

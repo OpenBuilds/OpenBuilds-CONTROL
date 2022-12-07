@@ -636,7 +636,7 @@ var grblSettingsTemplate2 = {
     key: `$70`,
     title: `Network Services`,
     description: `70`,
-    template: `<input id="val--input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
+    template: `<input id="val-70-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
     utils: ``
   },
   300: {

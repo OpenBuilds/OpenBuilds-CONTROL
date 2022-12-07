@@ -11,6 +11,8 @@ function populateSurfaceToolForm() {
       surfaceX: 200,
       surfaceY: 300,
       surfaceDepth: 3,
+      surfaceCoolant: "enabled",
+      surfaceRPM: 1000
     };
   }
   $("#surfaceDiameter").val(data.surfaceDiameter);
@@ -19,6 +21,8 @@ function populateSurfaceToolForm() {
   $("#surfaceX").val(data.surfaceX);
   $("#surfaceY").val(data.surfaceY);
   $("#surfaceDepth").val(data.surfaceDepth);
+  $('#surfaceCoolant').val(data.surfaceCoolant)
+  $('#surfaceRPM').val(data.surfaceRPM)
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
   Metro.dialog.open("#surfacingDialog");
@@ -33,7 +37,8 @@ function createSurfaceGcode() {
     surfaceY: $("#surfaceY").val(),
     surfaceDepth: $("#surfaceDepth").val(),
     surfaceType: $("input[name='surfaceType']:checked").val(),
-    surfaceRPM: $('#surfaceRPM').val()
+    surfaceRPM: $('#surfaceRPM').val(),
+    surfaceCoolant: $('#surfaceCoolant').val()
   };
   console.log(data);
   localStorage.setItem("lastSurfacingTool", JSON.stringify(data));
@@ -67,7 +72,14 @@ G54; Work Coordinates
 G21; mm-mode
 G90; Absolute Positioning
 M3 S` + data.surfaceRPM + `; Spindle On
-G4 P1.8; Wait for spindle to come up to speed
+`
+
+  if (data.surfaceCoolant == "enabled") {
+    gcode += `M8 ;  Coolant On
+`
+  }
+
+  gcode += `G4 P1.8; Wait for spindle to come up to speed
 G0 Z10
 G0 X0 Y0
 G1 F` +
@@ -147,6 +159,10 @@ G1 X` +
 
 
   gcode += `M5 S0\n`;
+
+  if (data.surfaceCoolant == "enabled") {
+    gcode += `M9 ;  Coolant Off`
+  }
 
   editor.session.setValue(gcode);
   parseGcodeInWebWorker(gcode)
