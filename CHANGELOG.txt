@@ -1,3 +1,4 @@
+v1.0.340: Fixed bug in X32>4Axes flashing tool
 v1.0.339: Updated grblHAL Binaries to fix Probe bug, Windows Taskbar jog Progress indicator, Updated Pi Install script with Node19x, Added coolant/vacuum to Surfacing Wizard
 v1.0.338: Beta testing alternative GPU blacklist switch config for older computers, Fixed a couple Grbl Settings bugs
 v1.0.337: Improved WebGL Detection

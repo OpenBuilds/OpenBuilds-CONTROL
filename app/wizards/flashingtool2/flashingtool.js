@@ -242,9 +242,9 @@ function flashFirmwarefromWizard() {
 
     if ($("#grblHalAxesCount").val() == "3axes-grblhal") {
       var filename = "grblhal-grbl3axis.bin";
-    } else if ($("#grblAxesCount").val() == "2axes-grblhal") {
+    } else if ($("#grblHalAxesCount").val() == "2axes-grblhal") {
       var filename = "";
-    } else if ($("#grblAxesCount").val() == "4axes-grblhal") {
+    } else if ($("#grblHalAxesCount").val() == "4axes-grblhal") {
       var filename = "grblhal-grbl4axis.bin";
     }
 
