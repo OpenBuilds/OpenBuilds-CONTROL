@@ -36,7 +36,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -75,7 +75,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -114,7 +114,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -153,7 +153,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -192,7 +192,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -231,7 +231,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -270,7 +270,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -309,7 +309,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -348,7 +348,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -387,7 +387,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -426,7 +426,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -465,7 +465,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -504,7 +504,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -543,7 +543,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -582,7 +582,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -660,7 +660,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "2", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -699,7 +699,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "2", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -738,7 +738,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -777,7 +777,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -816,7 +816,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -855,7 +855,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"

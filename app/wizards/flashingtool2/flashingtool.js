@@ -54,7 +54,7 @@ function openFlashingTool() {
       <div class="cell-md-9 mb-1">
         <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="interfaceFirmwareVer" data-editable="true">
           <option value="online">Latest available version</option>
-          <option value="custom">Custom: firmware binary file</option>
+          <option value="custom">Custom: firmware .BIN file</option>
         </select>
       </div>
     </div>
@@ -66,7 +66,7 @@ function openFlashingTool() {
             <option value="3axes-grbl">3 Axes CNC/Laser: Dual-Y with XYZ Axis Homing</option>
             <option value="2axes-grbl">2 Axes CNC/Laser: Dual-Y with Z-Axis Homing Disabled</option>
             <option value="servo-grbl">2/3 Axes Plotter: Dual-Y with Servo Toolhead</option>
-            <option value="custom">Custom: firmware hex file</option>
+            <option value="custom">Custom: firmware .HEX file</option>
           </select>
         </div>
       </div>
@@ -79,7 +79,7 @@ function openFlashingTool() {
             <option value="3axes-grblhal">3 Axes CNC/Laser: Dual-Y with XYZ Axis Homing</option>
             <!-- option value="2axes-grblhal">2 Axes CNC/Laser: Dual-Y with Z-Axis Homing Disabled</option -->
             <option value="4axes-grblhal">4 Axes CNC/Laser: with XYZA Axis Homing</option>
-            <option value="custom">Custom: firmware hex file</option>
+            <option value="custom">Custom: firmware .BIN file</option>
           </select>
         </div>
       </div>
