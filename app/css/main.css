@@ -18,7 +18,7 @@ body {
 }
 
 /* Implemented as default https://thayneco.com/expand-usb-port-selector-in-openbuilds-control/  */
-#section-two div:nth-child(2) label {
+#section-jog div:nth-child(2) label {
   width: 350px;
 }
 
@@ -56,6 +56,15 @@ body {
 #editor {
   /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
   height: calc(100vh - 535px);
+  width: 100%;
+  border-top: 1px solid #ccc;
+  /* margin-top: 5px; */
+  box-shadow: 0 0 2px 2px #ddd;
+}
+
+#fluidnceditor {
+  /* Note only uses height attribs from here, before we connect to websocket. After that, it gets set by websocket.js */
+  height: calc(100vh - 235px);
   width: 100%;
   border-top: 1px solid #ccc;
   /* margin-top: 5px; */

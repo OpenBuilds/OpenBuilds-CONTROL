@@ -97,6 +97,21 @@ $(document).ready(function() {
     init3D();
   }
 
+  // File Open Button compatible with Node 19+ dialogs
+  if (!disableElectron19FileOpen) {
+    if (navigator.userAgent.indexOf('Electron') >= 0) {
+      $("#openGcodeBtn").hide()
+      $("#openGcodeBtnElectron19").show()
+    } else {
+      $("#openGcodeBtn").show()
+      $("#openGcodeBtnElectron19").hide()
+    }
+  } else {
+    $("#openGcodeBtn").show()
+    $("#openGcodeBtnElectron19").hide()
+  }
+
+
   if (typeof ace !== 'undefined') {
     editor = ace.edit("editor");
     editor.$blockScrolling = Infinity;

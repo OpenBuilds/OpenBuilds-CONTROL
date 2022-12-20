@@ -58,11 +58,15 @@
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
-            <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
+            <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
             <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+            <li id="fluidncSettings" style="display: none;"><a id="fluidncTab" href="#section-fluidnc" onclick="fluidncPanel();"><i class="fas fa-fw fa-sliders-h"></i> FluidNC Settings</a></li>
             <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
           <div class="content-holder">
+
+            <!-- Start Grbl Settings -->
+
             <div class="section" id="section-grbl">
               <div class="group">
                 <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
@@ -162,7 +166,114 @@
                 <span class="title">E-Stop</span>
               </div>
             </div>
-            <div class="section" id="section-two">
+
+            <!-- End Grbl Settings -->
+
+            <!-- Start FluidNC -->
+
+            <div class="section" id="section-fluidnc">
+              <!-- <div class="group"> -->
+              <!-- <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i id="saveBtnIcon" class="fas fa-save fg-gray" data-fa-transform="grow-8"></i>
+                      <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Save<br> to Firmware</span>
+                </button> -->
+
+              <!-- <button class="ribbon-button" onclick="backupGrblSettings();">
+                  <span class="icon">
+                    <i class="fas fa-download fg-lightOrange"></i>
+                  </span>
+                  <span class="caption">Backup<br>Settings</span>
+                </button> -->
+
+              <!-- <button class="ribbon-button btn-file">
+                  <input class="btn-file" id="grblBackupFile" type="file" accept=".txt, .settings, .grbl" />
+                  <span class="icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="caption">Restore<br>Backup</span>
+                </button> -->
+              <!-- <span class="title">Grbl Settings</span>
+              </div> -->
+              <div class="group">
+                <div class="ribbon-group" style="width: 90px;">
+                  <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                    <span class="icon">
+                      <span class="mif-loop"></span>
+                    </span>
+                    <span class="caption">Restart</span>
+                  </button>
+                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                    <span class="icon">
+                      <span class="mif-unlock"></span>
+                    </span>
+                    <span class="caption">Unlock</span>
+                  </button>
+                  <!-- <button class="ribbon-icon-button" onclick="refreshGrblSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sync-alt"></i>
+                    </span>
+                    <span class="caption">Refresh</span>
+                  </button> -->
+
+                </div>
+                <span class="title">Grbl</span>
+              </div>
+              <div class="group">
+                <div class="ribbon-group">
+                  <button class="ribbon-icon-button" onclick="clearSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sliders-h"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;Settings</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" onclick="clearWCO();">
+                    <span class="icon">
+                      <i class="fas fa-layer-group"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;WCOs</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" onclick="clearEEPROM();">
+                    <span class="icon">
+                      <i class="fas fa-microchip"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;EEPROM</span>
+                  </button>
+                </div>
+                <span class="title">Firmware Reset Defaults</span>
+              </div>
+              <div class="group estop">
+                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                  <span class="icon">
+                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                      <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                      <i class="far fa-bell"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Unlock<br>Alarm</span>
+                </button>
+                <button class="ribbon-button" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Abort</span>
+                </button>
+                <span class="title">E-Stop</span>
+              </div>
+            </div>
+
+            <!-- End FluidNC -->
+
+            <!-- Start Jog/Main -->
+
+            <div class="section" id="section-jog">
               <div class="group">
                 <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
                   <span class="icon">
@@ -222,6 +333,27 @@
 
                   </ul>
                 </div>
+
+                <div>
+                  <button id="openGcodeBtnElectron19" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
+                    <span class="icon">
+                      <span class="far fa-folder-open fg-amber"></span>
+                    </span>
+                    <span class="caption">Open<br>G-CODE</span>
+                  </button>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                    <li class="btn-file" onclick="socket.emit('openFile')"><a href="#"><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a> </li>
+                    <li class="divider fg-gray"></li>
+
+                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('fabber', true);"><img width="16" src="affiliates/fabber/fabber.svg"> Fabber</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('carveco', true);"><img width="16" src="affiliates/carveco/carveco.svg"> Carveco</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
+
+                  </ul>
+                </div>
+
                 <span class="title">File</span>
               </div>
 
@@ -431,6 +563,10 @@
 
             </div>
 
+            <!-- End Jog/Main -->
+
+            <!-- Start Troubleshooting -->
+
             <div class="section" id="section-troubleshooting">
               <div class="group">
                 <div>
@@ -444,6 +580,7 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li onclick="disable3Dviewer = !disable3Dviewer; saveDiagnostics(); location.reload();" id="disable3DviewerTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer System (For slower computers)</a></li>
+                    <li onclick="socket.emit('gpuinfo')"><a href="#"><i class="fa fa-microchip fa-fw"></i> Show GPU Information</a></li>
                     <li class="divider"></li>
                     <li onclick="disable3Dcontrols = !disable3Dcontrols; saveDiagnostics(); location.reload();" id="disable3DcontrolsTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Interactions</a></li>
                     <li onclick="disable3Dskybox = !disable3Dskybox; saveDiagnostics(); location.reload();" id="disable3DskyboxTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Skybox/Fog</a></li>
@@ -453,6 +590,11 @@
                     <li class="divider"></li>
                     <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
                     <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
+                    <li class="divider"></li>
+                    <li onclick="disableElectron19FileOpen = !disableElectron19FileOpen; saveDiagnostics(); location.reload();" id="disableElectron19FileOpenTick"><a href="#"><i class="far fa-folder-open fa-fw"></i> Disable Native File Open
+                        Dialog</a>
+                    </li>
+
                 </div>
                 <span class="title">Settings</span>
               </div>
@@ -499,6 +641,8 @@
               </div>
 
             </div>
+
+            <!-- End Troubleshooting -->
 
           </div>
         </nav>
@@ -1029,6 +1173,11 @@
         <div id="grblPanel" style="display: none;">
           <div id="grblconfig"></div>
         </div>
+
+        <div id="fluidncPanel" style="display: none;">
+          <div id="fluidnceditor"></div>
+        </div>
+
         <div id="updatePanel" style="display: none;">
           <div id="updateconsole">Click "Download Updates" above</div>
         </div>
@@ -1853,6 +2002,8 @@
   <script type="text/javascript" src="js/diagnostics.js"></script>
 
   <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
+
+  <script type="text/javascript" src="lib/yamljs/yaml.min.js"></script>
 
   <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
   <script>

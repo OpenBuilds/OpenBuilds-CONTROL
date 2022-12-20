@@ -28,11 +28,19 @@ $(document).ready(function() {
   });
 });
 
-function showGrbl(bool) {
+function showGrbl(bool, firmware) {
   if (bool) {
-    setTimeout(function() {
-      sendGcode('$$')
-    }, 500);
+    if (firmware.platform == "grblHAL" || firmware.platform == "gnea") { // Doesn't use $$ settings, uses config.yaml
+      setTimeout(function() {
+        sendGcode('$$')
+      }, 500);
+    }
+    if (firmware.platform == "FluidNC") {
+      // Show FluidNC specific tabs and buttons
+      setTimeout(function() {
+        sendGcode('$CD')
+      }, 500);
+    }
     setTimeout(function() {
       sendGcode('$I')
     }, 700);
@@ -40,8 +48,9 @@ function showGrbl(bool) {
       sendGcode('$G')
     }, 900);
     $("#grblButtons").show()
-    $("#firmwarename").html('Grbl')
-  } else {
+    $("#firmwarename").html(firmware.platform)
+
+  } else { // Hide
     $("#grblButtons").hide()
     $("#firmwarename").html('')
   }
@@ -210,6 +219,20 @@ function initSocket() {
     $('#downloadprogress').html(data + "%");
   });
 
+  socket.on('fluidncConfig', function(data) {
+    console.log(data);
+    var fluidnceditor = ace.edit("fluidnceditor");
+    fluidnceditor.setTheme('ace/theme/sqlserver')
+    fluidnceditor.session.setMode("ace/mode/yaml");
+    fluidnceditor.session.setValue(data); // from samplefile.js
+    $('#fluidncSettings').show()
+    var fluidncJSON = YAML.parse(data);
+    console.log(fluidncJSON)
+    //yamlString = YAML.stringify(nativeObject[, inline /* @integer depth to start using inline notation at */[, spaces /* @integer number of spaces to use for indentation */] ]);
+
+
+  });
+
   socket.on('data', function(data) {
     // console.log(data)
     var toPrint = escapeHTML(data.response);
@@ -251,7 +274,8 @@ function initSocket() {
   });
 
   socket.on("grbl", function(data) {
-    showGrbl(true)
+    console.log(data)
+    showGrbl(true, data)
   });
 
   socket.on("jobComplete", function(data) {
@@ -791,7 +815,7 @@ function initSocket() {
       bellstate = false
     };
     if (status.comms.connectionStatus == 0) {
-      showGrbl(false)
+      showGrbl(false, false)
     }
 
     var updateWCS = false

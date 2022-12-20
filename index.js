@@ -46,7 +46,9 @@ var mkdirp = require('mkdirp');
 const drivelist = require('drivelist');
 require('hazardous');
 
-
+// FluidNC test
+var fluidncConfig = "";
+// FluidNC end test
 
 app.use(express.static(path.join(__dirname, "app")));
 //app.use(express.limit('200M'));
@@ -640,10 +642,10 @@ io.on("connection", function(socket) {
         }
       }
     } else {
-      io.sockets.emit('grbl')
+      io.sockets.emit('grbl', status.machine.firmware)
     }
     if (safetosend != undefined && safetosend == true) {
-      io.sockets.emit('grbl')
+      io.sockets.emit('grbl', status.machine.firmware)
     }
   }
 
@@ -736,6 +738,39 @@ io.on("connection", function(socket) {
       shell
     } = require('electron')
     shell.openExternal('https://openbuildspartstore.com/BlackBox-Motion-Control-System-X32')
+  });
+
+  socket.on("gpuinfo", function(data) {
+    // GPU
+    var gpuInfoWindow = new BrowserWindow({
+      // 1366 * 768 == minimum to cater for
+      width: 800,
+      height: 800,
+      fullscreen: false,
+      center: true,
+      resizable: true,
+      maximizable: true,
+      title: "OpenBuilds CONTROL: Chromium's GPU Report",
+      frame: true,
+      autoHideMenuBar: true,
+      //icon: '/app/favicon.png',
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, "/app/favicon.png")
+      ),
+      webgl: true,
+      experimentalFeatures: true,
+      experimentalCanvasFeatures: true,
+      offscreen: true,
+      backgroundColor: "#fff"
+    });
+    gpuInfoWindow.loadURL("chrome://gpu");
+
+    gpuInfoWindow.once('ready-to-show', () => {
+      gpuInfoWindow.show()
+      gpuInfoWindow.setAlwaysOnTop(true);
+      gpuInfoWindow.focus();
+      gpuInfoWindow.setAlwaysOnTop(false);
+    })
   });
 
   socket.on("minimisetotray", function(data) {
@@ -1089,7 +1124,7 @@ io.on("connection", function(socket) {
                 'type': 'info'
               }
               setTimeout(function() {
-                io.sockets.emit('grbl')
+                io.sockets.emit('grbl', status.machine.firmware)
                 //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
                 //io.sockets.emit('errorsCleared', true);
               }, 600)
@@ -1164,6 +1199,9 @@ io.on("connection", function(socket) {
         //console.log(data)
         var command = sentBuffer[0];
 
+        if (command == "$CD" && data != "ok") {
+          fluidncConfig = fluidncConfig += data + "\n"
+        }
 
         if (data.indexOf("<") != 0) {
           debug_log('data:', data)
@@ -1335,6 +1373,10 @@ io.on("connection", function(socket) {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "grblHAL"
             status.machine.firmware.version = data.substr(8, 4); // get version
+          } else if (data.indexOf("FluidNC") != -1) { // Grbl 3.6 [FluidNC v3.6.5 (wifi) '$' for help]
+            status.machine.firmware.type = "grbl";
+            status.machine.firmware.platform = "FluidNC"
+            status.machine.firmware.version = data.substr(19, 5); // get version
           } else {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "gnea"
@@ -1361,7 +1403,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           // debug_log("GRBL detected");
           // setTimeout(function() {
-          //   io.sockets.emit('grbl')
+          //   io.sockets.emit('grbl', status.machine.firmware)
           //   //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
           //   //io.sockets.emit('errorsCleared', true);
           // }, 600)
@@ -1415,6 +1457,9 @@ io.on("connection", function(socket) {
           if (status.machine.firmware.type === "grbl") {
             // debug_log('got OK from ' + command)
             command = sentBuffer.shift();
+          }
+          if (command == "$CD") {
+            io.sockets.emit('fluidncConfig', fluidncConfig);
           }
           status.comms.blocked = false;
           send1Q();
@@ -2654,12 +2699,17 @@ function addQToEnd(gcode) {
   if (testGcode.indexOf("$H") != -1) {
     status.machine.modals.homedRecently = true;
   }
+  if (testGcode == "$CD") {
+    fluidncConfig = ""; // empty string
+  }
   if (new RegExp(modalCommands.join("|")).test(testGcode)) {
     gcodeQueue.push("$G");
   }
   if (gcode.match(/T([\d.]+)/i)) {
     gcodeQueue.push("$G");
   }
+
+
 }
 
 function addQToStart(gcode) {
