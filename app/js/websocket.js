@@ -497,7 +497,7 @@ function initSocket() {
       }
 
       if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
-        string = "<span class='fg-darkRed'>" + string + ":  Make sure the Interface is in BOOTLOADER MODE. See https://docs.openbuilds.com/doku.php?id=docs:interface:firmware-update-control"
+        string = "<span class='fg-darkRed'>" + string + ":  Make sure the device is in BOOTLOADER MODE. Your computer failed to put it into Bootloader mode automatically. You can enter bootloader mode by: Press and hold down MODE, the Press RESET while still holding MODE. Let go of RESET, then wait a second or two and let go of MODE.  Best performed right after starting the Firmware Flashing operation."
       }
 
 
