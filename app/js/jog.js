@@ -838,6 +838,7 @@ $(document).ready(function() {
 });
 
 function changeStepSize(dir) {
+  $('.distbtn').blur();
   if (jogdistXYZ == 0.1 || jogdistXYZ == 0.0254) {
     if (dir == 1) {
       if (unit == "mm") {
