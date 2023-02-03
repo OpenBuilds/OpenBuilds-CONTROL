@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         #os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-2019, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 14
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
