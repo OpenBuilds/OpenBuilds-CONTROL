@@ -15,7 +15,7 @@
     "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
     "directory-tree": "^2.3.1",
-    "drivelist": "git://git@github.com:balena-io-modules/drivelist.git#3ffeb10f9c51f929894ae4c7baa6b10d828c9d2b",
+    "drivelist": "https://github.com/balena-io-modules/drivelist.git#3ffeb10f9c51f929894ae4c7baa6b10d828c9d2b",
     "electron-builder-notarize": "^1.5.0",
     "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
