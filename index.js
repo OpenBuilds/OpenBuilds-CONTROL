@@ -37,7 +37,6 @@ var https = require('https');
 
 var ioServer = require('socket.io');
 var io = new ioServer();
-var safetosend;
 
 var fs = require('fs');
 var path = require("path");
@@ -626,27 +625,40 @@ app.on('certificate-error', function(event, webContents, url, error,
 
 io.on("connection", function(socket) {
 
-  iosocket = socket;
+  debug_log("New IO Connection ");
 
+
+  iosocket = socket;
 
   if (status.machine.firmware.type == 'grbl') {
 
-    // handle Grbl RESET external input
-    if (status.machine.inputs.length > 0) {
-      for (i = 0; i < status.machine.inputs.length; i++) {
-        switch (status.machine.inputs[i]) {
-          case 'R':
-            // debug_log('PIN: SOFTRESET');
-            safetosend = true;
-            break;
-        }
-      }
-    } else {
-      io.sockets.emit('grbl', status.machine.firmware)
-    }
-    if (safetosend != undefined && safetosend == true) {
-      io.sockets.emit('grbl', status.machine.firmware)
-    }
+    debug_log("Is Grbl");
+
+
+    // // handle Grbl RESET external input
+    // if (status.machine.inputs.length > 0) {
+    //   for (i = 0; i < status.machine.inputs.length; i++) {
+    //     switch (status.machine.inputs[i]) {
+    //       case 'R':
+    //         // debug_log('PIN: SOFTRESET');
+    //         safetosend = true;
+    //         break;
+    //     }
+    //   }
+    // } else {
+    //   setTimeout(function() {
+    debug_log("Emit Grbl: 1");
+    io.sockets.emit('grbl', status.machine.firmware)
+    //   }, 10000);
+    // }
+    //
+    // if (safetosend != undefined && safetosend == true) {
+    //   setTimeout(function() {
+    //     debug_log("Emit Grbl: 2");
+    //     io.sockets.emit('grbl', status.machine.firmware)
+    //   }, 10000);
+    // }
+
   }
 
 
@@ -1212,6 +1224,7 @@ io.on("connection", function(socket) {
           status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
           io.sockets.emit("status", status);
           io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
+          status.machine.firmware.date = data.split(':')[1].split(".")[2];
         }
 
         if (data.indexOf("[OPT:") === 0) {

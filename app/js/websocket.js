@@ -29,24 +29,27 @@ $(document).ready(function() {
 });
 
 function showGrbl(bool, firmware) {
+  console.log(firmware)
   if (bool) {
     if (firmware.platform == "grblHAL" || firmware.platform == "gnea") { // Doesn't use $$ settings, uses config.yaml
       setTimeout(function() {
         sendGcode('$$')
       }, 500);
-    }
-    if (firmware.platform == "FluidNC") {
+    } else if (firmware.platform == "FluidNC") {
       // Show FluidNC specific tabs and buttons
       setTimeout(function() {
         sendGcode('$CD')
       }, 500);
     }
+
     setTimeout(function() {
       sendGcode('$I')
     }, 700);
+
     setTimeout(function() {
       sendGcode('$G')
     }, 900);
+
     $("#grblButtons").show()
     $("#firmwarename").html(firmware.platform)
 
@@ -873,6 +876,7 @@ function initSocket() {
       switch (data[i]) {
         case 'Q':
           // console.log('SPINDLE_IS_SERVO Enabled')
+          // Also enabled for grblHAL from grbl-settings if $33=50
           $('#enServo').removeClass('alert').addClass('success').html('ON')
           $(".servo-active").show()
           break;

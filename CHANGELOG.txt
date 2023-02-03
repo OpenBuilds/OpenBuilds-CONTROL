@@ -1,3 +1,4 @@
+v1.0.345: Removed Carveco/Fabber links from Open Gcode menu. Fixed bug #292, Updated dark Mode CSS #291, Updated Acro profiles for grblHAL #288, Updated servo support for grblHAL #285, Decreased color shade of button focus box shadow to avoid confusion with distance selector #293
 v1.0.344: Fixed bug in Dark Mode theme with Jog Distance Selected CSS
 v1.0.343: Updated wording on ESP32 based Bootloader error message, Assert G90/G21 for GotoZero commands to fix Issue #286
 v1.0.342: Beta test of Electron 19 based native File Open dialog for issue #270, Basic FluidNC connectivity support, Updated SSL Certificates, Added GPU Information menu entry under Troubleshooting, Fixed bug in Mobile Jog

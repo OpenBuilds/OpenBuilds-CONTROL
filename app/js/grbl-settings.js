@@ -106,6 +106,17 @@ function grblSettings(data) {
     $('#enLaser').removeClass('success').addClass('alert').html('OFF')
   }
 
+
+  // grblHAL - enable Servo Buttons if Spindle PWM == 50hz
+  if (grblParams['$33'] == 50) {
+    $('#enServo').removeClass('alert').addClass('success').html('ON')
+    $(".servo-active").show()
+  } else {
+    $('#enServo').removeClass('success').addClass('alert').html('OFF')
+    $(".servo-active").hide()
+  }
+
+
   updateToolOnSValues();
 
   if (localStorage.getItem('jogOverride')) {

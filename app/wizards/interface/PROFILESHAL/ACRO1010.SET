@@ -32,3 +32,5 @@ $122=500.000 ;Z-axis acceleration, mm/sec^2
 $130=800.000 ;X-axis maximum travel, millimeters
 $131=800.000 ;Y-axis maximum travel, millimeters
 $132=70.000 ;Z-axis maximum travel, millimeters
+$44=3 ; Disable Z axis Homing
+$45=0 ; Disable Z axis Homing

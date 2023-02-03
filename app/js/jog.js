@@ -851,7 +851,7 @@ function changeStepSize(dir) {
       $('.jogdistXYZ').removeClass('fg-openbuilds')
       $('.jogdistXYZ').addClass('fg-gray')
       $('#dist1label').removeClass('fg-gray')
-      $('#dist1label').addClass('fg-openbuilds')
+      $('#dist1label').addClass('fg-dark')
     }
     if (dir == -1) {
       // do nothing

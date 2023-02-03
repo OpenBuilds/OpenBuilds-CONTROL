@@ -410,3 +410,13 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
   background: #222 !important;
   border: 1px solid #555;
 }
+
+/* as per https://github.com/OpenBuilds/OpenBuilds-CONTROL/issues/291  */
+.theme_dark .disabled {
+  color: #999 !important;
+}
+
+.theme_dark .button:focus {
+  -webkit-box-shadow: 0 0 0 3px rgba(48, 48, 48, .45);
+  box-shadow: 0 0 0 3px rgba(48, 48, 48, .45);
+}
