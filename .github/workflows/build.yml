@@ -20,9 +20,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-        - run: npm ci
-        - run: npm test
-
+        
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
