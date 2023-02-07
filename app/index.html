@@ -1152,10 +1152,10 @@
                       <span style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs"></span>
                     </div>
                     <div style="position: absolute; top: 60px; right:10px; z-index: 1; width: 200px; border: 1px lightgrey solid;">
-                        <select data-prepend="&nbsp;<i class='fas fa-video'></i>" id="videoInputSelect" class="text-small" onchange="streamSelectedCamera()">
+                        <select data-prepend="&nbsp;<i class='fas fa-video'></i>" id="cameraSelect" class="text-small" onchange="streamSelectedCamera()">
                           <option value="">None</option>
                       </select>
-                      <video width="200px" autoplay="true" id="videoElement"></video>
+                      <video width="200px" autoplay="true" id="cameraBox"></video>
                     </div>
                     <div class="fixed-bottom m-3 mb-9" style="border: 1px grey solid;">
                       <button class="button dark" onclick="simSpeed();"><span class="icon"><span class="fas fa-tachometer-alt"></span></span><span class="caption"><span id="simspeedval">1</span>x</span>
@@ -2085,49 +2085,7 @@
 
   <script src="/lib/furcanIconPicker/iconpicker-1.5.0.js"></script>
 
-  <script>
-   function streamSelectedCamera() {
-       console.log('Streaming camera...');
-       const deviceId = document.getElementById("videoInputSelect").value;
-       const video = document.querySelector("#videoElement");
-       if (deviceId === "") {
-         console.log('No camera selected..');
-         video.srcObject = null;
-         return;
-       }
-
-       navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: deviceId }}})
-              .then((device)=>{
-                    console.log('updating camera stream');
-                    video.srcObject = device;
-              })
-              .catch(function (err) {
-                  console.error(`${err.name}: ${err.message}`);
-              });
-   }
-
-   function getVideoDevices() {
-      navigator.mediaDevices.enumerateDevices()
-              .then((devices) => {
-                const videoDevices = devices.filter(device => device.kind === "videoinput");
-                const videoSelect = document.getElementById("videoInputSelect");
-                videoDevices.forEach((device) => {
-                    let option = new Option(device.label, device.deviceId);
-                    videoSelect.options.add(option);
-                });
-              })
-              .catch((err) => {
-                  console.error(`${err.name}: ${err.message}`);
-              });
-   }
-
-    if (!navigator.mediaDevices?.enumerateDevices) {
-        console.log("enumerateDevices() not supported. Cannot stream video.");
-    } else {
-        getVideoDevices();
-    }
-
-  </script>
+  <script type="text/javascript" src="js/camera.js"></script>
 
 </html>
 <!--  -->
