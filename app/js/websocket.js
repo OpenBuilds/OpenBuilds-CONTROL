@@ -29,7 +29,7 @@ $(document).ready(function() {
 });
 
 function showGrbl(bool, firmware) {
-  console.log(firmware)
+  //console.log(firmware)
   if (bool) {
     if (firmware.platform == "grblHAL" || firmware.platform == "gnea") { // Doesn't use $$ settings, uses config.yaml
       setTimeout(function() {
@@ -163,6 +163,7 @@ function initSocket() {
     }
 
     loadedFileName = data.filename;
+
     setWindowTitle()
     parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
@@ -375,6 +376,11 @@ function initSocket() {
     if (progressbar) {
       progressbar.val(donepercent);
     }
+
+    if (total > done) {
+      localStorage.setItem('gcodeLineNumber', done); //recovery line number
+    }
+
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
         editor.gotoLine(data[1] - data[0]);

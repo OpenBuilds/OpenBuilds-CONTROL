@@ -519,6 +519,8 @@
                     <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
+                    <li class="divider fg-gray"></li>
+                    <li onclick="recoverCrashedJob();"><a href="#"><i class="fas fa-fw fa-route"></i> Recover crashed/stopped job</a></li>
                   </ul>
                 </div>
 
@@ -1459,9 +1461,9 @@
     <!-- Simulator Context Menu -->
     <ul class="d-menu context" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
       <span id="dropdowncontent">
-        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, false);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span class="linenumber"></span></a>
-        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, true);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate only line <span class="linenumber"></span></a>
-        </li>
+        <li onclick="startFromHere(editor.getSelectionRange().start.row + 1);"><a href="#"><i class='fas fa-fw fa-route icon'></i> Recover job from Line: <span class="linenumber"></span></a></li>
+        <li class="divider"></li>
+        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, false);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span class="linenumber"></span></a></li>
       </span>
     </ul>
     <!--  -->
@@ -1521,105 +1523,6 @@
         </div>
         <div class="dialog-actions ">
           <button id="copyToUsbBtn" class="button success" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
-
-      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-overlay-click-close="false" data-to-top="true">
-        <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</div>
-        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
-          <form>
-            <div class="row mb-2">
-              <div class="cell-sm-7">
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Router Bit Diameter</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="22" data-editable="true">
-                    <small class="dark">Diameter of your bit / endmill</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Stepover</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
-                    <small class="dark">Stepover between passes </small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Feedrate</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
-                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
-                    <small class="dark">Cutting speed</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Width<br> <small class="dark">X-Axis</small></label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="200" data-editable="true">
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Length<br> <small class="dark">Y-Axis</small></label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="300" data-editable="true">
-                    <small class="dark">Width and Length of the area to machine flat</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Skim Depth</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
-                    <small class="dark">How much material to remove</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Spindle RPM</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceRPM" type="number" data-role="input" data-append="RPM" data-clear-button="false" value="1000" data-editable="true">
-                    <small class="dark">Spindle RPM for variable spindles</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Enable Coolant/Vacuum</label>
-                  <div class="cell-sm-6">
-                    <select id="surfaceCoolant" data-role="input" data-clear-button="false">
-                      <option value="enabled" selected>Enabled</option>
-                      <option value="disabled">Disabled</option>
-                    </select>
-                    <small class="dark">Add M8/M9 commands to GCODE</small>
-                  </div>
-                </div>
-
-              </div>
-              <div class="cell-sm-5">
-                <small class="dark">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
-                  uneven surface finish
-                </small>
-                <hr>
-
-                <small class="dark">You can use the Surfacing / Flattening Wizard to
-                  <ul class="dark">
-                    <li>Prepare / flatten your spoilboard</li>
-                    <li>Level off stock</li>
-                  </ul></small>
-                <hr>
-                <center>
-                  <img src="img/surfacing/wizard1.png" alt="diameter" border="0" style="max-width: calc(100% - 10px); ">
-                </center>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="dialog-actions">
-          <button class="button success js-dialog-close" onclick="createSurfaceGcode()">Proceed</button>
           <button class="button js-dialog-close">Cancel</button>
         </div>
       </div>
@@ -2071,6 +1974,8 @@
   <script type="text/javascript" src="wizards/interface/usbprep.js"></script>
 
   <script type="text/javascript" src="wizards/jobstats/jobstats.js"></script>
+
+  <script type="text/javascript" src="wizards/resume/resume.js"></script>
 
   <script type="text/javascript" src="js/toolchange.js"></script>
 
