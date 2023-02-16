@@ -7,7 +7,7 @@
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "electron": "^23.1.0",
-    "electron-builder": "^22.10.3",
+    "electron-builder": "^23.6.0",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0"
   },
