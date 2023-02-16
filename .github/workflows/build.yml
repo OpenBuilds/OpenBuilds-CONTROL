@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         #os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-2019, ubuntu-latest]
         #os: [macos-latest, ubuntu-latest]
 
     steps:
@@ -19,7 +19,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
 
       - name: Install Node gyp
         run: npm install -g node-gyp@latest
