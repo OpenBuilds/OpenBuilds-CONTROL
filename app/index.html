@@ -1470,63 +1470,6 @@
 
     <div id="hiddendivs" style="display:none;">
 
-
-
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false" data-to-top="true">
-        <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
-        <div class="dialog-content" style="height: calc(100% - 100px);">
-          This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
-          <hr>
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-
-              <img src="img/interface/interfacev1.png" width="150" class="mt-5" />
-            </div>
-            <div class="cell-md-9 mb-1">
-              <ul>
-                <li class="text-secondary">Insert the USB flashdrive into this computer</li>
-                <li class="text-secondary">Select the correct drive below</li>
-                <li class="text-secondary">Click COPY to transfer the files</li>
-                <li class="text-secondary">Eject the flashdrive </li>
-                <li class="text-secondary">Insert it into the Interface</li>
-              </ul>
-            </div>
-          </div>
-          <hr>
-
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-              Controller
-            </div>
-            <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="profileTargetController" data-editable="true" data-to-top="true">
-                <option value="" selected>Select a controller</option>
-                <option value="blackbox4x">OpenBuilds BlackBox 4X</option>
-                <option value="blackboxx32">OpenBuilds BlackBox X32</option>
-                <option value="genericgrbl">Generic Grbl 1.1 Controller</option>
-                <option value="genericgrblhal">Generic GrblHAL Controller</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-              Port
-            </div>
-            <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true" data-to-top="true">
-                <option value="">Waiting for USB Flashdrive</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-        <div class="dialog-actions ">
-          <button id="copyToUsbBtn" class="button success" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
-
       <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title">Update Ready</div>
         <div class="dialog-content">

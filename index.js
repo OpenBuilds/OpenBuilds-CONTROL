@@ -35,14 +35,22 @@ var app = express();
 var http = require("http").Server(app);
 var https = require('https');
 
-var ioServer = require('socket.io');
+//var ioServer = require('socket.io');
+const {
+  Server: ioServer
+} = require('socket.io');
+
 var io = new ioServer();
 
 var fs = require('fs');
 var path = require("path");
 const join = require('path').join;
-var mkdirp = require('mkdirp');
-const drivelist = require('drivelist');
+const {
+  mkdirp
+} = require('mkdirp')
+
+
+//const drivelist = require('drivelist'); // removed in 1.0.350 due to Drivelist stability issues
 require('hazardous');
 
 // FluidNC test
@@ -435,7 +443,7 @@ var status = {
     alarm: ""
   },
   interface: {
-    diskdrives: [],
+    diskdrive: false,
       firmware: {
         availVersion: "",
         installedVersion: "",
@@ -472,16 +480,16 @@ async function findChangedPorts() {
   findPorts()
 }
 
-async function findDisks() {
-  const drives = await drivelist.list();
-  status.interface.diskdrives = drives;
-}
+// async function findDisks() {
+//   const drives = await drivelist.list();
+//   status.interface.diskdrives = drives;
+// } // removed in 1.0.350 due to Drivelist stability issues
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
     findChangedPorts();
   }
-  findDisks();
+  //findDisks(); // removed in 1.0.350 due to Drivelist stability issues
 }, 1000);
 
 // var telnetCheckinterval = setInterval(function() {
@@ -684,6 +692,20 @@ io.on("connection", function(socket) {
         readFile(openFilePath);
       }
 
+    }).catch(err => {
+      console.log(err)
+    })
+  })
+
+  socket.on("openInterfaceDir", function(data) {
+    dialog.showOpenDialog(jogWindow, {
+      properties: ['openDirectory'],
+      title: "Select the USB Flashdrive you want to use with Interface"
+    }).then(result => {
+      console.log(result.canceled)
+      console.log(result.filePaths)
+      io.sockets.emit("interfaceDrive", result.filePaths[0]);
+      status.interface.diskdrive = result.filePaths[0]
     }).catch(err => {
       console.log(err)
     })
@@ -920,6 +942,7 @@ io.on("connection", function(socket) {
 
   socket.on("writeInterfaceUsbDrive", function(data) {
 
+    debug_log(data)
     //data.drive = mountpoint dest
     //data.controller = type of controller
     if (data.controller == "blackbox4x" || data.controller == "genericgrbl") {

@@ -99,14 +99,18 @@ $(document).ready(function() {
 
   // File Open Button compatible with Node 19+ dialogs
   if (!disableElectron19FileOpen) {
+    console.log("Native Dialog not disabled in Troubleshooting")
     if (navigator.userAgent.indexOf('Electron') >= 0) {
+      console.log("Native Dialog Button Enabled")
       $("#openGcodeBtn").hide()
       $("#openGcodeBtnElectron19").show()
     } else {
+      console.log("Native Dialog Button Disabled")
       $("#openGcodeBtn").show()
       $("#openGcodeBtnElectron19").hide()
     }
   } else {
+    console.log("Native Dialog is Disabled in Troubleshooting")
     $("#openGcodeBtn").show()
     $("#openGcodeBtnElectron19").hide()
   }
