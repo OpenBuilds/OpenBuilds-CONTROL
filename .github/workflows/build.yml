@@ -25,7 +25,6 @@ jobs:
         run: npm install -g node-gyp@latest
 
        - name: Set electron-builder debug env variable
-        # run: set DEBUG=electron-builder
          run: $env:DEBUG=electron-builder
 
 
