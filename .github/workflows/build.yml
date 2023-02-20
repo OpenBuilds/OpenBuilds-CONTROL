@@ -25,7 +25,7 @@ jobs:
         run: npm install -g node-gyp@latest
 
       - name: Set electron-builder debug env variable
-        run: set DEBUG=electron-builder 
+        run: set DEBUG=electron-builder
 
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
@@ -44,6 +44,7 @@ jobs:
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
+          debugElectron: true
           # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
         env:
