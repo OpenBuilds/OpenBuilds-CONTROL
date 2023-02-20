@@ -9,7 +9,8 @@
     "electron": "^23.1.0",
     "electron-builder": "^23.6.0",
     "electron-rebuild": "^3.2.9",
-    "ncp": "^2.0.0"
+    "ncp": "^2.0.0",
+    "node-gyp": "^9.3.0"
   },
   "dependencies": {
     "avrgirl-arduino": "^5.0.1",
