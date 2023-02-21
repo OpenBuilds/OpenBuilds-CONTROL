@@ -3,10 +3,9 @@ var surfacingWizardTemplate = `
       <div class="row mb-2">
         <div class="cell-sm-7">
           <div class="row mb-2">
-            <label class="cell-sm-6">Router Bit Diameter</label>
+            <label class="cell-sm-6">Surfacing Bit Diameter</label>
             <div class="cell-sm-6">
               <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="22" data-editable="true">
-              <small class="dark">Diameter of your bit / endmill</small>
             </div>
           </div>
 
@@ -14,16 +13,21 @@ var surfacingWizardTemplate = `
             <label class="cell-sm-6">Stepover</label>
             <div class="cell-sm-6">
               <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
-              <small class="dark">Stepover between passes </small>
             </div>
           </div>
 
-          <div class="row mb-2 border-bottom bd-gray">
+          <div class="row mb-2">
             <label class="cell-sm-6">Feedrate</label>
             <div class="cell-sm-6">
               <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
-              <small class="dark">Cutting speed</small>
+            </div>
+          </div>
+
+          <div class="row mb-2 pb-2  border-bottom bd-gray">
+            <label class="cell-sm-6">Spindle RPM</label>
+            <div class="cell-sm-6">
+              <input id="surfaceRPM" type="number" data-role="input" data-append="RPM" data-clear-button="false" value="1000" data-editable="true">
             </div>
           </div>
 
@@ -38,40 +42,30 @@ var surfacingWizardTemplate = `
             <label class="cell-sm-6">Length<br> <small class="dark">Y-Axis</small></label>
             <div class="cell-sm-6">
               <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="300" data-editable="true">
-              <small class="dark">Width and Length</small>
             </div>
           </div>
 
-          <div class="row mb-2 border-bottom bd-gray">
-            <label class="cell-sm-6">Pass Depth</label>
+          <div class="row mb-2">
+            <label class="cell-sm-6">Cut Depth per Pass</label>
             <div class="cell-sm-6">
               <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
-              <small class="dark">Depth per pass</small>
             </div>
+          </div>
 
-            <label class="cell-sm-6">Final Depth</label>
+          <div class="row mb-2 pb-2 border-bottom bd-gray">
+            <label class="cell-sm-6  mb-2">Final Cut Depth</label>
             <div class="cell-sm-6">
               <input id="surfaceFinalDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
-              <small class="dark">Final surfacing depth</small>
             </div>
           </div>
 
-          <div class="row mb-2 border-bottom bd-gray">
-            <label class="cell-sm-6">Spindle RPM</label>
-            <div class="cell-sm-6">
-              <input id="surfaceRPM" type="number" data-role="input" data-append="RPM" data-clear-button="false" value="1000" data-editable="true">
-              <small class="dark">Spindle RPM for variable spindles</small>
-            </div>
-          </div>
-
-          <div class="row mb-2 border-bottom bd-gray">
+          <div class="row mb-2 pb-2 border-bottom bd-gray">
             <label class="cell-sm-6">Enable Coolant/Vacuum</label>
             <div class="cell-sm-6">
               <select id="surfaceCoolant" data-role="input" data-clear-button="false">
                 <option value="enabled" selected>Enabled</option>
                 <option value="disabled">Disabled</option>
               </select>
-              <small class="dark">Add M8/M9 commands to GCODE</small>
             </div>
           </div>
 
@@ -149,7 +143,12 @@ function populateSurfaceToolForm() {
   $("#surfaceX").val(data.surfaceX);
   $("#surfaceY").val(data.surfaceY);
   $("#surfaceDepth").val(data.surfaceDepth);
-  $("#surfaceFinalDepth").val(data.surfaceFinalDepth);
+  if (data.surfaceFinalDepth) {
+    $("#surfaceFinalDepth").val(data.surfaceFinalDepth);
+  } else {
+    $("#surfaceFinalDepth").val(data.surfaceDepth);
+  }
+
   $('#surfaceCoolant').val(data.surfaceCoolant)
   $('#surfaceRPM').val(data.surfaceRPM)
   var $radios = $("input:radio[name=surfaceType]");

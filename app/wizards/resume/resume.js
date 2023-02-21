@@ -15,6 +15,8 @@ function recoverCrashedJob() {
   var resumeTemplate = `
   <form>
     Enter the starting line to recover the job from:
+    <br>
+    <span class="text-small">(Make sure you opened the GCODE first)</span>
     <hr>
     <input id="selectedLineNumber" data-prepend="<i class='fas fa-list-ol'></i> Start from line: " type="number" data-role="input"  data-clear-button="false" value="` + lineNumber + `" data-editable="true"></input>
     <hr>

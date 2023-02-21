@@ -1,3 +1,4 @@
+v1.0.351: Updated defaults for Surfacing Wizard UI, Updated text on Recovery wizard
 v1.0.350: Updated all dependencies, Updated to Node 18, Removed Drivelist Dependency
 v1.0.349: Added Multipass option to Surfacing Wizard, Experimental Job resume/recovery Wizard (use at own risk)
 v1.0.345-8: Removed Carveco/Fabber links from Open Gcode menu. Fixed bug #292, Updated dark Mode CSS #291, Updated Acro profiles for grblHAL #288, Updated servo support for grblHAL #285, Decreased color shade of button focus box shadow to avoid confusion with distance selector #293, Updated Github Actions scrips

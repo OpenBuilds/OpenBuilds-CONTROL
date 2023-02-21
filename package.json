@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.350",
+  "version": "1.0.351",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -10,7 +10,7 @@
     "electron-builder": "^v24.0.0-alpha.13",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0",
-    "node-gyp": "^9.3.0"
+    "node-gyp": "^9.3.1"
   },
   "dependencies": {
     "avrgirl-arduino": "^5.0.1",
@@ -31,13 +31,14 @@
     "node-abi": "^3.33.0",
     "node-gyp": "^9.3.1",
     "serialport": "^10.5.0",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "xmodem.js": "^0.1.0"
   },
   "main": "index.js",
   "scripts": {
     "start": "echo \"Error: no start script specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.2.3)\" && echo \"2) Commit that change (git commit -am v1.2.3)\" && echo \"3) Tag your commit (git tag v1.2.3). Make sure your tag name's format is v*.*.*. Your workflow will use this tag to detect when to create a release\" && echo \"4) Push your changes to GitHub (git push && git push --tags)\"",
+    "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.0.3xx)\" && echo \"2) Commit that change (git commit -am v1.0.3xx)\" && echo \"3) Push your changes to GitHub (git push)\"",
     "run-local": "electron .",
     "postinstall": "electron-builder install-app-deps"
   },
