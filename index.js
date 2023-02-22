@@ -2994,7 +2994,11 @@ if (isElectron()) {
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
         offscreen: true,
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false
+        }
       });
 
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
