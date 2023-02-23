@@ -126,7 +126,8 @@
       "esptool.exe",
       "esptool-mac",
       "esptool.py",
-      "*.bin"
+      "*.bin",
+      "node_modules"
     ],
     "win": {
       "target": [

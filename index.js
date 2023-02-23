@@ -2829,7 +2829,13 @@ if (isElectron()) {
       }
     })
     // Create myWindow, load the rest of the app, etc...
-    app.on('ready', () => {})
+    app.on('ready', () => {
+      if (process.platform == 'win32') {
+        // Don't show window - sit in Tray 
+      } else {
+        showJogWindow() // Macos and Linux - launch GUI
+      }
+    })
   }
 
   if (electronApp) {
