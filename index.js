@@ -60,6 +60,18 @@ var fluidncConfig = "";
 app.use(express.static(path.join(__dirname, "app")));
 //app.use(express.limit('200M'));
 
+app.use(function setCommonHeaders(req, res, next) {
+  res.set("Access-Control-Allow-Private-Network", "true");
+  next();
+});
+
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Private-Network", "true");
+  next();
+});
+
 
 // Interface firmware flash
 app.post('/uploadCustomFirmware', (req, res) => {
@@ -501,7 +513,6 @@ var PortCheckinterval = setInterval(function() {
 
 checkPowerSettings()
 
-
 // JSON API
 app.get('/api/version', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -593,8 +604,9 @@ app.post('/upload', function(req, res) {
   });
 
   form.on('fileBegin', function(name, file) {
-    debug_log('Uploading ' + file.name);
-    file.path = uploadsDir + file.name;
+    debug_log(JSON.stringify(name));
+    debug_log(JSON.stringify(file));
+    debug_log('Uploading ' + file.filepath);
   });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
@@ -607,9 +619,9 @@ app.post('/upload', function(req, res) {
   });
 
   form.on('file', function(name, file) {
-    debug_log('Uploaded ' + file.path);
+    debug_log('Uploaded ' + file.filepath);
     showJogWindow()
-    readFile(file.path)
+    readFile(file.filepath)
   });
 
   form.on('aborted', function() {
