@@ -297,11 +297,11 @@ G1 F` +
     // Framing Pass
     gcode += `; Framing pass\n`;
     gcode += `G0 X` + startpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
-    gcode += `G1 Z-` + zval + `\n`; // plunge
+    gcode += `G1 Z` + zval + `\n`; // plunge
     gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
     gcode += `G0 Z10\n`;
     gcode += `G0 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
-    gcode += `G1 Z-` + zval + `\n`; // plunge
+    gcode += `G1 Z` + zval + `\n`; // plunge
     gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
     gcode += `G0 Z10\n`;
     gcode += `G0 X0 Y0\n`;

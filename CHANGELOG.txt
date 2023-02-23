@@ -1,4 +1,5 @@
-v1.0.353: Fixed API integration for cam.openbuilds.com 
+v1.0.354: Fix for double-negative values in Surfacing Wizard
+v1.0.353: Fixed API integration for cam.openbuilds.com
 v1.0.352: Added support for nodeIntegration (Additional backend support for awesome JS Macros)
 v1.0.351: Updated defaults for Surfacing Wizard UI, Updated text on Recovery wizard
 v1.0.350: Updated all dependencies, Updated to Node 18, Removed Drivelist Dependency
