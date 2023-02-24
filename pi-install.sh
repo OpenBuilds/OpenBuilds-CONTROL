@@ -11,8 +11,8 @@ sudo apt install -y tightvncserver
 sudo apt install -y xrdp
 echo "(4/10) Installing GIT..."
 sudo apt-get install -y git
-echo "(5/10) Installing NodeJS 12.x..."
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+echo "(5/10) Installing NodeJS 19.x..."
+curl -sL https://deb.nodesource.com/setup_19.x | sudo -E bash -
 sudo apt-get install -y nodejs
 echo "(6/10) Updating npm..."
 sudo npm install -g npm@latest

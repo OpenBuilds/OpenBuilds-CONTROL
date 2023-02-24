@@ -37,21 +37,42 @@ var app = express();
 var http = require("http").Server(app);
 var https = require('https');
 
-var ioServer = require('socket.io');
+//var ioServer = require('socket.io');
+const {
+  Server: ioServer
+} = require('socket.io');
+
 var io = new ioServer();
-var safetosend;
 
 var fs = require('fs');
 var path = require("path");
 const join = require('path').join;
-var mkdirp = require('mkdirp');
-const drivelist = require('drivelist');
+const {
+  mkdirp
+} = require('mkdirp')
+
+
+//const drivelist = require('drivelist'); // removed in 1.0.350 due to Drivelist stability issues
 require('hazardous');
 
-
+// FluidNC test
+var fluidncConfig = "";
+// FluidNC end test
 
 app.use(express.static(path.join(__dirname, "app")));
 //app.use(express.limit('200M'));
+
+app.use(function setCommonHeaders(req, res, next) {
+  res.set("Access-Control-Allow-Private-Network", "true");
+  next();
+});
+
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Private-Network", "true");
+  next();
+});
 
 
 // Interface firmware flash
@@ -73,7 +94,7 @@ app.post('/uploadCustomFirmware', (req, res) => {
 
     // Display uploaded image for user validation
     firmwareImagePath = req.file.path;
-    res.send(`Using ` + req.file.path);
+    res.send(req.file.path);
   });
 });
 // end Interface Firmware flash
@@ -102,8 +123,12 @@ io.attach(httpsserver);
 const grblStrings = require("./grblStrings.js");
 
 // Serial
-const { SerialPort } = require('serialport')
-const { ReadlineParser } = require('@serialport/parser-readline');
+const {
+  SerialPort
+} = require('serialport')
+const {
+  ReadlineParser
+} = require('@serialport/parser-readline');
 
 // telnet
 const net = require('net');
@@ -118,19 +143,17 @@ var lastsentuploadprogress = 0;
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
-
+const {
+  dialog
+} = require('electron')
+electronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
+electronApp.commandLine.appendSwitch('enable-gpu-rasterization')
+electronApp.commandLine.appendSwitch('enable-zero-copy')
 
 if (isElectron()) {
   debug_log("Local User Data: " + electronApp.getPath('userData'))
-  electronApp.commandLine.appendSwitch('ignore-gpu-blacklist', 'true')
-  electronApp.commandLine.appendSwitch('enable-gpu-rasterization', 'true')
-  electronApp.commandLine.appendSwitch('enable-zero-copy', 'true')
-  electronApp.commandLine.appendSwitch('disable-software-rasterizer', 'true')
-  electronApp.commandLine.appendSwitch('enable-native-gpu-memory-buffers', 'true')
-  // Removing max-old-space-size switch (Introduced in 1.0.168 and removed in 1.0.169) due it causing High CPU load on some PCs.
-  //electronApp.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192')
-  debug_log('Command Line Arguments for Electron: Set OK')
 }
+
 const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
 const nativeImage = require('electron').nativeImage
@@ -434,7 +457,7 @@ var status = {
     alarm: ""
   },
   interface: {
-    diskdrives: [],
+    diskdrive: false,
       firmware: {
         availVersion: "",
         installedVersion: "",
@@ -471,16 +494,16 @@ async function findChangedPorts() {
   findPorts()
 }
 
-async function findDisks() {
-  const drives = await drivelist.list();
-  status.interface.diskdrives = drives;
-}
+// async function findDisks() {
+//   const drives = await drivelist.list();
+//   status.interface.diskdrives = drives;
+// } // removed in 1.0.350 due to Drivelist stability issues
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
     findChangedPorts();
   }
-  findDisks();
+  //findDisks(); // removed in 1.0.350 due to Drivelist stability issues
 }, 1000);
 
 // var telnetCheckinterval = setInterval(function() {
@@ -491,7 +514,6 @@ var PortCheckinterval = setInterval(function() {
 // scanForTelnetDevices();
 
 checkPowerSettings()
-
 
 // JSON API
 app.get('/api/version', (req, res) => {
@@ -584,8 +606,9 @@ app.post('/upload', function(req, res) {
   });
 
   form.on('fileBegin', function(name, file) {
-    debug_log('Uploading ' + file.name);
-    file.path = uploadsDir + file.name;
+    debug_log(JSON.stringify(name));
+    debug_log(JSON.stringify(file));
+    debug_log('Uploading ' + file.filepath);
   });
 
   form.on('progress', function(bytesReceived, bytesExpected) {
@@ -598,9 +621,9 @@ app.post('/upload', function(req, res) {
   });
 
   form.on('file', function(name, file) {
-    debug_log('Uploaded ' + file.path);
-      showJogWindow()
-    readFile(file.path)
+    debug_log('Uploaded ' + file.filepath);
+    showJogWindow()
+    readFile(file.filepath)
   });
 
   form.on('aborted', function() {
@@ -624,27 +647,40 @@ app.on('certificate-error', function(event, webContents, url, error,
 
 io.on("connection", function(socket) {
 
-  iosocket = socket;
+  debug_log("New IO Connection ");
 
+
+  iosocket = socket;
 
   if (status.machine.firmware.type == 'grbl') {
 
-    // handle Grbl RESET external input
-    if (status.machine.inputs.length > 0) {
-      for (i = 0; i < status.machine.inputs.length; i++) {
-        switch (status.machine.inputs[i]) {
-          case 'R':
-            // debug_log('PIN: SOFTRESET');
-            safetosend = true;
-            break;
-        }
-      }
-    } else {
-      io.sockets.emit('grbl')
-    }
-    if (safetosend != undefined && safetosend == true) {
-      io.sockets.emit('grbl')
-    }
+    debug_log("Is Grbl");
+
+
+    // // handle Grbl RESET external input
+    // if (status.machine.inputs.length > 0) {
+    //   for (i = 0; i < status.machine.inputs.length; i++) {
+    //     switch (status.machine.inputs[i]) {
+    //       case 'R':
+    //         // debug_log('PIN: SOFTRESET');
+    //         safetosend = true;
+    //         break;
+    //     }
+    //   }
+    // } else {
+    //   setTimeout(function() {
+    debug_log("Emit Grbl: 1");
+    io.sockets.emit('grbl', status.machine.firmware)
+    //   }, 10000);
+    // }
+    //
+    // if (safetosend != undefined && safetosend == true) {
+    //   setTimeout(function() {
+    //     debug_log("Emit Grbl: 2");
+    //     io.sockets.emit('grbl', status.machine.firmware)
+    //   }, 10000);
+    // }
+
   }
 
 
@@ -656,6 +692,37 @@ io.on("connection", function(socket) {
 
   socket.on("scannetwork", function(data) {
     scanForTelnetDevices(data)
+  })
+
+  socket.on("openFile", function(data) {
+    dialog.showOpenDialog(jogWindow, {
+      properties: ['openFile']
+    }).then(result => {
+      console.log(result.canceled)
+      console.log(result.filePaths)
+      var openFilePath = result.filePaths[0];
+      if (openFilePath !== "") {
+        debug_log("path" + openFilePath);
+        readFile(openFilePath);
+      }
+
+    }).catch(err => {
+      console.log(err)
+    })
+  })
+
+  socket.on("openInterfaceDir", function(data) {
+    dialog.showOpenDialog(jogWindow, {
+      properties: ['openDirectory'],
+      title: "Select the USB Flashdrive you want to use with Interface"
+    }).then(result => {
+      console.log(result.canceled)
+      console.log(result.filePaths)
+      io.sockets.emit("interfaceDrive", result.filePaths[0]);
+      status.interface.diskdrive = result.filePaths[0]
+    }).catch(err => {
+      console.log(err)
+    })
   })
 
   socket.on("openbuilds", function(data) {
@@ -714,6 +781,46 @@ io.on("connection", function(socket) {
     shell.openExternal('https://openbuilds.com/threads/openbuilds-control-software.13121/')
   });
 
+  socket.on("adX32", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://openbuildspartstore.com/BlackBox-Motion-Control-System-X32')
+  });
+
+  socket.on("gpuinfo", function(data) {
+    // GPU
+    var gpuInfoWindow = new BrowserWindow({
+      // 1366 * 768 == minimum to cater for
+      width: 800,
+      height: 800,
+      fullscreen: false,
+      center: true,
+      resizable: true,
+      maximizable: true,
+      title: "OpenBuilds CONTROL: Chromium's GPU Report",
+      frame: true,
+      autoHideMenuBar: true,
+      //icon: '/app/favicon.png',
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, "/app/favicon.png")
+      ),
+      webgl: true,
+      experimentalFeatures: true,
+      experimentalCanvasFeatures: true,
+      offscreen: true,
+      backgroundColor: "#fff"
+    });
+    gpuInfoWindow.loadURL("chrome://gpu");
+
+    gpuInfoWindow.once('ready-to-show', () => {
+      gpuInfoWindow.show()
+      gpuInfoWindow.setAlwaysOnTop(true);
+      gpuInfoWindow.focus();
+      gpuInfoWindow.setAlwaysOnTop(false);
+    })
+  });
+
   socket.on("minimisetotray", function(data) {
     jogWindow.hide();
   });
@@ -723,10 +830,21 @@ io.on("connection", function(socket) {
   });
 
   socket.on("maximize", function(data) {
+    if (jogWindow.isFullScreen()) {
+      jogWindow.setFullScreen(false);
+    }
     if (jogWindow.isMaximized()) {
       jogWindow.unmaximize();
     } else {
       jogWindow.maximize();
+    }
+  });
+
+  socket.on("fullscreen", function(data) {
+    if (jogWindow.isFullScreen()) {
+      jogWindow.setFullScreen(false);
+    } else {
+      jogWindow.setFullScreen(true);
     }
   });
 
@@ -759,10 +877,14 @@ io.on("connection", function(socket) {
     var customImg = data.customImg
     console.log(__dirname, file, data.file)
     if (customImg) {
-      var firmwarePath = firmwareImagePath
+      var firmwarePath = data.file
     } else {
       var firmwarePath = path.join(__dirname, data.file)
     }
+
+    console.log("-------------------------------------------")
+    console.log(firmwarePath)
+    console.log("-------------------------------------------")
 
     const Avrgirl = require('avrgirl-arduino');
 
@@ -834,6 +956,7 @@ io.on("connection", function(socket) {
 
   socket.on("writeInterfaceUsbDrive", function(data) {
 
+    debug_log(data)
     //data.drive = mountpoint dest
     //data.controller = type of controller
     if (data.controller == "blackbox4x" || data.controller == "genericgrbl") {
@@ -1050,7 +1173,7 @@ io.on("connection", function(socket) {
                 'type': 'info'
               }
               setTimeout(function() {
-                io.sockets.emit('grbl')
+                io.sockets.emit('grbl', status.machine.firmware)
                 //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
                 //io.sockets.emit('errorsCleared', true);
               }, 600)
@@ -1125,6 +1248,9 @@ io.on("connection", function(socket) {
         //console.log(data)
         var command = sentBuffer[0];
 
+        if (command == "$CD" && data != "ok") {
+          fluidncConfig = fluidncConfig += data + "\n"
+        }
 
         if (data.indexOf("<") != 0) {
           debug_log('data:', data)
@@ -1135,6 +1261,7 @@ io.on("connection", function(socket) {
           status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
           io.sockets.emit("status", status);
           io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
+          status.machine.firmware.date = data.split(':')[1].split(".")[2];
         }
 
         if (data.indexOf("[OPT:") === 0) {
@@ -1296,6 +1423,10 @@ io.on("connection", function(socket) {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "grblHAL"
             status.machine.firmware.version = data.substr(8, 4); // get version
+          } else if (data.indexOf("FluidNC") != -1) { // Grbl 3.6 [FluidNC v3.6.5 (wifi) '$' for help]
+            status.machine.firmware.type = "grbl";
+            status.machine.firmware.platform = "FluidNC"
+            status.machine.firmware.version = data.substr(19, 5); // get version
           } else {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "gnea"
@@ -1322,7 +1453,7 @@ io.on("connection", function(socket) {
           status.machine.firmware.date = "";
           // debug_log("GRBL detected");
           // setTimeout(function() {
-          //   io.sockets.emit('grbl')
+          //   io.sockets.emit('grbl', status.machine.firmware)
           //   //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
           //   //io.sockets.emit('errorsCleared', true);
           // }, 600)
@@ -1376,6 +1507,9 @@ io.on("connection", function(socket) {
           if (status.machine.firmware.type === "grbl") {
             // debug_log('got OK from ' + command)
             command = sentBuffer.shift();
+          }
+          if (command == "$CD") {
+            io.sockets.emit('fluidncConfig', fluidncConfig);
           }
           status.comms.blocked = false;
           send1Q();
@@ -1496,6 +1630,17 @@ io.on("connection", function(socket) {
   socket.on('forceQueue', function(data) {
     send1Q();
   });
+
+  socket.on('serialInject', function(data) {
+    // Inject a live command into Serial stream in real-time (dev tool) even while a job is running, etc (straight Port.write from machineSend)
+    machineSend(data, true);
+  });
+
+  socket.on("dump", function(data) {
+    console.log(queuePointer);
+    console.log(gcodeQueue);
+    console.log(sentBuffer);
+  })
 
   socket.on('runCommand', function(data) {
     debug_log('Run Command (' + data.replace('\n', '|') + ')');
@@ -1902,6 +2047,7 @@ io.on("connection", function(socket) {
           switch (status.machine.firmware.type) {
             case 'grbl':
               clearInterval(queueCounter);
+              jogWindow.setProgressBar(0);
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               setTimeout(function() {
                 addQRealtime('$X\n');
@@ -2009,6 +2155,7 @@ function machineSend(gcode, realtime) {
       io.sockets.emit("queueCount", data);
       // debug_log(gcode)
       port.write(gcode);
+      debug_log("SENT: " + gcode)
     }
   } else {
     debug_log("PORT NOT OPEN")
@@ -2054,6 +2201,7 @@ function runJob(object) {
         // Start interval for qCount messages to socket clients
         queueCounter = setInterval(function() {
           status.comms.queue = gcodeQueue.length - queuePointer
+          jogWindow.setProgressBar(queuePointer / gcodeQueue.length)
         }, 500);
         send1Q(); // send first line
         status.comms.connectionStatus = 3;
@@ -2068,6 +2216,7 @@ function runJob(object) {
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
+  jogWindow.setProgressBar(0);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -2087,7 +2236,7 @@ function stopPort() {
 }
 
 function parseFeedback(data) {
-  debug_log(data)
+  //debug_log(data)
   var state = data.substring(1, data.search(/(,|\|)/));
   status.comms.runStatus = state
   if (state == "Alarm") {
@@ -2104,7 +2253,7 @@ function parseFeedback(data) {
   } else if (state == "Hold:0") {
     pause();
   }
-  if (status.machine.firmware.type == "grbl" || status.machine.firmware.type == "grblhal") {
+  if (status.machine.firmware.type == "grbl") {
     // Extract work offset (for Grbl > 1.1 only!)
     var startWCO = data.search(/wco:/i) + 4;
     var wco;
@@ -2575,6 +2724,7 @@ function send1Q() {
       }
       status.comms.connectionStatus = 2; // finished
       clearInterval(queueCounter);
+      jogWindow.setProgressBar(0);
       gcodeQueue.length = 0; // Dump the Queye
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
@@ -2599,12 +2749,17 @@ function addQToEnd(gcode) {
   if (testGcode.indexOf("$H") != -1) {
     status.machine.modals.homedRecently = true;
   }
+  if (testGcode == "$CD") {
+    fluidncConfig = ""; // empty string
+  }
   if (new RegExp(modalCommands.join("|")).test(testGcode)) {
     gcodeQueue.push("$G");
   }
   if (gcode.match(/T([\d.]+)/i)) {
     gcodeQueue.push("$G");
   }
+
+
 }
 
 function addQToStart(gcode) {
@@ -2676,7 +2831,13 @@ if (isElectron()) {
       }
     })
     // Create myWindow, load the rest of the app, etc...
-    app.on('ready', () => {})
+    app.on('ready', () => {
+      if (process.platform == 'win32') {
+        // Don't show window - sit in Tray 
+      } else {
+        showJogWindow() // Macos and Linux - launch GUI
+      }
+    })
   }
 
   if (electronApp) {
@@ -2853,6 +3014,11 @@ if (isElectron()) {
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
         offscreen: true,
+        backgroundColor: "#fff",
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false
+        }
       });
 
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
@@ -2973,6 +3139,7 @@ function stop(data) {
         break;
     }
     clearInterval(queueCounter);
+    jogWindow.setProgressBar(0);
     status.comms.queue = 0
     queuePointer = 0;
     gcodeQueue.length = 0; // Dump the queue

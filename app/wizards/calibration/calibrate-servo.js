@@ -15,7 +15,7 @@ var servocaltemplate = `
       <table class="table">
          <tr>
             <td>
-            <img src="img/calibrate/servo/up.png" style="border: 1px solid #f1f2f3;">
+            <img src="img/calibrate/servo/up.png">
             </td>
             <td>
                Step 1:  Find the Pen Up Value<br>

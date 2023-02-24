@@ -36,7 +36,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -75,7 +75,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -114,7 +114,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -153,7 +153,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -192,7 +192,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -231,7 +231,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -270,7 +270,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -309,7 +309,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -348,7 +348,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -387,7 +387,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -426,7 +426,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -465,7 +465,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -504,7 +504,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -543,7 +543,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -582,7 +582,7 @@ function selectMachine(type) {
       $5: "0", //Invert limit pins, boolean
       $6: "0", //Invert probe pin, boolean
       $10: "1", //Status report options, mask
-      $11: "0.020", //Junction deviation, millimeters
+      $11: "0.010", //Junction deviation, millimeters
       $12: "0.002", //Arc tolerance, millimeters
       $13: "0", //Report in inches, boolean
       $20: "0", //Soft limits enable, boolean
@@ -660,7 +660,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "2", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -699,7 +699,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "2", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -738,7 +738,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -777,7 +777,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -816,7 +816,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -855,7 +855,7 @@ function selectMachine(type) {
       $5: "0", //"Invert limit pins, boolean"
       $6: "0", //"Invert probe pin, boolean"
       $10: "1", //"Status report options, mask"
-      $11: "0.020", //"Junction deviation, millimeters"
+      $11: "0.010", //"Junction deviation, millimeters"
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
@@ -904,62 +904,72 @@ function selectMachine(type) {
   setMachineButton(type);
 
   if (lastSelectedMachine != type) {
-    if (lastSelectedMachine.substr(0, 4) != type.substr(0, 4)) {
-      if (customFirmware == "acro") {
-        Metro.dialog.create({
-          title: "Custom Firmware Required",
-          content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
-          actions: [{
-              caption: "No Thank you",
-              cls: "js-dialog-close",
-              onclick: function() {
-                console.log("Do nothing")
-              }
-            },
-            {
-              caption: "Launch the Flashing Wizard",
-              cls: "js-dialog-close success",
-              onclick: function() {
-                openFlashingTool();
-                setTimeout(function() {
-                  // $('#grblAxesCount').data('select').val('2axes')
-                }, 500)
-              }
-            },
+    //if (lastSelectedMachine.substr(0, 4) != type.substr(0, 4)) {
 
-          ]
-        });
+    if (customFirmware == "acro" && laststatus.machine.firmware.platform == "grblHAL") {
+      // as per https://openbuilds.com/threads/blackbox-x32.19810/page-3#post-131285
+      $("#val-44-input").val(3)
+      $("#val-45-input").val(0)
+    } else if (customFirmware == "acropen" && laststatus.machine.firmware.platform == "grblHAL") {
+      // as per https://openbuilds.com/threads/blackbox-x32.19810/page-3#post-131285
+      $("#val-44-input").val(3)
+      $("#val-45-input").val(0)
+      $("#val-33-input").val(50)
 
-        console.log('This machine needs a custom firmware')
-      }
-      if (customFirmware == "acropen") {
-        Metro.dialog.create({
-          title: "Custom Firmware Required",
-          content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
-          actions: [{
-              caption: "No Thank you",
-              cls: "js-dialog-close",
-              onclick: function() {
-                console.log("Do nothing")
-              }
-            },
-            {
-              caption: "Launch the Flashing Wizard",
-              cls: "js-dialog-close success",
-              onclick: function() {
-                openFlashingTool();
-                setTimeout(function() {
-                  //$('#grblAxesCount').data('select').val('servo')
-                }, 500)
-              }
-            },
+    } else if (customFirmware == "acro" && laststatus.machine.firmware.platform == "grbl") {
+      Metro.dialog.create({
+        title: "Custom Firmware Required",
+        content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
+        actions: [{
+            caption: "No Thank you",
+            cls: "js-dialog-close",
+            onclick: function() {
+              console.log("Do nothing")
+            }
+          },
+          {
+            caption: "Launch the Flashing Wizard",
+            cls: "js-dialog-close success",
+            onclick: function() {
+              openFlashingTool();
+              setTimeout(function() {
+                // $('#grblAxesCount').data('select').val('2axes')
+              }, 500)
+            }
+          },
 
-          ]
-        });
+        ]
+      });
 
-        console.log('This machine needs a custom firmware')
-      }
+      console.log('This machine needs a custom firmware')
+    } else if (customFirmware == "acropen" && laststatus.machine.firmware.platform == "grbl") {
+      Metro.dialog.create({
+        title: "Custom Firmware Required",
+        content: `<div>The machine type you selected, needs a custom firmware. Please use the Firmware Flashing Wizard to upload a custom firmware image to the controller to properly support this machine. </div>`,
+        actions: [{
+            caption: "No Thank you",
+            cls: "js-dialog-close",
+            onclick: function() {
+              console.log("Do nothing")
+            }
+          },
+          {
+            caption: "Launch the Flashing Wizard",
+            cls: "js-dialog-close success",
+            onclick: function() {
+              openFlashingTool();
+              setTimeout(function() {
+                //$('#grblAxesCount').data('select').val('servo')
+              }, 500)
+            }
+          },
+
+        ]
+      });
+
+      console.log('This machine needs a custom firmware')
     }
+    //}
 
   }
 

@@ -106,6 +106,17 @@ function grblSettings(data) {
     $('#enLaser').removeClass('success').addClass('alert').html('OFF')
   }
 
+
+  // grblHAL - enable Servo Buttons if Spindle PWM == 50hz
+  if (grblParams['$33'] == 50) {
+    $('#enServo').removeClass('alert').addClass('success').html('ON')
+    $(".servo-active").show()
+  } else {
+    $('#enServo').removeClass('success').addClass('alert').html('OFF')
+    $(".servo-active").hide()
+  }
+
+
   updateToolOnSValues();
 
   if (localStorage.getItem('jogOverride')) {
@@ -342,8 +353,11 @@ function checkifchanged() {
 
       if (newVal !== undefined) {
         // Only send values that changed
-        if (parseFloat(newVal) != parseFloat(grblParams[key]) && newVal != grblParams[key]) {
+        if (newVal != grblParams[key]) {
           hasChanged = true;
+          console.log("changed: " + key)
+          console.log("old: " + grblParams[key])
+          console.log("new: " + newVal)
           if (!$("#val-" + j + "-input").parent().is('td')) {
             $("#val-" + j + "-input").parent().addClass('alert')
           } else if ($("#val-" + j + "-input").is('select')) {

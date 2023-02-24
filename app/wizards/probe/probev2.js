@@ -533,15 +533,12 @@ function runProbeNew() {
     var zoffset = probemode.probe.zoffset // not *-1 as its offset in z pos
 
     var zmacro = `
-    ; Header
-    G21 ; mm mode
-    G10 P0 L20 Z0 ; zero out current location
-
-    ; Probe Z
-    G38.2 Z-25 F100 ; Probe Z
+    G21
+    G10 P0 L20 Z0
+    G38.2 Z-25 F100
     G4 P0.4
-    G10 P0 L20 Z` + zoffset + ` ; Set Z` + zoffset + ` where ` + zoffset + ` is thickness of plate
-    $J=G91G21Z5F1000 ; retract
+    G10 P0 L20 Z` + zoffset + `
+    $J=G91G21Z5F1000
     `
 
     socket.off('prbResult'); // Disable old listeners

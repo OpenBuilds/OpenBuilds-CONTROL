@@ -1,4 +1,20 @@
-v1.0.333: BlackBox Support
+v1.0.354: Fix for double-negative values in Surfacing Wizard
+v1.0.353: Fixed API integration for cam.openbuilds.com
+v1.0.352: Added support for nodeIntegration (Additional backend support for awesome JS Macros)
+v1.0.351: Updated defaults for Surfacing Wizard UI, Updated text on Recovery wizard
+v1.0.350: Updated all dependencies, Updated to Node 18, Removed Drivelist Dependency
+v1.0.349: Added Multipass option to Surfacing Wizard, Experimental Job resume/recovery Wizard (use at own risk)
+v1.0.345-8: Removed Carveco/Fabber links from Open Gcode menu. Fixed bug #292, Updated dark Mode CSS #291, Updated Acro profiles for grblHAL #288, Updated servo support for grblHAL #285, Decreased color shade of button focus box shadow to avoid confusion with distance selector #293, Updated Github Actions scrips
+v1.0.344: Fixed bug in Dark Mode theme with Jog Distance Selected CSS
+v1.0.343: Updated wording on ESP32 based Bootloader error message, Assert G90/G21 for GotoZero commands to fix Issue #286
+v1.0.342: Beta test of Electron 19 based native File Open dialog for issue #270, Basic FluidNC connectivity support, Updated SSL Certificates, Added GPU Information menu entry under Troubleshooting, Fixed bug in Mobile Jog
+v1.0.341: Updated grblHAL firmware images to fix Probe and Y2 Bugs, updated Machine Profiles
+v1.0.340: Fixed bug in X32>4Axes flashing tool
+v1.0.339: Updated grblHAL Binaries to fix Probe bug, Windows Taskbar jog Progress indicator, Updated Pi Install script with Node19x, Added coolant/vacuum to Surfacing Wizard
+v1.0.338: Beta testing alternative GPU blacklist switch config for older computers, Fixed a couple Grbl Settings bugs
+v1.0.337: Improved WebGL Detection
+v1.0.334/5/6: Dark Mode theme (based off /pull/#223), Added Fullscreen Mode button, Updated Dependencies (/pull/260), Fixed bug in ATmega Custom flash option (#268), Updated Wizard's Graphics
+v1.0.333: BlackBox X32 Support, 4th Axis support: A-Axis Jog and DRO, Updated firmware Flashing tool, Updated USB tool for Interface
 v1.0.332: Updated SSL certificates
 v1.0.331: Fixed bug in Firmware flashing tool
 v1.0.330: Fixed bug in Mobile Jog wizard, updated Pi install script

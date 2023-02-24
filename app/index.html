@@ -11,6 +11,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/splash.css" />
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
     <link rel="stylesheet" href="/lib/furcanIconPicker/iconpicker-1.5.0.css" />
@@ -18,12 +19,25 @@
 
   <body>
 
-    <div class="pos-fixed pos-center" id="splash">
+    <div class="pos-fixed pos-center" id="splash" onclick="socket.emit('adX32');">
       <center>
         <div id="openbuildslogosplash" style="display: none;">
-          <img src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" />
-          <p>
-            <h1>OpenBuilds&reg;&nbsp;CONTROL</h1>
+          <!-- <img id="openbuildslogosplashImg" src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" /> -->
+          <h1>OpenBuilds<sup>&reg;</sup>&nbsp;CONTROL</h1>
+          <img id="openbuildslogosplashImgX32" src="/img/x32splash.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 4000)" style="cursor:pointer" />
+          <h3 style="cursor:pointer">Check out the all NEW OpenBuilds<sup>&reg;</sup>&nbsp;BlackBox&nbsp;X32</h3>
+          <div class="waviy" style="cursor:pointer">
+            <span style="--i:1">C</span>
+            <span style="--i:2">L</span>
+            <span style="--i:3">I</span>
+            <span style="--i:4">C</span>
+            <span style="--i:5">K</span>
+            <span style="--i:6"> </span>
+            <span style="--i:7">H</span>
+            <span style="--i:8">E</span>
+            <span style="--i:9">R</span>
+            <span style="--i:10">E</span>
+          </div>
         </div>
       </center>
     </div>
@@ -35,19 +49,24 @@
         <span class="icon"><img src="icon-transparent.png" /></span>
         <span class="title" id="windowtitle">OpenBuilds CONTROL</span>
         <div class="buttons" style="-webkit-app-region: no-drag">
-          <span class="btn-min" onclick="socket.emit('minimize')"></span>
-          <span class="btn-max" onclick="socket.emit('maximize')"></span>
-          <span class="btn-close" onclick="socket.emit('minimisetotray')"></span>
+          <span title="Minimize" class="btn-custom" onclick="socket.emit('minimize')"><i class="fas fa-window-minimize"></i></span>
+          <span title="Maximize" class="btn-custom" onclick="socket.emit('maximize')"><i class="fas fa-window-maximize"></i></span>
+          <span title="Toggle Fullscreen" class="btn-custom" onclick="socket.emit('fullscreen')"><i class="fas fa-desktop"></i></span>
+          <span title="Close to Tray" class="btn-custom" onclick="socket.emit('minimisetotray')"><i class="fas fa-window-close"></i></span>
         </div>
       </div>
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
-            <li><a id="controlTab" href="#section-two" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Control</a></li>
+            <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
             <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+            <li id="fluidncSettings" style="display: none;"><a id="fluidncTab" href="#section-fluidnc" onclick="fluidncPanel();"><i class="fas fa-fw fa-sliders-h"></i> FluidNC Settings</a></li>
             <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
           <div class="content-holder">
+
+            <!-- Start Grbl Settings -->
+
             <div class="section" id="section-grbl">
               <div class="group">
                 <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
@@ -147,7 +166,114 @@
                 <span class="title">E-Stop</span>
               </div>
             </div>
-            <div class="section" id="section-two">
+
+            <!-- End Grbl Settings -->
+
+            <!-- Start FluidNC -->
+
+            <div class="section" id="section-fluidnc">
+              <!-- <div class="group"> -->
+              <!-- <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i id="saveBtnIcon" class="fas fa-save fg-gray" data-fa-transform="grow-8"></i>
+                      <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Save<br> to Firmware</span>
+                </button> -->
+
+              <!-- <button class="ribbon-button" onclick="backupGrblSettings();">
+                  <span class="icon">
+                    <i class="fas fa-download fg-lightOrange"></i>
+                  </span>
+                  <span class="caption">Backup<br>Settings</span>
+                </button> -->
+
+              <!-- <button class="ribbon-button btn-file">
+                  <input class="btn-file" id="grblBackupFile" type="file" accept=".txt, .settings, .grbl" />
+                  <span class="icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="caption">Restore<br>Backup</span>
+                </button> -->
+              <!-- <span class="title">Grbl Settings</span>
+              </div> -->
+              <div class="group">
+                <div class="ribbon-group" style="width: 90px;">
+                  <button class="ribbon-icon-button" onclick="sendGcode(String.fromCharCode(0x18))">
+                    <span class="icon">
+                      <span class="mif-loop"></span>
+                    </span>
+                    <span class="caption">Restart</span>
+                  </button>
+                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                    <span class="icon">
+                      <span class="mif-unlock"></span>
+                    </span>
+                    <span class="caption">Unlock</span>
+                  </button>
+                  <!-- <button class="ribbon-icon-button" onclick="refreshGrblSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sync-alt"></i>
+                    </span>
+                    <span class="caption">Refresh</span>
+                  </button> -->
+
+                </div>
+                <span class="title">Grbl</span>
+              </div>
+              <div class="group">
+                <div class="ribbon-group">
+                  <button class="ribbon-icon-button" onclick="clearSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sliders-h"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;Settings</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" onclick="clearWCO();">
+                    <span class="icon">
+                      <i class="fas fa-layer-group"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;WCOs</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" onclick="clearEEPROM();">
+                    <span class="icon">
+                      <i class="fas fa-microchip"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;EEPROM</span>
+                  </button>
+                </div>
+                <span class="title">Firmware Reset Defaults</span>
+              </div>
+              <div class="group estop">
+                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                  <span class="icon">
+                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                      <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                      <i class="far fa-bell"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Unlock<br>Alarm</span>
+                </button>
+                <button class="ribbon-button" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Abort</span>
+                </button>
+                <span class="title">E-Stop</span>
+              </div>
+            </div>
+
+            <!-- End FluidNC -->
+
+            <!-- Start Jog/Main -->
+
+            <div class="section" id="section-jog">
               <div class="group">
                 <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
                   <span class="icon">
@@ -197,15 +323,33 @@
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
                     <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a>
                     </li>
-                    <li class="divider"></li>
+                    <li class="divider fg-gray"></li>
+
                     <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('fabber', true);"><img width="16" src="affiliates/fabber/fabber.svg"> Fabber</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('carveco', true);"><img width="16" src="affiliates/carveco/carveco.svg"> Carveco</a></li>
                     <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
                     <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
 
                   </ul>
                 </div>
+
+                <div>
+                  <button id="openGcodeBtnElectron19" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
+                    <span class="icon">
+                      <span class="far fa-folder-open fg-amber"></span>
+                    </span>
+                    <span class="caption">Open<br>G-CODE</span>
+                  </button>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                    <li class="btn-file" onclick="socket.emit('openFile')"><a href="#"><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a> </li>
+                    <li class="divider fg-gray"></li>
+
+                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
+                    <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
+
+                  </ul>
+                </div>
+
                 <span class="title">File</span>
               </div>
 
@@ -371,11 +515,28 @@
                     <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
+                    <li class="divider fg-gray"></li>
+                    <li onclick="recoverCrashedJob();"><a href="#"><i class="fas fa-fw fa-route"></i> Recover crashed/stopped job </a></li>
                   </ul>
                 </div>
 
                 <span class="title">Wizards</span>
               </div>
+
+              <div class="group">
+
+                <div id="ddThemeButton">
+                  <button id="btnTheme" class="ribbon-button" onclick="Theme.toggle();">
+                    <span class="icon" id="currentThemeIcon">
+                      <i class="fas fa-paint-brush"></i>
+                    </span>
+                    <span class="caption" id="currentThemeName">Dark<br>Mode</span>
+                    <span class="h6 badge bg-green fg-white"> <i class="fas fa-brush  fa-spin"></i> New!</span>
+                  </button>
+                </div>
+                <span class="title">Theme</span>
+              </div>
+
               <div class="group estop" style="width: 100px;">
                 <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
                   <span class="icon">
@@ -400,6 +561,10 @@
 
             </div>
 
+            <!-- End Jog/Main -->
+
+            <!-- Start Troubleshooting -->
+
             <div class="section" id="section-troubleshooting">
               <div class="group">
                 <div>
@@ -413,6 +578,7 @@
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li onclick="disable3Dviewer = !disable3Dviewer; saveDiagnostics(); location.reload();" id="disable3DviewerTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer System (For slower computers)</a></li>
+                    <li onclick="socket.emit('gpuinfo')"><a href="#"><i class="fa fa-microchip fa-fw"></i> Show GPU Information</a></li>
                     <li class="divider"></li>
                     <li onclick="disable3Dcontrols = !disable3Dcontrols; saveDiagnostics(); location.reload();" id="disable3DcontrolsTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Interactions</a></li>
                     <li onclick="disable3Dskybox = !disable3Dskybox; saveDiagnostics(); location.reload();" id="disable3DskyboxTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Skybox/Fog</a></li>
@@ -422,6 +588,11 @@
                     <li class="divider"></li>
                     <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
                     <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
+                    <li class="divider"></li>
+                    <li onclick="disableElectron19FileOpen = !disableElectron19FileOpen; saveDiagnostics(); location.reload();" id="disableElectron19FileOpenTick"><a href="#"><i class="far fa-folder-open fa-fw"></i> Disable Native File Open
+                        Dialog</a>
+                    </li>
+
                 </div>
                 <span class="title">Settings</span>
               </div>
@@ -468,6 +639,8 @@
               </div>
 
             </div>
+
+            <!-- End Troubleshooting -->
 
           </div>
         </nav>
@@ -535,7 +708,7 @@
                         <div class="pos-relative">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G90\nG21\nG0 X0')"><span class="fas fa-chart-line fg-red icon"></span>Goto X0 (Work Coord) (G0 X0)</a></li>
                             <li id="gotoXzeroMpos"><a href="#"><span class="fas fa-chart-line fg-red icon"></span>Goto X<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 X0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeXDialog()"><span class="fas fa-podcast fa-rotate-180 fg-red icon"></span>Probe X-Zero Wizard</a></li>
@@ -570,7 +743,7 @@
                         <div class="pos-relative">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G90\nG21\nG0 Y0')"><span class="fas fa-chart-line fg-green icon"></span>Goto Y0 (Work Coord) (G0 Y0)</a></li>
                             <li id="gotoYzeroMpos"><a href="#"><span class="fas fa-chart-line fg-green icon"></span>Goto Y<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Y0)</a></li>
                             <li class="divider"></li>
                             <li class="needsXYZProbe"><a href="#" onclick="openProbeYDialog()"><span class="fas fa-podcast fa-rotate-180 fg-green icon"></span>Probe Y-Zero Wizard</a></li>
@@ -605,7 +778,7 @@
                         <div class="pos-relative">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G90\nG21\nG0 Z0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z0 (Work Coord) (G0 Z0)</a></li>
                             <li id="gotoZzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto Z<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 Z0)</a></li>
                             <li class="divider"></li>
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
@@ -642,8 +815,8 @@
                         <div class="pos-relative">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
-                            <li><a href="#" onclick="sendGcode( 'G0 A0')"><span class="fas fa-chart-line fg-blue icon"></span>Goto A0 (Work Coord) (G0 Z0)</a></li>
-                            <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-blue icon"></span>Goto A<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 A0)</a></li>
+                            <li><a href="#" onclick="sendGcode( 'G90\nG21\nG0 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Work Coord) (G0 Z0)</a></li>
+                            <li id="gotoAzeroMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto A<span class="PullOffMPos">0</span> (Machine Coord) (G53 G0 A0)</a></li>
                             <!-- <li class="divider"></li> -->
                             <!-- <li><a href="#" onclick="z0probe()()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
                             <!-- <li><a href="#" onclick="openProbeZDialog()"><span class="fas fa-podcast fa-rotate-180 fg-blue icon"></span>Probe Z-Zero Wizard</a></li> -->
@@ -998,6 +1171,11 @@
         <div id="grblPanel" style="display: none;">
           <div id="grblconfig"></div>
         </div>
+
+        <div id="fluidncPanel" style="display: none;">
+          <div id="fluidnceditor"></div>
+        </div>
+
         <div id="updatePanel" style="display: none;">
           <div id="updateconsole">Click "Download Updates" above</div>
         </div>
@@ -1279,159 +1457,14 @@
     <!-- Simulator Context Menu -->
     <ul class="d-menu context" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
       <span id="dropdowncontent">
-        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, false);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span class="linenumber"></span></a>
-        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, true);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate only line <span class="linenumber"></span></a>
-        </li>
+        <li onclick="startFromHere(editor.getSelectionRange().start.row + 1);"><a href="#"><i class='fas fa-fw fa-route icon'></i> Recover job from Line: <span class="linenumber"></span></a></li>
+        <li class="divider"></li>
+        <li onclick="runSimFrom(editor.getSelectionRange().start.row + 1, false);"><a href="#"><i class="fas fa-fighter-jet icon"></i> Simulate from line <span class="linenumber"></span></a></li>
       </span>
     </ul>
     <!--  -->
 
     <div id="hiddendivs" style="display:none;">
-
-
-
-      <div class="dialog dark" data-role="dialog" id="usbPrepDialog" data-width="60%" data-overlay-click-close="false">
-        <div class="dialog-title"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</div>
-        <div class="dialog-content" style="height: calc(100% - 100px);">
-          This wizard will help you add the supporting files to a USB flashdrive for use with OpenBuilds Interface
-          <hr>
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-
-              <img src="img/interface/interf.png" width="120" class="mt-5" />
-            </div>
-            <div class="cell-md-9 mb-1">
-              <ul>
-                <li class="text-secondary">Insert the USB flashdrive into this computer</li>
-                <li class="text-secondary">Select the correct drive below</li>
-                <li class="text-secondary">Click COPY to transfer the files</li>
-                <li class="text-secondary">Eject the flashdrive </li>
-                <li class="text-secondary">Insert it into the Interface</li>
-              </ul>
-            </div>
-          </div>
-          <hr>
-
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-              Controller
-            </div>
-            <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fas fa-microchip'></i>" data-role="select" data-filter="false" id="profileTargetController" data-editable="true" data-to-top="true">
-                <option value="" selected>Select a controller</option>
-                <option value="blackbox4x">OpenBuilds BlackBox 4X</option>
-                <option value="blackboxx32">OpenBuilds BlackBox X32</option>
-                <option value="genericgrbl">Generic Grbl 1.1 Controller</option>
-                <option value="genericgrblhal">Generic GrblHAL Controller</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="cell-md-3 mb-1">
-              Port
-            </div>
-            <div class="cell-md-9 mb-1">
-              <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" data-role="select" data-filter="false" id="UsbDriveList" disabled data-editable="true" data-to-top="true">
-                <option value="">Waiting for USB Flashdrive</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-        <div class="dialog-actions ">
-          <button id="copyToUsbBtn" class="button success" onclick="copyFilesToUsb()" disabled>Copy supporting files to Flashdrive</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
-
-      <div class="dialog dark" data-role="dialog" id="surfacingDialog" data-width="90%" data-overlay-click-close="false" data-to-top="true">
-        <div class="dialog-title"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</div>
-        <div class="dialog-content" style="max-height: calc(100vh - 100px);overflow-y: auto; overflow-x: hidden;">
-          <form>
-            <div class="row mb-2">
-              <div class="cell-sm-7">
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Router Bit Diameter</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceDiameter" type="number" data-role="input" data-append="mm" data-clear-button="false" value="22" data-editable="true">
-                    <small class="dark">Diameter of your bit / endmill</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Stepover</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceStepover" type="number" data-role="input" data-append="%" data-clear-button="false" value="40" data-editable="true">
-                    <small class="dark">Stepover between passes </small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Feedrate</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceFeedrate" type="number" maxlength="5" data-role="input" data-append="mm/min" data-clear-button="false" value="800" data-editable="true"
-                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
-                    <small class="dark">Cutting speed</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2">
-                  <label class="cell-sm-6">Width<br> <small class="dark">X-Axis</small></label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceX" type="number" data-role="input" data-append="mm" data-clear-button="false" value="200" data-editable="true">
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Length<br> <small class="dark">Y-Axis</small></label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceY" type="number" data-role="input" data-append="mm" data-clear-button="false" value="300" data-editable="true">
-                    <small class="dark">Width and Length of the area to machine flat</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Skim Depth</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceDepth" type="number" data-role="input" data-append="mm" data-clear-button="false" value="2" data-editable="true">
-                    <small class="dark">How much material to remove</small>
-                  </div>
-                </div>
-
-                <div class="row mb-2 border-bottom bd-gray">
-                  <label class="cell-sm-6">Spindle RPM</label>
-                  <div class="cell-sm-6">
-                    <input id="surfaceRPM" type="number" data-role="input" data-append="mm" data-clear-button="false" value="1000" data-editable="true">
-                    <small class="dark">Spindle RPM for variable spindles</small>
-                  </div>
-                </div>
-
-              </div>
-              <div class="cell-sm-5">
-                <small class="dark">NB: make sure your spindle is 100% perpendicular (trammed) to your bed, before running a Surfacing operation. Incorrectly trammed spindles will cause uneven machining of the surface, leading to pitting and
-                  uneven surface finish
-                </small>
-                <hr>
-
-                <small class="dark">You can use the Surfacing / Flattening Wizard to
-                  <ul class="dark">
-                    <li>Prepare / flatten your spoilboard</li>
-                    <li>Level off stock</li>
-                  </ul></small>
-                <hr>
-                <center>
-                  <img src="img/surfacing/wizard1.png" alt="diameter" border="0" style="max-width: calc(100% - 10px); ">
-                </center>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="dialog-actions">
-          <button class="button success js-dialog-close" onclick="createSurfaceGcode()">Proceed</button>
-          <button class="button js-dialog-close">Cancel</button>
-        </div>
-      </div>
 
       <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="false" data-to-top="true">
         <div class="dialog-title">Update Ready</div>
@@ -1702,19 +1735,21 @@
             </tr>
           </table>
         </div>
-        <div class="dialog-actions ">
+        <div class="dialog-actions">
 
-          <label>Probe Type: </label>
+          <div class="pos-relative">
+            <label>Probe Type: </label>
 
-          <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a>
-          <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
-            <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a></li>
-            <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
-            <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
+            <a class="button" id="context_toggle"><span id="probetypebtn"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a>
+            <ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">
+              <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a></li>
+              <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span>OpenBuilds Z Touch Plate</a></li>
+              <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
 
-            <li class="divider"></li>
-            <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
-          </ul>
+              <li class="divider"></li>
+              <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
+            </ul>
+          </div>
           <button title="Configure Custom Probe parameters" class="button" onclick="editCustomProbe();" id="editCustomProbeBtn" style="display: none;"><i class="fas fa-cogs"></i></button>
           <span style="padding-left: 50px;" id="ProbeButtonBarSpacer"></span>
           <button class="button alert js-dialog-close" onclick="resetJogModeAfterProbe(); Metro.dialog.close('#xyzProbeWindow');">Cancel</button>
@@ -1803,9 +1838,14 @@
   <script type="text/javascript" src="lib/jquery/jquery-ui.js"></script>
   <script type="text/javascript" src="lib/jquery/jquery-input-history.min.js"></script>
 
+  <!-- Theme  -->
+  <script type="text/javascript" src="js/theme.js"></script>
+
   <script type="text/javascript" src="js/diagnostics.js"></script>
 
   <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
+
+  <script type="text/javascript" src="lib/yamljs/yaml.min.js"></script>
 
   <script type="text/javascript" src="lib/ace/src-noconflict/ace.js"></script>
   <script>
@@ -1829,6 +1869,7 @@
   <script type="text/javascript" src="lib/threejs/TransformControls.js"></script>
   <script type="text/javascript" src="lib/threejs/TweenMax.min.js"></script>
   <script type="text/javascript" src="lib/threejs/STLLoader.js"></script>
+
   <script type="text/javascript" src="js/viewer.js"></script>
   <script type="text/javascript" src="js/viewer-ruler.js"></script>
 
@@ -1873,10 +1914,11 @@
 
   <script type="text/javascript" src="wizards/jobstats/jobstats.js"></script>
 
+  <script type="text/javascript" src="wizards/resume/resume.js"></script>
+
   <script type="text/javascript" src="js/toolchange.js"></script>
 
   <script src="/lib/furcanIconPicker/iconpicker-1.5.0.js"></script>
-
 
 </html>
 <!--  -->

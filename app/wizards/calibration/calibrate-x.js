@@ -6,7 +6,7 @@ var xcaltemplate = `
       <table class="table">
          <tr>
             <td>
-              <img src="img/calibrate/x/pos1.png" style="border: 1px solid #f1f2f3;">
+              <img src="img/calibrate/x/pos1.png" border="0">
             </td>
             <td>
                Step 1:  Mark Initial Position<br>
@@ -56,7 +56,7 @@ var xcaltemplate = `
       <table class="table">
          <tr>
             <td>
-              <img src="img/calibrate/x/pos3.png" alt="pos3" border="0" style="border: 1px solid #f1f2f3;">
+              <img src="img/calibrate/x/pos3.png" alt="pos3" border="0">
             </td>
             <td>
                Step 3:  Measure Actual Movement<br>
@@ -101,7 +101,7 @@ function xstepscalibrate() {
     title: "<i class='fas fa-wrench fa-fw'></i> Calibrate Steps per mm for X-Axis ($100)",
     content: xcaltemplate,
     toTop: true,
-    width: 750,
+    width: 850,
     clsDialog: 'dark',
     actions: [{
       caption: "Cancel",

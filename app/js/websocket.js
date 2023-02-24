@@ -28,20 +28,32 @@ $(document).ready(function() {
   });
 });
 
-function showGrbl(bool) {
+function showGrbl(bool, firmware) {
+  //console.log(firmware)
   if (bool) {
-    setTimeout(function() {
-      sendGcode('$$')
-    }, 500);
+    if (firmware.platform == "grblHAL" || firmware.platform == "gnea") { // Doesn't use $$ settings, uses config.yaml
+      setTimeout(function() {
+        sendGcode('$$')
+      }, 500);
+    } else if (firmware.platform == "FluidNC") {
+      // Show FluidNC specific tabs and buttons
+      setTimeout(function() {
+        sendGcode('$CD')
+      }, 500);
+    }
+
     setTimeout(function() {
       sendGcode('$I')
     }, 700);
+
     setTimeout(function() {
       sendGcode('$G')
     }, 900);
+
     $("#grblButtons").show()
-    $("#firmwarename").html('Grbl')
-  } else {
+    $("#firmwarename").html(firmware.platform)
+
+  } else { // Hide
     $("#grblButtons").hide()
     $("#firmwarename").html('')
   }
@@ -118,7 +130,6 @@ function initSocket() {
   printLogModern(icon, source, string, printLogCls)
   setTimeout(function() {
     populatePortsMenu();
-    populateDrivesMenu();
   }, 2000);
 
   socket.on('disconnect', function() {
@@ -134,6 +145,16 @@ function initSocket() {
   socket.on('connect', function() {
     $("#websocketstatus").html("Connected")
   });
+
+  socket.on('interfaceDrive', function(data) {
+    console.log(data)
+    if (data.length > 1) {
+      $("#interfaceDriveLetterBtn").html("<i class='fab fa-usb'></i> Selected: " + data)
+      if ($("#profileTargetController").val() != "") {
+        $(".interfaceCopyBtn").removeClass('disabled');
+      }
+    }
+  })
 
   socket.on('gcodeupload', function(data) {
     var icon = ''
@@ -151,6 +172,7 @@ function initSocket() {
     }
 
     loadedFileName = data.filename;
+
     setWindowTitle()
     parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
@@ -210,6 +232,20 @@ function initSocket() {
     $('#downloadprogress').html(data + "%");
   });
 
+  socket.on('fluidncConfig', function(data) {
+    console.log(data);
+    var fluidnceditor = ace.edit("fluidnceditor");
+    fluidnceditor.setTheme('ace/theme/sqlserver')
+    fluidnceditor.session.setMode("ace/mode/yaml");
+    fluidnceditor.session.setValue(data); // from samplefile.js
+    $('#fluidncSettings').show()
+    var fluidncJSON = YAML.parse(data);
+    console.log(fluidncJSON)
+    //yamlString = YAML.stringify(nativeObject[, inline /* @integer depth to start using inline notation at */[, spaces /* @integer number of spaces to use for indentation */] ]);
+
+
+  });
+
   socket.on('data', function(data) {
     // console.log(data)
     var toPrint = escapeHTML(data.response);
@@ -251,7 +287,8 @@ function initSocket() {
   });
 
   socket.on("grbl", function(data) {
-    showGrbl(true)
+    console.log(data)
+    showGrbl(true, data)
   });
 
   socket.on("jobComplete", function(data) {
@@ -348,6 +385,11 @@ function initSocket() {
     if (progressbar) {
       progressbar.val(donepercent);
     }
+
+    if (total > done) {
+      localStorage.setItem('gcodeLineNumber', done); //recovery line number
+    }
+
     if (laststatus) {
       if (laststatus.comms.connectionStatus == 3) {
         editor.gotoLine(data[1] - data[0]);
@@ -473,7 +515,7 @@ function initSocket() {
       }
 
       if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
-        string = "<span class='fg-darkRed'>" + string + ":  Make sure the Interface is in BOOTLOADER MODE. See https://docs.openbuilds.com/doku.php?id=docs:interface:firmware-update-control"
+        string = "<span class='fg-darkRed'>" + string + ":  Make sure the device is in BOOTLOADER MODE. Your computer failed to put it into Bootloader mode automatically. You can enter bootloader mode by: Press and hold down MODE, the Press RESET while still holding MODE. Let go of RESET, then wait a second or two and let go of MODE.  Best performed right after starting the Firmware Flashing operation."
       }
 
 
@@ -554,22 +596,6 @@ function initSocket() {
         printLogModern(icon, source, string, printLogCls)
         laststatus.comms.interfaces.networkDevices = status.comms.interfaces.networkDevices;
         populatePortsMenu();
-      }
-
-      if (!_.isEqual(status.interface.diskdrives, laststatus.interface.diskdrives)) {
-        var string = "Detected a change in available disk drives: ";
-        for (i = 0; i < status.interface.diskdrives.length; i++) {
-          if (status.interface.diskdrives[i].isUSB || !status.interface.diskdrives[i].isSystem) {
-            string += "[" + status.interface.diskdrives[i].mountpoints[0].path + "], "
-          }
-        }
-        var icon = ''
-        var source = "usb drives"
-        //var string = string
-        var printLogCls = "fg-dark"
-        printLogModern(icon, source, string, printLogCls)
-        laststatus.interface.diskdrives = status.interface.diskdrives;
-        populateDrivesMenu();
       }
 
     }
@@ -791,7 +817,7 @@ function initSocket() {
       bellstate = false
     };
     if (status.comms.connectionStatus == 0) {
-      showGrbl(false)
+      showGrbl(false, false)
     }
 
     var updateWCS = false
@@ -849,6 +875,7 @@ function initSocket() {
       switch (data[i]) {
         case 'Q':
           // console.log('SPINDLE_IS_SERVO Enabled')
+          // Also enabled for grblHAL from grbl-settings if $33=50
           $('#enServo').removeClass('alert').addClass('success').html('ON')
           $(".servo-active").show()
           break;
@@ -1065,39 +1092,39 @@ function closePort() {
   $('#consoletab').click();
 }
 
-function populateDrivesMenu() {
-  if (laststatus) {
-    var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Flashdrives">`
-
-    var usbDrives = []
-
-    for (i = 0; i < laststatus.interface.diskdrives.length; i++) {
-      if (laststatus.interface.diskdrives[i].isUSB || !laststatus.interface.diskdrives[i].isSystem) {
-        usbDrives.push(laststatus.interface.diskdrives[i])
-      }
-    };
-
-    if (!usbDrives.length > 0) {
-      response += `<option value="">Waiting for USB Flashdrive</option>`
-    } else {
-      for (i = 0; i < usbDrives.length; i++) {
-        response += `<option value="` + usbDrives[i].mountpoints[0].path + `">` + usbDrives[i].mountpoints[0].path + ` ` + usbDrives[i].description + `</option>`;
-      };
-    }
-    response += `</optgroup></select>`
-    var select = $("#UsbDriveList").data("select");
-    if (select) {
-      select.data(response);
-      if (!usbDrives.length > 0) {
-        $('#UsbDriveList').parent(".select").addClass('disabled')
-        $("#copyToUsbBtn").attr('disabled', true);
-      } else {
-        $('#UsbDriveList').parent(".select").removeClass('disabled')
-        $("#copyToUsbBtn").attr('disabled', false);
-      }
-    }
-  }
-}
+// function populateDrivesMenu() { // removed in 1.0.350 due to Drivelist stability issues
+//   if (laststatus) {
+//     var response = `<select id="select1" data-role="select" class="mt-4"><optgroup label="USB Flashdrives">`
+//
+//     var usbDrives = []
+//
+//     for (i = 0; i < laststatus.interface.diskdrives.length; i++) {
+//       if (laststatus.interface.diskdrives[i].isUSB || !laststatus.interface.diskdrives[i].isSystem) {
+//         usbDrives.push(laststatus.interface.diskdrives[i])
+//       }
+//     };
+//
+//     if (!usbDrives.length > 0) {
+//       response += `<option value="">Waiting for USB Flashdrive</option>`
+//     } else {
+//       for (i = 0; i < usbDrives.length; i++) {
+//         response += `<option value="` + usbDrives[i].mountpoints[0].path + `">` + usbDrives[i].mountpoints[0].path + ` ` + usbDrives[i].description + `</option>`;
+//       };
+//     }
+//     response += `</optgroup></select>`
+//     var select = $("#UsbDriveList").data("select");
+//     if (select) {
+//       select.data(response);
+//       if (!usbDrives.length > 0) {
+//         $('#UsbDriveList').parent(".select").addClass('disabled')
+//         $("#copyToUsbBtn").attr('disabled', true);
+//       } else {
+//         $('#UsbDriveList').parent(".select").removeClass('disabled')
+//         $("#copyToUsbBtn").attr('disabled', false);
+//       }
+//     }
+//   }
+// }
 
 function populatePortsMenu() {
   if (laststatus) {

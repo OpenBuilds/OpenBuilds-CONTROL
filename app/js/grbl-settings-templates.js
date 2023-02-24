@@ -150,12 +150,9 @@ var grblSettingsTemplate2 = {
   },
   22: {
     key: `$22`,
-    title: `Homing cycle enable, boolean`,
+    title: `Homing cycle enable, boolean (Grbl) / mask (GrblHAL)`,
     description: `The homing cycle is used to accurately and precisely locate a known and consistent position on a machine every time you start up your Grbl between sessions. In other words, you know exactly where you are at any given time, every time. Say you start machining something or are about to start the next step in a job and the power goes out, you re-start Grbl and Grbl has no idea where it is due to steppers being open-loop control. You're left with the task of figuring out where you are. If you have homing, you always have the machine zero reference point to locate from, so all you have to do is run the homing cycle and resume where you left off. To set up the homing cycle for Grbl, you need to have limit switches in a fixed position that won't get bumped or moved, or else your reference point gets messed up. Usually they are setup in the farthest point in +x, +y, +z of each axes. Wire your limit switches in with the limit pins, add a recommended RC-filter to help reduce electrical noise, and enable homing. If you're curious, you can use your limit switches for both hard limits AND homing. They play nice with each other. Prior to trying the homing cycle for the first time, make sure you have setup everything correctly, otherwise homing may behave strangely. First, ensure your machine axes are moving in the correct directions per Cartesian coordinates (right-hand rule). If not, fix it with the $3 direction invert setting. Second, ensure your limit switch pins are not showing as 'triggered' in Grbl's status reports. If are, check your wiring and settings. Finally, ensure your $13x max travel settings are somewhat accurate (within 20%), because Grbl uses these values to determine how far it should search for the homing switches. By default, Grbl's homing cycle moves the Z-axis positive first to clear the workspace and then moves both the X and Y-axes at the same time in the positive direction. To set up how your homing cycle behaves, there are more Grbl settings down the page describing what they do (and compile-time options as well.). Also, one more thing to note, when homing is enabled. Grbl will lock out all G-code commands until you perform a homing cycle. Meaning no axes motions, unless the lock is disabled ($X) but more on that later. Most, if not all CNC controllers, do something similar, as it is mostly a safety feature to prevent users from making a positioning mistake, which is very easy to do and be saddened when a mistake ruins a part. If you find this annoying or find any weird bugs, please let us know and we'll try to work on it so everyone is happy. :)  NOTE: Check out config.h for more homing options for advanced users. You can disable the homing lockout at startup, configure which axes move first during a homing cycle and in what order, and more.`,
-    template: `<select id="val-22-input">
-             <option value="0">&#x2717; Disable</option>
-             <option value="1">&#x2713; Enable</option>
-          </select>`,
+    template: `<input id="val-22-input" data-role="input" data-clear-button="false" data-append="mask" type="text">`,
     utils: ``
   },
   23: {
@@ -573,7 +570,7 @@ var grblSettingsTemplate2 = {
     utils: ``
   },
   63: {
-    key: `$`,
+    key: `$63`,
     title: `Feed Hold Actions`,
     description: `Disable Laser During Hold, Restore Spindle/Coolant on Resume (Mask)`,
     template: `<input id="val-63-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
@@ -639,7 +636,7 @@ var grblSettingsTemplate2 = {
     key: `$70`,
     title: `Network Services`,
     description: `70`,
-    template: `<input id="val--input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
+    template: `<input id="val-70-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
     utils: ``
   },
   300: {
@@ -710,6 +707,20 @@ var grblSettingsTemplate2 = {
     title: `Wifi network PSK`,
     description: ``,
     template: `<input id="val-75-input" data-role="input" data-clear-button="false" data-append="psk" type="text" >`,
+    utils: ``
+  },
+  65: {
+    key: `$65`,
+    title: `Require homing sequence to be executed at startup`,
+    description: `Require homing sequence to be executed at startup(?). Replaces #define HOMING_INIT_LOCK.`,
+    template: `<input id="val-65-input" data-role="input" data-clear-button="false" data-append="" type="number" >`,
+    utils: ``
+  },
+  8: {
+    key: `$8`,
+    title: `Ganged axes direction invert as bitfield`,
+    description: `Ganged axes direction invert as bitfield`,
+    template: `<input id="val-8-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``
   }
 }

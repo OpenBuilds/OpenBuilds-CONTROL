@@ -97,6 +97,25 @@ $(document).ready(function() {
     init3D();
   }
 
+  // File Open Button compatible with Node 19+ dialogs
+  if (!disableElectron19FileOpen) {
+    console.log("Native Dialog not disabled in Troubleshooting")
+    if (navigator.userAgent.indexOf('Electron') >= 0) {
+      console.log("Native Dialog Button Enabled")
+      $("#openGcodeBtn").hide()
+      $("#openGcodeBtnElectron19").show()
+    } else {
+      console.log("Native Dialog Button Disabled")
+      $("#openGcodeBtn").show()
+      $("#openGcodeBtnElectron19").hide()
+    }
+  } else {
+    console.log("Native Dialog is Disabled in Troubleshooting")
+    $("#openGcodeBtn").show()
+    $("#openGcodeBtnElectron19").hide()
+  }
+
+
   if (typeof ace !== 'undefined') {
     editor = ace.edit("editor");
     editor.$blockScrolling = Infinity;
@@ -371,6 +390,84 @@ function versionCompare(v1, v2, options) {
   return 0;
 }
 
+
+
+function isWebGLAvailable() {
+
+  try {
+
+    const canvas = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+
+  } catch (e) {
+
+    return false;
+
+  }
+
+}
+
+function isWebGL2Available() {
+
+  try {
+
+    const canvas = document.createElement('canvas');
+    return !!(window.WebGL2RenderingContext && canvas.getContext('webgl2'));
+
+  } catch (e) {
+
+    return false;
+
+  }
+
+}
+
+function getWebGLErrorMessage() {
+
+  return getErrorMessage(1);
+
+}
+
+function getWebGL2ErrorMessage() {
+
+  return getErrorMessage(2);
+
+}
+
+function getErrorMessage(version) {
+
+  const names = {
+    1: 'WebGL',
+    2: 'WebGL 2'
+  };
+
+  const contexts = {
+    1: window.WebGLRenderingContext,
+    2: window.WebGL2RenderingContext
+  };
+
+  let message = 'Your $0 does not seem to support $1: See http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation to learn more';
+
+  if (contexts[version]) {
+
+    message = message.replace('$0', 'graphics card');
+
+  } else {
+
+    message = message.replace('$0', 'browser');
+
+  }
+
+  message = message.replace('$1', names[version]);
+
+
+
+  return message;
+
+}
+
+
+
 var webgl = (function() {
   if (disable3Dviewer) {
     return false;
@@ -380,7 +477,9 @@ var webgl = (function() {
   } else {
     // console.log("Testing WebGL")
     try {
-      return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+      if (isWebGLAvailable() || isWebGL2Available()) {
+        return true
+      };
     } catch (e) {
       return false;
     }
@@ -469,4 +568,10 @@ function timeConvert(n) {
     rminutes = "0" + rminutes
   }
   return rhours + "h:" + rminutes + "m";
+}
+
+function toTitleCase(str) {
+  return str.replace(/(?:^|\s)\w/g, function(match) {
+    return match.toUpperCase();
+  });
 }

@@ -81,7 +81,7 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   sceneLights.add(dirLight);
 
   hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-  hemiLight.color.setHSL(0.6, 1, 0.6);
+  hemiLight.color.setHSL(Theme.HEMI_LIGHT_COLOR.H, Theme.HEMI_LIGHT_COLOR.S, Theme.HEMI_LIGHT_COLOR.L);
   hemiLight.groundColor.setHSL(0.095, 1, 0.75);
   hemiLight.position.set(0, 50, 0);
   hemiLight.visible = false;
@@ -99,10 +99,10 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   if (!disable3Dskybox) {
     var uniforms = {
       topColor: {
-        value: new THREE.Color(0x0077ff)
+        value: new THREE.Color(Theme.SKY_TOP_COLOR)
       },
       bottomColor: {
-        value: new THREE.Color(0xffffff)
+        value: new THREE.Color(Theme.SKY_BOTTOM_COLOR)
       },
       offset: {
         value: -63
@@ -212,7 +212,7 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
     y: 0,
     z: 0,
     text: "X",
-    color: "#ff0000",
+    color: Theme.X_RULER_LABEL_COLOR,
     size: size
   });
   var ylbl = this.makeSprite(this.scene, "webgl", {
@@ -220,7 +220,7 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
     y: parseInt(ymax) + offset,
     z: 0,
     text: "Y",
-    color: "#006600",
+    color: Theme.Y_RULER_LABEL_COLOR,
     size: size
   });
 
@@ -229,11 +229,11 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
   axesgrp.add(ylbl);
 
   var materialX = new THREE.LineBasicMaterial({
-    color: 0xcc0000
+    color: Theme.X_AXIS_LINE_COLOR
   });
 
   var materialY = new THREE.LineBasicMaterial({
-    color: 0x00cc00
+    color: Theme.Y_AXIS_LINE_COLOR
   });
 
   var geometryX = new THREE.Geometry();
@@ -265,20 +265,20 @@ function redrawGrid(xmin, xmax, ymin, ymax, inches) {
     step10 = 2.54;
     step100 = 25.4;
   }
-  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step10, 0x888888);
+  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step10, Theme.GRID_STEP_10_COLOR);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
-  helper.material.opacity = 0.15;
+  helper.material.opacity = Theme.GRID_STEP_10_OPACITY;
   helper.material.transparent = true;
   helper.receiveShadow = false;
   helper.name = "GridHelper10mm"
   grid.add(helper);
-  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step100, 0x666666);
+  helper = new THREE.GridHelper(xmin, xmax, ymin, ymax, step100, Theme.GRID_STEP_100_COLOR);
   helper.position.y = 0;
   helper.position.x = 0;
   helper.position.z = 0;
-  helper.material.opacity = 0.15;
+  helper.material.opacity = Theme.GRID_STEP_100_OPACITY;
   helper.material.transparent = true;
   helper.receiveShadow = false;
   helper.name = "GridHelper50mm"
@@ -370,6 +370,7 @@ function init3D() {
   } else {
     console.log('No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!');
     printLog("<span class='fg-darkRed'>[ ERROR ]</span>  <span class='fg-darkRed'>No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!</span>")
+    printLog("<span class='fg-darkRed'>[ ERROR ]</span>  <span class='fg-darkRed'>" + getWebGLErrorMessage() + "</span>")
     $('#gcodeviewertab').hide()
     $('#consoletab').click()
     return false;
@@ -518,7 +519,7 @@ function makeSprite(scene, rendererType, vals) {
     map: texture,
     // useScreenCoordinates: false,
     transparent: true,
-    opacity: 0.6
+    opacity: Theme.SPRITE_OPACITY
   });
   material.transparent = true;
   //var textObject = new THREE.Sprite(material);
