@@ -1,2 +1,25 @@
 Disclaimer
 This hardware/software is provided "as is", and you use the hardware/software at your own risk. Under no circumstances shall any author be liable for direct, indirect, special, incidental, or consequential damages resulting from the use, misuse, or inability to use this hardware/software, even if the authors have been advised of the possibility of such damages.
+
+By downloading and using this software you agree to the following terms and conditions:
+The following legal disclaimer governs your use of our machine control software that includes beta features. By using this software, you acknowledge and agree to the terms and conditions set forth in this disclaimer.
+
+Beta Features:
+The machine control software may contain beta features that are still under development and testing. You acknowledge that such features may not be fully functional or may be subject to bugs, errors, or other issues. As such, the use of such features may result in unexpected and undesirable results.
+
+Limited Warranty:
+The machine control software is provided "as is," without warranty of any kind, either expressed or implied. We do not guarantee that the software will meet your requirements or that it will be error-free. You assume all risks and responsibility for any loss or damage that may arise from the use of the software, including any beta features.
+
+Limitation of Liability:
+In no event shall we be liable for any damages arising out of or in connection with the use or inability to use the software, including any beta features. This includes but is not limited to direct, indirect, incidental, special, or consequential damages, such as loss of profits, data, or use of the software.
+
+Indemnification:
+You agree to indemnify, defend, and hold us harmless from any claims, damages, and expenses, including reasonable attorney's fees, arising out of your use of the software, including any beta features.
+
+No Support:
+We are not obliged to provide any technical support or assistance with the use of the software, including any beta features. Any support or assistance provided by us is entirely at our discretion.
+
+Termination:
+We reserve the right to terminate your use of the software, including any beta features, at any time without prior notice.
+
+By using this machine control software or any software provided by OpenBuilds and its affiliates, including any beta features, you agree to the terms and conditions set forth in this legal disclaimer. If you do not agree to these terms, you may not use any of the software provided by OpenBuilds and its affiliates , including any beta features.
