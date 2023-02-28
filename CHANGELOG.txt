@@ -1,4 +1,4 @@
-v1.0.355: Updated installer licence agreement / terms and conditions
+v1.0.355: Updated installer license agreement / terms and conditions, Added Email Registration, Fixed Surfacing Wizard menu bug
 v1.0.354: Fix for double-negative values in Surfacing Wizard
 v1.0.353: Fixed API integration for cam.openbuilds.com
 v1.0.352: Added support for nodeIntegration (Additional backend support for awesome JS Macros)

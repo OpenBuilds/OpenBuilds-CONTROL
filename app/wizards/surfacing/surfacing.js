@@ -144,6 +144,7 @@ function populateSurfaceToolForm() {
   $("#surfaceY").val(data.surfaceY);
   $("#surfaceDepth").val(data.surfaceDepth);
   if (data.surfaceFinalDepth != undefined) {
+    data.surfaceFinalDepth = data.surfaceDepth;
     $("#surfaceFinalDepth").val(data.surfaceFinalDepth);
   } else {
     $("#surfaceFinalDepth").val(data.surfaceDepth);

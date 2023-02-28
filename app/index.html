@@ -1185,7 +1185,7 @@
               <div class="cell p-0 m-0">
                 <div class="card">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-bolt"></i>Inputs / Endstops
+                    <i class="fas fa-fw fa-bolt"></i>&nbsp;Inputs / Endstops
                   </div>
                   <div class="card-content">
                     <table class="table striped compact">
@@ -1234,7 +1234,7 @@
 
                 <div class="card" id="powerSettingsCard">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-power-off"></i>Power Settings
+                    <i class="fas fa-fw fa-power-off"></i>&nbsp;Power Settings
                   </div>
                   <div class="card-content">
                     <table class="table striped compact">
@@ -1255,6 +1255,30 @@
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="card" id="registrationCard">
+                  <div class="card-header p-1 m-0">
+                    <i class="fas fa-fw fa-user-check"></i>&nbsp;Registration Settings
+                  </div>
+                  <div class="card-content">
+                    <table class="table striped compact">
+                      <thead>
+                        <tr>
+                          <th style="width: 70%;">Parameter</th>
+                          <th style="width: 30%;">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Registered To: </td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally powerstatus" id="registrationCardRegistration">NOCOMM</span></td>
                         </tr>
 
                       </tbody>
@@ -1357,7 +1381,7 @@
 
                 <div class="card">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-tty"></i>Communications
+                    <i class="fas fa-fw fa-tty"></i>&nbsp;Communications
                   </div>
                   <div class="card-content" style="height: calc(100vh - 630px); min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
@@ -1403,7 +1427,7 @@
 
                 <div class="card">
                   <div class="card-header  p-1 m-0">
-                    <i class="fas fa-fw fa-history"></i> Changelog
+                    <i class="fas fa-fw fa-history"></i>&nbsp;Changelog
                   </div>
                   <div class="card-content" style="height: calc(100vh - 680px); min-height: 120px; overflow-x: auto;">
                     <div id="changelog" class="text-small"></div>
@@ -1893,8 +1917,6 @@
 
   <script type="text/javascript" src="lib/3dview/3dview.js"></script>
 
-
-
   <!-- Wizards -->
   <script type="text/javascript" src="wizards/calibration/calibrate.js"></script>
   <script type="text/javascript" src="wizards/calibration/calibrate-x.js"></script>
@@ -1906,6 +1928,8 @@
   <script type="text/javascript" src="wizards/probe/holefinder.js"></script>
 
   <script type="text/javascript" src="wizards/surfacing/surfacing.js"></script>
+
+  <script type="text/javascript" src="wizards/mailinglist/mailinglist.js"></script>
 
   <!-- <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script> -->
   <script type="text/javascript" src="wizards/flashingtool2/flashingtool.js"></script>

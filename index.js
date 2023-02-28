@@ -730,6 +730,13 @@ io.on("connection", function(socket) {
     shell.openExternal('https://www.openbuilds.com')
   });
 
+  socket.on("openbuildspartstore", function(data) {
+    const {
+      shell
+    } = require('electron')
+    shell.openExternal('https://www.openbuildspartstore.com')
+  });
+
   socket.on("carveco", function(data) {
     const {
       shell
@@ -2831,7 +2838,7 @@ if (isElectron()) {
     // Create myWindow, load the rest of the app, etc...
     app.on('ready', () => {
       if (process.platform == 'win32') {
-        // Don't show window - sit in Tray 
+        // Don't show window - sit in Tray
       } else {
         showJogWindow() // Macos and Linux - launch GUI
       }
