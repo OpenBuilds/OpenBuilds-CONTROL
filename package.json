@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.355",
+  "version": "1.0.356",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -120,7 +120,8 @@
       ""
     ],
     "extraFiles": [
-      "ssl"
+      "ssl",
+      "node_modules"
     ],
     "asarUnpack": [
       "esptool.exe",
