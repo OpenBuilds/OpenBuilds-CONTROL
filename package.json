@@ -6,8 +6,6 @@
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
     "copyfiles": "^2.4.1",
-    "electron": "^23.1.1",
-    "electron-builder": "^v24.0.0-alpha.13",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0",
     "node-gyp": "^9.3.1"
@@ -34,6 +32,28 @@
     "serialport": "^10.4.0",
     "socket.io": "^4.6.1",
     "xmodem.js": "^0.1.0"
+  },
+  overrides: {
+   "os": {
+     "darwin": {
+        "devDependencies": {
+          "electron": "^19.0.17",
+          "electron-builder": "^23.3.3"
+        }
+     },
+      "linux": {
+         "devDependencies": {
+           "electron": "^19.0.17",
+           "electron-builder": "^23.3.3"
+         }
+      },
+      "win32": {
+         "devDependencies": {
+           "electron": "^23.1.1",
+           "electron-builder": "^v24.0.0-alpha.13"
+         }
+      }
+    }
   },
   "main": "index.js",
   "scripts": {
@@ -120,8 +140,7 @@
       ""
     ],
     "extraFiles": [
-      "ssl",
-      "node_modules"
+      "ssl"
     ],
     "asarUnpack": [
       "esptool.exe",
