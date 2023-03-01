@@ -23,12 +23,10 @@ $(document).ready(function() {
     <div id="mailingListForm">
 
     <div class="text-small">
-    We at OpenBuilds are excited to  provide you with our free, user-friendly, powerful CNC CONTROL software!  <br>
-    As a community-driven organization, we appreciate the continuous support we receive from our users, and offering this software is just one of the ways we give back.  <br>
-    Our software is designed to empower both novices and experts to bring their ideas to life.
-    <hr>
-    To get started, all you need to do is fill out the information below to receive software as well as OpenBuilds updates. Once you've signed up, you'll have immediate access to our software.
-    <br>
+      We at OpenBuilds are excited to provide you with our free, user-friendly and powerful CNC CONTROL software! <br>
+      Our mission is to empower both novices and experts to quickly and easily bring their ideas to life.
+      <hr>
+      To begin using our software, simply fill out the information below.  You will then receive software updates and be the first to hear about <a href=#" onclick="socket.emit('openbuilds');">OpenBuilds</a> and <a href=#" onclick="socket.emit('openbuildspartstore');">Part Store</a> announcements!
     </div>
 
 
@@ -58,9 +56,8 @@ $(document).ready(function() {
         <div class="row mt-4">
           <div class="cell-md-12">
             <div class="text-small">
-            We would like to take this opportunity to thank you for supporting the <a href=#" onclick="socket.emit('openbuildspartstore');">OpenBuilds Part Store</a>.<br>
-            Your support is what enables us to continue creating innovative tools such as this free software for your benefit.<br>
-            Thank you for your ongoing support of OpenBuilds!<br>
+              As a community-driven organization, we truly appreciate the continuous support we receive from our users, and offering this software is just one of the many ways we give back. <br>
+              Thank you for being a part of the OpenBuilds community, and for your ongoing support!
             </div>
           </div>
         </div>
@@ -92,7 +89,7 @@ $(document).ready(function() {
     `
 
     mailingListDialog = Metro.dialog.create({
-      title: "<i class='fas fa-user'></i> Free Registration",
+      title: "<i class='fas fa-user'></i> Registration",
       content: mailinglistTemplate,
       toTop: true,
       width: '60%',
