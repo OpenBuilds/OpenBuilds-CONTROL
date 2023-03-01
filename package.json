@@ -33,7 +33,7 @@
     "socket.io": "^4.6.1",
     "xmodem.js": "^0.1.0"
   },
-  overrides: {
+  "overrides": {
    "os": {
      "darwin": {
         "devDependencies": {
