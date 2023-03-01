@@ -435,8 +435,8 @@ var status = {
       date: "",
       buffer: [],
       features: [],
-      blockBufferSize: "",
-      rxBufferSize: "",
+      blockBufferSize: 0,
+      rxBufferSize: 0,
     },
   },
   comms: {
@@ -2674,11 +2674,16 @@ function BufferSpace(firmware) {
     total += sentBuffer[i].length;
   }
   if (firmware == "grbl") {
-    if (status.machine.firmware.platform == "grblHAL") {
-      return GRBLHAL_RX_BUFFER_SIZE - total;
+    if (status.machine.firmware.rxBufferSize > 0) {
+      return (status.machine.firmware.rxBufferSize - 1) - total;
     } else {
-      return GRBL_RX_BUFFER_SIZE - total;
+      if (status.machine.firmware.platform == "grblHAL") {
+        return GRBLHAL_RX_BUFFER_SIZE - total;
+      } else {
+        return GRBL_RX_BUFFER_SIZE - total;
+      }
     }
+
   }
 }
 
