@@ -48,7 +48,7 @@
   ],
   "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
   "build": {
-    "includeSubNodeModules": true
+    "includeSubNodeModules": true,
     "publish": [
       {
         "provider": "github",
