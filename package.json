@@ -6,13 +6,14 @@
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
     "copyfiles": "^2.4.1",
+    "electron": "^22.3.1",
+    "electron-builder": "^v24.0.0-alpha.13",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0",
     "node-gyp": "^9.3.1"
   },
   "dependencies": {
     "avrgirl-arduino": "^5.0.1",
-    "cross-os": "^1.5.0",
     "debug": "^4.3.4",
     "detect-rpi": "^1.4.0",
     "electron-builder-notarize": "^1.5.1",
@@ -40,13 +41,7 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.0.3xx)\" && echo \"2) Commit that change (git commit -am v1.0.3xx)\" && echo \"3) Push your changes to GitHub (git push)\"",
     "run-local": "electron .",
-    "postinstall": "electron-builder install-app-deps",
-    "prep": "cross-os prep-it",
-    "prep-it": {
-      "darwin": "yarn add electron@^19.0.17; yarn add electron-builder@23.3.3",
-      "win32": "yarn add electron@^19.0.17; yarn add electron-builder@23.3.3",
-      "linux": "yarn add electron@23.1.1; yarn add electron-builder@v24.0.0-alpha.13"
-    }
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
     "usb"

@@ -34,12 +34,6 @@ jobs:
           mkdir -p ~/private_keys/
           echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
 
-      - name: Install cross-os
-        run: yarn add cross-os@latest
-
-      - name: Install Electron / Electron Builder per-OS
-        run: yarn run prep
-
       - name: Electron Builder Action
         uses: OpenBuilds/action-electron-build@v1.8.0
         with:
@@ -51,7 +45,8 @@ jobs:
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
-          debugElectron: true
+          #debugElectron: true // to enable debug=electron-builder
+          debugElectron: false
           # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
         env:
