@@ -27,18 +27,19 @@ jobs:
       - name: Set electron-builder debug env variable
         run: set DEBUG=electron-builder
 
-      - name: Install cross-os
-        run: yarn add cross-os@latest
-
-      - name: Install Electron / Electron Builder per-OS
-        run: yarn run prep
-
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
         run: |
           mkdir -p ~/private_keys/
           echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
+
+      - name: Install cross-os
+        run: yarn add cross-os@latest
+
+      - name: Install Electron / Electron Builder per-OS
+        run: yarn run prep
+
       - name: Electron Builder Action
         uses: OpenBuilds/action-electron-build@v1.8.0
         with:
