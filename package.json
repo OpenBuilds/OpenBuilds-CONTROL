@@ -1,13 +1,11 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.355",
+  "version": "1.0.356",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
     "copyfiles": "^2.4.1",
-    "electron": "^23.1.1",
-    "electron-builder": "^v24.0.0-alpha.13",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0",
     "node-gyp": "^9.3.1"
@@ -41,7 +39,14 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "echo \"When you want to create a new release, follow these steps:\" && echo \"1) Update the version in your project's package.json file (e.g. 1.0.3xx)\" && echo \"2) Commit that change (git commit -am v1.0.3xx)\" && echo \"3) Push your changes to GitHub (git push)\"",
     "run-local": "electron .",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "cross-os install-electron-cross; electron-builder install-app-deps"
+  },
+  "cross-os": {
+    "install-electron-cross": {
+      "darwin": "yarn add electron@^19.0.17; yarn add electron-builder@23.3.3",
+      "win32": "yarn add electron@^19.0.17; yarn add electron-builder@23.3.3",
+      "linux": "yarn add electron@23.1.1; yarn add electron-builder@v24.0.0-alpha.13"
+    }
   },
   "keywords": [
     "usb"

@@ -361,6 +361,7 @@ var feedOverride = 100,
 var re = new RegExp("^[a-f0-9]{32}");
 
 var status = {
+  login: false,
   driver: {
     version: require('./package').version,
     ipaddress: ip.address(),
@@ -2841,7 +2842,7 @@ if (isElectron()) {
       }
     })
     // Create myWindow, load the rest of the app, etc...
-    app.on('ready', () => {
+    electronApp.on('ready', () => {
       if (process.platform == 'win32') {
         // Don't show window - sit in Tray
       } else {
@@ -3094,7 +3095,7 @@ if (isElectron()) {
     });
 
     // Autostart on Login
-    if (!process.platform == 'darwin') {
+    if (process.platform == 'win32') {
       electronApp.setLoginItemSettings({
         openAtLogin: true,
         args: []
