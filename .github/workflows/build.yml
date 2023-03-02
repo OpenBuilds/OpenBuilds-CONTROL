@@ -27,6 +27,9 @@ jobs:
       - name: Set electron-builder debug env variable
         run: set DEBUG=electron-builder
 
+      - name: Install Electron / Electron Builder per-OS
+        run: yarn run prep
+
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
