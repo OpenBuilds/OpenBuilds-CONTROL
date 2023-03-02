@@ -27,6 +27,9 @@ jobs:
       - name: Set electron-builder debug env variable
         run: set DEBUG=electron-builder
 
+      - name: Install cross-os
+        run: yarn add cross-os@latest
+
       - name: Install Electron / Electron Builder per-OS
         run: yarn run prep
 
