@@ -27,6 +27,9 @@ jobs:
       - name: Set electron-builder debug env variable
         run: set DEBUG=electron-builder
 
+      - name: Set env USE_HARD_LINKS=false
+        run: set USE_HARD_LINKS=false
+
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
