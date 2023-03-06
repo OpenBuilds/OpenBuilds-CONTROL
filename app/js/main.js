@@ -4,6 +4,11 @@ var editor;
 var isJogWidget = false;
 var lastJobStartTime = false;
 
+// Disable global Right-click menu, so we can implement UI right click menus
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+}, false);
+
 function setWindowTitle(status) {
 
   var string = "OpenBuilds CONTROL"
