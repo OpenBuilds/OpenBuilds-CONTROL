@@ -5,12 +5,10 @@
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
-    "copyfiles": "^2.4.1",
     "electron": "^23.1.1",
     "electron-builder": "^24.0.0",
     "electron-rebuild": "^3.2.9",
-    "ncp": "^2.0.0",
-    "node-gyp": "^9.3.1"
+    "ncp": "^2.0.0"
   },
   "dependencies": {
     "avrgirl-arduino": "^5.0.1",
