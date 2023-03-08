@@ -1,10 +1,10 @@
-v1.0.357-359: Debugged and fixed the Linux/Mac Modules bug, removed Hazardous from dependencies, Changed internal methods for launching esptool, implement No-python version of esptool for MacOS
+v1.0.357-359: Debugged and fixed the Linux/Mac Modules bug, removed Hazardous from dependencies, Changed internal methods for launching esptool
 v1.0.356: Added right-click Context Menu to Macro Buttons. Moved Delete/Edit to Macros Context Menu. Added Macro Button Sorting to Context Menu. Added Macro Export/Import functionality
 v1.0.355: Updated installer license agreement / terms and conditions, Added Email Registration, Fixed Surfacing Wizard menu bug
 v1.0.354: Fix for double-negative values in Surfacing Wizard
 v1.0.353: Fixed API integration for cam.openbuilds.com
-v1.0.352: Added support for nodeIntegration (Additional backend support for awesome JS Macros)
 v1.0.351: Updated defaults for Surfacing Wizard UI, Updated text on Recovery wizard
+v1.0.352: Added support for nodeIntegration (Additional backend support for awesome JS Macros)
 v1.0.350: Updated all dependencies, Updated to Node 18, Removed Drivelist Dependency
 v1.0.349: Added Multipass option to Surfacing Wizard, Experimental Job resume/recovery Wizard (use at own risk)
 v1.0.345-8: Removed Carveco/Fabber links from Open Gcode menu. Fixed bug #292, Updated dark Mode CSS #291, Updated Acro profiles for grblHAL #288, Updated servo support for grblHAL #285, Decreased color shade of button focus box shadow to avoid confusion with distance selector #293, Updated Github Actions scrips
