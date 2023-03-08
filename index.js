@@ -3340,10 +3340,10 @@ function flashInterface(data) {
     '--flash_mode', 'dio',
     '--flash_freq', '80m',
     '--flash_size', 'detect',
-    '0xe000', path.join(__dirname, "./boot_app0.bin"),
-    '0x1000', path.join(__dirname, "./bootloader_qio_80m.bin"),
-    '0x10000', path.resolve(firmwareImagePath),
-    '0x8000', path.join(__dirname, "./firmware.partitions.bin")
+    '0xe000', path.join(__dirname, "./boot_app0.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x1000', path.join(__dirname, "./bootloader_qio_80m.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x10000', path.resolve(firmwareImagePath).replace('app.asar', 'app.asar.unpacked'),
+    '0x8000', path.join(__dirname, "./firmware.partitions.bin").replace('app.asar', 'app.asar.unpacked')
   ];
 
   if (process.platform == 'linux') {
@@ -3432,21 +3432,26 @@ function flashGrblHal(data) {
     '--flash_mode', 'dio',
     '--flash_size', 'detect',
     '--flash_freq', '40m',
-    '0x1000', path.join(__dirname, "./grblhal-bootloader.bin"),
-    '0x8000', path.join(__dirname, "./grblhal-partition-table.bin"),
-    '0x10000', path.resolve(firmwarePath)
+    '0x1000', path.join(__dirname, "./grblhal-bootloader.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x8000', path.join(__dirname, "./grblhal-partition-table.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x10000', path.resolve(firmwarePath).replace('app.asar', 'app.asar.unpacked')
   ];
 
   if (erase == true) {
     esptool_opts.push('--erase-all');
   }
 
-  if (process.platform != 'win32') {
-    fs.chmodSync(path.join(__dirname, "./esptool.py"), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py"), esptool_opts);
+  if (process.platform == 'linux') {
+    //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'win32') {
-    var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
+    var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'darwin') {
+    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
+
 
   child.stdout.on('data', function(data) {
     var debugString = data.toString();
