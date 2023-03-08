@@ -3313,7 +3313,7 @@ function flashInterface(data) {
   var board = data.board
 
 
-  console.log("Flashing Interface on " + port + " with board " + board + " file: " + file)
+  console.log("Flashing Interface on " + port + " with file: " + file)
   // var data = {
   //   'port': port,
   //   'string': debugString
@@ -3353,8 +3353,8 @@ function flashInterface(data) {
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'darwin') {
-    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
 
 
@@ -3414,7 +3414,7 @@ function flashGrblHal(data) {
     var firmwarePath = path.join(__dirname, file)
   }
 
-  console.log("Flashing BlackBoxX32 on " + port + " with file: " + path.resolve(firmwarePath))
+  console.log("Flashing BlackBoxX32 on " + port + " with file: " + path.resolve(firmwarePath).replace('app.asar', 'app.asar.unpacked'))
 
   var data = {
     'port': port,
@@ -3448,8 +3448,8 @@ function flashGrblHal(data) {
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'darwin') {
-    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
 
 
