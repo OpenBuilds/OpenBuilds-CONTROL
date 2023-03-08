@@ -1,4 +1,4 @@
-v1.0.357-359: Debug the Linux/Mac Modules bug, removed Hazardous from depencies (TODO: Fix Esptool Spawns)
+v1.0.357-359: Debug the Linux/Mac Modules bug, removed Hazardous from depencies, Change method for launching esptool, implement No-python version of esptool for MacOS
 v1.0.356: Added right-click Context Menu to Macro Buttons. Moved Delete/Edit to Macros Context Menu. Added Macro Button Sorting to Context Menu. Added Macro Export/Import functionality
 v1.0.355: Updated installer license agreement / terms and conditions, Added Email Registration, Fixed Surfacing Wizard menu bug
 v1.0.354: Fix for double-negative values in Surfacing Wizard
