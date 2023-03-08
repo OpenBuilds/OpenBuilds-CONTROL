@@ -1479,7 +1479,7 @@
     </div>
 
     <!-- Simulator Context Menu -->
-    <ul class="d-menu context" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
+    <ul class="d-menu context drop-shadow" id="editorContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
       <span id="dropdowncontent">
         <li onclick="startFromHere(editor.getSelectionRange().start.row + 1);"><a href="#"><i class='fas fa-fw fa-route icon'></i> Recover job from Line: <span class="linenumber"></span></a></li>
         <li class="divider"></li>
@@ -1487,6 +1487,12 @@
       </span>
     </ul>
     <!--  -->
+
+    <ul class="d-menu context drop-shadow" id="macroContextMenu" data-role="dropdown" data-toggle-element="#context_toggle">
+      <span id="macroContextMenuItems">
+        <!-- Items here -->
+      </span>
+    </ul>
 
     <div id="hiddendivs" style="display:none;">
 

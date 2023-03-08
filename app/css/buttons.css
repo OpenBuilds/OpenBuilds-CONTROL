@@ -192,3 +192,7 @@
 }
 
 /* End CSS mini Switch */
+/* Custom size button for Macros */
+.command-button-macro {
+  height: 70px;
+}

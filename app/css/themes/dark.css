@@ -8,6 +8,11 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
   color: #FFF;
 }
 
+.theme_dark li.divider {
+  border-color: #444;
+  background-color: #444;
+}
+
 .theme_dark div.window {
   border: 1px solid #222;
 }

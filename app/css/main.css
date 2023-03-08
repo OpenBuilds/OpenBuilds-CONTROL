@@ -208,21 +208,17 @@ select {
   /* background-color: #fff */
 }
 
-.macroedit {
-  position: absolute !important;
-  top: 5px !important;
-  right: 5px !important;
-  font-size: 11px !important;
-}
-
-.macroedit:hover {
-  color: #ff1e11 !important;
-}
-
 .macrotype {
   position: absolute !important;
   top: 2px !important;
-  right: 22px !important;
+  right: 2px !important;
+  font-size: 10px !important;
+}
+
+.macrokbd {
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
   font-size: 10px !important;
 }
 
