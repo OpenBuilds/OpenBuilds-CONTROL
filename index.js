@@ -51,7 +51,6 @@ const {
 
 
 //const drivelist = require('drivelist'); // removed in 1.0.350 due to Drivelist stability issues
-require('hazardous');
 
 // FluidNC test
 var fluidncConfig = "";
@@ -3348,10 +3347,14 @@ function flashInterface(data) {
   ];
 
   if (process.platform != 'win32') {
-    fs.chmodSync(path.join(__dirname, "./esptool.py"), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py"), esptool_opts);
+    //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'win32') {
-    var child = spawn(path.join(__dirname, "./esptool.exe"), esptool_opts);
+    var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'darwin) {
+    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
 
 
