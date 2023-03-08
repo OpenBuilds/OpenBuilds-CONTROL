@@ -43,7 +43,7 @@ jobs:
           mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
           #debugElectron: true // to enable debug=electron-builder
-          debugElectron: false
+          debugElectron: true
           # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
         env:
