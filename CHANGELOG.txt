@@ -1,3 +1,4 @@
+v1.0.360: Improved Job Recovery wizard to handle Spindle commands / Warn if no spindle commands found (Thanks to @sharmstr)
 v1.0.357-359: Debugged and fixed the Linux/Mac Modules bug, removed Hazardous from dependencies, Changed internal methods for launching esptool
 v1.0.356: Added right-click Context Menu to Macro Buttons. Moved Delete/Edit to Macros Context Menu. Added Macro Button Sorting to Context Menu. Added Macro Export/Import functionality
 v1.0.355: Updated installer license agreement / terms and conditions, Added Email Registration, Fixed Surfacing Wizard menu bug

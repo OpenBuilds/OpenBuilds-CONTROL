@@ -139,7 +139,7 @@ function startFromHere(lineNumber) {
           <ul>
             <li>Keep the first <span class="tally dark" id="resumeZUpLine"></span> lines of the file as header</li>
             <li>Raise Z with the GCODE: <span class="tally dark" id="resumeZUp"></span></li>
-            <li><span id="spindleMsg"><span class="bg-red fg-white">Spindle ON command not found!</span></span><span class="tally dark"  id="resumeSpindle"></span></li>
+            <li><span id="spindleMsg" class="fg-darkRed">Spindle ON command not found! <span class="tally alert">Please start spindle before running job</span> </span></li>
             <li>Move to entry position with GCODE: <span class="tally dark" id="resumeXYA"></span></li>
             <li>Move to cutting height with GCODE: <span class="tally dark" id="resumeZm"></span></li>
             <li>Run GCODE starting at line <span class="tally dark" id="resumeLastLine"></span> and continue with the job</li>
@@ -157,16 +157,16 @@ function startFromHere(lineNumber) {
     if (currentLine.length > 0) {
       currentLine = currentLine.split(/[;(]/); // Remove everything after ; or ( = comment
       line = currentLine[0]
-      line = line.toUpperCase();      
+      line = line.toUpperCase();
 
-      if (  line.indexOf('M3') != -1  || line.indexOf('M4') != -1 ) {
-        foundSpindle = true;        
+      if (line.indexOf('M3') != -1 || line.indexOf('M4') != -1) {
+        foundSpindle = true;
         spindle = line;
         // Search forward one line for pause cmd
         if (editor.session.getLine(i + 1).toUpperCase().indexOf('G4') != -1) {
           console.log('pause line? ' + editor.session.getLine(i + 1))
           spindle += '\n' + editor.session.getLine(i + 1).toUpperCase();
-        }       
+        }
         break;
       }
     }
@@ -200,9 +200,9 @@ function startFromHere(lineNumber) {
   $('#resumeZm').html(GcodeLineZDown);
 
   if (spindle) {
-    $('#spindleMsg').html("Turn spindle ON: ");
+    $('#spindleMsg').html("Turn spindle ON: <span class='tally dark' id='resumeSpindle'>" + spindle + "</span> ");
     $('#resumeSpindle').html(spindle);
-  }  
+  }
 
   //Metro.dialog.open("#ResumeFileDialog");
 }
@@ -216,7 +216,12 @@ function redoJob() {
   var ZGcode = $('#resumeZm').html();
   var resumeLineNumber = $('#resumeLastLine').html();
   var resumeLastNumber = editor.session.getLength();
-  var spindleGcode = $('#resumeSpindle').html();
+  if ($('#resumeSpindle').html() != undefined) {
+    var spindleGcode = $('#resumeSpindle').html();
+  } else {
+    var spindleGcode = '';
+  }
+
 
 
   for (var i = 0; i < startLineNumber; i++) {
