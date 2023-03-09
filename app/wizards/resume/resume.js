@@ -63,15 +63,15 @@ function startFromHere(lineNumber) {
   var lineF = "";
   var lineFmin = 0;
   var lineFmax = 0;
-  var line = ''
+  var line = '';
+  var spindle = null;
+
 
   var foundZUp = false;
   var foundZUpLine = 0;
 
 
-
   for (var i = 1; i < lineNumber; i++) {
-
     currentLine = editor.session.getLine(i);
     if (currentLine.length > 0) {
       currentLine = currentLine.split(/[;(]/); // Remove everything after ; or ( = comment
@@ -139,6 +139,7 @@ function startFromHere(lineNumber) {
           <ul>
             <li>Keep the first <span class="tally dark" id="resumeZUpLine"></span> lines of the file as header</li>
             <li>Raise Z with the GCODE: <span class="tally dark" id="resumeZUp"></span></li>
+            <li><span id="spindleMsg"><span class="bg-red fg-white">Spindle ON command not found!</span></span><span class="tally dark"  id="resumeSpindle"></span></li>
             <li>Move to entry position with GCODE: <span class="tally dark" id="resumeXYA"></span></li>
             <li>Move to cutting height with GCODE: <span class="tally dark" id="resumeZm"></span></li>
             <li>Run GCODE starting at line <span class="tally dark" id="resumeLastLine"></span> and continue with the job</li>
@@ -147,10 +148,29 @@ function startFromHere(lineNumber) {
       </div>
     </form>
     <div class="remark warning">
-      NOTE: Use this tool at your own risk. Recovering GCODE is a risky operation. You are also responsible for ensuring that work origin is correctly set.  Use at your own risk.
+      NOTE: Use this tool at your own risk. Recovering GCODE is a risky operation. You are also responsible for ensuring that work origin is correctly set</span>.  Use at your own risk.
     </div>
     `
+  // Search backwards from start line to find last instance of spindle cmd
+  for (var i = lineNumber - 1; i >= 0; i--) {
+    currentLine = editor.session.getLine(i);
+    if (currentLine.length > 0) {
+      currentLine = currentLine.split(/[;(]/); // Remove everything after ; or ( = comment
+      line = currentLine[0]
+      line = line.toUpperCase();      
 
+      if (  line.indexOf('M3') != -1  || line.indexOf('M4') != -1 ) {
+        foundSpindle = true;        
+        spindle = line;
+        // Search forward one line for pause cmd
+        if (editor.session.getLine(i + 1).toUpperCase().indexOf('G4') != -1) {
+          console.log('pause line? ' + editor.session.getLine(i + 1))
+          spindle += '\n' + editor.session.getLine(i + 1).toUpperCase();
+        }       
+        break;
+      }
+    }
+  }
 
   Metro.dialog.create({
     title: "<i class='fas fa-fw fa-route'></i> Recover Job From Line Number",
@@ -179,6 +199,11 @@ function startFromHere(lineNumber) {
   $('#resumeXYA').html(GcodeLineXYA);
   $('#resumeZm').html(GcodeLineZDown);
 
+  if (spindle) {
+    $('#spindleMsg').html("Turn spindle ON: ");
+    $('#resumeSpindle').html(spindle);
+  }  
+
   //Metro.dialog.open("#ResumeFileDialog");
 }
 
@@ -191,11 +216,16 @@ function redoJob() {
   var ZGcode = $('#resumeZm').html();
   var resumeLineNumber = $('#resumeLastLine').html();
   var resumeLastNumber = editor.session.getLength();
+  var spindleGcode = $('#resumeSpindle').html();
 
 
   for (var i = 0; i < startLineNumber; i++) {
     line = editor.session.getLine(i);
     gcode += line + '\n'
+  }
+
+  if (spindleGcode != '') {
+    gcode += spindleGcode + '\n';
   }
 
   gcode += XYAGcode + '\n';
