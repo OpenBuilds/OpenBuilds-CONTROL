@@ -25,7 +25,7 @@ process.on("uncaughtException", (err) => {
 debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
-config.webPort = process.env.WEB_PORT || 3200;
+config.webPort = process.env.WEB_PORT || 3000;
 config.posDecimals = process.env.DRO_DECIMALS || 2;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
