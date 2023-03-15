@@ -1,3 +1,4 @@
+v1.0.362: Fixed typo in port left over from earlier test
 v1.0.361: Test older version of Github Actions runner for Ubuntu installs
 v1.0.360: Improved Job Recovery wizard to handle Spindle commands / Warn if no spindle commands found (Thanks to @sharmstr)
 v1.0.357-359: Debugged and fixed the Linux/Mac Modules bug, removed Hazardous from dependencies, Changed internal methods for launching esptool
