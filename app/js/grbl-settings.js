@@ -74,7 +74,12 @@ function grblSettings(data) {
   grblconfig = data.split('\n')
   for (i = 0; i < grblconfig.length; i++) {
     var key = grblconfig[i].split('=')[0];
-    var param = grblconfig[i].split('=')[1]
+    // Certain versions of grbl add a description to each parameter returned by the '$$'
+    // command. Use parseFloat to get just the numerical value. 
+    // For example:
+    // $0=10 (step pulse,usec) ;Step pulse time, microseconds
+    // would convert to just 10 rather than '10 (step pulse,usec)'
+    var param = parseFloat(grblconfig[i].split('=')[1]);
     grblParams[key] = param
   }
   // $('#grblconfig').show();
