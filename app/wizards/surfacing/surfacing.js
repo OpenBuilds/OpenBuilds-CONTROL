@@ -149,8 +149,10 @@ function populateSurfaceToolForm() {
   } else {
     $("#surfaceFinalDepth").val(data.surfaceDepth);
   }
+  if (data.surfaceCoolant != undefined) {
+    $('#surfaceCoolant').val(data.surfaceCoolant)
+  }
 
-  $('#surfaceCoolant').val(data.surfaceCoolant)
   $('#surfaceRPM').val(data.surfaceRPM)
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
