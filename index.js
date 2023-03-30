@@ -1,8 +1,34 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 process.on('uncaughtException', function(err) {
-  console.log(err);
+  showErrorDialog(err,attempts = 2) // make two attempts to show an uncaughtException in a dialog
+  if (DEBUG) {
+    debug_log(err)
+  }
+  else {
+    console.log(err);
+  }
 })
+
+function showErrorDialog(err,attempts) {
+  console.error('Attempting to show an error dialog.')
+  if (!attempts) return;
+  try {
+    let options = {
+      type: 'error',
+      buttons: ['OK'],
+      title: 'Error',
+      message: `An error occured.`,
+      detail: `${err.message}\r\r\rIf you feel this shouldn't be happening, please report it at:\r\rhttps://github.com/OpenBuilds/OpenBuilds-CONTROL/issues`,
+    };
+    let window = BrowserWindow.getFocusedWindow()
+    dialog.showMessageBoxSync(window,options)
+  }
+  catch(e) {
+    console.error(`An error occurred trying show an error, ho-boy. ${e}. We'll try again ${attempts} more time(s).`)
+    setTimeout(() => {showErrorDialog(err,--attempts)}, millisecondDelay = 2000);
+  }
+}
 
 // To see console.log output run with `DEBUGCONTROL=true electron .` or set environment variable for DEBUGCONTROL=true
 // debug_log debug overhead
@@ -18,14 +44,20 @@ function debug_log() {
   }
 } // end Debug Logger
 
-process.on("uncaughtException", (err) => {
-  debug_log(err)
-});
-
 debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
-config.webPort = process.env.WEB_PORT || 3000;
+config.webPorts = [3000,3020,3200,3220]
+config.webPortIdx = 0;
+config.nextWebPort = function () {
+  config.webPort = config.webPorts[config.webPortIdx]
+  config.webPortIdx++
+  if (config.webPortIdx == config.webPorts.length) {
+    throw new Error(`No ports were available to start the http server.\r\rWe tried ports ${config.webPorts.join(",")}.`);
+  }
+  return config.webPort;
+}
+config.webPort = process.env.WEB_PORT || config.nextWebPort();
 config.posDecimals = process.env.DRO_DECIMALS || 2;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
@@ -110,9 +142,19 @@ const httpsserver = https.createServer(httpsOptions, app).listen(3001, function(
   debug_log('https: listening on:' + ip.address() + ":3001");
 });
 
-const httpserver = http.listen(config.webPort, '0.0.0.0', function() {
+const httpserver = http.listen(config.webPort, '0.0.0.0', httpServerSuccess).on('error', httpServerError);
+
+function httpServerSuccess() {
   debug_log('http:  listening on:' + ip.address() + ":" + config.webPort);
-});
+  if (jogWindow) {
+    jogWindow.loadURL(`http://localhost:${config.webPort}/`);
+  }
+}
+
+function httpServerError (error) {
+  console.error(error.message);
+  httpserver.listen(config.nextWebPort()); 
+}
 
 io.attach(httpserver);
 io.attach(httpsserver);
@@ -3034,7 +3076,7 @@ if (isElectron()) {
       jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
       var ipaddr = ip.address();
       // jogWindow.loadURL(`//` + ipaddr + `:3000/`)
-      jogWindow.loadURL("http://localhost:3000/");
+      jogWindow.loadURL(`http://localhost:${config.webPort}/`);
       //jogWindow.webContents.openDevTools()
 
       jogWindow.on('close', function(event) {
@@ -3230,7 +3272,7 @@ function startChrome() {
     const {
       spawn
     } = require('child_process');
-    const chrome = spawn('chromium-browser', ['-app=http://127.0.0.1:3000']);
+    const chrome = spawn('chromium-browser', [`-app=http://127.0.0.1:${config.webPort}`]);
     chrome.on('close', (code) => {
       debug_log(`Chromium process exited with code ${code}`);
       process.exit(0);

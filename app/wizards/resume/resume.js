@@ -128,7 +128,7 @@ function startFromHere(lineNumber) {
     }
   }
 
-  var GcodeLineXYA = "G1" + lineX + lineY + lineA + lineFmax
+  var GcodeLineXYA = "G0" + lineX + lineY + lineA + lineFmax
   var GcodeLineZDown = "G1" + lineZm + lineFmin
 
   var resumeFileTemplate = `
