@@ -234,7 +234,7 @@ if (isElectron()) {
     // repeat every minute
     setTimeout(function() {
       io.sockets.emit('updateready', availversion);
-    }, 60 * 60 * 1000) // 60 mins
+    }, 1000 * 60 * 60 * 8) // 8hrs before alerting again if it was snoozed
     updateIsDownloading = false;
   });
 } else {
