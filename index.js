@@ -2905,7 +2905,7 @@ if (isElectron()) {
     // Module to create native browser window.
 
     function createApp() {
-      createTrayIcon();
+//      createTrayIcon();
       if (process.platform == 'darwin') {
         debug_log("Creating MacOS Menu");
         createMenu();
@@ -2921,7 +2921,8 @@ if (isElectron()) {
         status.driver.operatingsystem = 'windows';
       }
 
-      if (process.platform == 'darwin' || uploadedgcode.length > 1 || process.argv.indexOf("-showGui") > 0) {
+//      if (process.platform == 'darwin' || uploadedgcode.length > 1)
+      {
         showJogWindow()
       }
 
@@ -3144,7 +3145,7 @@ if (isElectron()) {
         createApp();
       }
     });
-
+/*
     // Autostart on Login
     if (process.platform == 'win32') {
       electronApp.setLoginItemSettings({
@@ -3152,6 +3153,7 @@ if (isElectron()) {
         args: []
       })
     }
+*/
   }
 } else { // if its not running under Electron, lets get Chrome up.
   var isPi = require('detect-rpi');
