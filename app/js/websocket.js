@@ -174,6 +174,8 @@ function initSocket() {
     loadedFileName = data.filename;
 
     setWindowTitle()
+    $('#reloadGcodeBtn').attr('title', "Reload " + loadedFileName);
+    $('#reloadGcodeBtn').attr('disabled', false);
     parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
     if (webgl) {
@@ -692,12 +694,11 @@ function initSocket() {
     }
 
     if (unit == "mm") {
-      $("#realFeed").html(status.machine.overrides.realFeed + "mm/min");
-      //$("#realSpeed").html("S=" + status.machine.overrides.realSpindle);
+      $("#realFeed").html(status.machine.overrides.realFeed + " mm/min");
     } else if (unit == "in") {
-      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "in/min");
-      //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
+      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + " in/min");
     }
+    $("#realSpeed").html( status.machine.overrides.realSpindle + " rpm");
 
     //console.log(JSON.stringify(status.machine.overrides, null, 4));
 

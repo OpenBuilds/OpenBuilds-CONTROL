@@ -498,6 +498,7 @@ var status = {
   },
   interface: {
     diskdrive: false,
+    lastFilePath: "",
       firmware: {
         availVersion: "",
         installedVersion: "",
@@ -749,6 +750,13 @@ io.on("connection", function(socket) {
     }).catch(err => {
       console.log(err)
     })
+  })
+
+  socket.on("reopenFile", function(data) {
+    if (status.interface.lastFilePath !== "") {
+      debug_log("path" + status.interface.lastFilePath);
+      readFile(status.interface.lastFilePath);
+    }
   })
 
   socket.on("openInterfaceDir", function(data) {
@@ -2173,6 +2181,7 @@ function readFile(filePath) {
               }
               io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;
+              status.interface.lastFilePath = filePath;
               return data
             }
           }
@@ -2904,6 +2913,7 @@ if (isElectron()) {
       }
       if (process.platform == 'win32' && process.argv.length >= 2) {
         var openFilePath = process.argv[1];
+        console.log(openFilePath);
         if (openFilePath !== "") {
           debug_log("path" + openFilePath);
           readFile(openFilePath);
@@ -2911,7 +2921,7 @@ if (isElectron()) {
         status.driver.operatingsystem = 'windows';
       }
 
-      if (process.platform == 'darwin' || uploadedgcode.length > 1) {
+      if (process.platform == 'darwin' || uploadedgcode.length > 1 || process.argv.indexOf("-showGui") > 0) {
         showJogWindow()
       }
 

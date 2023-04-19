@@ -349,7 +349,12 @@
 
                   </ul>
                 </div>
-
+                <button id="reloadGcodeBtn" class="ribbon-button" title="Reload last G-Code file" onclick="socket.emit('reopenFile');" disabled="1">
+                  <span class="icon">
+                    <span class="fas fa-undo-alt"></span>
+                  </span>
+                  <span class="caption">Reload<br>G-Code</span>
+                </button>
                 <span class="title">File</span>
               </div>
 

@@ -18329,9 +18329,8 @@ var Slider = {
         cPos = o.vertical === true ? Utils.pageXY(e).y - offset.top : Utils.pageXY(e).x - offset.left;
         cPix = o.vertical === true ? length - cPos - marker_size / 2 : cPos - marker_size / 2;
 
-        if (cPix < cStart || cPix > cStop) {
-            return ;
-        }
+        if (cPix < cStart) { cPix = cStart; }
+        if (cPix > cStop) { cPix = cStop; }
 
         this.value = this._correct(this._convert(cPix, 'pix2val'));
         this.percent = this._convert(this.value, 'val2prc');
