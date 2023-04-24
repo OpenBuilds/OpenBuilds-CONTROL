@@ -85,7 +85,7 @@ function grblSettings(data) {
 
 
 
-  if (grblParams['$22'] == 1) {
+  if (grblParams['$22'] > 0) {
     $('#gotozeroMPos').removeClass('disabled')
     $('#homeBtn').attr('disabled', false)
     $('#gotoXzeroMpos').removeClass('disabled')
@@ -327,7 +327,7 @@ function grblPopulate() {
 
     $('#grblSettingsBadge').hide();
 
-    if (grblParams['$21'] == 1 && grblParams['$22'] == 1) {
+    if (grblParams['$21'] == 1 && grblParams['$22'] > 0) {
       $('#limitsinstalled:checkbox').prop('checked', true);
       $('#gotozeroMPos').removeClass('disabled')
       $('#homeBtn').attr('disabled', false)

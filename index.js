@@ -1,16 +1,15 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 process.on('uncaughtException', function(err) {
-  showErrorDialog(err,attempts = 2) // make two attempts to show an uncaughtException in a dialog
+  showErrorDialog(err, attempts = 2) // make two attempts to show an uncaughtException in a dialog
   if (DEBUG) {
     debug_log(err)
-  }
-  else {
+  } else {
     console.log(err);
   }
 })
 
-function showErrorDialog(err,attempts) {
+function showErrorDialog(err, attempts) {
   console.error('Attempting to show an error dialog.')
   if (!attempts) return;
   try {
@@ -22,11 +21,12 @@ function showErrorDialog(err,attempts) {
       detail: `${err.message}\r\r\rIf you feel this shouldn't be happening, please report it at:\r\rhttps://github.com/OpenBuilds/OpenBuilds-CONTROL/issues`,
     };
     let window = BrowserWindow.getFocusedWindow()
-    dialog.showMessageBoxSync(window,options)
-  }
-  catch(e) {
+    dialog.showMessageBoxSync(window, options)
+  } catch (e) {
     console.error(`An error occurred trying show an error, ho-boy. ${e}. We'll try again ${attempts} more time(s).`)
-    setTimeout(() => {showErrorDialog(err,--attempts)}, millisecondDelay = 2000);
+    setTimeout(() => {
+      showErrorDialog(err, --attempts)
+    }, millisecondDelay = 2000);
   }
 }
 
@@ -47,9 +47,9 @@ function debug_log() {
 debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
-config.webPorts = [3000,3020,3200,3220]
+config.webPorts = [3000, 3020, 3200, 3220]
 config.webPortIdx = 0;
-config.nextWebPort = function () {
+config.nextWebPort = function() {
   config.webPort = config.webPorts[config.webPortIdx]
   config.webPortIdx++
   if (config.webPortIdx == config.webPorts.length) {
@@ -151,9 +151,10 @@ function httpServerSuccess() {
   }
 }
 
-function httpServerError (error) {
+function httpServerError(error) {
+  // If unable to start (port in use) - try next port in array from config.nextWebPort()
   console.error(error.message);
-  httpserver.listen(config.nextWebPort()); 
+  httpserver.listen(config.nextWebPort());
 }
 
 io.attach(httpserver);
