@@ -1,3 +1,4 @@
+v1.0.367: Fixed 'indexOf' startup Bug - removed Port Conflict Detection
 v1.0.366: Improved grblHAL integration (Additional Homing Enable Masks)
 v1.0.365: Increased Updater snooze to 8hr interval, Improved port-confict handling, Improved Recovery wizard to deal with Laser files
 v1.0.364: Fixed bug in Surfacing Wizard Freeze bug (Special thanks to Armaliteguy for providing debug info)
