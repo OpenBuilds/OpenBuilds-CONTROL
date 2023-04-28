@@ -1,7 +1,9 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 process.on('uncaughtException', function(err) {
-  //showErrorDialog(err, attempts = 2) // make two attempts to show an uncaughtException in a dialog
+  if (!config.suppressErrorDialogs) {
+    showErrorDialog(err, attempts = 2) // make two attempts to show an uncaughtException in a dialog
+  }
   if (DEBUG) {
     debug_log(err)
   } else {
@@ -15,18 +17,27 @@ function showErrorDialog(err, attempts) {
   try {
     let options = {
       type: 'error',
-      buttons: ['OK'],
+      buttons: ['OK','Suppress Errors'],
       title: 'Error',
       message: `An error occured.`,
-      detail: `${err.message}\r\r\rIf you feel this shouldn't be happening, please report it at:\r\rhttps://github.com/OpenBuilds/OpenBuilds-CONTROL/issues`,
+      detail: `You may be able to continue even though you received this error.\r\r${err.stack}\r\r\rPlease help improve OpenBuilds CONTROL by reporting it at:\r\rhttps://github.com/OpenBuilds/OpenBuilds-CONTROL/issues`,
     };
     let window = BrowserWindow.getFocusedWindow()
-    dialog.showMessageBoxSync(window, options)
+    if (dialog.showMessageBoxSync(window, options) == 1) {
+      // suppress further errors for this execution
+      config.suppressErrorDialogs = true;
+      var output = {
+        'command': 'Interface',
+        'response': 'Further error dialogs will be suppressed until the next time the application is started.',
+        'type': 'info'
+      }
+      io.sockets.emit('data', output);
+    }
   } catch (e) {
     console.error(`An error occurred trying show an error, ho-boy. ${e}. We'll try again ${attempts} more time(s).`)
     setTimeout(() => {
       showErrorDialog(err, --attempts)
-    }, millisecondDelay = 2000);
+    }, millisecondDelay = 3000);
   }
 }
 
@@ -47,6 +58,7 @@ function debug_log() {
 debug_log("Starting OpenBuilds CONTROL v" + require('./package').version)
 
 var config = {};
+config.suppressErrorDialogs = process.env.SUPPRESS_ERRORS || false;
 config.webPorts = [3000, 3020, 3200, 3220]
 config.webPortIdx = 0;
 config.nextWebPort = function() {
