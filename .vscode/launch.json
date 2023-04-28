@@ -8,13 +8,15 @@
         "cwd": "${workspaceFolder}",
         "env": {
             "DEBUGCONTROL": "true",
+            "ELECTRON_ENABLE_LOGGING": "true",
         },
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
         "windows": {
           "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
         },
         "args" : ["."],
-        "outputCapture": "std"
+        "outputCapture": "std",
+        "console": "integratedTerminal",
       }
     ]
   }
