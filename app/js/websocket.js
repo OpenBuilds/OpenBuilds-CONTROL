@@ -260,7 +260,7 @@ function initSocket() {
     }
 
     // Parse Grbl Settings Feedback
-    if (data.response.indexOf('$') === 0) {
+    if (data.response && data.response.indexOf('$') === 0) {
       if (typeof grblSettings !== 'undefined') {
         grblSettings(data.response)
         var key = data.response.split('=')[0].substr(1);
@@ -276,12 +276,15 @@ function initSocket() {
         var printLogCls = lineColor
         printLogModern(icon, source, string, printLogCls)
       }
-    } else {
+    } else if (data.command) {
       var icon = ''
       var source = data.command
       var string = toPrint
       var printLogCls = lineColor
       printLogModern(icon, source, string, printLogCls)
+    }
+    else {
+      console.error('Error in socket "data". Data was malformed: ' + data)
     };
 
   });
