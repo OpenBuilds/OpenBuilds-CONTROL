@@ -143,7 +143,23 @@ var grblSettingCodes = {
   73: "Wifi Mode", // Off/Station
   74: "SSID",
   75: "PSK",
-  65: "Require homing sequence to be executed at startup"
+  65: "Require homing sequence to be executed at startup",
+  8: "Ganged axes direction invert as bitfield",
+  9: "PWM Spindle as bitfield where setting bit 0 enables the rest",
+  320: "Hostname, max: 64",
+  322: "IP Address",
+  323: "Gateway",
+  324: "Netmask",
+  325: "Telnet port",
+  326: "HTTP port",
+  327: "Websocket port",
+  346: "Restore position after M6 as boolean",
+  396: "WebUI timeout in minutes",
+  397: "WebUI auto report interval in milliseconds",
+  398: "Planner buffer blocks",
+  481: "Autoreport interval in ms",
+  376: "Rotational axes as bitfield",
+
 
 };
 
