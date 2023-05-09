@@ -1,7 +1,7 @@
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 process.on('uncaughtException', function(err) {
-  showErrorDialog(err, attempts = 2) // make two attempts to show an uncaughtException in a dialog
+  //showErrorDialog(err, attempts = 2) // make two attempts to show an uncaughtException in a dialog
   if (DEBUG) {
     debug_log(err)
   } else {

@@ -722,5 +722,173 @@ var grblSettingsTemplate2 = {
     description: `Ganged axes direction invert as bitfield`,
     template: `<input id="val-8-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``
+  },
+  9: {
+    key: `$9`,
+    title: `PWM Spindle as bitfield where setting bit 0 enables the rest`,
+    description: `PWM Spindle as bitfield where setting bit 0 enables the rest`,
+    template: `<input id="val-9-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  320: {
+    key: `$320`,
+    title: `Hostname, max: 64`,
+    description: `Hostname, max: 64`,
+    template: `<input id="val-320-input" data-role="input" data-clear-button="false" data-append="text" type="text" >`,
+    utils: ``
+  },
+  322: {
+    key: `$322`,
+    title: `IP Address`,
+    description: `IP Address`,
+    template: `<input id="val-322-input" data-role="input" data-clear-button="false" data-append="ip" type="text" >`,
+    utils: ``
+  },
+  323: {
+    key: `$323`,
+    title: `Gateway`,
+    description: `Gateway as IP address, reboot required`,
+    template: `<input id="val-323-input" data-role="input" data-clear-button="false" data-append="ip" type="text" >`,
+    utils: ``
+  },
+  324: {
+    key: `$324`,
+    title: `Netmask`,
+    description: `Netmask as IP address, reboot required`,
+    template: `<input id="val-324-input" data-role="input" data-clear-button="false" data-append="bitfield" type="text" >`,
+    utils: ``
+  },
+  325: {
+    key: `$325`,
+    title: `Telnet port`,
+    description: `Telnet port, range: 1 - 65535 reboot required`,
+    template: `<input id="val-325-input" data-role="input" data-clear-button="false" data-append="netmask" type="number" >`,
+    utils: ``
+  },
+  326: {
+    key: `$326`,
+    title: `HTTP port`,
+    description: `HTTP port, range: 1 - 65535, reboot required`,
+    template: `<input id="val-326-input" data-role="input" data-clear-button="false" data-append="port" type="number" >`,
+    utils: ``
+  },
+  327: {
+    key: `$327`,
+    title: `Websocket port`,
+    description: `Websocket port, range: 1 - 65535, reboot require`,
+    template: `<input id="val-327-input" data-role="input" data-clear-button="false" data-append="port" type="number" >`,
+    utils: ``
+  },
+  346: {
+    key: `$346`,
+    title: `Restore position after M6 as boolean`,
+    description: `Restore position after M6 as boolean`,
+    template: `<input id="val-346-input" data-role="input" data-clear-button="false" data-append="bool" type="number" >`,
+    utils: ``
+  },
+  396: {
+    key: `$396`,
+    title: `WebUI timeout in minutes`,
+    description: `WebUI timeout in minutes`,
+    template: `<input id="val-396-input" data-role="input" data-clear-button="false" data-append="min" type="number" >`,
+    utils: ``
+  },
+  397: {
+    key: `$397`,
+    title: `WebUI auto report interval in milliseconds`,
+    description: `WebUI auto report interval in milliseconds, max: 9999, reboot required`,
+    template: `<input id="val-397-input" data-role="input" data-clear-button="false" data-append="ms" type="number" >`,
+    utils: ``
+  },
+  398: {
+    key: `$398`,
+    title: `Planner buffer blocks`,
+    description: `Planner buffer blocks, range: 30 - 1000, reboot required`,
+    template: `<input id="val-398-input" data-role="input" data-clear-button="false" data-append="blocks" type="number" >`,
+    utils: ``
+  },
+  481: {
+    key: `$481`,
+    title: `Autoreport interval in ms`,
+    description: `Autoreport interval in ms, range: 100 - 1000, reboot required`,
+    template: `<input id="val-481-input" data-role="input" data-clear-button="false" data-append="ms" type="number" >`,
+    utils: ``
+  },
+  376: {
+    key: `$376`,
+    title: `Rotational axes as bitfield`,
+    description: `Autoreport interval in ms, range: 100 - 1000, reboot required`,
+    template: `<input id="val-376-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  41: {
+    key: `$41`,
+    title: `Parking cycle as bitfield where setting bit 0 enables the rest`,
+    description: `Parking cycle: Enable (1), Enable parking override control (2), Deactivate upon init (4)`,
+    template: `<input id="val-41-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  42: {
+    key: `$42`,
+    title: `Parking axis`,
+    description: `Parking axis: X=1, Y=2, Z=4`,
+    template: `<input id="val-42-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  56: {
+    key: `$56`,
+    title: `Parking pull-out distance in mm`,
+    description: ``,
+    template: `<input id="val-56-input" data-role="input" data-clear-button="false" data-append="mm" type="number" >`,
+    utils: ``
+  },
+  57: {
+    key: `$57`,
+    title: `Parking pull-out rate in mm/min`,
+    description: ``,
+    template: `<input id="val-57-input" data-role="input" data-clear-button="false" data-append="mm/min" type="number" >`,
+    utils: ``
+  },
+  58: {
+    key: `$58`,
+    title: `Parking target in mm`,
+    description: `Parking target in mm`,
+    template: `<input id="val-58-input" data-role="input" data-clear-button="false" data-append="mm" type="number" >`,
+    utils: ``
+  },
+  59: {
+    key: `$59`,
+    title: `Parking fast rate in mm/min`,
+    description: `Parking fast rate in mm/min`,
+    template: `<input id="val-59-input" data-role="input" data-clear-button="false" data-append="mm/min" type="number" >`,
+    utils: ``
+  },
+  60: {
+    key: `$60`,
+    title: `Restore overrides`,
+    description: `Restore overrides`,
+    template: `<input id="val-60-input" data-role="input" data-clear-button="false" data-append="bool" type="number" >`,
+    utils: ``
+  },
+  61: {
+    key: `$61`,
+    title: `Safety door options as bitfield`,
+    description: `Ignore when idle (1), Keep coolant state on open (2)`,
+    template: `<input id="val-61-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  392: {
+    key: `$392`,
+    title: `Spindle on delay in s`,
+    description: `Spindle on delay in s`,
+    template: `<input id="val-392-input" data-role="input" data-clear-button="false" data-append="sec" type="number" >`,
+    utils: ``
+  },
+  393: {
+    key: `$393`,
+    title: `Coolant on delay in s`,
+    description: `Coolant on delay in s`,
+    template: `<input id="val-393-input" data-role="input" data-clear-button="false" data-append="sec" type="number" >`,
+    utils: ``
   }
 }

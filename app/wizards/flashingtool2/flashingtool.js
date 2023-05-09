@@ -35,8 +35,8 @@ function openFlashingTool() {
 
     <p class="small mb-4">You can use this wizard to flash Firmware onto compatible controllers. Only use with care, or when instructed by Support</p>
     <ul data-role="tabs" data-expand="true">
-      <li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png"> BlackBox 4X</a></li>
       <li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png"> BlackBox X32</a></li>
+      <li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png"> BlackBox 4X</a></li>
       <li><a href="#" onclick="flashToolBoard('interfacev1');"><img src="/wizards/flashingtool2/img/interfacev1-icon.png"> Interface</a></li>
     </ul>
 
@@ -59,7 +59,7 @@ function openFlashingTool() {
       </div>
     </div>
 
-    <div class="row" id="flash-tool-grbl-row">
+    <div class="row" id="flash-tool-grbl-row"   style="display: none;">
       <div class="cell-md-3 mb-1">Machine Style</div>
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblAxesCount" data-editable="true">
@@ -72,13 +72,13 @@ function openFlashingTool() {
       </div>
     </div>
 
-    <div class="row" id="flash-tool-grblhal-row"  style="display: none;">
+    <div class="row" id="flash-tool-grblhal-row">
       <div class="cell-md-3 mb-1">Machine Style</div>
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="grblHalAxesCount" data-editable="true">
-            <option value="3axes-grblhal">3 Axes CNC/Laser: Dual-Y with XYZ Axis Homing</option>
-            <!-- option value="2axes-grblhal">2 Axes CNC/Laser: Dual-Y with Z-Axis Homing Disabled</option -->
-            <option value="4axes-grblhal">4 Axes CNC/Laser: with XYZA Axis Homing</option>
+            <option value="3axes-grblhal">2/3 Axes CNC/Laser: Dual-Y</option>
+            <option value="3axes-grblhal-door">2/3 Axes CNC/Laser: Dual-Y with Door Switch</option>
+            <option value="4axes-grblhal">4 Axes CNC/Laser (Y2 Motor as A, Z Limit shared for A)</option>
             <option value="custom">Custom: firmware .BIN file</option>
           </select>
         </div>
@@ -133,20 +133,16 @@ function openFlashingTool() {
 
   $("#grblAxesCount").on("change", function() {
     if (this.value == "custom") {
-      $("#flash-tool-door-row").hide();
       $("#flash-tool-custom-row").show();
     } else {
-      $("#flash-tool-door-row").show();
       $("#flash-tool-custom-row").hide();
     }
   });
 
   $("#grblHalAxesCount").on("change", function() {
     if (this.value == "custom") {
-      $("#flash-tool-door-row").hide();
       $("#flash-tool-custom-row").show();
     } else {
-      $("#flash-tool-door-row").show();
       $("#flash-tool-custom-row").hide();
     }
   });
@@ -160,13 +156,14 @@ function openFlashingTool() {
   });
 
   setTimeout(function() {
-    var opts = `<option value="custom">Custom: firmware binary file</option>`;
+
+    var opts = `<option value="bundle">Bundled version</option>
+    <option value="custom">Custom: firmware binary file</option>`;
     if (parseFloat(laststatus.interface.firmware.availVersion) > 0) {
       opts += `<option value="online" selected>Latest available v` + laststatus.interface.firmware.availVersion + `</option>`;
+      var fwselect = $("#interfaceFirmwareVer").data("select");
+      fwselect.data(opts);
     }
-    var fwselect = $("#interfaceFirmwareVer").data("select");
-    fwselect.data(opts);
-
     populatePortsMenu();
 
   }, 200);
@@ -242,8 +239,8 @@ function flashFirmwarefromWizard() {
 
     if ($("#grblHalAxesCount").val() == "3axes-grblhal") {
       var filename = "grblhal-grbl3axis.bin";
-    } else if ($("#grblHalAxesCount").val() == "2axes-grblhal") {
-      var filename = "";
+    } else if ($("#grblHalAxesCount").val() == "3axes-grblhal-door") {
+      var filename = "grblhal-grbl3axis-door.bin";
     } else if ($("#grblHalAxesCount").val() == "4axes-grblhal") {
       var filename = "grblhal-grbl4axis.bin";
     }
