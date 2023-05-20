@@ -211,6 +211,7 @@ if (isElectron()) {
   autoUpdater = require("electron-updater").autoUpdater
   var availversion = '0.0.0'
 
+	autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.on('checking-for-update', () => {
     var string = 'Starting update... Please wait';
     var output = {
