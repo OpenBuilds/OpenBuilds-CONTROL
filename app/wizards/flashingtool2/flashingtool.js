@@ -1,4 +1,4 @@
-var selectedControllerType = 'blackbox4x'
+var selectedControllerType = 'blackboxx32'
 
 function flashToolBoard(device) {
   selectedControllerType = device
