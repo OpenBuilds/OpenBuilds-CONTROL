@@ -127,13 +127,8 @@ function setConnectBar(val, status) {
 // Toolbar with play/pause/stop
 function setControlBar(val, status) {
   if (val == 0) { // Not Connected Yet
-    if (toolchanges && toolchanges.length) {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    } else {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    }
+    $('#runToolsBtn').hide().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
     $('#grblProbeMenu').hide().attr('disabled', true);
     $('#chkSize').hide().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
@@ -141,13 +136,7 @@ function setControlBar(val, status) {
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-
-    if (grblParams['$22'] > 0) {
-      $('#homeBtn').hide().attr('disabled', true);
-    } else {
-      $('#homeBtn').hide().attr('disabled', true);
-    }
-
+    $('#homeBtn').hide().attr('disabled', true);
     $('.estop').hide()
     $('#controlBtnGrp').hide();
     $("#grblSettings").hide(); // Hide Grbl Settings if it was Open
@@ -206,36 +195,22 @@ function setControlBar(val, status) {
   } else if (val == 3) { // Busy Streaming GCODE
     $('#grblProbeMenu').show().attr('disabled', true);
 
-    if (toolchanges.length) {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    } else {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    }
+    $('#runToolsBtn').hide().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').show().attr('disabled', false);
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$22'] > 0) {
-      $('#homeBtn').show().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
-    }
+    $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
     $('#controlBtnGrp').show();
   } else if (val == 4) { // Paused
     $('#grblProbeMenu').show().attr('disabled', true);
 
-    if (toolchanges.length) {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    } else {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    }
+    $('#runToolsBtn').hide().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     if (status.machine.inputs.includes('D')) {
       $('#resumeBtn').hide().attr('disabled', true);
@@ -248,24 +223,14 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$22'] > 0) {
-      $('#homeBtn').show().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
-    }
+    $('#homeBtn').show().attr('disabled', true);
     $('.estop').show()
     $('#controlBtnGrp').show();
   } else if (val == 5) { // Alarm State
     $('#grblProbeMenu').show().attr('disabled', true);
 
-    if (toolchanges.length) {
-      $('#runToolsBtn').show().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    } else {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').show().attr('disabled', true);
-    }
-    // $('#runBtn').show().attr('disabled', true);
+    $('#runToolsBtn').show().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
@@ -282,24 +247,17 @@ function setControlBar(val, status) {
   } else if (val == 6) { // Firmware Upgrade State
     $('#grblProbeMenu').show().attr('disabled', true);
 
-    if (toolchanges.length) {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    } else {
-      $('#runToolsBtn').hide().attr('disabled', true);
-      $('#runBtn').hide().attr('disabled', true);
-    }
+    $('#runToolsBtn').hide().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
+    $('#runToolsBtn').hide().attr('disabled', true);
+    $('#runBtn').hide().attr('disabled', true);
     $('#chkSize').show().attr('disabled', true);
     $('#resumeBtn').hide().attr('disabled', true);
     $('#pauseBtn').hide().attr('disabled', true);
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-    if (grblParams['$22'] > 0) {
-      $('#homeBtn').hide().attr('disabled', true);
-    } else {
-      $('#homeBtn').show().attr('disabled', true);
-    }
+    $('#homeBtn').hide().attr('disabled', true);
     $('.estop').hide()
     $('#controlBtnGrp').hide();
   }
