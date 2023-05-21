@@ -142,7 +142,7 @@ function setControlBar(val, status) {
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
 
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').hide().attr('disabled', true);
     } else {
       $('#homeBtn').hide().attr('disabled', true);
@@ -196,7 +196,7 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', true);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').show().attr('disabled', false);
     } else {
       $('#homeBtn').show().attr('disabled', true);
@@ -219,7 +219,7 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').show().attr('disabled', true);
     } else {
       $('#homeBtn').show().attr('disabled', true);
@@ -248,7 +248,7 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', false);
     $('#toolBtn').show().attr('disabled', false);
     $('#toolBtn2').show().attr('disabled', false);
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').show().attr('disabled', true);
     } else {
       $('#homeBtn').show().attr('disabled', true);
@@ -272,7 +272,7 @@ function setControlBar(val, status) {
     $('#stopBtn').show().attr('disabled', true);
     $('#toolBtn').show().attr('disabled', true);
     $('#toolBtn2').show().attr('disabled', true);
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').show().attr('disabled', false);
     } else {
       $('#homeBtn').show().attr('disabled', true);
@@ -295,7 +295,7 @@ function setControlBar(val, status) {
     $('#stopBtn').hide().attr('disabled', true);
     $('#toolBtn').hide().attr('disabled', true);
     $('#toolBtn2').hide().attr('disabled', true);
-    if (grblParams['$22'] == 1) {
+    if (grblParams['$22'] > 0) {
       $('#homeBtn').hide().attr('disabled', true);
     } else {
       $('#homeBtn').show().attr('disabled', true);
