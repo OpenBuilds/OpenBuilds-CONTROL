@@ -86,6 +86,7 @@ const {
 
 // FluidNC test
 var fluidncConfig = "";
+var pauseStatusLoop = false;
 // FluidNC end test
 
 app.use(express.static(path.join(__dirname, "app")));
@@ -1228,7 +1229,7 @@ io.on("connection", function(socket) {
               // Start interval for status queries
               clearInterval(statusLoop);
               statusLoop = setInterval(function() {
-                if (status.comms.connectionStatus > 0) {
+                if (status.comms.connectionStatus > 0 && !pauseStatusLoop) {
                   addQRealtime("?");
                 }
               }, 200);
@@ -1558,6 +1559,8 @@ io.on("connection", function(socket) {
           }
           if (command == "$CD") {
             io.sockets.emit('fluidncConfig', fluidncConfig);
+            pauseStatusLoop = false;
+            //resume status loop
           }
           status.comms.blocked = false;
           send1Q();
@@ -2803,6 +2806,8 @@ function addQToEnd(gcode) {
     status.machine.modals.homedRecently = true;
   }
   if (testGcode == "$CD") {
+    //pause status loop until we get an ok
+    pauseStatusLoop = true;
     fluidncConfig = ""; // empty string
   }
   if (new RegExp(modalCommands.join("|")).test(testGcode)) {
