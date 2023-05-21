@@ -2267,6 +2267,7 @@ function runJob(object) {
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
+  pauseStatusLoop = false;
   jogWindow.setProgressBar(0);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
