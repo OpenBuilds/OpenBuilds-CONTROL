@@ -1140,8 +1140,7 @@ function populatePortsMenu() {
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
         var port = friendlyPort(i)
         var name = laststatus.comms.interfaces.ports[i].path;
-        var selected = name == lastGrblPort ? ` selected="true"`: ``;
-        response += `<option value="` + name + `"` + selected + `>` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
+        response += `<option value="` + name + `">` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
       };
     }
     response += `</optgroup>`
@@ -1161,17 +1160,17 @@ function populatePortsMenu() {
       response += `<optgroup label="Network Ports">`
       for (i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
         var name = laststatus.comms.interfaces.networkDevices[i].ip;
-        var selected = name == lastGrblPort ? ` selected="true"`: ``;
         if (laststatus.comms.interfaces.networkDevices[i].type) {
-          response += `<option value="` + name + `"` + selected + `>` + name + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
+          response += `<option value="` + name + `">` + name + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
         } else {
-          response += `<option value="` + name + `"` + selected + `>` + name + `</option>`;
+          response += `<option value="` + name + `">` + name + `</option>`;
         }
       };
     }
     response += `</optgroup>`
     var select = $("#portUSB").data("select");
     select.data(response);
+    select.val(lastGrblPort);
 
     $('#portUSB').parent(".select").removeClass('disabled')
     $("#connectBtn").attr('disabled', false);
