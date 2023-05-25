@@ -322,6 +322,7 @@
                   </button>
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
                     <li class="btn-file"><a href="#"><input class="btn-file" id="file" type="file" accept=".gcode, .gc, .tap, .nc, .cnc" /><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a>
+                    <li class="disabled" id="reloadFile" onclick="socket.emit('reopenFile')"><a href="#"><i class="fas fa-undo-alt fa-fw"></i> Reload GCODE file</a> </li>
                     </li>
                     <li class="divider fg-gray"></li>
 
@@ -341,6 +342,7 @@
                   </button>
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
                     <li class="btn-file" onclick="socket.emit('openFile')"><a href="#"><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a> </li>
+                    <li class="disabled" id="reloadFile19" onclick="socket.emit('reopenFile')"><a href="#"><i class="fas fa-undo-alt fa-fw"></i> Reload GCODE file</a> </li>
                     <li class="divider fg-gray"></li>
 
                     <li class="" onclick="socket.emit('opencam', true);"><a href="#"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
@@ -349,12 +351,6 @@
 
                   </ul>
                 </div>
-                <button id="reloadGcodeBtn" class="ribbon-button" title="Reload last G-Code file" onclick="socket.emit('reopenFile');" disabled="1">
-                  <span class="icon">
-                    <span class="fas fa-undo-alt"></span>
-                  </span>
-                  <span class="caption">Reload<br>G-Code</span>
-                </button>
                 <span class="title">File</span>
               </div>
 
