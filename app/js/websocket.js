@@ -1142,6 +1142,8 @@ function populatePortsMenu() {
         var port = friendlyPort(i)
         var name = laststatus.comms.interfaces.ports[i].path;
         response += `<option value="` + name + `">` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
+        if (name == lastGrblPort)
+        {
           foundPort = true;
         }
       };
