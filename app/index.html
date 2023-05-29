@@ -325,9 +325,9 @@
                     </li>
                     <li class="divider fg-gray"></li>
 
-                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
+                    <li class="" onclick="socket.emit('opencam', true);"><a href="#"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
+                    <li class="" onclick="socket.emit('lightburn', true);"><a href="#"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
+                    <li class="" onclick="socket.emit('vectric', true);><a href="#""><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
 
                   </ul>
                 </div>
@@ -343,9 +343,9 @@
                     <li class="btn-file" onclick="socket.emit('openFile')"><a href="#"><i class="far fa-folder-open fa-fw"></i> <b>Open GCODE</b> from File (*.gcode, *.gc, *.tap, *.nc, *.cnc)</a> </li>
                     <li class="divider fg-gray"></li>
 
-                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('lightburn', true);"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
-                    <li class=""><a href="#" onclick="socket.emit('vectric', true);"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
+                    <li class="" onclick="socket.emit('opencam', true);"><a href="#"><img width="16" src="img/openbuilds.svg"> OpenBuilds CAM</a></li>
+                    <li class="" onclick="socket.emit('lightburn', true);"><a href="#"><img width="16" src="affiliates/lightburn/lightburn.png"> Lightburn</a></li>
+                    <li class="" onclick="socket.emit('vectric', true);"><a href="#"><img width="16" src="affiliates/vectric/vectric.svg"> Vectric</a></li>
 
                   </ul>
                 </div>
@@ -374,7 +374,7 @@
                     <span class="caption">Run<br>Job</span>
                   </button>
                   <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100" id="toolChangesMenu">
-                    <li class=""><a href="#" onclick="socket.emit('opencam', true);"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.openbuilds.com</a></li>
+                    <li class="" onclick="socket.emit('opencam', true);"><a href="#"><i class="fas fa-link fa-fw"></i> Open browser to https://cam.openbuilds.com</a></li>
                   </ul>
                 </div>
 
@@ -409,7 +409,7 @@
                     <span class="caption">Tool<br>On</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))"><a class="grblmode" href="#">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                     <li>
                       <a href="#" class="dropdown-toggle">Variable Speed Spindle On (M3 Sxxx)</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
@@ -434,10 +434,10 @@
                       </ul>
                     </li>
                     <!-- <li class="divider"></li> -->
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))"><a class="grblmode" href="#">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                     <li class="divider fg-gray"></li>
-                    <li id="menuMisting" style="display: none;"><a class="grblmode" href="#" onclick="sendGcode('M7')">Misting On (M7)</a></li>
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M8')">Coolant On (M8)</a></li>
+                    <li id="menuMisting" style="display: none;" onclick="sendGcode('M7')"><a class="grblmode" href="#">Misting On (M7)</a></li>
+                    <li onclick="sendGcode('M8')"><a class="grblmode" href="#">Coolant On (M8)</a></li>
                     <!-- <li><a class="grblmode" href="#" onclick="sendGcode('M9 S1000')">Coolant Off (M9)</a></li> -->
 
                   </ul>
@@ -455,9 +455,9 @@
                     <span class="caption">Tool<br>Off</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M5')">Router / Spindle / Laser / Plasma Off (M5)</a></li>
+                    <li onclick="sendGcode('M5')"><a class="grblmode" href="#">Router / Spindle / Laser / Plasma Off (M5)</a></li>
                     <li class="divider fg-gray"></li>
-                    <li><a class="grblmode" href="#" onclick="sendGcode('M9')">Coolant Off (M9)</a></li>
+                    <li onclick="sendGcode('M9')"><a class="grblmode" href="#">Coolant Off (M9)</a></li>
 
                   </ul>
                 </div>
@@ -501,8 +501,8 @@
                     <span class="caption">Wizards<br>& Tools</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li><a href="#" onclick="populateSurfaceToolForm();"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
-                    <li><a href="#" onclick="jogWidget();"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
+                    <li onclick="populateSurfaceToolForm();"><a href="#"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
+                    <li onclick="jogWidget();"><a href="#"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                     <li class="divider fg-gray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
@@ -661,12 +661,12 @@
                             <span title="Show/change current Work Coordinate System" class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G54
                           </button>
                           <ul class="ribbon-dropdown drop-shadow" data-role="dropdown">
-                            <li class="checked wcsItem wcsItemG54"><a href="#" onclick="sendGcode('G54')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G54</a></li>
-                            <li class="wcsItem wcsItemG55"><a href="#" onclick="sendGcode('G55')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G55</a></li>
-                            <li class="wcsItem wcsItemG56"><a href="#" onclick="sendGcode('G56')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G56</a></li>
-                            <li class="wcsItem wcsItemG57"><a href="#" onclick="sendGcode('G57')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G57</a></li>
-                            <li class="wcsItem wcsItemG58"><a href="#" onclick="sendGcode('G58')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G58</a></li>
-                            <li class="wcsItem wcsItemG59"><a href="#" onclick="sendGcode('G59')"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G59</a></li>
+                            <li class="checked wcsItem wcsItemG54" onclick="sendGcode('G54')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G54</a></li>
+                            <li class="wcsItem wcsItemG55" onclick="sendGcode('G55')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G55</a></li>
+                            <li class="wcsItem wcsItemG56" onclick="sendGcode('G56')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G56</a></li>
+                            <li class="wcsItem wcsItemG57" onclick="sendGcode('G57')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G57</a></li>
+                            <li class="wcsItem wcsItemG58" onclick="sendGcode('G58')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G58</a></li>
+                            <li class="wcsItem wcsItemG59" onclick="sendGcode('G59')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span>G59</a></li>
                           </ul>
                         </div>
 
