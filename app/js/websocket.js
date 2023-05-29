@@ -1142,8 +1142,7 @@ function populatePortsMenu() {
         var port = friendlyPort(i)
         var name = laststatus.comms.interfaces.ports[i].path;
         response += `<option value="` + name + `">` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
-        if (name == lastGrblPort)
-        {
+        if (name == lastGrblPort) {
           foundPort = true;
         }
       };
@@ -1170,8 +1169,7 @@ function populatePortsMenu() {
         } else {
           response += `<option value="` + name + `">` + name + `</option>`;
         }
-        if (name == lastGrblPort)
-        {
+        if (name == lastGrblPort) {
           foundPort = true;
         }
       };
@@ -1179,8 +1177,7 @@ function populatePortsMenu() {
     response += `</optgroup>`
     var select = $("#portUSB").data("select");
     select.data(response);
-    if (foundPort)
-    {
+    if (foundPort) {
       select.val(lastGrblPort);
     }
 
