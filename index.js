@@ -499,6 +499,7 @@ var status = {
   },
   interface: {
     diskdrive: false,
+    lastFilePath: "",
       firmware: {
         availVersion: "",
         installedVersion: "",
@@ -750,6 +751,13 @@ io.on("connection", function(socket) {
     }).catch(err => {
       console.log(err)
     })
+  })
+
+  socket.on("reopenFile", function(data) {
+    if (status.interface.lastFilePath !== "") {
+      debug_log("path" + status.interface.lastFilePath);
+      readFile(status.interface.lastFilePath);
+    }
   })
 
   socket.on("openInterfaceDir", function(data) {
@@ -2174,6 +2182,7 @@ function readFile(filePath) {
               }
               io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;
+              status.interface.lastFilePath = filePath;
               return data
             }
           }
