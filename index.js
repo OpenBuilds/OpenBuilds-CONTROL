@@ -2915,7 +2915,6 @@ if (isElectron()) {
       }
       if (process.platform == 'win32' && process.argv.length >= 2) {
         var openFilePath = process.argv[1];
-        console.log(openFilePath);
         if (openFilePath !== "") {
           debug_log("path" + openFilePath);
           readFile(openFilePath);

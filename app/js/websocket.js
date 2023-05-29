@@ -1131,6 +1131,7 @@ function closePort() {
 function populatePortsMenu() {
   if (laststatus) {
     var lastGrblPort = localStorage.getItem("lastGrblPort");
+    var foundPort = false;
     var response = ``
     if (!laststatus.comms.interfaces.ports.length) {
       response += `<optgroup label="USB/Serial Ports">`
@@ -1141,6 +1142,8 @@ function populatePortsMenu() {
         var port = friendlyPort(i)
         var name = laststatus.comms.interfaces.ports[i].path;
         response += `<option value="` + name + `">` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
+          foundPort = true;
+        }
       };
     }
     response += `</optgroup>`
@@ -1165,12 +1168,19 @@ function populatePortsMenu() {
         } else {
           response += `<option value="` + name + `">` + name + `</option>`;
         }
+        if (name == lastGrblPort)
+        {
+          foundPort = true;
+        }
       };
     }
     response += `</optgroup>`
     var select = $("#portUSB").data("select");
     select.data(response);
-    select.val(lastGrblPort);
+    if (foundPort)
+    {
+      select.val(lastGrblPort);
+    }
 
     $('#portUSB').parent(".select").removeClass('disabled')
     $("#connectBtn").attr('disabled', false);
