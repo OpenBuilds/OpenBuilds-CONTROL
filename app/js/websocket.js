@@ -174,10 +174,8 @@ function initSocket() {
     loadedFileName = data.filename;
 
     setWindowTitle()
-    $('#reloadFile').attr('title', "Reload " + loadedFileName);
-    $('#reloadFile').removeClass('disabled');
-    $('#reloadFile19').attr('title', "Reload " + loadedFileName);
-    $('#reloadFile19').removeClass('disabled');
+    $('#reloadFile,#reloadFile19').attr('title', "Reload " + loadedFileName);
+    $('#reloadFile,#reloadFile19').removeClass('disabled');
     parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
     if (webgl) {
