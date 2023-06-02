@@ -87,6 +87,7 @@ const {
 // FluidNC test
 var fluidncConfig = "";
 var pauseStatusLoop = false;
+var fluidncReady = true;
 // FluidNC end test
 
 app.use(express.static(path.join(__dirname, "app")));
@@ -1222,7 +1223,9 @@ io.on("connection", function(socket) {
                 'type': 'info'
               }
               setTimeout(function() {
-                io.sockets.emit('grbl', status.machine.firmware)
+                if (fluidncReady) {
+                  io.sockets.emit('grbl', status.machine.firmware)
+                }
                 //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
                 //io.sockets.emit('errorsCleared', true);
               }, 600)
@@ -1476,6 +1479,11 @@ io.on("connection", function(socket) {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "FluidNC"
             status.machine.firmware.version = data.substr(19, 5); // get version
+
+            if (!fluidncReady) {
+              fluidncReady = true;
+              io.sockets.emit('grbl', status.machine.firmware);
+            }
           } else {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "gnea"
@@ -1533,7 +1541,15 @@ io.on("connection", function(socket) {
           }
           io.sockets.emit('data', output);
           stopPort();
-        } // end of machine identification
+        } else if (data.indexOf("[MSG:INFO: FluidNC") === 0) { // [MSG:INFO: FluidNC v3.7.0]
+          debug_log(data)
+
+          status.machine.firmware.type = "grbl";
+          status.machine.firmware.platform = "FluidNC"
+          status.machine.firmware.version = data.substr(20, 5); // get version
+
+          fluidncReady = false;
+        }// end of machine identification
 
         // Machine Feedback: Position
         if (data.indexOf("<") === 0) {
@@ -2268,6 +2284,7 @@ function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
   pauseStatusLoop = false;
+  fluidncReady = true;
   jogWindow.setProgressBar(0);
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
