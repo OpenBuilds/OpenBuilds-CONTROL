@@ -327,7 +327,7 @@ function grblPopulate() {
 
     $('#grblSettingsBadge').hide();
 
-    if (grblParams['$21'] == 1 && grblParams['$22'] > 0) {
+    if (grblParams['$21'] > 0 && grblParams['$22'] > 0) {
       $('#limitsinstalled:checkbox').prop('checked', true);
       $('#gotozeroMPos').removeClass('disabled')
       $('#homeBtn').attr('disabled', false)
