@@ -1,4 +1,4 @@
-const { JSONPath } = require('jsonpath-plus');
+const _ = require("lodash");
 
 // GRBLHAL bitmask constants
 const $21_ENABLE_HARDLIMITS = 0b01
