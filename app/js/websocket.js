@@ -31,12 +31,11 @@ $(document).ready(function() {
 function showGrbl(bool, firmware) {
   //console.log(firmware)
   if (bool) {
-    if (firmware.platform == "grblHAL" || firmware.platform == "gnea") { // Doesn't use $$ settings, uses config.yaml
+    if (firmware.platform == "grblHAL" || firmware.platform == "gnea") {
       setTimeout(function() {
         sendGcode('$$')
       }, 500);
-    } else if (firmware.platform == "FluidNC") {
-      // Show FluidNC specific tabs and buttons
+    } else if (firmware.platform == "FluidNC") { // Doesn't use $$ settings, uses config.yaml
       setTimeout(function() {
         sendGcode('$CD')
       }, 500);
@@ -233,17 +232,7 @@ function initSocket() {
   });
 
   socket.on('fluidncConfig', function(data) {
-    console.log(data);
-    var fluidnceditor = ace.edit("fluidnceditor");
-    fluidnceditor.setTheme('ace/theme/sqlserver')
-    fluidnceditor.session.setMode("ace/mode/yaml");
-    fluidnceditor.session.setValue(data); // from samplefile.js
-    $('#fluidncSettings').show()
-    var fluidncJSON = YAML.parse(data);
-    console.log(fluidncJSON)
-    //yamlString = YAML.stringify(nativeObject[, inline /* @integer depth to start using inline notation at */[, spaces /* @integer number of spaces to use for indentation */] ]);
-
-
+    fluidSettings(data);
   });
 
   socket.on('data', function(data) {
