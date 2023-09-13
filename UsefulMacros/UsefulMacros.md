@@ -23,6 +23,7 @@ Relies on the homedRecently status of OpenBuilds. Unfortunately that flag is qui
 
 ## OpenFile
 Removes the drodown from the file button and adds a reload button
+
 Based on https://thayneco.com/single-click-to-open-a-file-browser-in-openbuilds-control/
 
 ## SmartGCode
