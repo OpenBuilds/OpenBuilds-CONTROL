@@ -31,3 +31,5 @@ Few useful features for the currently loaded G-code file
 * Warns when a file with a different tool is loaded: reminder to replace the tool and probe it
 * Warns if the G-code will fall below the minimum Z for the machine: prevents failures in the middle of the job if the tool stickout is too short
 * Adds a pause after turning on the spindle: useful for VFD spindles that take time to spin up
+
+The macro is intended to be used with a pendant, however the OptimizeGCode function can be used on its own
