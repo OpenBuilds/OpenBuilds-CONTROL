@@ -61,6 +61,7 @@ config.webPort = process.env.WEB_PORT || config.nextWebPort();
 config.posDecimals = process.env.DRO_DECIMALS || 2;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
+config.aggressiveHomeReset = true;
 
 var express = require("express");
 var app = express();
@@ -1520,7 +1521,12 @@ io.on("connection", function(socket) {
           //     addQRealtime("?");
           //   }
           // }, 200);
-          status.machine.modals.homedRecently = false;
+
+          if (config.aggressiveHomeReset)
+          {
+            // when aggressiveHomeReset is true (the default) reset the home state on every grbl reset
+            status.machine.modals.homedRecently = false;
+          }
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
@@ -1577,6 +1583,17 @@ io.on("connection", function(socket) {
             case 'grbl':
               // sentBuffer.shift();
               var alarmCode = parseInt(data.split(':')[1]);
+
+              if (!config.aggressiveHomeReset)
+              {
+                // when aggressiveHomeReset is false, certain alarm codes will be safe and will not reset the home state
+                const safeAlarmCodes = [0, 2, 4, 5, 12];
+                if (!safeAlarmCodes.includes(alarmCode))
+                {
+                  status.machine.modals.homedRecently = false;
+                }
+              }
+
               debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
               if (alarmCode != 5) {
@@ -2149,7 +2166,9 @@ io.on("connection", function(socket) {
   });
 
 
-
+  socket.on('aggrressiveHomeReset', function(state) {
+    config.aggressiveHomeReset = state;
+  });
 
 });
 
