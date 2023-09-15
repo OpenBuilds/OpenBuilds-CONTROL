@@ -123,6 +123,7 @@ function initSocket() {
     'timeout': 60000,
     'connect timeout': 60000
   }); // socket.io init
+  socket.emit('aggrressiveHomeReset', !disableAggressiveHomeReset);
   var icon = ''
   var source = "websocket"
   var string = "Bidirectional Websocket Interface Started Succesfully"
