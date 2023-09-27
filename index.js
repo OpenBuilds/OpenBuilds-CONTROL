@@ -61,6 +61,7 @@ config.webPort = process.env.WEB_PORT || config.nextWebPort();
 config.posDecimals = process.env.DRO_DECIMALS || 2;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
+config.aggressiveHomeReset = true;
 
 var express = require("express");
 var app = express();
@@ -211,6 +212,7 @@ if (isElectron()) {
   autoUpdater = require("electron-updater").autoUpdater
   var availversion = '0.0.0'
 
+	autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.on('checking-for-update', () => {
     var string = 'Starting update... Please wait';
     var output = {
@@ -499,6 +501,7 @@ var status = {
   },
   interface: {
     diskdrive: false,
+    lastFilePath: "",
       firmware: {
         availVersion: "",
         installedVersion: "",
@@ -750,6 +753,13 @@ io.on("connection", function(socket) {
     }).catch(err => {
       console.log(err)
     })
+  })
+
+  socket.on("reopenFile", function(data) {
+    if (status.interface.lastFilePath !== "") {
+      debug_log("path" + status.interface.lastFilePath);
+      readFile(status.interface.lastFilePath);
+    }
   })
 
   socket.on("openInterfaceDir", function(data) {
@@ -1512,7 +1522,12 @@ io.on("connection", function(socket) {
           //     addQRealtime("?");
           //   }
           // }, 200);
-          status.machine.modals.homedRecently = false;
+
+          if (config.aggressiveHomeReset)
+          {
+            // when aggressiveHomeReset is true (the default) reset the home state on every grbl reset
+            status.machine.modals.homedRecently = false;
+          }
         } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
           status.comms.blocked = false;
           debug_log("Smoothieware detected");
@@ -1551,6 +1566,7 @@ io.on("connection", function(socket) {
 
           // debug_log(data)
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
+          io.sockets.emit('ok', command);
           // debug_log("OK FOUND")
           if (status.machine.firmware.type === "grbl") {
             // debug_log('got OK from ' + command)
@@ -1568,6 +1584,17 @@ io.on("connection", function(socket) {
             case 'grbl':
               // sentBuffer.shift();
               var alarmCode = parseInt(data.split(':')[1]);
+
+              if (!config.aggressiveHomeReset)
+              {
+                // when aggressiveHomeReset is false, certain alarm codes will be safe and will not reset the home state
+                const safeAlarmCodes = [0, 2, 4, 5, 12];
+                if (!safeAlarmCodes.includes(alarmCode))
+                {
+                  status.machine.modals.homedRecently = false;
+                }
+              }
+
               debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
               status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
               if (alarmCode != 5) {
@@ -1789,7 +1816,6 @@ io.on("connection", function(socket) {
         debug_log('Adding jog commands to queue. blocked=' + status.comms.blocked + ', paused=' + status.comms.paused + ', Q=' + gcodeQueue.length);
         switch (status.machine.firmware.type) {
           case 'grbl':
-            addQToEnd('$J=G91G21' + mode + xVal + yVal + zVal + feed);
             break;
           default:
             debug_log('ERROR: Unknown firmware!');
@@ -2140,7 +2166,9 @@ io.on("connection", function(socket) {
   });
 
 
-
+  socket.on('aggrressiveHomeReset', function(state) {
+    config.aggressiveHomeReset = state;
+  });
 
 });
 
@@ -2174,6 +2202,7 @@ function readFile(filePath) {
               }
               io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;
+              status.interface.lastFilePath = filePath;
               return data
             }
           }
@@ -2791,6 +2820,7 @@ function send1Q() {
 }
 
 var modalCommands = ['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G17', 'G18', 'G19', 'G90', 'G91', 'G91.1', 'G93', 'G94', 'G20', 'G21', 'G40', 'G43.1', 'G49', 'M0', 'M1', 'M2', 'M30', 'M3', 'M4', 'M5', 'M7', 'M8', 'M9']
+var modalCommandsRegExp = new RegExp(modalCommands.join("|"));
 
 function addQToEnd(gcode) {
   // debug_log('added ' + gcode)
@@ -2805,7 +2835,7 @@ function addQToEnd(gcode) {
   if (testGcode == "$CD") {
     fluidncConfig = ""; // empty string
   }
-  if (new RegExp(modalCommands.join("|")).test(testGcode)) {
+  if (!gcode.startsWith("$J=") && modalCommandsRegExp.test(testGcode)) {
     gcodeQueue.push("$G");
   }
   if (gcode.match(/T([\d.]+)/i)) {
@@ -2897,7 +2927,7 @@ if (isElectron()) {
     // Module to create native browser window.
 
     function createApp() {
-      createTrayIcon();
+//      createTrayIcon();
       if (process.platform == 'darwin') {
         debug_log("Creating MacOS Menu");
         createMenu();
@@ -2912,7 +2942,8 @@ if (isElectron()) {
         status.driver.operatingsystem = 'windows';
       }
 
-      if (process.platform == 'darwin' || uploadedgcode.length > 1) {
+//      if (process.platform == 'darwin' || uploadedgcode.length > 1)
+      {
         showJogWindow()
       }
 
@@ -3135,7 +3166,7 @@ if (isElectron()) {
         createApp();
       }
     });
-
+/*
     // Autostart on Login
     if (process.platform == 'win32') {
       electronApp.setLoginItemSettings({
@@ -3143,6 +3174,7 @@ if (isElectron()) {
         args: []
       })
     }
+*/
   }
 } else { // if its not running under Electron, lets get Chrome up.
   var isPi = require('detect-rpi');

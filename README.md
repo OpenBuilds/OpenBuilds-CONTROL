@@ -1,6 +1,15 @@
 # OpenBuilds CONTROL
 OpenBuilds CONTROL - Grbl Host / Interface for all CNC style machines running Grbl
 
+This is a fork by Ivo Beltchev. Notable changes:
+* Fix for showing the RPM value in the tool slider
+* Fix for dragging the slider with the mouse (bug in the external Metro UI library)
+* Fix for inconsistencies between the click areas of menu items
+* Added an option to reload the last gcode file
+* Remembers the last used COM port and auto-selects it on startup
+* Converted to a plain Windows app - no auto-start, no tray icon
+* Added event for the Grbl "ok" response, which enables more reliable and responsive macros
+
 ## Download
 
 #### Latest Version

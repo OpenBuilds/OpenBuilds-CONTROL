@@ -123,6 +123,7 @@ function initSocket() {
     'timeout': 60000,
     'connect timeout': 60000
   }); // socket.io init
+  socket.emit('aggrressiveHomeReset', !disableAggressiveHomeReset);
   var icon = ''
   var source = "websocket"
   var string = "Bidirectional Websocket Interface Started Succesfully"
@@ -174,6 +175,8 @@ function initSocket() {
     loadedFileName = data.filename;
 
     setWindowTitle()
+    $('#reloadFile,#reloadFile19').attr('title', "Reload " + loadedFileName);
+    $('#reloadFile,#reloadFile19').removeClass('disabled');
     parseGcodeInWebWorker(data.gcode)
     $('#controlTab').click()
     if (webgl) {
@@ -692,12 +695,11 @@ function initSocket() {
     }
 
     if (unit == "mm") {
-      $("#realFeed").html(status.machine.overrides.realFeed + "mm/min");
-      //$("#realSpeed").html("S=" + status.machine.overrides.realSpindle);
+      $("#realFeed").html(status.machine.overrides.realFeed + " mm/min");
     } else if (unit == "in") {
-      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "in/min");
-      //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
+      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + " in/min");
     }
+    $("#realSpeed").html( status.machine.overrides.realSpindle + " rpm");
 
     //console.log(JSON.stringify(status.machine.overrides, null, 4));
 
@@ -1079,6 +1081,7 @@ function selectPort(port) {
   }
   if (port.length > 1) {
     socket.emit('connectTo', data);
+    localStorage.setItem("lastGrblPort", port);
   } else {
     printLog("[connect] No Ports/IP selected/entered")
   }
@@ -1128,6 +1131,8 @@ function closePort() {
 
 function populatePortsMenu() {
   if (laststatus) {
+    var lastGrblPort = localStorage.getItem("lastGrblPort");
+    var foundPort = false;
     var response = ``
     if (!laststatus.comms.interfaces.ports.length) {
       response += `<optgroup label="USB/Serial Ports">`
@@ -1136,7 +1141,11 @@ function populatePortsMenu() {
       response += `<optgroup label="USB Ports">`
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
         var port = friendlyPort(i)
-        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
+        var name = laststatus.comms.interfaces.ports[i].path;
+        response += `<option value="` + name + `">` + port.note + " " + name.replace("/dev/tty.", "") + `</option>`;
+        if (name == lastGrblPort) {
+          foundPort = true;
+        }
       };
     }
     response += `</optgroup>`
@@ -1155,16 +1164,23 @@ function populatePortsMenu() {
     } else {
       response += `<optgroup label="Network Ports">`
       for (i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
+        var name = laststatus.comms.interfaces.networkDevices[i].ip;
         if (laststatus.comms.interfaces.networkDevices[i].type) {
-          response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
+          response += `<option value="` + name + `">` + name + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
         } else {
-          response += `<option value="` + laststatus.comms.interfaces.networkDevices[i].ip + `">` + laststatus.comms.interfaces.networkDevices[i].ip + `</option>`;
+          response += `<option value="` + name + `">` + name + `</option>`;
+        }
+        if (name == lastGrblPort) {
+          foundPort = true;
         }
       };
     }
     response += `</optgroup>`
     var select = $("#portUSB").data("select");
     select.data(response);
+    if (foundPort) {
+      select.val(lastGrblPort);
+    }
 
     $('#portUSB').parent(".select").removeClass('disabled')
     $("#connectBtn").attr('disabled', false);

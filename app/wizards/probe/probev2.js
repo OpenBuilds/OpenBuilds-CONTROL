@@ -466,7 +466,7 @@ function runProbeNew() {
     template += `Offset: Center:\n`;
     template += `Offset x:` + probemode.stock.x / 2 + `\n`;
     template += `Offset y: ` + probemode.stock.y / 2 + `\n`;
-    stockoffset.x = probemode.stock.y / 2
+    stockoffset.x = probemode.stock.x / 2
     stockoffset.y = probemode.stock.y / 2
   }
 
