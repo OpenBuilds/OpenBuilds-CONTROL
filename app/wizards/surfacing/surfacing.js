@@ -68,6 +68,16 @@ var surfacingWizardTemplate = `
               </select>
             </div>
           </div>
+          
+          <div class="row mb-2 pb-2 border-bottom bd-gray">
+            <label class="cell-sm-6">Enable Framing</label>
+            <div class="cell-sm-6">
+              <select id="surfaceFraming" data-role="input" data-clear-button="false">
+                <option value="enabled" selected>Enabled</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+          </div>
 
         </div>
         <div class="cell-sm-5">
@@ -134,6 +144,7 @@ function populateSurfaceToolForm() {
       surfaceDepth: 3,
       surfaceFinalDepth: 3,
       surfaceCoolant: "enabled",
+      surfaceFraming: "enabled",
       surfaceRPM: 1000
     };
   }
@@ -151,6 +162,9 @@ function populateSurfaceToolForm() {
   }
   if (data.surfaceCoolant != undefined) {
     $('#surfaceCoolant').val(data.surfaceCoolant)
+  }
+  if (data.surfaceFraming != undefined) {
+    $('#surfaceFraming').val(data.surfaceFraming)
   }
 
   $('#surfaceRPM').val(data.surfaceRPM)
@@ -173,7 +187,8 @@ function createSurfaceGcode() {
     surfaceFinalDepth: parseFloat($("#surfaceFinalDepth").val()),
     surfaceType: $("input[name='surfaceType']:checked").val(),
     surfaceRPM: $('#surfaceRPM').val(),
-    surfaceCoolant: $('#surfaceCoolant').val()
+    surfaceCoolant: $('#surfaceCoolant').val(),
+    surfaceFraming: $('#surfaceFraming').val()
   };
   console.log(data);
 
@@ -298,17 +313,18 @@ G1 F` +
     gcode += `G0 Z10; Pass complete, lifting to Z Safe height\n`;
 
     // Framing Pass
-    gcode += `; Framing pass\n`;
-    gcode += `G0 X` + startpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
-    gcode += `G1 Z` + zval + `\n`; // plunge
-    gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
-    gcode += `G0 Z10\n`;
-    gcode += `G0 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
-    gcode += `G1 Z` + zval + `\n`; // plunge
-    gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
-    gcode += `G0 Z10\n`;
-    gcode += `G0 X0 Y0\n`;
-
+    if (data.surfaceFraming == "enabled") {
+      gcode += `; Framing pass\n`;
+      gcode += `G0 X` + startpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
+      gcode += `G1 Z` + zval + `\n`; // plunge
+      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
+      gcode += `G0 Z10\n`;
+      gcode += `G0 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
+      gcode += `G1 Z` + zval + `\n`; // plunge
+      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
+      gcode += `G0 Z10\n`;
+      gcode += `G0 X0 Y0\n`;
+    }
 
   }
   // END MULTIPASS
