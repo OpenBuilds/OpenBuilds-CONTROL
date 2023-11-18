@@ -390,8 +390,18 @@ function probetype(type) {
 }
 
 function confirmProbeInPlace(operation) {
-  $('#confirmNewProbeBtn').addClass("disabled")
-  $('#runNewProbeBtn').removeClass("disabled").focus();
+  $('#confirmNewProbeBtn').addClass("disabled");
+  $('#confirmNewProbeBtn')[0].innerHTML = "Touch Probe...";
+  let timeoutFunction = () => {
+    if (laststatus.machine.inputs.contains("P")) {
+      $('#confirmNewProbeBtn').addClass("disabled");
+      $('#confirmNewProbeBtn')[0].innerHTML = "Touched";
+      $('#runNewProbeBtn').removeClass("disabled").focus();
+    } else {
+      setTimeout(timeoutFunction, 50);
+    }
+  }
+  setTimeout(timeoutFunction, 50);
 }
 
 function resetJogModeAfterProbe() {
@@ -411,6 +421,7 @@ function resetJogModeAfterProbe() {
 
 
 function runProbeNew() {
+  $('#confirmNewProbeBtn')[0].innerHTML = "Confirm Probe Position";
   resetJogModeAfterProbe()
   $("#consoletab").click()
   probemode.stock.x = $("#stockwidth").val();
