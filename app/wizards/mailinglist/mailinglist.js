@@ -3,6 +3,7 @@ var mailingListDialog;
 
 
 $(document).ready(function() {
+  return;
   if (localStorage.getItem('mailinglistID')) {
 
     // Already signed up once before
