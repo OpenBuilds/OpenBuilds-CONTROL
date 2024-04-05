@@ -19,10 +19,10 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install Node gyp
-        run: npm install -g node-gyp@latest
+      #- name: Install Node gyp
+      #  run: npm install -g node-gyp@latest
 
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
