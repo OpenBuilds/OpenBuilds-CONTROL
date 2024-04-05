@@ -37,8 +37,8 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-          windows_certs: ${{ secrets.WIN_CSC_LINK }}
-          windows_certs_password: ${{ secrets.WIN_CSC_PASSWORD }}
+          #windows_certs: ${{ secrets.WIN_CSC_LINK }}
+          #windows_certs_password: ${{ secrets.WIN_CSC_PASSWORD }}
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
