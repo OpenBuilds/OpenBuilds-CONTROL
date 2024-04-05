@@ -25,7 +25,7 @@ jobs:
       #  run: npm install -g node-gyp@latest
 
       - name: Install setuptools (macos)
-        if: matrix.os == 'macos-latest'
+        if: startsWith(matrix.os, 'macos')
         run: sudo -H pip install setuptools
 
       - name: Prepare for app notarization
