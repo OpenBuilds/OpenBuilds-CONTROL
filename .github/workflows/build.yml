@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -32,7 +32,7 @@ jobs:
           echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
 
       - name: Electron Builder Action
-        uses: OpenBuilds/action-electron-build@v1.8.0
+        uses: OpenBuilds/action-electron-build@v1.9.0
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
