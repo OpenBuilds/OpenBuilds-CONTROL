@@ -55,7 +55,8 @@
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "appBundleId": "com.openbuilds.control"
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
