@@ -24,6 +24,10 @@ jobs:
       #- name: Install Node gyp
       #  run: npm install -g node-gyp@latest
 
+      - name: Install setuptools (macos)
+        if: matrix.os == 'macos-13'
+        run: sudo -H pip install setuptools
+
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
