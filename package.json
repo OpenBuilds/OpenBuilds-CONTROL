@@ -50,14 +50,12 @@
         "vPrefixedTagName": true
       }
     ],
+    "afterSign": "scripts/notarize.js",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
-      "notarize": {
-        "teamId": "L6G5M2J39C"
-      }
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
