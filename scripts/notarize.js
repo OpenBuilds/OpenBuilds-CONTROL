@@ -17,8 +17,8 @@ exports.default = async function notarizing(context) {
   return await notarize({
     appBundleId: "app.openbuilds.control",
     appPath: `${appOutDir}/${appName}.app`,
-    appleId: process.env.APPLE_ID,
-    appleIdPassword: process.env.APPLE_APP_SPECIFIC_PASSWORD,
-    teamId: process.env.APPLE_TEAM_ID,
+    appleId: process.env.APPLE2_ID,
+    appleIdPassword: process.env.APPLE2_APP_SPECIFIC_PASSWORD,
+    teamId: process.env.APPLE2_TEAM_ID,
   })
 }
