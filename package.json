@@ -6,7 +6,7 @@
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
     "electron": "^23.1.1",
-    "electron-builder": "^24.6.4",
+    "electron-builder": "^24.9.1",
     "electron-builder-notarize": "latest",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0"
