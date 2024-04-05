@@ -50,7 +50,7 @@
         "vPrefixedTagName": true
       }
     ],
-    "afterSign": "scripts/notarize.js",
+    "afterSign": "notarize.js",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
