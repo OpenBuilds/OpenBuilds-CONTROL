@@ -56,6 +56,7 @@ jobs:
           API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
           #USE_HARD_LINKS: false
           # new notarize secrets 2024
+          DEBUG: electron-notarize*
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
