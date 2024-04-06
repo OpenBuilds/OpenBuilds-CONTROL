@@ -23,8 +23,8 @@ exports.default = async function notarizing(context) {
       teamId: process.env.APPLE_TEAM_ID,
     });
 
-    console.log("Notarization successful");
+    console.log("Notarization using OpenBuilds CONTROL's custom notarize.js script: successful");
   } catch (error) {
-    console.error("Notarization failed:", error);
+    console.error("Notarization using OpenBuilds CONTROL's custom notarize.js script: failed:", error);
   }
 };
