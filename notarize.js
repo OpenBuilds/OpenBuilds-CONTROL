@@ -21,4 +21,6 @@ exports.default = async function notarizing(context) {
     appleIdPassword: process.env.APPLE_APP_SPECIFIC_PASSWORD,
     teamId: process.env.APPLE_TEAM_ID,
   })
+
+  console.log("Notarized using OpenBuilds Notarize.js")
 }
