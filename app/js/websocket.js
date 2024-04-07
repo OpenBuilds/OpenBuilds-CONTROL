@@ -259,6 +259,12 @@ function initSocket() {
       lineColor = "fg-dark"
     }
 
+    // look for grbl settings change and update grblparams variable
+    // matches $number(s)=
+    if ( /^\$\d*=/.test(data.command) && data.response == 'ok' ) {
+      grblSettings(data.command)
+    }
+
     // Parse Grbl Settings Feedback
     if (data.response.indexOf('$') === 0) {
       if (typeof grblSettings !== 'undefined') {
