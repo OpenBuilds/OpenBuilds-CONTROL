@@ -1082,6 +1082,7 @@ function selectPort(port) {
       baud: 115200,
       type: "usb"
     };
+    localStorage.setItem('lastUsedPort', port);
   }
   if (port.length > 1) {
     socket.emit('connectTo', data);
@@ -1142,7 +1143,14 @@ function populatePortsMenu() {
       response += `<optgroup label="USB Ports">`
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
         var port = friendlyPort(i)
-        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
+        var lastUsedPort = localStorage.getItem('lastUsedPort');
+        if (port == lastUsedPort) {
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
+        } else {
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
+        }
+
+
       };
     }
     response += `</optgroup>`
