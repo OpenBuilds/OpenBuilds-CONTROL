@@ -151,4 +151,6 @@ function closeServoCal() {
   localStorage.setItem("servo-calibration", JSON.stringify(servo));
   Metro.dialog.close($('#servocalstep1').parent().parent());
   console.log(servo)
+
+  askToResetOnGrblSettingsChange();
 }
