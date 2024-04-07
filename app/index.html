@@ -11,7 +11,6 @@
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/metro4/css/metro-all.min.css" />
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/splash.css" />
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
     <link rel="stylesheet" href="/lib/furcanIconPicker/iconpicker-1.5.0.css" />
@@ -19,25 +18,12 @@
 
   <body>
 
-    <div class="pos-fixed pos-center" id="splash" onclick="socket.emit('adX32');">
+    <div class="pos-fixed pos-center" id="splash">
       <center>
         <div id="openbuildslogosplash" style="display: none;">
           <!-- <img id="openbuildslogosplashImg" src="/img/openbuilds.png" onload="$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 2000)" width="200" /> -->
           <h1>OpenBuilds<sup>&reg;</sup>&nbsp;CONTROL</h1>
-          <img id="openbuildslogosplashImgX32" src="/img/x32splash.png" onload="setTimeout(function() {$('#openbuildslogosplash').fadeIn(800); setTimeout(function() { $('#splash').fadeOut(400); }, 4000)}, 500);" style="cursor:pointer" />
-          <h3 style="cursor:pointer">Check out the all NEW OpenBuilds<sup>&reg;</sup>&nbsp;BlackBox&nbsp;X32</h3>
-          <div class="waviy" style="cursor:pointer">
-            <span style="--i:1">C</span>
-            <span style="--i:2">L</span>
-            <span style="--i:3">I</span>
-            <span style="--i:4">C</span>
-            <span style="--i:5">K</span>
-            <span style="--i:6"> </span>
-            <span style="--i:7">H</span>
-            <span style="--i:8">E</span>
-            <span style="--i:9">R</span>
-            <span style="--i:10">E</span>
-          </div>
+          <img id="openbuildslogosplashImgX32" src="/img/splash.png" onload="setTimeout(function() {$('#openbuildslogosplash').fadeIn(100); setTimeout(function() { $('#splash').fadeOut(100); }, 1000)}, 50);" style="cursor:pointer" />
         </div>
       </center>
     </div>
