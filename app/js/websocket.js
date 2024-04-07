@@ -261,7 +261,7 @@ function initSocket() {
 
     // look for grbl settings change and update grblparams variable
     // matches $number(s)=
-    if ( /^\$\d*=/.test(data.command) && data.response == 'ok' ) {
+    if (/^\$\d*=/.test(data.command) && data.response == 'ok') {
       grblSettings(data.command)
     }
 
@@ -1142,7 +1142,7 @@ function populatePortsMenu() {
       response += `<optgroup label="USB Ports">`
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
         var port = friendlyPort(i)
-        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
+        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
       };
     }
     response += `</optgroup>`
@@ -1248,8 +1248,8 @@ function friendlyPort(i) {
     }
     if (laststatus.comms.interfaces.ports[i].productId == 'EA60' && laststatus.comms.interfaces.ports[i].vendorId == '10C4') {
       // found CP2102
-      img = 'nodemcu.png';
-      note = 'NodeMCU';
+      img = 'silabs.png';
+      note = 'Silicon Labs USB to UART';
     }
     if (laststatus.comms.interfaces.ports[i].productId == '2303' && laststatus.comms.interfaces.ports[i].vendorId == '067B') {
       // found CP2102
