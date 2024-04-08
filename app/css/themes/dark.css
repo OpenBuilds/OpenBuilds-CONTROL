@@ -90,7 +90,6 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
 
 .theme_dark .button.light:hover, .theme_dark .command-button.light:hover, .theme_dark .image-button.light:hover, .theme_dark .info-button.light:hover, .theme_dark .input .button.light:hover, .theme_dark .notify.light:hover, .theme_dark .select .button.light:hover, .theme_dark .shortcut.light:hover, .theme_dark .spinner .button.light:hover, .theme_dark .split-button .split.light:hover, .theme_dark .tag-input .button.light:hover, .theme_dark .tally.light:hover, .theme_dark .toast.light:hover, .theme_dark .tool-button.light:hover, .theme_dark code.light:hover, .theme_dark tbody td.light:hover, .theme_dark tbody tr.light:hover {
   background-color: #333;
-  color: #fff;
 }
 
 .theme_dark .button.disabled, .theme_dark .button:disabled, .theme_dark .command-button.disabled, .theme_dark .command-button:disabled, .theme_dark .image-button.disabled, .theme_dark .image-button:disabled, .theme_dark .shortcut.disabled, .theme_dark .shortcut:disabled, .theme_dark .split-button .split.disabled, .theme_dark .split-button .split:disabled, .theme_dark .tool-button.disabled, .theme_dark .tool-button:disabled {
