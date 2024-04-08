@@ -51,8 +51,6 @@
       }
     ],
     "afterSign": "./notarize.js",
-    "sign": "./signWin.js",
-    "signingHashAlgorithms": "sha256",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
@@ -60,6 +58,10 @@
       "entitlementsInherit": "build/entitlements.mac.plist",
       "notarize": false
     },
+    "win": {
+      "sign": "./signWin.js",
+      "signingHashAlgorithms": "sha256",
+    }
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
     "productName": "OpenBuildsCONTROL",
