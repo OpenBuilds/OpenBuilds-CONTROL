@@ -67,7 +67,7 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
           release: true
-          #debugElectron: true // to enable debug=electron-builder
+          debugElectron: false
         env:
           # macOS notarization API key
           #API_KEY_ID: ${{ secrets.api_key_id }}
