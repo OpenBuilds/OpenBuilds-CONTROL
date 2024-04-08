@@ -54,6 +54,12 @@ jobs:
           smksp_cert_sync.exe
         shell: cmd
 
+      - name: Certificates Sync
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          smctl windows certsync
+        shell: cmd
+
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
         run: sudo -H pip install setuptools
@@ -79,16 +85,16 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
-      # new Windows Signing (2024)
-      - name: Signing using Signtool
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
-          signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: |
-            dist/*.exe
+      # # new Windows Signing (2024)
+      # - name: Signing using Signtool
+      #   if: startsWith(matrix.os, 'windows')
+      #   run: |
+      #     signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
+      #     signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
+      #
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: ${{ matrix.os }}
+      #     path: |
+      #       dist/*.exe

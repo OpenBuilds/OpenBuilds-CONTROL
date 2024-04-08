@@ -51,6 +51,8 @@
       }
     ],
     "afterSign": "./notarize.js",
+    "sign": "./signWin.js",
+    "signingHashAlgorithms": "sha256",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
