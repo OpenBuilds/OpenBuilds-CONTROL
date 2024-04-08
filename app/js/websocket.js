@@ -1144,7 +1144,7 @@ function populatePortsMenu() {
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
         var port = friendlyPort(i)
         var lastUsedPort = localStorage.getItem('lastUsedPort');
-        if (port == lastUsedPort) {
+        if (laststatus.comms.interfaces.ports[i].path == lastUsedPort) {
           response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
         } else {
           response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
