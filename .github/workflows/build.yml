@@ -19,9 +19,9 @@ jobs:
         with:
           node-version: 20
 
-      - run:
-          if: startsWith(matrix.os, 'windows')
-          name: Setup signing tools
+      - name: Setup signing tools
+        if: startsWith(matrix.os, 'windows')
+        run:
           shell: powershell.exe
           command: |
             cd C:\
@@ -30,17 +30,15 @@ jobs:
             New-Item C:\Certificate.p12.b64
             Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
             certutil -decode Certificate.p12.b64 Certificate.p12
-      - run:
-          if: startsWith(matrix.os, 'windows')
-          name: Set bash path for signing tools
-          # first export is for KSP stuff for DigiCert
-          # the second export is for signtool.exe that smctl internally calls
+      - name:  Set bash path for signing tools
+        if: startsWith(matrix.os, 'windows')
+        run:
           command: |
             echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
             echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
-      - run:
-          if: startsWith(matrix.os, 'windows')
-          name: Sync certificates
+      - name:  Sync certificates
+        if: startsWith(matrix.os, 'windows')
+        run:
           command: |
             sync_output=$(smksp_cert_sync)
             echo ${sync_output}
@@ -48,7 +46,6 @@ jobs:
               echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
               exit 1
             fi
-
 
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
