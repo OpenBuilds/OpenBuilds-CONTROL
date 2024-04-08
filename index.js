@@ -1103,9 +1103,10 @@ io.on("connection", function(socket) {
         port.isOpen = true;
       }
 
-      parser = port.pipe(new ReadlineParser({
+      const parser = port.pipe(new ReadlineParser({
         delimiter: '\r\n'
-      }));
+      }))
+
 
       // port.on("data", function(data) {
       //   console.log(data)
