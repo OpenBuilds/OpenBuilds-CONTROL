@@ -8,9 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        #os: [macos-latest, ubuntu-latest, windows-latest]
         os: [macos-latest, windows-latest, ubuntu-20.04]
-        #os: [macos-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -21,14 +19,42 @@ jobs:
         with:
           node-version: 20
 
-      #- name: Install Node gyp
-      #  run: npm install -g node-gyp@latest
+      - run:
+          if: startsWith(matrix.os, 'windows')
+          name: Setup signing tools
+          shell: powershell.exe
+          command: |
+            cd C:\
+            curl.exe -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:$env:SM_API_KEY" -o smtools-windows-x64.msi
+            msiexec.exe /i smtools-windows-x64.msi /quiet /qn | Wait-Process
+            New-Item C:\Certificate.p12.b64
+            Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
+            certutil -decode Certificate.p12.b64 Certificate.p12
+      - run:
+          if: startsWith(matrix.os, 'windows')
+          name: Set bash path for signing tools
+          # first export is for KSP stuff for DigiCert
+          # the second export is for signtool.exe that smctl internally calls
+          command: |
+            echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
+            echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
+      - run:
+          if: startsWith(matrix.os, 'windows')
+          name: Sync certificates
+          command: |
+            sync_output=$(smksp_cert_sync)
+            echo ${sync_output}
+            if [[ ${sync_output} != *"${KEYPAIR_ALIAS}"* ]]; then
+              echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
+              exit 1
+            fi
+
 
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
         run: sudo -H pip install setuptools
 
-      - name: Prepare for app notarization
+      - name: Prepare for app notarization (macos)
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
         run: |
@@ -41,19 +67,12 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-          #windows_certs: ${{ secrets.WIN_CSC_LINK }}
-          #windows_certs_password: ${{ secrets.WIN_CSC_PASSWORD }}
-          mac_certs: ${{ secrets.mac_certs }}
-          mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
           #debugElectron: true // to enable debug=electron-builder
-          debugElectron: true
-          # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
         env:
           # macOS notarization API key
-          API_KEY_ID: ${{ secrets.api_key_id }}
-          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
+          #API_KEY_ID: ${{ secrets.api_key_id }}
+          #API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
           #USE_HARD_LINKS: false
           # new notarize secrets 2024
           DEBUG: electron-notarize*
