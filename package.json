@@ -61,7 +61,7 @@
     "win": {
       "sign": "./signWin.js",
       "signingHashAlgorithms": "sha256",
-    }
+    },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
     "productName": "OpenBuildsCONTROL",
