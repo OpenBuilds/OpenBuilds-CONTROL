@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 20
 
+      # new Windows Signing (2024)
       - name: Setup Certificate (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
@@ -26,6 +27,7 @@ jobs:
           cat /d/Certificate_pkcs12.p12
         shell: bash
 
+      # new Windows Signing (2024)
       - name: Set variables (Windows)
         if: startsWith(matrix.os, 'windows')
         id: variables
@@ -40,6 +42,7 @@ jobs:
           echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
         shell: bash
 
+      # new Windows Signing (2024)
       - name: Setup SSM KSP on windows latest (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
@@ -71,18 +74,21 @@ jobs:
           release: true
           debugElectron: false
         env:
-          # macOS notarization API key
-          #API_KEY_ID: ${{ secrets.api_key_id }}
-          #API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
-          #USE_HARD_LINKS: false
-          # new notarize secrets 2024
-          DEBUG: electron-notarize*
+          # new MacOS notarize secrets (2024)
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
+      # new Windows Signing (2024)
       - name: Signing using Signtool
         if: startsWith(matrix.os, 'windows')
         run: |
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\github-action-electron\github-action-electron\dist\my-electron-app Setup ${{ steps.variables.outputs.version }}.exe"
-          signtool.exe verify /v /pa "D:\a\github-action-electron\github-action-electron\dist\my-electron-app Setup ${{ steps.variables.outputs.version }}.exe"
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\ Setup ${{ steps.variables.outputs.version }}.exe"
+          signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\ Setup ${{ steps.variables.outputs.version }}.exe"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: |
+            dist
