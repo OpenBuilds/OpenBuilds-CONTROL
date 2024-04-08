@@ -9,6 +9,7 @@ function flashToolBoard(device) {
     $("#flash-tool-erase-row").hide();
     $("#flash-tool-interface-fw-row").hide();
     $("#flash-tool-custom-row").hide();
+    $("#flash-tool-backup-row").show();
     $("#customFirmwareSet").html("Please select the Grbl Firmware hex file you want to flash");
   } else if (device == "blackboxx32") {
     $("#grblHalAxesCount").data("select").val("3axes-grblhal")
@@ -17,6 +18,7 @@ function flashToolBoard(device) {
     $("#flash-tool-erase-row").show();
     $("#flash-tool-interface-fw-row").hide();
     $("#flash-tool-custom-row").hide();
+    $("#flash-tool-backup-row").show();
     $("#customFirmwareSet").html("Please select the GrblHAL Firmware binary file you want to flash");
   } else if (device == "interfacev1") {
     $("#interfaceFirmwareVer").data("select").val("online")
@@ -24,6 +26,7 @@ function flashToolBoard(device) {
     $("#flash-tool-grblhal-row").hide();
     $("#flash-tool-erase-row").hide();
     $("#flash-tool-interface-fw-row").show();
+    $("#flash-tool-backup-row").hide();
     $("#customFirmwareSet").html("Please select the Interface Firmware binary file you want to flash");
   }
 
@@ -85,11 +88,11 @@ function openFlashingTool() {
       </div>
     </div>
 
-    <div class="row" id="flash-tool-erase-row" style="display: none;">
+    <div class="row" id="flash-tool-erase-row">
       <div class="cell-md-3 mb-1">Erase Settings</div>
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-eraser'></i>" data-role="select" data-filter="false" id="flashErase" data-editable="true">
-            <option value="flashonly">Flash firmware, do not erase settings </option>
+            <option value="flashonly">Flash firmware, do not erase settings (only applies to updates)</option>
             <option value="flasherase">Flash firmware and erase settings</option>
           </select>
         </div>
@@ -107,6 +110,14 @@ function openFlashingTool() {
       </div>
     </div>
 
+    <div class="row mt-2" id="flash-tool-backup-row">
+      <div class="cell-md-3 mb-1">Warning</div>
+      <div class="cell-md-9 mb-1">
+        <p class="remark alert">
+          Before upgrading a controller that has already been configured, make sure you have a Grbl Settings Backup before proceeding!  If you don't have a backup you may stand to lose your configuration and have to redo it manually
+        </p>
+      </div>
+    </div>
 
 `
 

@@ -20,6 +20,11 @@ function fixGrblHALSettings(j) {
       // Fix Enable Invert
       $("#val-" + j + "-input").val(0)
     }
+
+    if (j == "40") {
+      // Fix Soft Limits for grblHAL https://openbuilds.com/threads/openbuilds-control-software.13121/page-81#post-137277
+      $("#val-" + j + "-input").val(1)
+    }
   }
 }
 

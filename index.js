@@ -58,7 +58,7 @@ config.nextWebPort = function() {
   return config.webPort;
 }
 config.webPort = process.env.WEB_PORT || config.nextWebPort();
-config.posDecimals = process.env.DRO_DECIMALS || 2;
+config.posDecimals = process.env.DRO_DECIMALS || 3;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
 
@@ -827,13 +827,6 @@ io.on("connection", function(socket) {
       shell
     } = require('electron')
     shell.openExternal('https://openbuilds.com/threads/openbuilds-control-software.13121/')
-  });
-
-  socket.on("adX32", function(data) {
-    const {
-      shell
-    } = require('electron')
-    shell.openExternal('https://openbuildspartstore.com/BlackBox-Motion-Control-System-X32')
   });
 
   socket.on("gpuinfo", function(data) {

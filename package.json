@@ -1,13 +1,13 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.370",
+  "version": "1.0.371",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
   "devDependencies": {
     "electron": "^23.1.1",
-    "electron-builder": "^24.0.0",
-    "electron-builder-notarize": "^1.5.1",
+    "electron-builder": "^24.9.1",
+    "electron-builder-notarize": "latest",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0"
   },
@@ -27,7 +27,7 @@
     "ncp": "^2.0.0",
     "node-abi": "^3.33.0",
     "node-gyp": "^9.3.1",
-    "serialport": "^10.4.0",
+    "serialport": "^12.0.0",
     "socket.io": "^4.6.1",
     "xmodem.js": "^0.1.0"
   },
@@ -44,18 +44,14 @@
   ],
   "repository": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
   "build": {
-    "publish": [
-      {
-        "provider": "github",
-        "vPrefixedTagName": true
-      }
-    ],
-    "afterSign": "electron-builder-notarize",
+    "publish": false,
+    "afterSign": "./notarize.js",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": false
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",

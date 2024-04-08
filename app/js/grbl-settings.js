@@ -507,40 +507,44 @@ function grblSaveSettings() {
         clearInterval(i);
         grblParams = {};
         toSaveCommands = [];
-        setTimeout(function() {
-          Metro.dialog.close('#savingGrblSettingsProgress')
-          Metro.dialog.create({
-            title: "Configuration Updated. Reset Grbl?",
-            content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
-            clsDialog: 'dark',
-            actions: [{
-                caption: "Yes",
-                cls: "js-dialog-close success",
-                onclick: function() {
-                  setTimeout(function() {
-                    sendGcode(String.fromCharCode(0x18));
-                    setTimeout(function() {
-                      refreshGrblSettings()
-                    }, 1000); // refresh grbl settings
-                  }, 800); // reset
-                }
-              },
-              {
-                caption: "Later",
-                cls: "js-dialog-close",
-                onclick: function() {
-                  console.log("Do nothing")
-                  refreshGrblSettings();
-                }
-              }
-            ]
-          });
-          $('#grblSettingsBadge').hide();
-        }, 1000); // Just to show settings was written
+        askToResetOnGrblSettingsChange();
       }
     }, 400); // send another command every 200ms
   }
 
+}
+
+function askToResetOnGrblSettingsChange() {
+  setTimeout(function() {
+    Metro.dialog.close('#savingGrblSettingsProgress')
+    Metro.dialog.create({
+      title: "Configuration Updated. Reset Grbl?",
+      content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+      clsDialog: 'dark',
+      actions: [{
+          caption: "Yes",
+          cls: "js-dialog-close success",
+          onclick: function() {
+            setTimeout(function() {
+              sendGcode(String.fromCharCode(0x18));
+              setTimeout(function() {
+                refreshGrblSettings()
+              }, 1000); // refresh grbl settings
+            }, 800); // reset
+          }
+        },
+        {
+          caption: "Later",
+          cls: "js-dialog-close",
+          onclick: function() {
+            console.log("Do nothing")
+            refreshGrblSettings();
+          }
+        }
+      ]
+    });
+    $('#grblSettingsBadge').hide();
+  }, 1000); // Just to show settings was written
 }
 
 

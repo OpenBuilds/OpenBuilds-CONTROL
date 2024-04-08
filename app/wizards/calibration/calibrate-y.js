@@ -88,9 +88,7 @@ function applycalibrationy() {
   // $('#val-101-input').val(newsteps)
   // checkifchanged();
   sendGcode("$101=" + newsteps);
-  setTimeout(function() {
-    sendGcode(String.fromCharCode(0x18));
-  }, 500);
+  askToResetOnGrblSettingsChange()
 }
 
 

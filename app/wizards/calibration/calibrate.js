@@ -32,7 +32,7 @@ var grblcalctemplate = `<div>
               </select>
             </td>
           </tr>
-          <tr id="pulleyrow">
+          <tr id="pulleyrow"   style="display: none;">
             <td>Pulley Type</td>
             <td>
               <select data-role="select" data-filter="false" id="pulleyselect" data-on-change="processpreset();">

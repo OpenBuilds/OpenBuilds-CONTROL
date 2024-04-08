@@ -8,23 +8,57 @@ jobs:
 
     strategy:
       matrix:
-        #os: [macos-latest, ubuntu-latest, windows-latest]
         os: [macos-latest, windows-latest, ubuntu-20.04]
-        #os: [macos-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install Node gyp
-        run: npm install -g node-gyp@latest
+      # new Windows Signing (2024)
+      - name: Setup Certificate (Windows)
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+          cat /d/Certificate_pkcs12.p12
+        shell: bash
 
-      - name: Prepare for app notarization
+      # new Windows Signing (2024)
+      - name: Set variables (Windows)
+        if: startsWith(matrix.os, 'windows')
+        id: variables
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
+        shell: bash
+
+      # new Windows Signing (2024)
+      - name: Setup SSM KSP on windows latest (Windows)
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi
+          msiexec /i smtools-windows-x64.msi /quiet /qn
+          smksp_registrar.exe list
+          smctl.exe keypair ls
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+          smksp_cert_sync.exe
+        shell: cmd
+
+      - name: Install setuptools (macos)
+        if: startsWith(matrix.os, 'macos')
+        run: sudo -H pip install setuptools
+
+      - name: Prepare for app notarization (macos)
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
         run: |
@@ -32,22 +66,29 @@ jobs:
           echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
 
       - name: Electron Builder Action
-        uses: OpenBuilds/action-electron-build@v1.8.0
+        uses: OpenBuilds/action-electron-build@v1.9.0
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-          windows_certs: ${{ secrets.WIN_CSC_LINK }}
-          windows_certs_password: ${{ secrets.WIN_CSC_PASSWORD }}
-          mac_certs: ${{ secrets.mac_certs }}
-          mac_certs_password: ${{ secrets.mac_certs_password }}
           release: true
-          #debugElectron: true // to enable debug=electron-builder
-          debugElectron: true
-          # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
+          debugElectron: false
         env:
-          # macOS notarization API key
-          API_KEY_ID: ${{ secrets.api_key_id }}
-          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
-          #USE_HARD_LINKS: false
+          # new MacOS notarize secrets (2024)
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      # new Windows Signing (2024)
+      - name: Signing using Signtool
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
+          signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: |
+            dist
