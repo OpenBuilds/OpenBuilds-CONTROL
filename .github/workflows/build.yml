@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup signing tools
+      - name: Setup signing tools (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
           cd C:\
@@ -30,22 +30,21 @@ jobs:
           certutil -decode Certificate.p12.b64 Certificate.p12
         shell: powershell.exe
 
-      - name:  Set bash path for signing tools
+      - name: Set bash path for signing tools (Windows)
         if: startsWith(matrix.os, 'windows')
-        run:
-          command: |
-            echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
-            echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
-      - name:  Sync certificates
+        run: |
+          echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
+          echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
+
+      - name: Sync certificates (Windows)
         if: startsWith(matrix.os, 'windows')
-        run:
-          command: |
-            sync_output=$(smksp_cert_sync)
-            echo ${sync_output}
-            if [[ ${sync_output} != *"${KEYPAIR_ALIAS}"* ]]; then
-              echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
-              exit 1
-            fi
+        run: |
+          sync_output=$(smksp_cert_sync)
+          echo ${sync_output}
+          if [[ ${sync_output} != *"${KEYPAIR_ALIAS}"* ]]; then
+            echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
+            exit 1
+          fi
 
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
