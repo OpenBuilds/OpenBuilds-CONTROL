@@ -28,14 +28,14 @@ jobs:
           New-Item C:\Certificate.p12.b64
           Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
           certutil -decode Certificate.p12.b64 Certificate.p12
-        shell: powershell.exe
+        shell: powershell
 
       - name: Set bash path for signing tools (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
           echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
           echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
-        shell: bash.exe
+        shell: bash
 
 
       - name: Sync certificates (Windows)
@@ -47,7 +47,7 @@ jobs:
             echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
             exit 1
           fi
-        shell: bash.exe
+        shell: bash
 
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
