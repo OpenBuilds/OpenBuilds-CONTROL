@@ -51,7 +51,6 @@
       }
     ],
     "afterSign": "./notarize.js",
-    "sign": "./signWin.js",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
@@ -60,7 +59,9 @@
       "notarize": false
     },
     "win": {
-      "signingHashAlgorithms": "sha256"
+      "sign": "./signWin.js",
+      "signingHashAlgorithms": ["sha256"],
+      "target": ["nsis"]
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
