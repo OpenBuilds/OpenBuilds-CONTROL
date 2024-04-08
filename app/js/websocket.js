@@ -633,21 +633,21 @@ function initSocket() {
 
     if (!disableDROupdates) {
       if (unit == "mm") {
-        var xpos = status.machine.position.work.x.toFixed(2) + unit;
-        var ypos = status.machine.position.work.y.toFixed(2) + unit;
-        var zpos = status.machine.position.work.z.toFixed(2) + unit;
-        var apos = status.machine.position.work.a.toFixed(2) + "deg";
+        var xpos = status.machine.position.work.x.toFixed(3) + unit;
+        var ypos = status.machine.position.work.y.toFixed(3) + unit;
+        var zpos = status.machine.position.work.z.toFixed(3) + unit;
+        var apos = status.machine.position.work.a.toFixed(3) + "deg";
 
-        $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(2) + unit + "/ X Work: " + xpos);
-        $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(2) + unit + "/ Y Work: " + ypos);
-        $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(2) + unit + "/ Z Work: " + zpos);
-        $(" #aPos ").attr('title', 'A Machine: ' + (status.machine.position.work.a + status.machine.position.offset.a).toFixed(2) + "deg" + "/ A Work: " + apos);
+        $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(3) + unit + "/ X Work: " + xpos);
+        $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(3) + unit + "/ Y Work: " + ypos);
+        $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(3) + unit + "/ Z Work: " + zpos);
+        $(" #aPos ").attr('title', 'A Machine: ' + (status.machine.position.work.a + status.machine.position.offset.a).toFixed(3) + "deg" + "/ A Work: " + apos);
 
       } else if (unit == "in") {
         var xpos = (status.machine.position.work.x / 25.4).toFixed(3) + unit;
         var ypos = (status.machine.position.work.y / 25.4).toFixed(3) + unit;
         var zpos = (status.machine.position.work.z / 25.4).toFixed(3) + unit;
-        var apos = status.machine.position.work.a.toFixed(2) + "deg";
+        var apos = status.machine.position.work.a.toFixed(3) + "deg";
 
         $(" #xPos ").attr('title', 'X Machine: ' + ((status.machine.position.work.x / 25.4) + (status.machine.position.offset.x / 25.4)).toFixed(3) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + ((status.machine.position.work.y / 25.4) + (status.machine.position.offset.y / 25.4)).toFixed(3) + unit + "/ Y Work: " + ypos);

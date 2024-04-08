@@ -58,7 +58,7 @@ config.nextWebPort = function() {
   return config.webPort;
 }
 config.webPort = process.env.WEB_PORT || config.nextWebPort();
-config.posDecimals = process.env.DRO_DECIMALS || 2;
+config.posDecimals = process.env.DRO_DECIMALS || 3;
 config.grblWaitTime = 0.5;
 config.firmwareWaitTime = 4;
 

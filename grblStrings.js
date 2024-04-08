@@ -159,7 +159,12 @@ var grblSettingCodes = {
   398: "Planner buffer blocks",
   481: "Autoreport interval in ms",
   376: "Rotational axes as bitfield",
-
+  337: "WiFi Access Point (AP) BSSID (MAC Address)",
+  394: "Spindle on delay in s after Feedhold resume",
+  484: "Unlock required after E-Stop as boolean",
+  486: "Lock coordinate systems against accidental changes",
+  650: "File systems options as bitfield", // Auto mount SD?
+  673: "Coolant on delay in s after Feedhold resume"
 
 };
 

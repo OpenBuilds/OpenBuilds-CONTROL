@@ -890,5 +890,49 @@ var grblSettingsTemplate2 = {
     description: `Coolant on delay in s`,
     template: `<input id="val-393-input" data-role="input" data-clear-button="false" data-append="sec" type="number" >`,
     utils: ``
+  },
+
+
+  337: {
+    key: `$337`,
+    title: `WiFi Access Point (AP) BSSID`,
+    description: `Optional WiFi Access Point BSSID (MAC) to connect to, colon delimited values. NOTE: A hard reset of the controller is required after changing this setting.`,
+    template: `<input id="val-337-input" data-role="input" data-clear-button="false" data-append="MAC" type="text" >`,
+    utils: ``
+  },
+  394: {
+    key: `$394`,
+    title: `Spindle on delay in s, range: 0.5 - 20`,
+    description: `Delay to allow spindle to restart after feed hold is canceled.`,
+    template: `<input id="val-394-input" data-role="input" data-clear-button="false" data-append="sec" type="number" >`,
+    utils: ``
+  },
+  673: {
+    key: `$673`,
+    title: `Coolant on delay in s, range: 0.5 - 20`,
+    description: `Delay to allow coolant to restart after feed hold is canceled.`,
+    template: `<input id="val-673-input" data-role="input" data-clear-button="false" data-append="sec" type="number" >`,
+    utils: ``
+  },
+  484: {
+    key: `$484`,
+    title: `Unlock required after E-Stop as boolean`,
+    description: `If set unlock (by sending $X) is required after resetting a cleared E-Stop condition.`,
+    template: `<input id="val-484-input" data-role="input" data-clear-button="false" data-append="bool" type="number" >`,
+    utils: ``
+  },
+  486: {
+    key: `$486`,
+    title: `Unlock required after E-Stop as boolean`,
+    description: `Lock coordinate systems against accidental changes. 0 - G59.1 (1) / 1 - G59.2 (2) / 2 - G59.3 (4)`,
+    template: `<input id="val-486-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  650: {
+    key: `$650`,
+    title: `File systems options as bitfield`,
+    description: `Auto mount SD card on startup.  0 - Auto mount SD card (1) / 1 - Hide LittleFS (2)`,
+    template: `<input id="val-650-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
   }
 }
