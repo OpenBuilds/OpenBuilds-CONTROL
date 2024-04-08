@@ -15,4 +15,6 @@ exports.default = async configuration => {
   execSync(`smctl sign --keypair-alias="${process.env.SM_KEYPAIR_NAME}" --input "${String(configuration.path)}"`, {
     stdio: 'inherit',
   })
+  console.info(`signed with SignWin`)
+
 }
