@@ -83,8 +83,8 @@ jobs:
       - name: Signing using Signtool
         if: startsWith(matrix.os, 'windows')
         run: |
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\ *.exe"
-          signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\ *.exe"
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
+          signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
