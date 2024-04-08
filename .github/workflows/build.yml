@@ -21,15 +21,15 @@ jobs:
 
       - name: Setup signing tools
         if: startsWith(matrix.os, 'windows')
-        run:
-          shell: powershell.exe
-          command: |
-            cd C:\
-            curl.exe -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:$env:SM_API_KEY" -o smtools-windows-x64.msi
-            msiexec.exe /i smtools-windows-x64.msi /quiet /qn | Wait-Process
-            New-Item C:\Certificate.p12.b64
-            Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
-            certutil -decode Certificate.p12.b64 Certificate.p12
+        run: |
+          cd C:\
+          curl.exe -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:$env:SM_API_KEY" -o smtools-windows-x64.msi
+          msiexec.exe /i smtools-windows-x64.msi /quiet /qn | Wait-Process
+          New-Item C:\Certificate.p12.b64
+          Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
+          certutil -decode Certificate.p12.b64 Certificate.p12
+        shell: powershell.exe
+
       - name:  Set bash path for signing tools
         if: startsWith(matrix.os, 'windows')
         run:
