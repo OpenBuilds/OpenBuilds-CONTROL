@@ -19,35 +19,37 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup signing tools (Windows)
+      - name: Setup Certificate (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
-          cd C:\
-          curl.exe -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:$env:SM_API_KEY" -o smtools-windows-x64.msi
-          msiexec.exe /i smtools-windows-x64.msi /quiet /qn | Wait-Process
-          New-Item C:\Certificate.p12.b64
-          Set-Content -Path C:\Certificate.p12.b64 -Value $env:SM_CLIENT_CERT_FILE_B64
-          certutil -decode Certificate.p12.b64 Certificate.p12
-        shell: powershell
-
-      - name: Set bash path for signing tools (Windows)
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          echo 'export PATH=/c/Program\ Files/DigiCert/DigiCert\ One\ Signing\ Manager\ Tools:$PATH' >> $BASH_ENV
-          echo 'export PATH=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/App\ Certification\ Kit:$PATH' >> $BASH_ENV
+          echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+          cat /d/Certificate_pkcs12.p12
         shell: bash
 
+      - name: Set variables (Windows)
+        if: startsWith(matrix.os, 'windows')
+        id: variables
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
+        shell: bash
 
-      - name: Sync certificates (Windows)
+      - name: Setup SSM KSP on windows latest (Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
-          sync_output=$(smksp_cert_sync)
-          echo ${sync_output}
-          if [[ ${sync_output} != *"${KEYPAIR_ALIAS}"* ]]; then
-            echo 'Could not sync certificate matching $KEYPAIR_ALIAS env var'
-            exit 1
-          fi
-        shell: bash
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi
+          msiexec /i smtools-windows-x64.msi /quiet /qn
+          smksp_registrar.exe list
+          smctl.exe keypair ls
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+          smksp_cert_sync.exe
+        shell: cmd
 
       - name: Install setuptools (macos)
         if: startsWith(matrix.os, 'macos')
