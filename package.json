@@ -12,7 +12,7 @@
     "ncp": "^2.0.0"
   },
   "dependencies": {
-    "avrgirl-arduino": "git+https://github.com/OpenBuilds/avrgirl-arduino.git#2804398617c1bdb9d5e936384272e598bf4a8797",
+    "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
     "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
