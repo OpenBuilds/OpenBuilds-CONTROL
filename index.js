@@ -929,7 +929,7 @@ io.on("connection", function(socket) {
     console.log(firmwarePath)
     console.log("-------------------------------------------")
 
-    const Avrgirl = require('avrgirl-arduino');
+    //const Avrgirl = require('avrgirl-arduino');
 
     if (status.comms.connectionStatus > 0) {
       debug_log('WARN: Closing Port ' + port);
@@ -947,33 +947,33 @@ io.on("connection", function(socket) {
       io.sockets.emit("progStatus", data);
     }
 
-    setTimeout(function() {
-      var avrgirl = new Avrgirl({
-        board: board,
-        port: port,
-        debug: function(debugString) {
-          var port = this.connection.options.port;
-          flashGrblCallback(debugString, port)
-        }
-      });
-
-      debug_log(JSON.stringify(avrgirl));
-
-      status.comms.connectionStatus = 6;
-      avrgirl.flash(firmwarePath, function(error) {
-        if (error) {
-          console.error(error);
-          io.sockets.emit("progStatus", 'Flashing FAILED!');
-          status.comms.connectionStatus = 0;
-        } else {
-          console.info('done.');
-          io.sockets.emit("progStatus", 'Programmed Succesfully');
-          io.sockets.emit("progStatus", 'Please Reconnect');
-          status.comms.connectionStatus = 0;
-        }
-        status.comms.connectionStatus = 0;
-      });
-    }, 1000)
+    // setTimeout(function() {
+    //   var avrgirl = new Avrgirl({
+    //     board: board,
+    //     port: port,
+    //     debug: function(debugString) {
+    //       var port = this.connection.options.port;
+    //       flashGrblCallback(debugString, port)
+    //     }
+    //   });
+    //
+    //   debug_log(JSON.stringify(avrgirl));
+    //
+    //   status.comms.connectionStatus = 6;
+    //   avrgirl.flash(firmwarePath, function(error) {
+    //     if (error) {
+    //       console.error(error);
+    //       io.sockets.emit("progStatus", 'Flashing FAILED!');
+    //       status.comms.connectionStatus = 0;
+    //     } else {
+    //       console.info('done.');
+    //       io.sockets.emit("progStatus", 'Programmed Succesfully');
+    //       io.sockets.emit("progStatus", 'Please Reconnect');
+    //       status.comms.connectionStatus = 0;
+    //     }
+    //     status.comms.connectionStatus = 0;
+    //   });
+    // }, 1000)
   })
 
   socket.on("flashGrblHal", function(data) {
