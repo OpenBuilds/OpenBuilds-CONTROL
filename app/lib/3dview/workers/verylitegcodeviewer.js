@@ -847,7 +847,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
         G73: function(args, indx, gcp) {
           // peck drilling. just treat as g1
-          newLine.g73 = true;
+          //newLine.g73 = true;
           console.log("G73 gcp:", gcp);
           gcp.handlers.G1(args);
         },
