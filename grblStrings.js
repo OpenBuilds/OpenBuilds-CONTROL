@@ -133,13 +133,6 @@ var grblSettingCodes = {
   370: "Invert I/O Port Inputs (mask)",
   384: "Disable G92 Persistence",
   70: "Network Services",
-  300: "Hostname",
-  302: "IP Address",
-  303: "Gateway",
-  304: "Netmask",
-  305: "Telnet Port",
-  306: "HTTP Port",
-  307: "Websocket Port",
   73: "Wifi Mode", // Off/Station
   74: "SSID",
   75: "PSK",

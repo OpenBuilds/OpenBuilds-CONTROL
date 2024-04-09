@@ -16,7 +16,8 @@ v1.0.371: (Unreleased):
  - Fixed Issue #348 Merged fix for Dark Mode CSS Improvement
  - Removed BlackBox X32 advertisement from Splash Screen
  - Changed DROs to use 3 decimal places per grblHAL standards
- - updated Grbl Settings Descriptions for newer firmware builds
+ - Updated Grbl Settings Descriptions for newer firmware builds
+ - Reworded 'firmware not found' error messages to clarify
 v1.0.370: Fixed typo in an error message, Updated SSL Certificates
 v1.0.369: Fixed bug in firmware flashing tool
 v1.0.368: Updated grblHAL firmware images to 20230501, updated grblHAL Settings templates, added 3-Axes with Door firmware, Fixed bug in Firmware flashing tool for Interface > Firmware Version when offline, Updated included Interface firmware version

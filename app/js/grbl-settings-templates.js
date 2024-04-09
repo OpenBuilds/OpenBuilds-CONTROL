@@ -639,55 +639,6 @@ var grblSettingsTemplate2 = {
     template: `<input id="val-70-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
     utils: ``
   },
-  300: {
-    key: `$300`,
-    title: `Hostname`,
-    description: ``,
-    template: `<input id="val-300-input" data-role="input" data-clear-button="false" data-append="text" type="text" >`,
-    utils: ``
-  },
-  302: {
-    key: `$302`,
-    title: `IP Address`,
-    description: ``,
-    template: `<input id="val-302-input" data-role="input" data-clear-button="false" data-append="ip" type="text" >`,
-    utils: ``
-  },
-  303: {
-    key: `$303`,
-    title: `Gateway`,
-    description: ``,
-    template: `<input id="val-303-input" data-role="input" data-clear-button="false" data-append="gateway" type="text" >`,
-    utils: ``
-  },
-  304: {
-    key: `$304`,
-    title: `Netmask`,
-    description: ``,
-    template: `<input id="val-304-input" data-role="input" data-clear-button="false" data-append="netmask" type="text" >`,
-    utils: ``
-  },
-  305: {
-    key: `$305`,
-    title: `Telnet Port`,
-    description: ``,
-    template: `<input id="val-305-input" data-role="input" data-clear-button="false" data-append="tcp" type="text" >`,
-    utils: ``
-  },
-  306: {
-    key: `$306`,
-    title: `HTTP Port`,
-    description: ``,
-    template: `<input id="val-306-input" data-role="input" data-clear-button="false" data-append="tcp" type="text" >`,
-    utils: ``
-  },
-  307: {
-    key: `$307`,
-    title: `Websocket Port`,
-    description: ``,
-    template: `<input id="val-307-input" data-role="input" data-clear-button="false" data-append="tcp" type="text" >`,
-    utils: ``
-  },
   73: {
     key: `$73`,
     title: `Wifi Mode`,
