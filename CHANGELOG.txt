@@ -1,16 +1,20 @@
 v1.0.371: (Unreleased):
  - Updated Build environment to Node 20
+ - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer
  - Fixed Issue #285 Updated ACRO with Pen servo default Grbl profile PWM parameters
  - Fixed Issue #299 Change of settings numbering for grblHAL Station parameters
  - Fixed Issue #308 Improvement: Remember last used COM port
  - Fixed Issue #313 Reworded recovery wizard menu item
+ - Fixed Issue #316 UI enhancements
  - Fixed Issue #321 Switched Windows CodeSigning to new EAL4+ / FIPS140-2 compliant workflow
  - Fixed Issue #322 Switched to new Notarizing workflow for MacOS per Apple Technote TN3147
  - Fixed Issue #323 Merged fix for Macro Sorting issue
+ - Fixed Issue #325 Added "ok" event for Macros
  - Fixed Issue #327 Show correct fields in Steps per mm Calculator Utility in default state
  - Fixed Issue #328 Improved Flashing Wizard and added warning to backup
  - Fixed Issue #330 Experimental $40=1 in Machine Profiles to see if that resolves Soft Limits issue
  - Fixed Issue #332 Merged fix for Center Probing Offset calculation bug
+ - Fixed Issue #336 Merged fix to make Framing pass optional in Surfacing Wizard
  - Fixed Issue #343 Fixed SiLabs USB descriptor
  - Fixed Issue #344 Added Reset prompt to end of Calibration routine
  - Fixed Issue #345 Merged fix for Update Grbl Settings for if settings are changed from macro/terminal/etc
@@ -20,6 +24,7 @@ v1.0.371: (Unreleased):
  - Changed DROs to use 3 decimal places per grblHAL standards
  - Updated Grbl Settings Descriptions for newer firmware builds
  - Reworded 'firmware not found' error messages to clarify
+ - Updated Readme screenshot on Github
 v1.0.370: Fixed typo in an error message, Updated SSL Certificates
 v1.0.369: Fixed bug in firmware flashing tool
 v1.0.368: Updated grblHAL firmware images to 20230501, updated grblHAL Settings templates, added 3-Axes with Door firmware, Fixed bug in Firmware flashing tool for Interface > Firmware Version when offline, Updated included Interface firmware version
