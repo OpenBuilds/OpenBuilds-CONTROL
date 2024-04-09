@@ -1,4 +1,22 @@
-v1.0.371: (Unreleased): Disable CSC signing as a test, Updated Build environment, Switched to new Notarizing workflow for MacOS, Merged fixes for #323 Macro Sorting issue, #345 Update Grbl Settings for if settings are changed from macro/terminal/etc and #332 Center Probing Offset calculation bug, Added Reset prompt to end of Calibration routine (#344), Fixed #343 SiLabs USB descriptor, Removed BlackBox X32 advertisement, #328 Improved Flashing Wizard and added warning to backup, Fixed #327 Show correct fields in Steps per mm Calculator Utility in default state, Improvement: Remember last used COM port per issue #308, Reworded recovery wizard menu item per #313, Changed DROs to use 3 decimal places, updated Grbl Settings for newer builds, Experimental $40=1 in Machine Profiles to see if that resolves Soft Limits issue
+v1.0.371: (Unreleased):
+ - Updated Build environment to Node 20
+ - Fixed Issue #308 Improvement: Remember last used COM port per issue
+ - Fixed Issue #313 Reworded recovery wizard menu item per
+ - Fixed Issue #321 Switched Windows CodeSigning to new EAL4+ / FIPS140-2 compliant workflow
+ - Fixed Issue #322 Switched to new Notarizing workflow for MacOS per Apple Technote TN3147
+ - Fixed Issue #323 Merged fix for Macro Sorting issue
+ - Fixed Issue #327 Show correct fields in Steps per mm Calculator Utility in default state
+ - Fixed Issue #328 Improved Flashing Wizard and added warning to backup
+ - Fixed Issue #330 Experimental $40=1 in Machine Profiles to see if that resolves Soft Limits issue
+ - Fixed Issue #332 Merged fix for Center Probing Offset calculation bug
+ - Fixed Issue #343 Fixed SiLabs USB descriptor
+ - Fixed Issue #344 Added Reset prompt to end of Calibration routine
+ - Fixed Issue #345 Merged fix for Update Grbl Settings for if settings are changed from macro/terminal/etc
+ - Fixed Issue #346 Updated included grblHAL firmware binaries to v20240402 from 20230501
+ - Fixed Issue #348 Merged fix for Dark Mode CSS Improvement
+ - Removed BlackBox X32 advertisement from Splash Screen
+ - Changed DROs to use 3 decimal places per grblHAL standards
+ - updated Grbl Settings Descriptions for newer firmware builds
 v1.0.370: Fixed typo in an error message, Updated SSL Certificates
 v1.0.369: Fixed bug in firmware flashing tool
 v1.0.368: Updated grblHAL firmware images to 20230501, updated grblHAL Settings templates, added 3-Axes with Door firmware, Fixed bug in Firmware flashing tool for Interface > Firmware Version when offline, Updated included Interface firmware version

@@ -1157,24 +1157,18 @@ io.on("connection", function(socket) {
         debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
           'command': 'connect',
-          'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Firmware",
+          'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Controller...",
           'type': 'info'
         }
         io.sockets.emit('data', output);
 
         status.comms.connectionStatus = 1;
 
-        var output = {
-          'command': 'connect',
-          'response': "Checking for firmware on " + port.path,
-          'type': 'info'
-        }
-        io.sockets.emit('data', output);
         addQRealtime("\n"); // this causes smoothie and grblHAL to send the welcome string
 
         var output = {
           'command': 'connect',
-          'response': "Detecting Firmware: Method 1 (Autoreset)",
+          'response': "Attempting to detect Controller (1): (Autoreset)",
           'type': 'info'
         }
         io.sockets.emit('data', output);
@@ -1184,7 +1178,7 @@ io.on("connection", function(socket) {
             debug_log("Didnt detect firmware after AutoReset. Lets see if we have Grbl instance with a board that doesnt have AutoReset");
             var output = {
               'command': 'connect',
-              'response': "Detecting Firmware: Method 2 (Ctrl+X)",
+              'response': "Attempting to detect Controller (2): (Ctrl+X)",
               'type': 'info'
             }
             io.sockets.emit('data', output);
@@ -1198,7 +1192,7 @@ io.on("connection", function(socket) {
             debug_log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
             var output = {
               'command': 'connect',
-              'response': "Detecting Firmware: Method 3 (others that are not supported)",
+              'response': "Attempting to detect Controller (3): (others)",
               'type': 'info'
             }
             io.sockets.emit('data', output);
@@ -1249,8 +1243,7 @@ io.on("connection", function(socket) {
               } else {
                 var output = {
                   'command': 'connect',
-                  'response': `ERROR!:  No supported firmware detected - See https://docs.openbuilds.com/doku.php?id=docs:blackbox:faq-usb-connection-failed
-                  for more details. Closing port ` + port.path,
+                  'response': `ERROR!:  No Response from Controller - See https://docs.openbuilds.com/doku.php?id=docs:blackbox:faq-usb-connection-failed for troubleshooting information. Closing port ` + port.path,
                   'type': 'error'
                 }
               }
