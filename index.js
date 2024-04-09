@@ -1540,6 +1540,7 @@ io.on("connection", function(socket) {
 
           // debug_log(data)
         } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
+          io.sockets.emit('ok', command); // added per #325
           // debug_log("OK FOUND")
           if (status.machine.firmware.type === "grbl") {
             // debug_log('got OK from ' + command)
