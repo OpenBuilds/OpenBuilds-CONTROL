@@ -683,14 +683,14 @@
   "resolved" "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz"
   "version" "1.0.0"
 
-"avrgirl-arduino@^5.0.1":
-  "integrity" "sha512-wF9wJhhRG6vDinBxTuFRR3iIaVDMjJfce2wW7JwmbXJquzoGu3HIK5SnvDqNplsi3hcOS+p+15m1z9kt3IwgdQ=="
-  "resolved" "https://registry.npmjs.org/avrgirl-arduino/-/avrgirl-arduino-5.0.1.tgz"
+"avrgirl-arduino@git+https://github.com/OpenBuilds/avrgirl-arduino.git#2804398617c1bdb9d5e936384272e598bf4a8797":
+  "integrity" "sha512-w1KisgjDarnH82+5+RlBUwNmWYBl61bCSpdMNAeiQjSY7GQHQ/CfSSygSiOraeidC+vQHjujOaVUrNs/W2+LVw=="
+  "resolved" "git+ssh://git@github.com/OpenBuilds/avrgirl-arduino.git#2804398617c1bdb9d5e936384272e598bf4a8797"
   "version" "5.0.1"
   dependencies:
     "async" "^2.6.3"
     "awty" "^0.1.0"
-    "browser-serialport" "git+https://github.com/noopkat/browser-serialport.git#c8628c41c11890d3058875994c15f83f2df8185b"
+    "browser-serialport" "https://github.com/noopkat/browser-serialport.git#c8628c41c11890d3058875994c15f83f2df8185b"
     "chip.avr.avr109" "^1.1.1"
     "colors" "^1.4.0"
     "graceful-fs" "^4.2.4"
@@ -789,7 +789,7 @@
   dependencies:
     "balanced-match" "^1.0.0"
 
-"browser-serialport@git+https://github.com/noopkat/browser-serialport.git#c8628c41c11890d3058875994c15f83f2df8185b":
+"browser-serialport@https://github.com/noopkat/browser-serialport.git#c8628c41c11890d3058875994c15f83f2df8185b":
   "integrity" "sha512-jhpRXyftauZjzlfx6BTZqAIdwZUgdreZmNGnOgz0gNpm187WpriXJ7TtWGn6f/HkEBBx3edBRSt2JJeK2kJ8Dw=="
   "resolved" "git+ssh://git@github.com/noopkat/browser-serialport.git#c8628c41c11890d3058875994c15f83f2df8185b"
   "version" "2.0.3"
