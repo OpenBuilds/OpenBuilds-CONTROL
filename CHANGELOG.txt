@@ -1,5 +1,6 @@
 v1.0.371: (Unreleased):
  - Updated Build environment to Node 20
+ - Fixed Issue #299 Change of settings for grblHAL Station parameters 
  - Fixed Issue #308 Improvement: Remember last used COM port per issue
  - Fixed Issue #313 Reworded recovery wizard menu item per
  - Fixed Issue #321 Switched Windows CodeSigning to new EAL4+ / FIPS140-2 compliant workflow

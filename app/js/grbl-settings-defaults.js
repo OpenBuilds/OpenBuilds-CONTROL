@@ -919,7 +919,13 @@ function selectMachine(type) {
       // as per https://openbuilds.com/threads/blackbox-x32.19810/page-3#post-131285
       $("#val-44-input").val(3)
       $("#val-45-input").val(0)
-      $("#val-33-input").val(50)
+      $("#val-33-input").val(50) // spindle pwm freq
+      // $33 = 50Hz = 20ms (1/50s) repetion rate, $34-$36 are percentages of this. https://openbuilds.com/threads/blackbox-x32-servo-connection.20395/#post-134896
+      // Set $33=50 (PWM frequency), $34=5, $35=5 and $36=10 to generate a “standard” PWM signal: 20ms repetition rate, 1 - 2ms pulse length range. 
+      // You may decrease $34 and $35 to output a shorter pulse than 1ms at min, and increase $36 to get a longer pulse than 2ms at max.
+      $("#val-34-input").val(5) // off value
+      $("#val-35-input").val(5) // min value
+      $("#val-36-input").val(100) // max value
 
     } else if (customFirmware == "acro" && laststatus.machine.firmware.platform == "grbl") {
       Metro.dialog.create({
