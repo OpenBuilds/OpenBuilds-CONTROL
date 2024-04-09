@@ -1253,13 +1253,13 @@ io.on("connection", function(socket) {
               if (data.type == "usb") {
                 var output = {
                   'command': 'connect',
-                  'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + port.path,
+                  'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + port.path,
                   'type': 'success'
                 }
               } else if (data.type = "telnet") {
                 var output = {
                   'command': 'connect',
-                  'response': "Firmware Detected:  " + status.machine.firmware.type + " version " + status.machine.firmware.version + " on " + data.ip,
+                  'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + data.ip,
                   'type': 'success'
                 }
               }
