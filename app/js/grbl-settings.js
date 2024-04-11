@@ -176,6 +176,7 @@ function grblPopulate() {
                <ul class="ribbon-dropdown" data-role="dropdown">
                   <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010</a></li>
                   <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img src="img/mch/leadmachine1010laser.png" width="16px"/>OpenBuilds LEAD 1010 with Laser Module</a></li>
+                  <li onclick="selectMachine('leadmachine1010plasma');"><a href="#"><img src="img/mch/leadmachine1010plasma.png" width="16px"/>OpenBuilds LEAD 1010 Plasma Add-On</a></li>
                   <li onclick="selectMachine('leadmachine1515');"><a href="#"><img src="img/mch/leadmachine1515.png" width="16px"/>OpenBuilds LEAD 1515</a></li>
                </ul>
             </li>

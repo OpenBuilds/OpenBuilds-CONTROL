@@ -1,7 +1,7 @@
 var lastSelectedMachine = '';
 var allowGrblSettingsViewScroll = true;
 
-function fixGrblHALSettings(j) {
+function fixGrblHALSettings(j, type) {
   if (laststatus.machine.firmware.platform == "grblHAL") { //  Workaround for HAL profiles required changes, without creating entirely new profiles for GrblHAL
     if (j == "10") {
       // Status Report Format
@@ -14,6 +14,9 @@ function fixGrblHALSettings(j) {
     if (j == "6") {
       // Fix Probe Inversion
       $("#val-" + j + "-input").val(1)
+      if (type == "leadmachine1010plasma") {
+        $("#val-" + j + "-input").val(0)
+      }
     }
 
     if (j == "4") {
@@ -770,6 +773,45 @@ function selectMachine(type) {
       $131: "730", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
+  } else if (type == "leadmachine1010plasma") {
+    // Leadmachine 1010
+    var customFirmware = false;
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //"Step idle delay, milliseconds"
+      $2: "0", //"Step pulse invert, mask"
+      $3: "4", //"Step direction invert, mask"
+      $4: "1", //"Invert step enable pin, boolean"
+      $5: "0", //"Invert limit pins, boolean"
+      $6: "1", //"Invert probe pin, boolean Plasma Addon uses switch inverted"
+      $10: "1", //"Status report options, mask"
+      $11: "0.010", //"Junction deviation, millimeters"
+      $12: "0.002", //"Arc tolerance, millimeters"
+      $13: "0", //"Report in inches, boolean"
+      $20: "0", //"Soft limits enable, boolean"
+      $21: "0", //"Hard limits enable, boolean"
+      $22: "0", //"Homing cycle enable, boolean"
+      $23: "1", //"Homing direction invert, mask"
+      $24: "100.000", //"Homing locate feed rate, mm/min"
+      $25: "1000.000", //"Homing search seek rate, mm/min"
+      $26: "250", //"Homing switch debounce delay, milliseconds"
+      $27: "5.000", //"Homing switch pull-off distance, millimeters"
+      $30: "1000", //"Maximum spindle speed, RPM"
+      $31: "0", //"Minimum spindle speed, RPM"
+      $32: "0", //"Laser mode"
+      $100: "199.100", //"X-axis steps per millimeter"
+      $101: "199.100", //"Y-axis steps per millimeter"
+      $102: "199.100", //"Z-axis steps per millimeter"
+      $110: "2500.000", //"X-axis maximum rate, mm/min"
+      $111: "2500.000", //"Y-axis maximum rate, mm/min"
+      $112: "2500.000", //"Z-axis maximum rate, mm/min"
+      $120: "150.000", //"X-axis acceleration, mm/sec^2"
+      $121: "150.000", //"Y-axis acceleration, mm/sec^2"
+      $122: "150.000", //"Z-axis acceleration, mm/sec^2"
+      $130: "740", //"X-axis maximum travel, millimeters"
+      $131: "830", //"Y-axis maximum travel, millimeters"
+      $132: "80", //"Z-axis maximum travel, millimeters"
+    }
   } else if (type == "leadmachine1515") {
     // Leadmachine 1010
     var customFirmware = false;
@@ -893,7 +935,7 @@ function selectMachine(type) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
       $("#val-" + j + "-input").val(parseFloat(grblParams_def[key]))
-      fixGrblHALSettings(j);
+      fixGrblHALSettings(j, type);
       // console.log("$" + j + " = " + newVal)
     }
   }
@@ -921,7 +963,7 @@ function selectMachine(type) {
       $("#val-45-input").val(0)
       $("#val-33-input").val(50) // spindle pwm freq
       // $33 = 50Hz = 20ms (1/50s) repetion rate, $34-$36 are percentages of this. https://openbuilds.com/threads/blackbox-x32-servo-connection.20395/#post-134896
-      // Set $33=50 (PWM frequency), $34=5, $35=5 and $36=10 to generate a “standard” PWM signal: 20ms repetition rate, 1 - 2ms pulse length range. 
+      // Set $33=50 (PWM frequency), $34=5, $35=5 and $36=10 to generate a “standard” PWM signal: 20ms repetition rate, 1 - 2ms pulse length range.
       // You may decrease $34 and $35 to output a shorter pulse than 1ms at min, and increase $36 to get a longer pulse than 2ms at max.
       $("#val-34-input").val(5) // off value
       $("#val-35-input").val(5) // min value
@@ -1035,6 +1077,9 @@ function setMachineButton(type) {
     overlaytype = type;
   } else if (type == "leadmachine1010") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010`
+    overlaytype = type;
+  } else if (type == "leadmachine1010plasma") {
+    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010 Plasma Add-On`
     overlaytype = type;
   } else if (type == "leadmachine1515") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1515`
