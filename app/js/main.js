@@ -96,6 +96,11 @@ function getChangelog() {
 
 $(document).ready(function() {
 
+  $('#openbuildslogosplash').fadeIn(100);
+  setTimeout(function() {
+    $('#splash').fadeOut(500);
+  }, 1400)
+
   initDiagnostics(); // run second time to ensure checkboxes are ticked
 
   if (!isJogWidget) {
