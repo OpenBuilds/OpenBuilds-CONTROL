@@ -2781,6 +2781,7 @@ function send1Q() {
 }
 
 var modalCommands = ['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G17', 'G18', 'G19', 'G90', 'G91', 'G91.1', 'G93', 'G94', 'G20', 'G21', 'G40', 'G43.1', 'G49', 'M0', 'M1', 'M2', 'M30', 'M3', 'M4', 'M5', 'M7', 'M8', 'M9']
+var modalCommandsRegExp = new RegExp(modalCommands.join("|"));
 
 function addQToEnd(gcode) {
   // debug_log('added ' + gcode)
@@ -2795,7 +2796,7 @@ function addQToEnd(gcode) {
   if (testGcode == "$CD") {
     fluidncConfig = ""; // empty string
   }
-  if (new RegExp(modalCommands.join("|")).test(testGcode)) {
+  if (!gcode.startsWith("$J=") && modalCommandsRegExp.test(testGcode)) {
     gcodeQueue.push("$G");
   }
   if (gcode.match(/T([\d.]+)/i)) {

@@ -20,6 +20,7 @@ v1.0.371: (Unreleased):
  - Fixed Issue #345 Merged fix for Update Grbl Settings for if settings are changed from macro/terminal/etc
  - Fixed Issue #346 Updated included grblHAL firmware binaries to v20240402 from 20230501
  - Fixed Issue #348 Merged fix for Dark Mode CSS Improvement
+ - Fixed Issue #350 Updated local SSL certificates
  - Removed BlackBox X32 advertisement from Splash Screen
  - Changed DROs to use 3 decimal places per grblHAL standards
  - Updated Grbl Settings Descriptions for newer firmware builds
