@@ -1,5 +1,4 @@
-v1.0.371: (Unreleased):
- - Updated Build environment to Node 20
+v1.0.371: 
  - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer
  - Fixed Issue #285 Updated ACRO with Pen servo default Grbl profile PWM parameters
  - Fixed Issue #299 Change of settings numbering for grblHAL Station parameters
@@ -29,6 +28,9 @@ v1.0.371: (Unreleased):
  - Updated Firmware Found log strings to show platform and date
  - Added LEAD 1010 Plasma Add-On Machine Profile
  - Fixed bug related to "$$=" commands in Serial Terminal causing issues with Grbl Settings tab
+ - Updated Build environment to Node 20
+ - Removed IA32 target support for Windows. Building as X64 only
+ - Removed broken avrgirl dependency - temporarily removed ability to flash atmega based controllers. Will rewrite with more modern alternative soon
 v1.0.370: Fixed typo in an error message, Updated SSL Certificates
 v1.0.369: Fixed bug in firmware flashing tool
 v1.0.368: Updated grblHAL firmware images to 20230501, updated grblHAL Settings templates, added 3-Axes with Door firmware, Fixed bug in Firmware flashing tool for Interface > Firmware Version when offline, Updated included Interface firmware version
