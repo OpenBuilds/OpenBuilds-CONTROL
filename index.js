@@ -929,8 +929,6 @@ io.on("connection", function(socket) {
     console.log(firmwarePath)
     console.log("-------------------------------------------")
 
-    //const Avrgirl = require('avrgirl-arduino');
-
     if (status.comms.connectionStatus > 0) {
       debug_log('WARN: Closing Port ' + port);
       stopPort();
