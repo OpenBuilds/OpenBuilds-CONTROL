@@ -12,7 +12,6 @@
     "ncp": "^2.0.0"
   },
   "dependencies": {
-    "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
     "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
@@ -27,7 +26,7 @@
     "ncp": "^2.0.0",
     "node-abi": "^3.33.0",
     "node-gyp": "^9.3.1",
-    "serialport": "^11.0.1",
+    "serialport": "^12.0.0",
     "socket.io": "^4.6.1",
     "xmodem.js": "^0.1.0"
   },
