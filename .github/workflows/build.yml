@@ -83,6 +83,8 @@ jobs:
           debugElectron: true
         env:
           # new MacOS notarize secrets (2024)
+          npm_config_verbose: true
+          npm_config_loglevel: verbose
           DEBUG: electron-builder # To debug electron-builder
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
