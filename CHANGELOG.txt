@@ -1,7 +1,8 @@
 v1.0.371:
  - Updated Max Rate for LEAD1010 Plasma Add On profile
  - Added electron's app.setAppUserModelId(id) to clean up Windows notications (to be tested)
- - Fixed #353 - jog buttons no longer accidentally change override sliders if sliders was in focus
+ - Fixed Issue #335 Keyboard shortcuts - handle Metro naming of keys
+ - Fixed Issue #353 Jog buttons no longer accidentally change override sliders if sliders was in focus
 v1.0.371:
  - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer
  - Fixed Issue #285 Updated ACRO with Pen servo default Grbl profile PWM parameters
