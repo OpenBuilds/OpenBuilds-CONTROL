@@ -79,10 +79,26 @@ $(document).ready(function() {
 function bindKeys() {
   // Clear all current binds
   $(document).unbind('keydown');
+
+  // Remove Keyboard Bindings from Overridee Sliders
+  $("#jrocell").find(".marker").unbind(Metro.events.keydown);
+  $("#trocell").find(".marker").unbind(Metro.events.keydown);
+  $("#frocell").find(".marker").unbind(Metro.events.keydown);
+  $("#jrocell").find(".marker").unbind(Metro.events.keyup);
+  $("#trocell").find(".marker").unbind(Metro.events.keyup);
+  $("#frocell").find(".marker").unbind(Metro.events.keyup);
+
+
   // console.log("Refreshing Keybindings")
 
   // Bind for Electron Devtools
   document.addEventListener('keydown', function(evt) {
+
+    // Remove focus from sliders before executing keyboard shortcuts
+    $('#jrocell').focusout()
+    $('#trocell').focusout()
+    $('#frocell').focusout()
+
     if (evt.which === 116) {
       // F5 - reload interface
       evt.preventDefault();

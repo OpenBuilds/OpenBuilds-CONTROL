@@ -2083,7 +2083,9 @@ io.on("connection", function(socket) {
           switch (status.machine.firmware.type) {
             case 'grbl':
               clearInterval(queueCounter);
-              jogWindow.setProgressBar(0);
+              if (jogWindow) {
+                jogWindow.setProgressBar(0);
+              }
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x
               setTimeout(function() {
                 addQRealtime('$X\n');
@@ -2237,7 +2239,9 @@ function runJob(object) {
         // Start interval for qCount messages to socket clients
         queueCounter = setInterval(function() {
           status.comms.queue = gcodeQueue.length - queuePointer
-          jogWindow.setProgressBar(queuePointer / gcodeQueue.length)
+          if (jogWindow) {
+            jogWindow.setProgressBar(queuePointer / gcodeQueue.length)
+          }
         }, 500);
         send1Q(); // send first line
         status.comms.connectionStatus = 3;
@@ -2252,7 +2256,9 @@ function runJob(object) {
 function stopPort() {
   clearInterval(queueCounter);
   clearInterval(statusLoop);
-  jogWindow.setProgressBar(0);
+  if (jogWindow) {
+    jogWindow.setProgressBar(0);
+  }
   status.comms.interfaces.activePort = false;
   status.comms.interfaces.activeBaud = false;
   status.comms.connectionStatus = 0;
@@ -2765,7 +2771,9 @@ function send1Q() {
       }
       status.comms.connectionStatus = 2; // finished
       clearInterval(queueCounter);
-      jogWindow.setProgressBar(0);
+      if (jogWindow) {
+        jogWindow.setProgressBar(0);
+      }
       gcodeQueue.length = 0; // Dump the Queye
       queuePointer = 0;
       status.comms.connectionStatus = 2; // finished
@@ -3036,6 +3044,7 @@ if (isElectron()) {
     }
 
     function createJogWindow() {
+      electronApp.setAppUserModelId("com.openbuilds.control")
       // Create the browser window.
       jogWindow = new BrowserWindow({
         // 1366 * 768 == minimum to cater for
@@ -3181,7 +3190,9 @@ function stop(data) {
         break;
     }
     clearInterval(queueCounter);
-    jogWindow.setProgressBar(0);
+    if (jogWindow) {
+      jogWindow.setProgressBar(0);
+    }
     status.comms.queue = 0
     queuePointer = 0;
     gcodeQueue.length = 0; // Dump the queue

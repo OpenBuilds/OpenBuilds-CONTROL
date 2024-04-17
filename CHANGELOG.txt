@@ -1,4 +1,7 @@
-v1.0.371: 
+v1.0.371:
+ - Updated Max Rate for LEAD1010 Plasma Add On profile
+ - Added electron's app.setAppUserModelId(id) to clean up Windows notications
+v1.0.371:
  - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer
  - Fixed Issue #285 Updated ACRO with Pen servo default Grbl profile PWM parameters
  - Fixed Issue #299 Change of settings numbering for grblHAL Station parameters
