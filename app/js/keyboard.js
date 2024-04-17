@@ -134,8 +134,26 @@ function bindKeys() {
           if (e.shiftKey) {
             newVal += 'shift+'
           }
-          newVal += e.key
-          newVal = newVal.toLowerCase();
+          if (e.key.toLowerCase() != 'alt' && e.key.toLowerCase() != 'control' && e.key.toLowerCase() != 'shift') {
+            if (e.keyCode == 32) {
+              newVal += 'space';
+            } else if (e.key.toLowerCase() == 'escape') {
+              newVal += 'esc';
+            } else if (e.key.toLowerCase() == 'arrowleft') {
+              newVal += 'left';
+            } else if (e.key.toLowerCase() == 'arrowright') {
+              newVal += 'right';
+            } else if (e.key.toLowerCase() == 'arrowup') {
+              newVal += 'up';
+            } else if (e.key.toLowerCase() == 'arrowdown') {
+              newVal += 'down';
+            } else if (e.key.toLowerCase() == 'delete') {
+              newVal += 'del';
+            } else {
+              newVal += e.key.toLowerCase();
+            }
+          }
+
           var macro = searchMacro("macrokeyboardshortcut", newVal, buttonsarray)
           console.log(macro)
           if (macro && macro.codetype == "gcode") {
