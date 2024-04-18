@@ -2,6 +2,7 @@ v1.0.371:
  - Updated Max Rate for LEAD1010 Plasma Add On profile
  - Added electron's app.setAppUserModelId(id) to clean up Windows notications (to be tested)
  - Fixed Issue #335 Keyboard shortcuts - handle Metro naming of keys
+ - Fixed Issue #347 Added Interface's Wifi Config to Interface USB Prep Wizard
  - Fixed Issue #353 Jog buttons no longer accidentally change override sliders if sliders was in focus
 v1.0.371:
  - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer

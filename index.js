@@ -1023,6 +1023,48 @@ io.on("connection", function(socket) {
 
     var errorCount = 0;
 
+    if (data.ssid && data.psk) {
+
+
+      const folderPath = path.join(data.drive, "CONFIG");
+
+      // Create the subfolder if it doesn't exist and then write the file
+      fs.mkdir(folderPath, {
+        recursive: true
+      }, (err) => {
+        if (err) {
+          var output = {
+            'command': 'Interface USB Drive',
+            'response': `Failed to create folder ${folderPath}! Error: ${err}`,
+            'type': 'error'
+          };
+          io.sockets.emit('data', output);
+        } else {
+          var fileContent = `${data.ssid}\n${data.psk}`;
+
+          fs.writeFile(path.join(folderPath, "wifi.cfg"), fileContent, (err) => {
+            if (err) {
+              errorCount++;
+              var output = {
+                'command': 'Interface USB Drive',
+                'response': `Failed to create Wifi Configuration file in ${folderPath}! Error: ${err}`,
+                'type': 'error'
+              };
+              io.sockets.emit('data', output);
+            } else {
+              var output = {
+                'command': 'Interface USB Drive',
+                'response': `Created Wifi Configuration file in ${folderPath} successfully!`,
+                'type': 'success'
+              };
+              io.sockets.emit('data', output);
+            }
+          });
+        }
+      });
+
+    }
+
     ncp(probesrc, probedest, function(err) {
       if (err) {
         var output = {
@@ -1063,41 +1105,6 @@ io.on("connection", function(socket) {
     });
 
 
-    const folderPath = path.join(data.drive, "CONFIG");
-
-    // Create the subfolder if it doesn't exist and then write the file
-    fs.mkdir(folderPath, {
-      recursive: true
-    }, (err) => {
-      if (err) {
-        var output = {
-          'command': 'Interface USB Drive',
-          'response': `Failed to create folder ${folderPath}! Error: ${err}`,
-          'type': 'error'
-        };
-        io.sockets.emit('data', output);
-      } else {
-        var fileContent = `${data.ssid}\n${data.psk}`;
-
-        fs.writeFile(path.join(folderPath, "wifi.cfg"), fileContent, (err) => {
-          if (err) {
-            var output = {
-              'command': 'Interface USB Drive',
-              'response': `Failed to create Wifi Configuration file in ${folderPath}! Error: ${err}`,
-              'type': 'error'
-            };
-            io.sockets.emit('data', output);
-          } else {
-            var output = {
-              'command': 'Interface USB Drive',
-              'response': `Created Wifi Configuration file in ${folderPath} successfully!`,
-              'type': 'success'
-            };
-            io.sockets.emit('data', output);
-          }
-        });
-      }
-    });
 
     setTimeout(function() {
       if (errorCount == 0) {
