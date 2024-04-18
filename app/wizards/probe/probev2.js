@@ -46,6 +46,16 @@ $(document).ready(function() {
   if (localStorage.getItem('z0platethickness')) {
     zprobeplate.zoffset = localStorage.getItem('z0platethickness')
   }
+
+  if (localStorage.getItem('probediameterxyz')) {
+    probediameterxyz = localStorage.getItem('probediameterxyz')
+    $("#probediameterxyz").val(probediameterxyz)
+  }
+
+  if (localStorage.getItem('probeunitxyz')) {
+    probeunitxyz = localStorage.getItem('probeunitxyz')
+    $('#probeunitxyz').data('select').val(probeunitxyz)  
+  }
 });
 
 if (localStorage.getItem('customProbe')) {
@@ -55,6 +65,14 @@ if (localStorage.getItem('customProbe')) {
 $("#z0platethickness").keyup(function() {
   localStorage.setItem('z0platethickness', $("#z0platethickness").val())
   zprobeplate.zoffset = $("#z0platethickness").val()
+});
+
+$("#probediameterxyz").keyup(function() {
+  localStorage.setItem('probediameterxyz', $("#probediameterxyz").val())
+});
+
+$("#probeunitxyz").change(function() {
+  localStorage.setItem('probeunitxyz', $("#probeunitxyz").val())
 });
 
 
