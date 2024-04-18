@@ -28,6 +28,16 @@ function fixGrblHALSettings(j, type) {
       // Fix Soft Limits for grblHAL https://openbuilds.com/threads/openbuilds-control-software.13121/page-81#post-137277
       $("#val-" + j + "-input").val(1)
     }
+
+    if (j == "376") {
+      // Set $376=1: in Grbl Settings as per grblHAL/ESP32#76 (comment)
+      // $376 - Settings_Axis_Rotational
+      // Designate ABC axes as rotational by \ref axismask. This will disable scaling (to mm) in inches mode.
+      // Set steps/mm for the axes to the value that represent the desired movement per unit.
+      // For the controller the distance is unitless and and can be in degrees, radians, rotations, ...
+      $("#val-" + j + "-input").val(1)
+    }
+
   }
 }
 

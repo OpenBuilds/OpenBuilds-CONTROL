@@ -1568,7 +1568,6 @@
               <li onclick="probeytab();" class="probetabxyz" id="probeytab"><a href="#">Y&nbsp;Zero</a></li>
               <li onclick="probeztab();" class="probetabxyz" id="probeztab"><a href="#">Z&nbsp;Zero</a></li>
               <li onclick="probezplatetab();" class="probetabz" id="probezplatetab" style="display: none;"><a href="#">Z&nbsp;Touch&nbsp;Plate</a></li>
-              <!-- <li onclick="probeendmilltab();" class="probetabxyz disabled" id="probeendmilltab"><a href="#">Endmill Diameter</a></li> -->
             </ul>
           </nav>
 
@@ -1676,8 +1675,20 @@
                 <hr>
                 <div id="endmilldiameterform">
                   <label>Endmill Diameter</label>
-                  <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-append="mm" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>"
-                    data-clear-button="false">
+
+                  <div class="row">
+                    <div class="cell-sm-7">
+                      <input id="probediameterxyz" type="number" value="6.35" data-role="input" data-prepend="<img class='fa-fw' src='https://cam.openbuilds.com/images/endmilldia.svg' width='16px' height='16px'>" data-clear-button="false">
+                    </div>
+                    <div class="cell-sm-5">
+                      <select data-role="select" data-filter="false" id="probeunitxyz" data-editable="true">
+                        <option value="mm" selected>mm</option>
+                        <option value="inch">inch</option>
+                      </select>
+                    </div>
+                  </div>
+
+
                 </div>
                 <hr>
                 <button class="button" id="toggle-probe-advanced"><i class="fas fa-fw fa-cogs"></i> Advanced</button>

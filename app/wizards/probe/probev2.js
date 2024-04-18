@@ -424,7 +424,12 @@ function runProbeNew() {
   template += `Probe: Z:` + probemode.probe.zoffset + `\n`
 
   if (probemode.mode == "xyz" || probemode.mode == "xzero" || probemode.mode == "yzero" || probemode.mode == "zzero") {
-    probemode.endmilldia = parseFloat($("#probediameterxyz").val());
+    var endmillUnit = $("#probeunitxyz").val();
+    if (endmillUnit == "mm") {
+      probemode.endmilldia = parseFloat($("#probediameterxyz").val());
+    } else {
+      probemode.endmilldia = (parseFloat($("#probediameterxyz").val()) * 25.4);
+    }
     template += `Endmill: ` + probemode.endmilldia + `mm\n`
   }
 
