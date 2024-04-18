@@ -1,6 +1,7 @@
-v1.0.371:
+v1.0.372:
  - Updated Max Rate for LEAD1010 Plasma Add On profile
  - Added electron's app.setAppUserModelId(id) to clean up Windows notications (to be tested)
+ - Fixed Issue #126 Support Inch measurements in Probe > Endmill Diameter
  - Fixed Issue #306 In grblHAL 4th axes build, let fixGrblHALSettings force $376=1 to designate A axis as Rotary
  - Fixed Issue #335 Keyboard shortcuts - handle Metro naming of keys in Macro's Keyboard Shortcuts
  - Fixed Issue #347 Added Interface's Wifi Config to Interface USB Prep Wizard (Pending Interface Firmware update work)
