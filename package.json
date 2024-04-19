@@ -74,8 +74,8 @@
     "fileAssociations": [
       {
         "ext": "obc",
-        "name": "OpenBuilds CAM Workspace",
-        "description": "OpenBuilds CAM Workspace",
+        "name": "OpenBuilds CAM Project",
+        "description": "OpenBuilds CAM Project",
         "role": "Viewer"
       },
       {
