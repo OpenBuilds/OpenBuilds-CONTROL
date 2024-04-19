@@ -1491,13 +1491,17 @@ io.on("connection", function(socket) {
         }
 
         // Machine Identification
-        if (data.indexOf("Grbl") === 0) { // Check if it's Grbl
+        if (data.indexOf("Grbl") === 0 || data.indexOf("[FIRMWARE:grblHAL]") === 0) { // Check if it's Grbl
           debug_log(data)
           status.comms.blocked = false;
           if (data.indexOf("GrblHAL") === 0) {
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "grblHAL"
             status.machine.firmware.version = data.substr(8, 4); // get version
+          } else if (data.indexOf("[FIRMWARE:grblHAL]") === 0) {
+            status.machine.firmware.type = "grbl";
+            status.machine.firmware.platform = "grblHAL"
+            // Parse version from seperate [VER:...] line not here for this response
           } else if (data.indexOf("FluidNC") != -1) { // Grbl 3.6 [FluidNC v3.6.5 (wifi) '$' for help]
             status.machine.firmware.type = "grbl";
             status.machine.firmware.platform = "FluidNC"
