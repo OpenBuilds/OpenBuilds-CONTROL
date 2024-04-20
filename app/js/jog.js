@@ -175,6 +175,7 @@ $(document).ready(function() {
     } else if (unit == "in") {
       $("#xPosInput").show().focus().val((laststatus.machine.position.work.x / 25.4).toFixed(3))
     }
+    document.getElementById("xPosInput").select();
   });
 
   $("#xPosInput").blur(function() {
@@ -217,6 +218,7 @@ $(document).ready(function() {
     } else if (unit == "in") {
       $("#yPosInput").show().focus().val((laststatus.machine.position.work.y / 25.4).toFixed(3))
     }
+    document.getElementById("yPosInput").select();
   });
 
   $("#yPosInput").blur(function() {
@@ -257,6 +259,7 @@ $(document).ready(function() {
     } else if (unit == "in") {
       $("#zPosInput").show().focus().val((laststatus.machine.position.work.z / 25.4).toFixed(3))
     }
+    document.getElementById("zPosInput").select();
   });
 
   $("#zPosInput").blur(function() {
