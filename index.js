@@ -3357,6 +3357,7 @@ https.get("https://raw.githubusercontent.com/OpenBuilds/firmware/main/interface/
             'type': 'info'
           }
           io.sockets.emit('data', output);
+          debug_log(JSON.stringify(output));
 
         })
       })
