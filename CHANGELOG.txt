@@ -1,4 +1,4 @@
-v1.0.372: (Upcoming release, not available yet)
+v1.0.372:
  - Updated Max Rate for LEAD1010 Plasma Add On profile
  - Added electron's app.setAppUserModelId(id) to clean up Windows notications (to be tested)
  - Fixed Issue #126 Support Inch measurements in Probe > Endmill Diameter
