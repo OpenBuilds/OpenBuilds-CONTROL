@@ -4,9 +4,10 @@ v1.0.372: (Upcoming release, not available yet)
  - Fixed Issue #126 Support Inch measurements in Probe > Endmill Diameter
  - Fixed Issue #306 In grblHAL 4th axes build, let fixGrblHALSettings force $376=1 to designate A axis as Rotary
  - Fixed Issue #335 Keyboard shortcuts - handle Metro naming of keys in Macro's Keyboard Shortcuts
- - Fixed Issue #347 Added Interface's Wifi Config to Interface USB Prep Wizard (Pending Interface Firmware update work)
  - Fixed Issue #353 Jog buttons no longer accidentally change override sliders if sliders was in focus
- - Fixed Issue #354 Updated LEAD1010 Plasma Profiles for Interface (Pending Interface Firmware update work)
+ - (Interface) Fixed Issue #347 Added Interface's Wifi Config to Interface USB Prep Wizard (Requires Interface Firmware update to V1.58 work)
+ - (Interface) Fixed Issue #354 Updated LEAD1010 Plasma Profiles for Interface (Requires Interface Firmware update to V1.58 work)
+ - (Interface) Updated include Interface firmware binary to V1.58 (please flash your Interface from Wizards and Tools > Firmware flashing tool)
 v1.0.371:
  - Fixed Issue #257 Changed Arc drawing behavior for G2 full circles in 3D viewer
  - Fixed Issue #285 Updated ACRO with Pen servo default Grbl profile PWM parameters
