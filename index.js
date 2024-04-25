@@ -38,6 +38,12 @@ if (process.env.DEBUGCONTROL) {
   console.log("Console Debugging Enabled")
 }
 
+FORCECONNECTION = false
+if (process.env.FORCECONNECTION) {
+  FORCECONNECTION = true;
+  console.log("Forced Firmware Connection")
+}
+
 function debug_log() {
   if (DEBUG) {
     console.log.apply(this, arguments);
@@ -1243,13 +1249,26 @@ io.on("connection", function(socket) {
         }, config.grblWaitTime * 2000);
 
         setTimeout(function() {
-          if (status.machine.firmware.type.length > 1) {
-            if (status.machine.firmware.type === "grbl") {
+
+          if (FORCECONNECTION || status.machine.firmware.type.length > 1) {
+            if (FORCECONNECTION || status.machine.firmware.type === "grbl") {
               debug_log("GRBL detected");
               var output = {
                 'command': 'connect',
                 'response': "Detecting Firmware: Detected Grbl Succesfully",
                 'type': 'info'
+              }
+              if (FORCECONNECTION) {
+                status.machine.firmware.type = "grbl";
+                status.machine.firmware.platform = "grblHAL"
+                status.machine.firmware.version = "1.1f"; // get version
+                var output = {
+                  'command': 'connect',
+                  'response': "FORCED CONNECTION",
+                  'type': 'info'
+                }
+                io.sockets.emit('data', output);
+
               }
               setTimeout(function() {
                 io.sockets.emit('grbl', status.machine.firmware)
