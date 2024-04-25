@@ -56,13 +56,12 @@
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "notarize": false,
-      "target": {
-          "target": "default",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-      }
+      "target": "default",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+
   },
     },
     "icon": "build/icon.icns",
