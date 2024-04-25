@@ -185,6 +185,9 @@ var lastsentuploadprogress = 0;
 // Electron app
 const electron = require('electron');
 const electronApp = electron.app;
+
+electronApp.setAppUserModelId("openbuilds.control")
+
 const {
   dialog
 } = require('electron')
@@ -1234,6 +1237,7 @@ io.on("connection", function(socket) {
               'type': 'info'
             }
             io.sockets.emit('data', output);
+            addQRealtime(String.fromCharCode(0x18)); // Check if it's Smoothieware?
             addQRealtime("version\n"); // Check if it's Smoothieware?
             debug_log("Sent: version");
           }
@@ -3088,7 +3092,6 @@ if (isElectron()) {
     }
 
     function createJogWindow() {
-      electronApp.setAppUserModelId("com.openbuilds.control")
       // Create the browser window.
       jogWindow = new BrowserWindow({
         // 1366 * 768 == minimum to cater for
@@ -3675,5 +3678,6 @@ function scanForTelnetDevices(range) {
   });
 }
 // end LAN Scanner
+
 
 process.on('exit', () => debug_log('exit'))
