@@ -404,7 +404,7 @@ $(document).ready(function() {
 
 
   $('.xM').on('touchstart mousedown', function(ev) {
-    console.log(ev)
+    //console.log(ev)
     if (ev.which > 1) {
       return
     }

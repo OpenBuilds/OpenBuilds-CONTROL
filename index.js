@@ -38,12 +38,6 @@ if (process.env.DEBUGCONTROL) {
   console.log("Console Debugging Enabled")
 }
 
-FORCECONNECTION = false
-if (process.env.FORCECONNECTION) {
-  FORCECONNECTION = true;
-  console.log("Forced Firmware Connection")
-}
-
 function debug_log() {
   if (DEBUG) {
     console.log.apply(this, arguments);
@@ -1142,8 +1136,16 @@ io.on("connection", function(socket) {
         port = new SerialPort({
           path: data.port,
           baudRate: parseInt(data.baud),
+          autoOpen: false
           //hupcl: false // Don't set DTR - useful for X32 Reset
         });
+        port.set({
+          setOptions: {
+            dtr: true,
+            rts: true
+          }
+        })
+        port.open()
       } else if (data.type == "telnet") {
         console.log("connect", "Connecting to " + data.ip + " via " + data.type);
         port = net.connect(23, data.ip);
@@ -1250,26 +1252,15 @@ io.on("connection", function(socket) {
 
         setTimeout(function() {
 
-          if (FORCECONNECTION || status.machine.firmware.type.length > 1) {
-            if (FORCECONNECTION || status.machine.firmware.type === "grbl") {
+          if (status.machine.firmware.type.length > 1) {
+            if (status.machine.firmware.type === "grbl") {
               debug_log("GRBL detected");
               var output = {
                 'command': 'connect',
                 'response': "Detecting Firmware: Detected Grbl Succesfully",
                 'type': 'info'
               }
-              if (FORCECONNECTION) {
-                status.machine.firmware.type = "grbl";
-                status.machine.firmware.platform = "grblHAL"
-                status.machine.firmware.version = "1.1f"; // get version
-                var output = {
-                  'command': 'connect',
-                  'response': "FORCED CONNECTION",
-                  'type': 'info'
-                }
-                io.sockets.emit('data', output);
 
-              }
               setTimeout(function() {
                 io.sockets.emit('grbl', status.machine.firmware)
                 //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
