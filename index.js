@@ -1133,18 +1133,21 @@ io.on("connection", function(socket) {
 
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
+
+        const defaultSetFlags: SetOptions = {
+          brk: false,
+          cts: false,
+          dtr: false,
+          rts: false,
+        }
+
         port = new SerialPort({
           path: data.port,
           baudRate: parseInt(data.baud),
           autoOpen: false
           //hupcl: false // Don't set DTR - useful for X32 Reset
         });
-        port.set({
-          setOptions: {
-            dtr: true,
-            rts: true
-          }
-        })
+        port.set(defaultSetFlags)
         port.open()
       } else if (data.type == "telnet") {
         console.log("connect", "Connecting to " + data.ip + " via " + data.type);
