@@ -1,6 +1,6 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.373",
+  "version": "1.0.374",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
@@ -55,6 +55,8 @@
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
+      "hardenedRuntime":true,
+      "gatekeeperAssess": false,
       "notarize": false,
       "target": {
         "target": "default",
@@ -152,6 +154,7 @@
       ]
     },
     "dmg": {
+      "sign": false,
       "icon": "build/icon.icns",
       "contents": [
         {
