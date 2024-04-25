@@ -1136,7 +1136,7 @@ io.on("connection", function(socket) {
         port = new SerialPort({
           path: data.port,
           baudRate: parseInt(data.baud),
-          hupcl: false // Don't set DTR - useful for X32 Reset
+          //hupcl: false // Don't set DTR - useful for X32 Reset
         });
       } else if (data.type == "telnet") {
         console.log("connect", "Connecting to " + data.ip + " via " + data.type);
@@ -1237,7 +1237,6 @@ io.on("connection", function(socket) {
               'type': 'info'
             }
             io.sockets.emit('data', output);
-            addQRealtime(String.fromCharCode(0x18)); // Check if it's Smoothieware?
             addQRealtime("version\n"); // Check if it's Smoothieware?
             debug_log("Sent: version");
           }
