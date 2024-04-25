@@ -1134,11 +1134,13 @@ io.on("connection", function(socket) {
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
 
-        const defaultSetFlags: SetOptions = {
-          brk: false,
-          cts: false,
-          dtr: false,
-          rts: false,
+        const defaultSetFlags = {
+          SetOptions: {
+            brk: false,
+            cts: false,
+            dtr: false,
+            rts: false,
+          }
         }
 
         port = new SerialPort({
