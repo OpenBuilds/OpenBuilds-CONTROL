@@ -1131,12 +1131,24 @@ io.on("connection", function(socket) {
 
     if (status.comms.connectionStatus < 1) {
 
+
+
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
+
+        // Fix for autoreset getting stuck on MacOS with Silabs Chip
+        var allowRtsCts = false
+        var allowHupcl = false
+        if (process.platform == 'darwin') {
+          allowRtsCts = true
+          allowHupcl = true
+        }
+
         port = new SerialPort({
           path: data.port,
           baudRate: parseInt(data.baud),
-          //hupcl: false // Don't set DTR - useful for X32 Reset
+          rtscts: allowRtsCts,
+          hupcl: allowHupcl // Don't set DTR - useful for X32 Reset
         });
       } else if (data.type == "telnet") {
         console.log("connect", "Connecting to " + data.ip + " via " + data.type);
@@ -1180,10 +1192,6 @@ io.on("connection", function(socket) {
       });
 
       port.on("open", function(e) {
-        port.set({
-          dtr: true,
-          rts: true
-        });
         portOpened(port, data)
       });
 
