@@ -55,7 +55,15 @@
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "notarize": false
+      "notarize": false,
+      "target": {
+          "target": "default",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+      }
+  },
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
