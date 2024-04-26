@@ -89,11 +89,11 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          mac_certs: ${{ secrets.mac_certs }}
+          mac_certs_password: ${{ secrets.mac_certs_password }}
           API_KEY_ID: ${{ secrets.api_key_id }}
           API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
-          CSC_LINK: ${{ secrets.mac_certs }}
-          CSC_PASSWORD: ${{ secrets.mac_certs_password }}
-
+          
       # # new Windows Signing (2024)
       # - name: Signing using Signtool
       #   if: startsWith(matrix.os, 'windows')
