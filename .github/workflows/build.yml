@@ -8,7 +8,6 @@ jobs:
 
     strategy:
       matrix:
-        # os: [macos-latest, windows-latest, ubuntu-20.04]
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
@@ -63,7 +62,7 @@ jobs:
         shell: cmd
 
       - name: Install setuptools (macos)
-        if: startsWith(matrix.os, 'macos')
+        if: starts+With(matrix.os, 'macos')
         run: sudo -H pip install setuptools
 
       - name: Prepare for app notarization (macos)
@@ -81,30 +80,17 @@ jobs:
           github_token: ${{ secrets.github_token }}
           release: true
           debugElectron: true
+          # Used to Sign before notarizing with Notarize.js
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
         env:
-          # new MacOS notarize secrets (2024)
-          npm_config_verbose: true
-          npm_config_loglevel: verbose
+          #npm_config_verbose: true
+          #npm_config_loglevel: verbose
+          # new MacOS notarize.js secrets (2024)
           DEBUG: electron-builder # To debug electron-builder
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
+          # Required to authenticate Signing certs
           API_KEY_ID: ${{ secrets.api_key_id }}
           API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
-
-      # # new Windows Signing (2024)
-      # - name: Signing using Signtool
-      #   if: startsWith(matrix.os, 'windows')
-      #   run: |
-      #     signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
-      #     signtool.exe verify /v /pa "D:\a\OpenBuilds-CONTROL\OpenBuilds-CONTROL\dist\*.exe"
-      #
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{ matrix.os }}
-      #     path: |
-      #       dist/*.exe

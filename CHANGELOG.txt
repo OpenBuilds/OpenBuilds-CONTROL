@@ -1,6 +1,7 @@
-v1.0.373: (Unreleased - Upcoming release)
+v1.0.373:
  - Fixed issue #356 Merged fix for Select all text in droInput on click
  - Experimental fix for MacOS / Silicon Labs USB driver (Forced RTS / CTS handshake)
+ - Re-enabled MacOS Code Signing and Notarization
 v1.0.372:
  - Updated Max Rate for LEAD1010 Plasma Add On profile
  - Added electron's app.setAppUserModelId(id) to clean up Windows notications (to be tested)
