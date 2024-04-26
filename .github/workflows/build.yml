@@ -62,7 +62,7 @@ jobs:
         shell: cmd
 
       - name: Install setuptools (macos)
-        if: starts+With(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos')
         run: sudo -H pip install setuptools
 
       - name: Prepare for app notarization (macos)
