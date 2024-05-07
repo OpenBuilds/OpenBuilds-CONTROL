@@ -1,4 +1,6 @@
-v1.0.373:
+v1.0.375:
+- Beta test of a fix for Python not found error for MacOS during firmware flash
+v1.0.373-4:
  - Fixed issue #356 Merged fix for Select all text in droInput on click
  - Experimental fix for MacOS / Silicon Labs USB driver (Forced RTS / CTS handshake)
  - Re-enabled MacOS Code Signing and Notarization

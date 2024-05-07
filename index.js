@@ -2132,6 +2132,12 @@ io.on("connection", function(socket) {
               break;
           }
           debug_log('Resuming Queue Lockout');
+          var output = {
+            'command': '[clear alarm]',
+            'response': "Operator clicked Clear Alarm: Cleared Lockout",
+            'type': 'info'
+          }
+          io.sockets.emit('data', output);
           break;
         case 2:
           debug_log('Emptying Queue');
@@ -2156,6 +2162,12 @@ io.on("connection", function(socket) {
               status.comms.paused = false;
               break;
           }
+          var output = {
+            'command': '[clear alarm]',
+            'response': "Operator clicked Clear Alarm: Cleared Lockout and Emptied Queue",
+            'type': 'info'
+          }
+          io.sockets.emit('data', output);
           break;
       }
       status.comms.runStatus = 'Stopped'
@@ -3519,7 +3531,6 @@ function flashGrblHal(data) {
   }
 
   console.log("Flashing BlackBoxX32 on " + port + " with file: " + path.resolve(firmwarePath).replace('app.asar', 'app.asar.unpacked'))
-
   var data = {
     'port': port,
     'string': "[Starting...]"
@@ -3546,12 +3557,12 @@ function flashGrblHal(data) {
   }
 
   if (process.platform == 'linux') {
-    //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
     fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
     var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'darwin') {
+    console.log("Running on MacOS")
     fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
     var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
