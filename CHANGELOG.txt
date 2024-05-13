@@ -1,5 +1,5 @@
-v1.0.376 (unreleased):
-- Updated EULA
+v1.0.376:
+- Updated installer End User License Agreement
 v1.0.375:
 - Beta test of a fix for Python not found error for MacOS during firmware flash
 v1.0.373-4:
