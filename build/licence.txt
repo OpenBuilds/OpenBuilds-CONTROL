@@ -12,7 +12,7 @@ Limitation of Liability:
 In no event shall we be liable for any damages arising out of or in connection with the use or inability to use the software, including any beta features. This includes but is not limited to direct, indirect, incidental, special, or consequential damages, such as loss of profits, data, or use of the software.
 
 Indemnification:
-You agree to indemnify, defend, and hold us harmless from any claims, damages, and expenses, including reasonable attorney's fees, arising out of your use of the software, including any beta features, except to the extent prohibited under applicable law.
+Except to the extent prohibited under applicable law, you agree to indemnify, defend, and hold us harmless from any claims, damages, and expenses, including reasonable attorney's fees, arising out of your use of the software, including any beta features.
 
 No Support:
 We are not obliged to provide any technical support or assistance with the use of the software, including any beta features. Any support or assistance provided by us is entirely at our discretion.
