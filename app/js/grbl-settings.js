@@ -269,7 +269,8 @@ function grblPopulate() {
       $("#val-2-input").val(parseInt(grblParams['$2'])).trigger("change");
       $("#val-3-input").val(parseInt(grblParams['$3'])).trigger("change");
       $("#val-4-input").val(parseInt(grblParams['$4'])).trigger("change");
-    }, 100);;
+      $("#val-13-input").val(parseInt(grblParams['$13'])).trigger("change");
+    }, 100);
 
     $('#grblSettingsTable').on('keyup paste click change', 'input, select', function() {
       checkifchanged()
