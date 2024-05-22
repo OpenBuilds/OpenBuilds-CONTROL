@@ -10,14 +10,14 @@ var jogRateA = 2000
 
 function jogOverride(newVal) {
   if (grblParams.hasOwnProperty('$110')) {
-    jogRateX = (grblParams['$110'] * (newVal / 100)).toFixed(0);
-    jogRateY = (grblParams['$111'] * (newVal / 100)).toFixed(0);
-    jogRateZ = (grblParams['$112'] * (newVal / 100)).toFixed(0);
+    jogRateX = (parseFloat(grblParams['$110']) * (newVal / 100)).toFixed(0);
+    jogRateY = (parseFloat(grblParams['$111']) * (newVal / 100)).toFixed(0);
+    jogRateZ = (parseFloat(grblParams['$112']) * (newVal / 100)).toFixed(0);
 
     $('#jro').data('slider').val(newVal)
   }
   if (grblParams.hasOwnProperty('$113')) {
-    jogRateA = (grblParams['$113'] * (newVal / 100)).toFixed(0);
+    jogRateA = (parseFloat(grblParams['$113']) * (newVal / 100)).toFixed(0);
   }
   localStorage.setItem('jogOverride', newVal);
 }
