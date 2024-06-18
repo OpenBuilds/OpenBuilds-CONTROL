@@ -1202,6 +1202,7 @@ io.on("connection", function(socket) {
         }
         io.sockets.emit('data', output);
         status.comms.connectionStatus = 0;
+        stopPort() // also clear queues etc
       }); // end port.onclose
 
       function portOpened(port, data) {
