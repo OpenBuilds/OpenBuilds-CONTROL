@@ -2431,6 +2431,8 @@ function parseFeedback(data) {
           aPos = parseFloat(wPos[3]).toFixed(config.posDecimals);
           status.machine.has4thAxis = true;
         }
+      } else {
+        status.machine.has4thAxis = false;
       }
       if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(xPos);
@@ -2459,6 +2461,8 @@ function parseFeedback(data) {
           aPos = parseFloat(mPos[3]).toFixed(config.posDecimals);
           status.machine.has4thAxis = true;
         }
+      } else {
+        status.machine.has4thAxis = false;
       }
       if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals));
