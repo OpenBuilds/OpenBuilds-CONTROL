@@ -1266,6 +1266,11 @@ function friendlyPort(i) {
       img = 'silabs.png';
       note = 'Silicon Labs USB to UART';
     }
+    if (laststatus.comms.interfaces.ports[i].productId == '000A' && laststatus.comms.interfaces.ports[i].vendorId == '2E8A') {
+      // found CP2102
+      img = 'pipico.png';
+      note = 'Raspberry Pi Pico CDC AURT';
+    }
     if (laststatus.comms.interfaces.ports[i].productId == '2303' && laststatus.comms.interfaces.ports[i].vendorId == '067B') {
       // found CP2102
       // img = 'nodemcu.png';

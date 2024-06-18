@@ -403,8 +403,8 @@ var grblSettingsTemplate2 = {
   },
   14: {
     key: `$14`,
-    title: `Limit pins invert, mask`,
-    description: ``,
+    title: `Invert control input signals, mask`,
+    description: `<control mask> = bitmask where bit 0 = reset, 1 = feed hold, 2 = cycle start, 3 = safety door, 4 = block delete, 5 = stop disable, 6 = e-stop, 7 = probe connected`,
     template: `<input id="val-14-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
     utils: ``
   },
@@ -874,7 +874,7 @@ var grblSettingsTemplate2 = {
   },
   486: {
     key: `$486`,
-    title: `Unlock required after E-Stop as boolean`,
+    title: `Lock coordinate systems as bitfield`,
     description: `Lock coordinate systems against accidental changes. 0 - G59.1 (1) / 1 - G59.2 (2) / 2 - G59.3 (4)`,
     template: `<input id="val-486-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``

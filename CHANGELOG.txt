@@ -1,3 +1,9 @@
+v1.0.377:
+- Fixed Grbl Settings Description for $14, $486
+- Fixed USB descriptor for Pico
+- Removed remaining Smoothieware leftovers
+- Re-Enabled DTR toggle for native USB support
+
 v1.0.376:
 - Updated installer End User License Agreement
 v1.0.375:

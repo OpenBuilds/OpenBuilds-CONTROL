@@ -1131,17 +1131,15 @@ io.on("connection", function(socket) {
 
     if (status.comms.connectionStatus < 1) {
 
-
-
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
 
-        // Fix for autoreset getting stuck on MacOS with Silabs Chip
+
         var allowRtsCts = false
         var allowHupcl = false
         if (process.platform == 'darwin') {
-          allowRtsCts = true
-          allowHupcl = true
+          allowRtsCts = true // Fix for autoreset getting stuck on MacOS with Silabs Chip
+          allowHupcl = true // Fix for autoreset getting stuck on MacOS with Silabs Chip
         }
 
         port = new SerialPort({
@@ -1207,6 +1205,7 @@ io.on("connection", function(socket) {
       }); // end port.onclose
 
       function portOpened(port, data) {
+
         debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
           'command': 'connect',
@@ -1219,12 +1218,14 @@ io.on("connection", function(socket) {
 
         addQRealtime("\n"); // this causes smoothie and grblHAL to send the welcome string
 
+
         var output = {
           'command': 'connect',
           'response': "Attempting to detect Controller (1): (Autoreset)",
           'type': 'info'
         }
         io.sockets.emit('data', output);
+
 
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
@@ -1242,20 +1243,28 @@ io.on("connection", function(socket) {
 
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
-            debug_log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
+            debug_log("Didnt detect firmware after AutoReset or Ctrl+X. Lets try toggling DTR");
             var output = {
               'command': 'connect',
-              'response': "Attempting to detect Controller (3): (others)",
+              'response': "Attempting to detect Controller (3): (DTR Enable)",
               'type': 'info'
             }
             io.sockets.emit('data', output);
-            addQRealtime("version\n"); // Check if it's Smoothieware?
-            debug_log("Sent: version");
+
+            // toggle DTR on
+            port.set({
+              "dtr": true
+            }, console.log("Set DTR"));
+            // then try Ctrl+X again
+            setTimeout(function() {
+              addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+              debug_log("Sent: Ctrl+x after DTR toggle");
+            }, 200);
           }
         }, config.grblWaitTime * 2000);
 
-        setTimeout(function() {
 
+        setTimeout(function() {
           if (status.machine.firmware.type.length > 1) {
             if (status.machine.firmware.type === "grbl") {
               debug_log("GRBL detected");
