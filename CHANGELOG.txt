@@ -2,7 +2,9 @@ v1.0.377:
 - Fixed Grbl Settings Description for $14, $486
 - Fixed USB descriptor for Pico
 - Removed remaining Smoothieware leftovers
-- Re-Enabled DTR toggle for native USB support
+- Fixed issue #360: Clear queue on port.disconnect
+- Fixed issue #359
+- Fixed issue #330: Re-Enabled DTR toggle for native USB support
 
 v1.0.376:
 - Updated installer End User License Agreement

@@ -2354,9 +2354,14 @@ function stopPort() {
   // port.drain(port.close());
 
   if (status.comms.interfaces.type == "usb") {
-    port.drain(port.close());
+    if (port.isOpen) {
+      port.drain(port.close());
+    }
   } else if (status.comms.interfaces.type == "telnet") {
-    port.destroy();
+    if (port.isOpen) {
+      port.destroy();
+      port.isOpen = false;
+    }
   }
 }
 
