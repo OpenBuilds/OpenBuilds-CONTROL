@@ -1262,6 +1262,10 @@ io.on("connection", function(socket) {
               debug_log("Sent: Ctrl+x after DTR toggle");
             }, 200);
           }
+
+          port.set({ // toggle Off again else grbl on Uno gets stuck
+            "dtr": false
+          }, console.log("Set DTR"));
         }, config.grblWaitTime * 2000);
 
 

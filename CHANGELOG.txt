@@ -1,11 +1,12 @@
+v1.0.378:
+- Test fix for 4X hanging on DTR connect
 v1.0.377:
 - Fixed Grbl Settings Description for $14, $486
 - Fixed USB descriptor for Pico
 - Removed remaining Smoothieware leftovers
 - Fixed issue #360: Clear queue on port.disconnect
-- Fixed issue #359
+- Fixed issue #359: UI update downgrade to 3 axes
 - Fixed issue #330: Re-Enabled DTR toggle for native USB support
-
 v1.0.376:
 - Updated installer End User License Agreement
 v1.0.375:
