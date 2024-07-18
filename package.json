@@ -1,9 +1,12 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.379",
+  "version": "1.0.380",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
+  "resolutions": {
+    "@electron/notarize": "2.3.2"
+  },
   "devDependencies": {
     "electron": "^23.1.1",
     "electron-builder": "^24.9.1",

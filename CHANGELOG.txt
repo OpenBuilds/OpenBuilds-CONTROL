@@ -1,3 +1,5 @@
+v1.0.380:
+- Fix for grblHAL startup alarm lock
 v1.0.379:
 - Major improvements to USB connection steps,
 - set up parser before checking for firmware

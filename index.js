@@ -1653,6 +1653,10 @@ io.on("connection", function(socket) {
             // then try Ctrl+X again
             setTimeout(function() {
 
+              setTimeout(function() {
+                addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)                
+              }, 100);
+
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
               debug_log("Sent: Ctrl+x after DTR toggle");
 
