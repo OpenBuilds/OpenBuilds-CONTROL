@@ -1,3 +1,7 @@
+v1.0.379:
+- Major improvements to USB connection steps,
+- set up parser before checking for firmware
+- Added more grblHAL errors/settings descriptions
 v1.0.378:
 - Test fix for 4X hanging on DTR connect
 v1.0.377:

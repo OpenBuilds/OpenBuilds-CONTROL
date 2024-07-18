@@ -885,5 +885,20 @@ var grblSettingsTemplate2 = {
     description: `Auto mount SD card on startup.  0 - Auto mount SD card (1) / 1 - Hide LittleFS (2)`,
     template: `<input id="val-650-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``
+  },
+  328: {
+    key: `$328`,
+    title: `FTP port, range: 1 - 65535, reboot required`,
+    description: `FTP port number listening for incoming connections. NOTE: A hard reset of the controller is required after changing this setting.`,
+    template: `<input id="val-328-input" data-role="input" data-clear-button="false" data-append="port" type="number" >`,
+    utils: ``
+  },
+  372: {
+    key: `$372`,
+    title: `Invert I/O Port outputs as bitfield`,
+    description: ` Invert I/O Port outputs as bitfield`,
+    template: `<input id="val-372-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
   }
+
 }

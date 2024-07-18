@@ -1224,7 +1224,7 @@ function friendlyPort(i) {
     if (laststatus.comms.interfaces.ports[i].productId == '6015' && laststatus.comms.interfaces.ports[i].vendorId == '1D50') {
       // found Smoothieboard
       img = 'smoothieboard.png';
-      note = 'Smoothieware USB Port';
+      note = 'Smoothieware USB Port (Not Supported)';
     }
     if (laststatus.comms.interfaces.ports[i].productId == '6001' && laststatus.comms.interfaces.ports[i].vendorId == '0403') {
       // found FTDI FT232
@@ -1259,7 +1259,7 @@ function friendlyPort(i) {
     if (laststatus.comms.interfaces.ports[i].productId == '7523' && laststatus.comms.interfaces.ports[i].vendorId == '1A86') {
       // found CH340
       img = 'uno.png';
-      note = 'CH340 Arduino Fake';
+      note = 'WCH.cn CH340 USB to UART';
     }
     if (laststatus.comms.interfaces.ports[i].productId == 'EA60' && laststatus.comms.interfaces.ports[i].vendorId == '10C4') {
       // found CP2102
@@ -1269,7 +1269,7 @@ function friendlyPort(i) {
     if (laststatus.comms.interfaces.ports[i].productId == '000A' && laststatus.comms.interfaces.ports[i].vendorId == '2E8A') {
       // found CP2102
       img = 'pipico.png';
-      note = 'Raspberry Pi Pico CDC AURT';
+      note = 'Raspberry Pi Pico CDC UART (Not Supported)';
     }
     if (laststatus.comms.interfaces.ports[i].productId == '2303' && laststatus.comms.interfaces.ports[i].vendorId == '067B') {
       // found CP2102
