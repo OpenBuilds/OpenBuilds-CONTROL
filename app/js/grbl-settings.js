@@ -143,7 +143,6 @@ function grblPopulate() {
       <div class="cell-8">
          <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
          <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  Custom Machine</a></li>
             <li>
                <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
                <ul class="ribbon-dropdown" data-role="dropdown">
@@ -196,6 +195,7 @@ function grblPopulate() {
                   <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png" width="16px"/>  OpenBuilds WorkBee 1510</a></li>
                </ul>
             </li>
+            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  CUSTOM Machine</a></li>
          </ul>
       </div>
       <div class="cell-4">
@@ -209,7 +209,7 @@ function grblPopulate() {
 <h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't lose your customized settings</small></h6>
 
 <div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px);">
-   <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
+   <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="true">
 
       <tbody>
 

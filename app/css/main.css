@@ -19,7 +19,7 @@ body {
 
 /* Implemented as default https://thayneco.com/expand-usb-port-selector-in-openbuilds-control/  */
 #section-jog div:nth-child(2) label {
-  width: 350px;
+  width: 450px;
 }
 
 /* Fix dialog-actions alignment */

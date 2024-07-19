@@ -705,10 +705,10 @@ function initSocket() {
     }
 
     if (unit == "mm") {
-      $("#realFeed").html(status.machine.overrides.realFeed + " mm/min");
+      $("#realFeed").html(status.machine.overrides.realFeed + "mm/min");
       //$("#realSpeed").html("S=" + status.machine.overrides.realSpindle);
     } else if (unit == "in") {
-      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + " in/min");
+      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "in/min");
       //$("#realSpeed").html(("S=" + status.machine.overrides.realSpindle / 25.4).toFixed(0) + "in/min");
     }
 
@@ -959,17 +959,6 @@ function initSocket() {
 
   socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
-    openFlashingTool();
-    var select = $("#flashController").data("select").val("interface")
-    //status.interface.firmware.installedVersion
-    //status.interface.firmware.availVersion
-    var template = `We've detected that you are connected to an OpenBuilds Interface on port ` + status.comms.interfaces.activePort + `.<p>
-    It's firmware is currently out of date. You are running <code>v` + status.interface.firmware.installedVersion + `</code> and you can now update to <code>v` + status.interface.firmware.availVersion + `</code>.
-    Use the wizard below to update the firmware:
-    <hr>
-    `
-
-    $("#FlashDialogMsg").html(template);
   })
 
   $('#sendCommand').on('click', function() {
@@ -1149,12 +1138,11 @@ function populatePortsMenu() {
     } else {
       response += `<optgroup label="USB Ports">`
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
-        var port = friendlyPort(i)
         var lastUsedPort = localStorage.getItem('lastUsedPort');
         if (laststatus.comms.interfaces.ports[i].path == lastUsedPort) {
-          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
         } else {
-          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
         }
 
 
@@ -1210,80 +1198,6 @@ function spindleOverride(step) {
     socket.emit('spindleOverride', step);
     $('#tro').data('slider').buff(((step - 10) * 100) / (200 - 10))
   }
-}
-
-function friendlyPort(i) {
-  // var likely = false;
-  var img = 'usb.png';
-  var note = '';
-  var manufacturer = laststatus.comms.interfaces.ports[i].manufacturer
-  if (manufacturer == `(Standard port types)`) {
-    img = 'serial.png'
-    note = 'Motherboard Serial Port';
-  } else if (laststatus.comms.interfaces.ports[i].productId && laststatus.comms.interfaces.ports[i].vendorId) {
-    if (laststatus.comms.interfaces.ports[i].productId == '6015' && laststatus.comms.interfaces.ports[i].vendorId == '1D50') {
-      // found Smoothieboard
-      img = 'smoothieboard.png';
-      note = 'Smoothieware USB Port (Not Supported)';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '6001' && laststatus.comms.interfaces.ports[i].vendorId == '0403') {
-      // found FTDI FT232
-      img = 'usb.png';
-      note = 'FTDI USB to Serial';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '6015' && laststatus.comms.interfaces.ports[i].vendorId == '0403') {
-      // found FTDI FT230x
-      img = 'usb.png';
-      note = 'FTDI USD to Serial';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '606D' && laststatus.comms.interfaces.ports[i].vendorId == '1D50') {
-      // found TinyG G2
-      img = 'usb.png';
-      note = 'Tiny G2';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '003D' && laststatus.comms.interfaces.ports[i].vendorId == '2341') {
-      // found Arduino Due Prog Port
-      img = 'due.png';
-      note = 'Arduino Due Prog';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '0043' && laststatus.comms.interfaces.ports[i].vendorId == '2341' || laststatus.comms.interfaces.ports[i].productId == '0001' && laststatus.comms.interfaces.ports[i].vendorId == '2341' || laststatus.comms.interfaces.ports[i].productId == '0043' && laststatus.comms.interfaces.ports[i].vendorId == '2A03') {
-      // found Arduino Uno
-      img = 'uno.png';
-      note = 'Arduino Uno';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '2341' && laststatus.comms.interfaces.ports[i].vendorId == '0042') {
-      // found Arduino Mega
-      img = 'mega.png';
-      note = 'Arduino Mega';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '7523' && laststatus.comms.interfaces.ports[i].vendorId == '1A86') {
-      // found CH340
-      img = 'uno.png';
-      note = 'WCH.cn CH340 USB to UART';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == 'EA60' && laststatus.comms.interfaces.ports[i].vendorId == '10C4') {
-      // found CP2102
-      img = 'silabs.png';
-      note = 'Silicon Labs USB to UART';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '000A' && laststatus.comms.interfaces.ports[i].vendorId == '2E8A') {
-      // found CP2102
-      img = 'pipico.png';
-      note = 'Raspberry Pi Pico CDC UART (Not Supported)';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '2303' && laststatus.comms.interfaces.ports[i].vendorId == '067B') {
-      // found CP2102
-      // img = 'nodemcu.png';
-      note = 'Prolific USB to Serial';
-    }
-  } else {
-    img = "usb.png";
-  }
-
-  return {
-    img: img,
-    note: note
-  };
 }
 
 function escapeHTML(html) {

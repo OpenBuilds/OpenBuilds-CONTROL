@@ -190,7 +190,12 @@ var grblSettingCodes = {
   650: "File systems options as bitfield", // Auto mount SD?
   673: "Coolant on delay in s after Feedhold resume",
   328: "FTP port, range: 1 - 65535, reboot required",
-  372: "Invert I/O Port outputs as bitfield:"
+  372: "Invert I/O Port outputs as bitfield:",
+  140: "X-axis motor current in A, range: 0 - 3.0",
+  141: "Y-axis motor current in A, range: 0 - 3.0",
+  142: "Z-axis motor current in A, range: 0 - 3.0",
+  143: "A-axis motor current in A, range: 0 - 3.0",
+  536: "WS2812B LED strip length, max: 255"
 };
 
 exports.errors = function(id) {

@@ -516,8 +516,12 @@ var status = {
 async function findPorts() {
   const ports = await SerialPort.list()
   // console.log(ports)
-  oldportslist = ports;
   status.comms.interfaces.ports = ports;
+  for (i = 0; i < status.comms.interfaces.ports.length; i++) {
+    var data = friendlyPort(status.comms.interfaces.ports[i])
+    status.comms.interfaces.ports[i].img = data.img;
+    status.comms.interfaces.ports[i].note = data.note;
+  }
 }
 findPorts()
 
@@ -919,7 +923,6 @@ io.on("connection", function(socket) {
 
     var port = data.port;
     var firmwareImagePath = data.file;
-    var board = data.board
     var customImg = data.customImg
     console.log(__dirname, file, data.file)
     if (customImg) {
@@ -996,6 +999,16 @@ io.on("connection", function(socket) {
       debug_log('ERROR: Machine connection not open!');
     }
     flashInterface(data)
+  })
+
+  socket.on("flashBLOX", function(data) {
+    if (status.comms.connectionStatus > 0) {
+      debug_log('WARN: Closing Port ' + port);
+      stopPort();
+    } else {
+      debug_log('ERROR: Machine connection not open!');
+    }
+    flashBLOX(data)
   })
 
   socket.on("writeInterfaceUsbDrive", function(data) {
@@ -1591,6 +1604,7 @@ io.on("connection", function(socket) {
           'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Controller...",
           'type': 'info'
         }
+        console.log(port, friendlyPort(port));
         io.sockets.emit('data', output);
         // do attempt 1
         addQRealtime("\n"); // this causes smoothie and grblHAL to send the welcome string
@@ -1654,7 +1668,7 @@ io.on("connection", function(socket) {
             setTimeout(function() {
 
               setTimeout(function() {
-                addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)                
+                addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
               }, 100);
 
               addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
@@ -3472,13 +3486,118 @@ const storage = multer.diskStorage({
   }
 });
 
+function flashBLOX(data) {
+  status.comms.connectionStatus = 6;
+
+  var port = data.port;
+  var file = data.file;
+  var customImg = data.customImg
+  var erase = data.erase
+
+  console.log(__dirname, file, data.file)
+
+  if (customImg == true) {
+    var firmwarePath = firmwareImagePath
+  } else {
+    var firmwarePath = path.join(__dirname, file)
+  }
+
+
+
+  console.log("Flashing BLOX on " + port + " with file: " + file)
+
+  var data = {
+    'port': port,
+    'string': "[Starting...]"
+  }
+  io.sockets.emit("progStatus", data);
+
+  //esptool.exe --chip esp32s3 --port "COM9" --baud 921600  --before default_reset --after hard_reset write_flash
+  //-e -z --flash_mode dio --flash_freq 80m --flash_size 4MB
+  //0x0 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.bootloader.bin"
+  //0x8000 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.partitions.bin"
+  //0xe000 "C:\Users\user\AppData\Local\Arduino15\packages\esp32\hardware\esp32\2.0.5/tools/partitions/boot_app0.bin"
+  //0x10000 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.bin"
+
+  var esptool_opts = [
+    '--chip', 'esp32s3',
+    '--port', port,
+    '--baud', '921600',
+    '--before', 'default_reset',
+    '--after', 'hard_reset',
+    'write_flash',
+    '-z',
+    '--flash_mode', 'dio',
+    '--flash_freq', 'keep',
+    '--flash_size', 'keep',
+    '0x0', path.join(__dirname, "./blox-bootloader.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x8000', path.join(__dirname, "./blox-partition-table.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x10000', path.resolve(firmwarePath).replace('app.asar', 'app.asar.unpacked')
+  ];
+
+  if (erase == true) {
+    esptool_opts.push('--erase-all');
+  }
+
+  console.log(esptool_opts);
+
+  if (process.platform == 'linux') {
+    //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'win32') {
+    var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'darwin') {
+    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  }
+
+
+
+
+  child.stdout.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.stderr.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.on('close', (code) => {
+    var data = {
+      'port': port,
+      'string': `[exit:` + code + `]`,
+      'code': code
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 0;
+
+  });
+}
+// end BLOX Programming
+
 function flashInterface(data) {
   status.comms.connectionStatus = 6;
 
   var port = data.port;
   var file = data.file;
-  var board = data.board
-
+  var erase = data.erase
 
   console.log("Flashing Interface on " + port + " with file: " + file)
   // var data = {
@@ -3512,6 +3631,10 @@ function flashInterface(data) {
     '0x10000', path.resolve(firmwareImagePath).replace('app.asar', 'app.asar.unpacked'),
     '0x8000', path.join(__dirname, "./firmware.partitions.bin").replace('app.asar', 'app.asar.unpacked')
   ];
+
+  if (erase == true) {
+    esptool_opts.push('--erase-all');
+  }
 
   if (process.platform == 'linux') {
     //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
@@ -3753,6 +3876,94 @@ function scanForTelnetDevices(range) {
   });
 }
 // end LAN Scanner
+
+// USB port details
+
+function friendlyPort(port) {
+  // var likely = false;
+  var img = 'usb.png';
+  var note = '';
+  var manufacturer = port.manufacturer
+  if (manufacturer == `(Standard port types)`) {
+    img = 'serial.png'
+    note = 'Motherboard Serial Port';
+  } else if (port.productId && port.vendorId) {
+    if (port.productId == '6015' && port.vendorId == '1D50') {
+      // found Smoothieboard
+      img = 'smoothieboard.png';
+      note = 'Smoothieware USB Port (Not Supported)';
+    }
+    if (port.productId == '6001' && port.vendorId == '0403') {
+      // found FTDI FT232
+      img = 'usb.png';
+      note = 'FTDI USB to Serial';
+    }
+    if (port.productId == '6015' && port.vendorId == '0403') {
+      // found FTDI FT230x
+      img = 'usb.png';
+      note = 'FTDI USD to Serial';
+    }
+    if (port.productId == '606D' && port.vendorId == '1D50') {
+      // found TinyG G2
+      img = 'usb.png';
+      note = 'Tiny G2';
+    }
+    if (port.productId == '003D' && port.vendorId == '2341') {
+      // found Arduino Due Prog Port
+      img = 'due.png';
+      note = 'Arduino Due Prog';
+    }
+    if (port.productId == '0043' && port.vendorId == '2341' || port.productId == '0001' && port.vendorId == '2341' || port.productId == '0043' && port.vendorId == '2A03') {
+      // found Arduino Uno
+      img = 'uno.png';
+      note = 'Arduino Uno';
+    }
+    if (port.productId == '2341' && port.vendorId == '0042') {
+      // found Arduino Mega
+      img = 'mega.png';
+      note = 'Arduino Mega';
+    }
+    if (port.productId == '7523' && port.vendorId == '1A86') {
+      // found CH340
+      img = 'uno.png';
+      note = 'WCH.cn CH340 USB to UART';
+    }
+    if (port.productId == 'EA60' && port.vendorId == '10C4') {
+      // found CP2102
+      img = 'silabs.png';
+      note = 'Silicon Labs USB to UART';
+    }
+    if (port.productId == '000A' && port.vendorId == '2E8A') {
+      // found CP2102
+      img = 'pipico.png';
+      note = 'Raspberry Pi Pico CDC UART';
+    }
+    if (port.productId == '4001' && port.vendorId == '303A') {
+      // found CP2102
+      img = 'blox.png';
+      note = 'OpenBuilds BLOX (with grblHAL)';
+    }
+    if (port.productId == '1001' && port.vendorId == '303A') {
+      // found CP2102
+      img = 'blox.png';
+      note = 'OpenBuilds BLOX (Alternate Firmware)';
+    }
+    if (port.productId == '2303' && port.vendorId == '067B') {
+      // found CP2102
+      // img = 'nodemcu.png';
+      note = 'Prolific USB to Serial';
+    }
+  } else {
+    img = "usb.png";
+  }
+
+  return {
+    img: img,
+    note: note
+  };
+}
+
+// End USB Port details
 
 
 process.on('exit', () => debug_log('exit'))

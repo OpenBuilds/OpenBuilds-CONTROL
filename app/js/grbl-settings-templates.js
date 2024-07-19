@@ -896,8 +896,43 @@ var grblSettingsTemplate2 = {
   372: {
     key: `$372`,
     title: `Invert I/O Port outputs as bitfield`,
-    description: ` Invert I/O Port outputs as bitfield`,
+    description: `Invert I/O Port outputs as bitfield`,
     template: `<input id="val-372-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  140: {
+    key: `$140`,
+    title: `X-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-140-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  141: {
+    key: `$141`,
+    title: `Y-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-141-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  142: {
+    key: `$142`,
+    title: `Z-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-142-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  143: {
+    key: `$143`,
+    title: `X-axis motor current in A, range: 0 - 3.0`,
+    description: `A-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-143-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  536: {
+    key: `$536`,
+    title: `Neopixel strip 1 length, max: 255`,
+    description: `WS2812B LED strip length, max: 255`,
+    template: `<input id="val-536-input" data-role="input" data-clear-button="false" data-append="LEDs" type="number" >`,
     utils: ``
   }
 
