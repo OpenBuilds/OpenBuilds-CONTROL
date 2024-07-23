@@ -263,27 +263,36 @@ function bindKeys() {
     if (keyboardShortcuts.aM.length) {
       $(document).bind('keydown', keyboardShortcuts.aM, function(event) {
         event.preventDefault();
-        if (!event.originalEvent.repeat) {
-          rippleEffect($('.aM'), "#fa6800")
-          $('#aM').mousedown();
+        if (laststatus.machine.has4thAxis) {
+          if (!event.originalEvent.repeat) {
+            rippleEffect($('.aM'), "#fa6800")
+            $('#aM').mousedown();
+          }
         }
+
       });
       $(document).bind('keyup', keyboardShortcuts.aM, function(event) {
         event.preventDefault();
-        $('#aM').mouseup();
+        if (laststatus.machine.has4thAxis) {
+          $('#aM').mouseup();
+        }
       });
     }
     if (keyboardShortcuts.aP.length) {
       $(document).bind('keydown', keyboardShortcuts.aP, function(event) {
         event.preventDefault();
-        if (!event.originalEvent.repeat) {
-          rippleEffect($('.aP'), "#fa6800")
-          $('#aP').mousedown();
+        if (laststatus.machine.has4thAxis) {
+          if (!event.originalEvent.repeat) {
+            rippleEffect($('.aP'), "#fa6800")
+            $('#aP').mousedown();
+          }
         }
       });
       $(document).bind('keyup', keyboardShortcuts.aP, function(event) {
         event.preventDefault();
-        $('#aP').mouseup();
+        if (laststatus.machine.has4thAxis) {
+          $('#aP').mouseup();
+        }
       });
     }
     // END JOG KEYS

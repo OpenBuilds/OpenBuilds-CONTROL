@@ -133,7 +133,7 @@
     "asarUnpack": [
       "esptool.exe",
       "esptool-mac",
-      "esptool.py",
+      "esptool-linux",
       "*.bin"
     ],
     "win": {

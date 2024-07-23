@@ -54,8 +54,9 @@ function openFlashingTool() {
       <!-- li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png" height="32"> <b>BlackBox 4X</b></a></li -->
       <li><a href="#" onclick="flashToolBoard('interfacev1');"><img src="/wizards/flashingtool2/img/interfacev1-icon.png" height="32"> <b>Interface</b></a></li>
       <li><a href="#" onclick="flashToolBoard('bloxv1');"><img src="/wizards/flashingtool2/img/blox-icon.png" height="32"> <b>BLOX</b></a></li>
-    </ul>
+    </ul>`
 
+  template += `
     <div class="row mt-2" id="flash-tool-blox-bootloader-row" style="display: none;">
       <div class="cell-md-12 mb-1">
         <p class="remark warning">

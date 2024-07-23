@@ -1,9 +1,13 @@
 v1.0.381:
 - Added additional board support to Flashing tools
 - Fixed linebreak on realtime feedrate indicator
-- Updated esptool for Windows
+- Updated esptool for Windows, Mac and Linux
 - Improved USB ID Descriptions handling
 - Added more grblHAL settings descriptions
+- Clean up Diagnostic Menu
+- Improved Servo Calibration Wizard to take Grbl Settings into account, and start at center-of-travel for calibration tool (Fix #362)
+- Default all machine profiles to have Limits enabled by default - been a couple years since we've started including limit switches as standard
+- Added quick search to Grbl Settings table (Note new search overwrites any changes, make sure to save before changing search)
 v1.0.380:
 - Test Fix for grblHAL startup alarm lock
 v1.0.379:

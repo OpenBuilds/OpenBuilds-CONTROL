@@ -25,50 +25,59 @@ var grblSettingsTemplate2 = {
     title: `Step direction invert, mask`,
     description: `This setting inverts the direction signal for each axis. By default, Grbl assumes that the axes move in a positive direction when the direction pin signal is low, and a negative direction when the pin is high. Often, axes don't move this way with some machines. This setting will invert the direction pin signal for those axes that move the opposite way.`,
     template: `<input  id="val-3-input" readonly type="hidden" />
-       <table style="width: 100%;">
-         <tr>
-           <td><span class="text-small">X</span>
-           </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="xdirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-          <tr>
-          <td><span class="text-small">Y</span>
-          </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="ydirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-         <tr>
-           <td><span class="text-small">Z</span>
-           </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="zdirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-       </table>`,
+    <div class="row">
+    <div class="cell">
+        <span class="text-small">X</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="xdirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+<div class="row">
+    <div class="cell">
+        <span class="text-small">Y</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="ydirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+<div class="row">
+    <div class="cell">
+        <span class="text-small">Z</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="zdirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+
+      `,
     utils: ``
   },
   4: {
@@ -160,50 +169,59 @@ var grblSettingsTemplate2 = {
     title: `Homing direction invert, mask`,
     description: `By default, Grbl assumes your homing limit switches are in the positive direction, first moving the z-axis positive, then the x-y axes positive before trying to precisely locate machine zero by going back and forth slowly around the switch. If your machine has a limit switch in the negative direction, the homing direction mask can invert the axes' direction. It works just like the step port invert and direction port invert masks, where all you have to do is send the value in the table to indicate what axes you want to invert and search for in the opposite direction.`,
     template: `<input id="val-23-input" readonly type="hidden">
-          <table style="width: 100%;">
-            <tr>
-              <td><span class="text-small">X</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="xHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-             <tr>
-              <td><span class="text-small">Y</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="yHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-            <tr>
-              <td><span class="text-small">Z</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="zHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-          </table>`,
+    <div class="row">
+<div class="cell">
+  <span class="text-small">X</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="xHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+<div class="row">
+<div class="cell">
+  <span class="text-small">Y</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="yHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+<div class="row">
+<div class="cell">
+  <span class="text-small">Z</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="zHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+
+`,
     utils: ``
   },
   24: {
@@ -930,7 +948,7 @@ var grblSettingsTemplate2 = {
   },
   536: {
     key: `$536`,
-    title: `Neopixel strip 1 length, max: 255`,
+    title: `Neopixel LED strip length, max: 255`,
     description: `WS2812B LED strip length, max: 255`,
     template: `<input id="val-536-input" data-role="input" data-clear-button="false" data-append="LEDs" type="number" >`,
     utils: ``
