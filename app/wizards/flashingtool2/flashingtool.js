@@ -85,7 +85,8 @@ function openFlashingTool() {
       <div class="cell-md-3 mb-1">Machine Style</div>
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="bloxFirmwareType" data-editable="true">
-            <option value="blox-grblhal-corexy">grblHAL CoreXY 2-Axes CNC/Laser/Plotter</option>
+            <option value="blox-grblhal-cartesian">grblHAL 2-Axes CNC/Laser/Plotter</option>
+            <option value="blox-grblhal-corexy">grblHAL (CoreXY) 2-Axes CNC/Laser/Plotter</option>
             <option value="custom">Custom: firmware .BIN file</option>
           </select>
         </div>
@@ -387,7 +388,11 @@ function flashFirmwarefromWizard() {
     }
 
     if ($("#bloxFirmwareType").val() == "blox-grblhal-corexy") {
-      data.file = "blox-grblhal-corexy.bin" // version that ships with Interface
+      data.file = "blox-grblhal-corexy.bin"
+    }
+
+    if ($("#bloxFirmwareType").val() == "blox-grblhal-cartesian") {
+      data.file = "blox-grblhal-cartesian.bin"
     }
 
     if ($("#bloxFirmwareType").val() == "custom") {
