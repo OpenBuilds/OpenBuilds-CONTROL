@@ -79,10 +79,26 @@ $(document).ready(function() {
 function bindKeys() {
   // Clear all current binds
   $(document).unbind('keydown');
+
+  // Remove Keyboard Bindings from Overridee Sliders
+  $("#jrocell").find(".marker").unbind(Metro.events.keydown);
+  $("#trocell").find(".marker").unbind(Metro.events.keydown);
+  $("#frocell").find(".marker").unbind(Metro.events.keydown);
+  $("#jrocell").find(".marker").unbind(Metro.events.keyup);
+  $("#trocell").find(".marker").unbind(Metro.events.keyup);
+  $("#frocell").find(".marker").unbind(Metro.events.keyup);
+
+
   // console.log("Refreshing Keybindings")
 
   // Bind for Electron Devtools
   document.addEventListener('keydown', function(evt) {
+
+    // Remove focus from sliders before executing keyboard shortcuts
+    $('#jrocell').focusout()
+    $('#trocell').focusout()
+    $('#frocell').focusout()
+
     if (evt.which === 116) {
       // F5 - reload interface
       evt.preventDefault();
@@ -118,8 +134,26 @@ function bindKeys() {
           if (e.shiftKey) {
             newVal += 'shift+'
           }
-          newVal += e.key
-          newVal = newVal.toLowerCase();
+          if (e.key.toLowerCase() != 'alt' && e.key.toLowerCase() != 'control' && e.key.toLowerCase() != 'shift') {
+            if (e.keyCode == 32) {
+              newVal += 'space';
+            } else if (e.key.toLowerCase() == 'escape') {
+              newVal += 'esc';
+            } else if (e.key.toLowerCase() == 'arrowleft') {
+              newVal += 'left';
+            } else if (e.key.toLowerCase() == 'arrowright') {
+              newVal += 'right';
+            } else if (e.key.toLowerCase() == 'arrowup') {
+              newVal += 'up';
+            } else if (e.key.toLowerCase() == 'arrowdown') {
+              newVal += 'down';
+            } else if (e.key.toLowerCase() == 'delete') {
+              newVal += 'del';
+            } else {
+              newVal += e.key.toLowerCase();
+            }
+          }
+
           var macro = searchMacro("macrokeyboardshortcut", newVal, buttonsarray)
           console.log(macro)
           if (macro && macro.codetype == "gcode") {
@@ -229,27 +263,36 @@ function bindKeys() {
     if (keyboardShortcuts.aM.length) {
       $(document).bind('keydown', keyboardShortcuts.aM, function(event) {
         event.preventDefault();
-        if (!event.originalEvent.repeat) {
-          rippleEffect($('.aM'), "#fa6800")
-          $('#aM').mousedown();
+        if (laststatus.machine.has4thAxis) {
+          if (!event.originalEvent.repeat) {
+            rippleEffect($('.aM'), "#fa6800")
+            $('#aM').mousedown();
+          }
         }
+
       });
       $(document).bind('keyup', keyboardShortcuts.aM, function(event) {
         event.preventDefault();
-        $('#aM').mouseup();
+        if (laststatus.machine.has4thAxis) {
+          $('#aM').mouseup();
+        }
       });
     }
     if (keyboardShortcuts.aP.length) {
       $(document).bind('keydown', keyboardShortcuts.aP, function(event) {
         event.preventDefault();
-        if (!event.originalEvent.repeat) {
-          rippleEffect($('.aP'), "#fa6800")
-          $('#aP').mousedown();
+        if (laststatus.machine.has4thAxis) {
+          if (!event.originalEvent.repeat) {
+            rippleEffect($('.aP'), "#fa6800")
+            $('#aP').mousedown();
+          }
         }
       });
       $(document).bind('keyup', keyboardShortcuts.aP, function(event) {
         event.preventDefault();
-        $('#aP').mouseup();
+        if (laststatus.machine.has4thAxis) {
+          $('#aP').mouseup();
+        }
       });
     }
     // END JOG KEYS

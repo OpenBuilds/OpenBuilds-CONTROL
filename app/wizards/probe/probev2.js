@@ -46,6 +46,16 @@ $(document).ready(function() {
   if (localStorage.getItem('z0platethickness')) {
     zprobeplate.zoffset = localStorage.getItem('z0platethickness')
   }
+
+  if (localStorage.getItem('probediameterxyz')) {
+    probediameterxyz = localStorage.getItem('probediameterxyz')
+    $("#probediameterxyz").val(probediameterxyz)
+  }
+
+  if (localStorage.getItem('probeunitxyz')) {
+    probeunitxyz = localStorage.getItem('probeunitxyz')
+    $('#probeunitxyz').data('select').val(probeunitxyz)
+  }
 });
 
 if (localStorage.getItem('customProbe')) {
@@ -55,6 +65,14 @@ if (localStorage.getItem('customProbe')) {
 $("#z0platethickness").keyup(function() {
   localStorage.setItem('z0platethickness', $("#z0platethickness").val())
   zprobeplate.zoffset = $("#z0platethickness").val()
+});
+
+$("#probediameterxyz").keyup(function() {
+  localStorage.setItem('probediameterxyz', $("#probediameterxyz").val())
+});
+
+$("#probeunitxyz").change(function() {
+  localStorage.setItem('probeunitxyz', $("#probeunitxyz").val())
 });
 
 
@@ -435,7 +453,12 @@ function runProbeNew() {
   template += `Probe: Z:` + probemode.probe.zoffset + `\n`
 
   if (probemode.mode == "xyz" || probemode.mode == "xzero" || probemode.mode == "yzero" || probemode.mode == "zzero") {
-    probemode.endmilldia = parseFloat($("#probediameterxyz").val());
+    var endmillUnit = $("#probeunitxyz").val();
+    if (endmillUnit == "mm") {
+      probemode.endmilldia = parseFloat($("#probediameterxyz").val());
+    } else {
+      probemode.endmilldia = (parseFloat($("#probediameterxyz").val()) * 25.4);
+    }
     template += `Endmill: ` + probemode.endmilldia + `mm\n`
   }
 
@@ -477,7 +500,7 @@ function runProbeNew() {
     template += `Offset: Center:\n`;
     template += `Offset x:` + probemode.stock.x / 2 + `\n`;
     template += `Offset y: ` + probemode.stock.y / 2 + `\n`;
-    stockoffset.x = probemode.stock.y / 2
+    stockoffset.x = probemode.stock.x / 2
     stockoffset.y = probemode.stock.y / 2
   }
 

@@ -89,7 +89,8 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
 }
 
 .theme_dark .button.light:hover, .theme_dark .command-button.light:hover, .theme_dark .image-button.light:hover, .theme_dark .info-button.light:hover, .theme_dark .input .button.light:hover, .theme_dark .notify.light:hover, .theme_dark .select .button.light:hover, .theme_dark .shortcut.light:hover, .theme_dark .spinner .button.light:hover, .theme_dark .split-button .split.light:hover, .theme_dark .tag-input .button.light:hover, .theme_dark .tally.light:hover, .theme_dark .toast.light:hover, .theme_dark .tool-button.light:hover, .theme_dark code.light:hover, .theme_dark tbody td.light:hover, .theme_dark tbody tr.light:hover {
-  background-color: #333;
+  background-color: #222;
+  color: #FFF;
 }
 
 .theme_dark .button.disabled, .theme_dark .button:disabled, .theme_dark .command-button.disabled, .theme_dark .command-button:disabled, .theme_dark .image-button.disabled, .theme_dark .image-button:disabled, .theme_dark .shortcut.disabled, .theme_dark .shortcut:disabled, .theme_dark .split-button .split.disabled, .theme_dark .split-button .split:disabled, .theme_dark .tool-button.disabled, .theme_dark .tool-button:disabled {
@@ -99,6 +100,14 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
 .theme_dark .file, .theme_dark .input, .theme_dark .select, .theme_dark .spinner, .theme_dark .tag-input, .theme_dark .textarea, .theme_dark input[type=datetime-local], .theme_dark input[type=email], .theme_dark input[type=file], .theme_dark input[type=month], .theme_dark input[type=number], .theme_dark input[type=password], .theme_dark input[type=search], .theme_dark input[type=tel], .theme_dark input[type=text], .theme_dark input[type=time], .theme_dark input[type=url], .theme_dark input[type=week], .theme_dark select, .theme_dark textarea {
   background-color: #222;
   color: #FFF;
+}
+
+.theme_dark .dropdown-toggle:not(.success) {
+  border: 1px solid #555;
+}
+
+.theme_dark .dropdown-toggle::before {
+  border-color: #FFF;
 }
 
 .theme_dark .file.disabled .caption, .theme_dark .file.disabled .select-input, .theme_dark .file.disabled .stars li, .theme_dark .file.disabled input, .theme_dark .file.disabled select, .theme_dark .file.disabled textarea, .theme_dark .file:disabled .caption, .theme_dark .file:disabled .select-input, .theme_dark .file:disabled .stars li, .theme_dark .file:disabled input, .theme_dark .file:disabled select, .theme_dark .file:disabled textarea, .theme_dark .input.disabled .caption, .theme_dark .input.disabled .select-input, .theme_dark .input.disabled .stars li, .theme_dark .input.disabled input, .theme_dark .input.disabled select, .theme_dark .input.disabled textarea, .theme_dark .input:disabled .caption, .theme_dark .input:disabled .select-input, .theme_dark .input:disabled .stars li, .theme_dark .input:disabled input, .theme_dark .input:disabled select, .theme_dark .input:disabled textarea, .theme_dark .rating.disabled .caption, .theme_dark .rating.disabled .select-input, .theme_dark .rating.disabled .stars li, .theme_dark .rating.disabled input, .theme_dark .rating.disabled select, .theme_dark .rating.disabled textarea, .theme_dark .rating:disabled .caption, .theme_dark .rating:disabled .select-input, .theme_dark .rating:disabled .stars li, .theme_dark .rating:disabled input, .theme_dark .rating:disabled select, .theme_dark .rating:disabled textarea, .theme_dark .select.disabled .caption, .theme_dark .select.disabled .select-input, .theme_dark .select.disabled .stars li, .theme_dark .select.disabled input, .theme_dark .select.disabled select, .theme_dark .select.disabled textarea, .theme_dark .select:disabled .caption, .theme_dark .select:disabled .select-input, .theme_dark .select:disabled .stars li, .theme_dark .select:disabled input, .theme_dark .select:disabled select, .theme_dark .select:disabled textarea, .theme_dark .spinner.disabled .caption, .theme_dark .spinner.disabled .select-input, .theme_dark .spinner.disabled .stars li, .theme_dark .spinner.disabled input, .theme_dark .spinner.disabled select, .theme_dark .spinner.disabled textarea, .theme_dark .spinner:disabled .caption, .theme_dark .spinner:disabled .select-input, .theme_dark .spinner:disabled .stars li, .theme_dark .spinner:disabled input, .theme_dark .spinner:disabled select, .theme_dark .spinner:disabled textarea, .theme_dark .tag-input.disabled .caption, .theme_dark .tag-input.disabled .select-input, .theme_dark .tag-input.disabled .stars li, .theme_dark .tag-input.disabled input, .theme_dark .tag-input.disabled select, .theme_dark .tag-input.disabled textarea, .theme_dark .tag-input:disabled .caption, .theme_dark .tag-input:disabled .select-input, .theme_dark .tag-input:disabled .stars li, .theme_dark .tag-input:disabled input, .theme_dark .tag-input:disabled select, .theme_dark .tag-input:disabled textarea, .theme_dark .textarea.disabled .caption, .theme_dark .textarea.disabled .select-input, .theme_dark .textarea.disabled .stars li, .theme_dark .textarea.disabled input, .theme_dark .textarea.disabled select, .theme_dark .textarea.disabled textarea, .theme_dark .textarea:disabled .caption, .theme_dark .textarea:disabled .select-input, .theme_dark .textarea:disabled .stars li, .theme_dark .textarea:disabled input, .theme_dark .textarea:disabled select, .theme_dark .textarea:disabled textarea {
@@ -399,16 +408,12 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
   border: 1px solid #ce352c;
 }
 
-.theme_dark select {
+.theme_dark select  {
   border: 1px solid #555;
 }
 
 .theme_dark select.alert {
   border: 1px solid #ce352c;
-}
-
-.theme_dark #openbuildslogosplashImg {
-  filter: invert(1) hue-rotate(180deg);
 }
 
 .theme_dark .droInput {

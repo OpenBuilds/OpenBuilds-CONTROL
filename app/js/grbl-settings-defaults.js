@@ -1,7 +1,7 @@
 var lastSelectedMachine = '';
 var allowGrblSettingsViewScroll = true;
 
-function fixGrblHALSettings(j) {
+function fixGrblHALSettings(j, type) {
   if (laststatus.machine.firmware.platform == "grblHAL") { //  Workaround for HAL profiles required changes, without creating entirely new profiles for GrblHAL
     if (j == "10") {
       // Status Report Format
@@ -14,12 +14,30 @@ function fixGrblHALSettings(j) {
     if (j == "6") {
       // Fix Probe Inversion
       $("#val-" + j + "-input").val(1)
+      if (type == "leadmachine1010plasma") {
+        $("#val-" + j + "-input").val(0)
+      }
     }
 
     if (j == "4") {
       // Fix Enable Invert
       $("#val-" + j + "-input").val(0)
     }
+
+    if (j == "40") {
+      // Fix Soft Limits for grblHAL https://openbuilds.com/threads/openbuilds-control-software.13121/page-81#post-137277
+      $("#val-" + j + "-input").val(1)
+    }
+
+    if (j == "376") {
+      // Set $376=1: in Grbl Settings as per grblHAL/ESP32#76 (comment)
+      // $376 - Settings_Axis_Rotational
+      // Designate ABC axes as rotational by \ref axismask. This will disable scaling (to mm) in inches mode.
+      // Set steps/mm for the axes to the value that represent the desired movement per unit.
+      // For the controller the distance is unitless and and can be in degrees, radians, rotations, ...
+      $("#val-" + j + "-input").val(1)
+    }
+
   }
 }
 
@@ -40,8 +58,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -79,8 +97,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -118,8 +136,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -157,8 +175,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -196,8 +214,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -625,8 +643,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "1", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "500.000", //"Homing search seek rate, mm/min"
@@ -664,8 +682,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "1", //"Homing direction invert, mask"
       $24: "2000.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -703,8 +721,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "0", //"Homing direction invert, mask"
       $24: "2000.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -742,8 +760,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -765,6 +783,45 @@ function selectMachine(type) {
       $131: "730", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
+  } else if (type == "leadmachine1010plasma") {
+    // Leadmachine 1010
+    var customFirmware = false;
+    var grblParams_def = {
+      $0: "10", //"Step pulse time, microseconds"
+      $1: "255", //"Step idle delay, milliseconds"
+      $2: "0", //"Step pulse invert, mask"
+      $3: "4", //"Step direction invert, mask"
+      $4: "1", //"Invert step enable pin, boolean"
+      $5: "0", //"Invert limit pins, boolean"
+      $6: "1", //"Invert probe pin, boolean Plasma Addon uses switch inverted"
+      $10: "1", //"Status report options, mask"
+      $11: "0.010", //"Junction deviation, millimeters"
+      $12: "0.002", //"Arc tolerance, millimeters"
+      $13: "0", //"Report in inches, boolean"
+      $20: "0", //"Soft limits enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
+      $23: "1", //"Homing direction invert, mask"
+      $24: "100.000", //"Homing locate feed rate, mm/min"
+      $25: "1500.000", //"Homing search seek rate, mm/min"
+      $26: "250", //"Homing switch debounce delay, milliseconds"
+      $27: "5.000", //"Homing switch pull-off distance, millimeters"
+      $30: "1000", //"Maximum spindle speed, RPM"
+      $31: "0", //"Minimum spindle speed, RPM"
+      $32: "0", //"Laser mode"
+      $100: "199.100", //"X-axis steps per millimeter"
+      $101: "199.100", //"Y-axis steps per millimeter"
+      $102: "199.100", //"Z-axis steps per millimeter"
+      $110: "3000.000", //"X-axis maximum rate, mm/min"
+      $111: "3000.000", //"Y-axis maximum rate, mm/min"
+      $112: "1500.000", //"Z-axis maximum rate, mm/min"
+      $120: "300.000", //"X-axis acceleration, mm/sec^2"
+      $121: "300.000", //"Y-axis acceleration, mm/sec^2"
+      $122: "300.000", //"Z-axis acceleration, mm/sec^2"
+      $130: "740", //"X-axis maximum travel, millimeters"
+      $131: "830", //"Y-axis maximum travel, millimeters"
+      $132: "80", //"Z-axis maximum travel, millimeters"
+    }
   } else if (type == "leadmachine1515") {
     // Leadmachine 1010
     var customFirmware = false;
@@ -781,8 +838,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "2000.000", //"Homing search seek rate, mm/min"
@@ -820,8 +877,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -859,8 +916,8 @@ function selectMachine(type) {
       $12: "0.002", //"Arc tolerance, millimeters"
       $13: "0", //"Report in inches, boolean"
       $20: "0", //"Soft limits enable, boolean"
-      $21: "0", //"Hard limits enable, boolean"
-      $22: "0", //"Homing cycle enable, boolean"
+      $21: "1", //"Hard limits enable, boolean"
+      $22: "1", //"Homing cycle enable, boolean"
       $23: "3", //"Homing direction invert, mask"
       $24: "100.000", //"Homing locate feed rate, mm/min"
       $25: "1000.000", //"Homing search seek rate, mm/min"
@@ -888,7 +945,7 @@ function selectMachine(type) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
       $("#val-" + j + "-input").val(parseFloat(grblParams_def[key]))
-      fixGrblHALSettings(j);
+      fixGrblHALSettings(j, type);
       // console.log("$" + j + " = " + newVal)
     }
   }
@@ -899,7 +956,6 @@ function selectMachine(type) {
   }, 500);
 
   checkifchanged();
-  enableLimits(); // Enable or Disable
   displayDirInvert();
   setMachineButton(type);
 
@@ -914,7 +970,13 @@ function selectMachine(type) {
       // as per https://openbuilds.com/threads/blackbox-x32.19810/page-3#post-131285
       $("#val-44-input").val(3)
       $("#val-45-input").val(0)
-      $("#val-33-input").val(50)
+      $("#val-33-input").val(50) // spindle pwm freq
+      // $33 = 50Hz = 20ms (1/50s) repetion rate, $34-$36 are percentages of this. https://openbuilds.com/threads/blackbox-x32-servo-connection.20395/#post-134896
+      // Set $33=50 (PWM frequency), $34=5, $35=5 and $36=10 to generate a “standard” PWM signal: 20ms repetition rate, 1 - 2ms pulse length range.
+      // You may decrease $34 and $35 to output a shorter pulse than 1ms at min, and increase $36 to get a longer pulse than 2ms at max.
+      $("#val-34-input").val(5) // off value
+      $("#val-35-input").val(5) // min value
+      $("#val-36-input").val(100) // max value
 
     } else if (customFirmware == "acro" && laststatus.machine.firmware.platform == "grbl") {
       Metro.dialog.create({
@@ -1025,6 +1087,9 @@ function setMachineButton(type) {
   } else if (type == "leadmachine1010") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010`
     overlaytype = type;
+  } else if (type == "leadmachine1010plasma") {
+    template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1010 Plasma Add-On`
+    overlaytype = type;
   } else if (type == "leadmachine1515") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1515`
     overlaytype = type;
@@ -1032,7 +1097,7 @@ function setMachineButton(type) {
     template = `<img src="img/mch/` + type + `.png"/>  Custom Machine`
     overlaytype = type;
   } else {
-    template = `<img src="img/mch/sphinx55.png"/>  Select Machine`
+    template = `<img src="img/mch/leadmachine1010.png"/>  Select your machine type from the list:`
     overlaytype = "custom"
   }
   $('#context_toggle2').html(template);

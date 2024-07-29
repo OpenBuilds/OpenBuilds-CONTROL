@@ -246,6 +246,8 @@ function initSocket() {
 
   });
 
+
+
   socket.on('data', function(data) {
     // console.log(data)
     var toPrint = escapeHTML(data.response);
@@ -259,23 +261,34 @@ function initSocket() {
       lineColor = "fg-dark"
     }
 
+    // look for grbl settings change and update grblparams variable
+    // matches $number(s)=
+    if (/^\$\d*=/.test(data.command) && data.response == 'ok') {
+      grblSettings(data.command)
+    }
+
     // Parse Grbl Settings Feedback
     if (data.response.indexOf('$') === 0) {
-      if (typeof grblSettings !== 'undefined') {
-        grblSettings(data.response)
-        var key = data.response.split('=')[0].substr(1);
-        if (grblSettingsTemplate2[key] !== undefined) {
-          var descr = grblSettingsTemplate2[key].title
-        } else {
-          var descr = "unknown"
-        }
-        toPrint = data.response + "  ;" + descr
-        var icon = ''
-        var source = data.command
-        var string = toPrint
-        var printLogCls = lineColor
-        printLogModern(icon, source, string, printLogCls)
+
+      var key = data.response.split('=')[0].substr(1);
+      if (grblSettingsTemplate2[key] !== undefined) {
+        var descr = grblSettingsTemplate2[key].title
+      } else {
+        var descr = "unknown"
       }
+      toPrint = data.response + "  ;" + descr
+      var icon = ''
+      var source = data.command
+      var string = toPrint
+      var printLogCls = lineColor
+      printLogModern(icon, source, string, printLogCls)
+
+      if (data.response.match(/\$(\d+)(=)/)) {
+        if (typeof grblSettings !== 'undefined') {
+          grblSettings(data.response)
+        }
+      }
+
     } else {
       var icon = ''
       var source = data.command
@@ -627,21 +640,21 @@ function initSocket() {
 
     if (!disableDROupdates) {
       if (unit == "mm") {
-        var xpos = status.machine.position.work.x.toFixed(2) + unit;
-        var ypos = status.machine.position.work.y.toFixed(2) + unit;
-        var zpos = status.machine.position.work.z.toFixed(2) + unit;
-        var apos = status.machine.position.work.a.toFixed(2) + "deg";
+        var xpos = status.machine.position.work.x.toFixed(3) + unit;
+        var ypos = status.machine.position.work.y.toFixed(3) + unit;
+        var zpos = status.machine.position.work.z.toFixed(3) + unit;
+        var apos = status.machine.position.work.a.toFixed(3) + "deg";
 
-        $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(2) + unit + "/ X Work: " + xpos);
-        $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(2) + unit + "/ Y Work: " + ypos);
-        $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(2) + unit + "/ Z Work: " + zpos);
-        $(" #aPos ").attr('title', 'A Machine: ' + (status.machine.position.work.a + status.machine.position.offset.a).toFixed(2) + "deg" + "/ A Work: " + apos);
+        $(" #xPos ").attr('title', 'X Machine: ' + (status.machine.position.work.x + status.machine.position.offset.x).toFixed(3) + unit + "/ X Work: " + xpos);
+        $(" #yPos ").attr('title', 'Y Machine: ' + (status.machine.position.work.y + status.machine.position.offset.y).toFixed(3) + unit + "/ Y Work: " + ypos);
+        $(" #zPos ").attr('title', 'Z Machine: ' + (status.machine.position.work.z + status.machine.position.offset.z).toFixed(3) + unit + "/ Z Work: " + zpos);
+        $(" #aPos ").attr('title', 'A Machine: ' + (status.machine.position.work.a + status.machine.position.offset.a).toFixed(3) + "deg" + "/ A Work: " + apos);
 
       } else if (unit == "in") {
         var xpos = (status.machine.position.work.x / 25.4).toFixed(3) + unit;
         var ypos = (status.machine.position.work.y / 25.4).toFixed(3) + unit;
         var zpos = (status.machine.position.work.z / 25.4).toFixed(3) + unit;
-        var apos = status.machine.position.work.a.toFixed(2) + "deg";
+        var apos = status.machine.position.work.a.toFixed(3) + "deg";
 
         $(" #xPos ").attr('title', 'X Machine: ' + ((status.machine.position.work.x / 25.4) + (status.machine.position.offset.x / 25.4)).toFixed(3) + unit + "/ X Work: " + xpos);
         $(" #yPos ").attr('title', 'Y Machine: ' + ((status.machine.position.work.y / 25.4) + (status.machine.position.offset.y / 25.4)).toFixed(3) + unit + "/ Y Work: " + ypos);
@@ -946,17 +959,6 @@ function initSocket() {
 
   socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
-    openFlashingTool();
-    var select = $("#flashController").data("select").val("interface")
-    //status.interface.firmware.installedVersion
-    //status.interface.firmware.availVersion
-    var template = `We've detected that you are connected to an OpenBuilds Interface on port ` + status.comms.interfaces.activePort + `.<p>
-    It's firmware is currently out of date. You are running <code>v` + status.interface.firmware.installedVersion + `</code> and you can now update to <code>v` + status.interface.firmware.availVersion + `</code>.
-    Use the wizard below to update the firmware:
-    <hr>
-    `
-
-    $("#FlashDialogMsg").html(template);
   })
 
   $('#sendCommand').on('click', function() {
@@ -1076,6 +1078,7 @@ function selectPort(port) {
       baud: 115200,
       type: "usb"
     };
+    localStorage.setItem('lastUsedPort', port);
   }
   if (port.length > 1) {
     socket.emit('connectTo', data);
@@ -1135,8 +1138,14 @@ function populatePortsMenu() {
     } else {
       response += `<optgroup label="USB Ports">`
       for (i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
-        var port = friendlyPort(i)
-        response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + port.note + " " + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + `</option>`;
+        var lastUsedPort = localStorage.getItem('lastUsedPort');
+        if (laststatus.comms.interfaces.ports[i].path == lastUsedPort) {
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
+        } else {
+          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
+        }
+
+
       };
     }
     response += `</optgroup>`
@@ -1189,75 +1198,6 @@ function spindleOverride(step) {
     socket.emit('spindleOverride', step);
     $('#tro').data('slider').buff(((step - 10) * 100) / (200 - 10))
   }
-}
-
-function friendlyPort(i) {
-  // var likely = false;
-  var img = 'usb.png';
-  var note = '';
-  var manufacturer = laststatus.comms.interfaces.ports[i].manufacturer
-  if (manufacturer == `(Standard port types)`) {
-    img = 'serial.png'
-    note = 'Motherboard Serial Port';
-  } else if (laststatus.comms.interfaces.ports[i].productId && laststatus.comms.interfaces.ports[i].vendorId) {
-    if (laststatus.comms.interfaces.ports[i].productId == '6015' && laststatus.comms.interfaces.ports[i].vendorId == '1D50') {
-      // found Smoothieboard
-      img = 'smoothieboard.png';
-      note = 'Smoothieware USB Port';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '6001' && laststatus.comms.interfaces.ports[i].vendorId == '0403') {
-      // found FTDI FT232
-      img = 'usb.png';
-      note = 'FTDI USB to Serial';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '6015' && laststatus.comms.interfaces.ports[i].vendorId == '0403') {
-      // found FTDI FT230x
-      img = 'usb.png';
-      note = 'FTDI USD to Serial';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '606D' && laststatus.comms.interfaces.ports[i].vendorId == '1D50') {
-      // found TinyG G2
-      img = 'usb.png';
-      note = 'Tiny G2';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '003D' && laststatus.comms.interfaces.ports[i].vendorId == '2341') {
-      // found Arduino Due Prog Port
-      img = 'due.png';
-      note = 'Arduino Due Prog';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '0043' && laststatus.comms.interfaces.ports[i].vendorId == '2341' || laststatus.comms.interfaces.ports[i].productId == '0001' && laststatus.comms.interfaces.ports[i].vendorId == '2341' || laststatus.comms.interfaces.ports[i].productId == '0043' && laststatus.comms.interfaces.ports[i].vendorId == '2A03') {
-      // found Arduino Uno
-      img = 'uno.png';
-      note = 'Arduino Uno';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '2341' && laststatus.comms.interfaces.ports[i].vendorId == '0042') {
-      // found Arduino Mega
-      img = 'mega.png';
-      note = 'Arduino Mega';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '7523' && laststatus.comms.interfaces.ports[i].vendorId == '1A86') {
-      // found CH340
-      img = 'uno.png';
-      note = 'CH340 Arduino Fake';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == 'EA60' && laststatus.comms.interfaces.ports[i].vendorId == '10C4') {
-      // found CP2102
-      img = 'nodemcu.png';
-      note = 'NodeMCU';
-    }
-    if (laststatus.comms.interfaces.ports[i].productId == '2303' && laststatus.comms.interfaces.ports[i].vendorId == '067B') {
-      // found CP2102
-      // img = 'nodemcu.png';
-      note = 'Prolific USB to Serial';
-    }
-  } else {
-    img = "usb.png";
-  }
-
-  return {
-    img: img,
-    note: note
-  };
 }
 
 function escapeHTML(html) {

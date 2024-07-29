@@ -362,7 +362,8 @@ GCodeParser = function(handlers, modecmdhandlers) {
           if (p2deltaX >= 0) anglepArcp2 += Math.PI;
       }
 
-      if (anglepArcp1 === anglepArcp2 && clwise === false)
+      //if (anglepArcp1 === anglepArcp2 && clwise === false) // commented out 9 apr 2024 to see if it helps for #257
+      if (anglepArcp1 === anglepArcp2)
         // Draw full circle if angles are both zero,
         // start & end points are same point... I think
         switch (args.plane) {
@@ -804,6 +805,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
           lastLine = newLine;
         },
         G2: function(args, indx, gcp) {
+          //console.log(args, indx, gcp)
           /* this is an arc move from lastLine's xy to the new xy. we'll
           show it as a light gray line, but we'll also sub-render the
           arc itself by figuring out the sub-segments . */
@@ -820,11 +822,16 @@ GCodeParser = function(handlers, modecmdhandlers) {
             arck: args.k !== undefined ? cofg.ijkabsolute(lastLine.z, args.k) : lastLine.z,
             arcr: args.r ? args.r : null,
           };
+
           //console.log("G2 newLine:", newLine);
           //newLine.g2 = true;
           newLine.arc = true;
           newLine.clockwise = true;
-          if (args.clockwise === false) newLine.clockwise = args.clockwise;
+          if (args.clockwise === false) {
+            newLine.clockwise = false
+          } else {
+            newLine.clockwise = true
+          }
           cofg.addSegment(lastLine, newLine, args);
           //console.log("G2", lastLine, newLine, args, cofg.offsetG92);
           lastLine = newLine;
@@ -840,7 +847,7 @@ GCodeParser = function(handlers, modecmdhandlers) {
 
         G73: function(args, indx, gcp) {
           // peck drilling. just treat as g1
-          newLine.g73 = true;
+          //newLine.g73 = true;
           console.log("G73 gcp:", gcp);
           gcp.handlers.G1(args);
         },

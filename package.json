@@ -1,18 +1,20 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.370",
+  "version": "1.0.381",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
+  "resolutions": {
+    "@electron/notarize": "2.3.2"
+  },
   "devDependencies": {
     "electron": "^23.1.1",
-    "electron-builder": "^24.0.0",
-    "electron-builder-notarize": "^1.5.1",
+    "electron-builder": "^24.9.1",
+    "electron-builder-notarize": "latest",
     "electron-rebuild": "^3.2.9",
     "ncp": "^2.0.0"
   },
   "dependencies": {
-    "avrgirl-arduino": "^5.0.1",
     "detect-rpi": "^1.4.0",
     "electron-updater": "^5.2.1",
     "evilscan": "^1.9.1",
@@ -27,7 +29,7 @@
     "ncp": "^2.0.0",
     "node-abi": "^3.33.0",
     "node-gyp": "^9.3.1",
-    "serialport": "^10.4.0",
+    "serialport": "^12.0.0",
     "socket.io": "^4.6.1",
     "xmodem.js": "^0.1.0"
   },
@@ -50,12 +52,22 @@
         "vPrefixedTagName": true
       }
     ],
-    "afterSign": "electron-builder-notarize",
+    "afterSign": "./notarize.js",
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "hardenedRuntime":true,
+      "gatekeeperAssess": false,
+      "notarize": false,
+      "target": {
+        "target": "default",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
     },
     "icon": "build/icon.icns",
     "appId": "openbuilds.control",
@@ -74,8 +86,8 @@
     "fileAssociations": [
       {
         "ext": "obc",
-        "name": "OpenBuilds CAM Workspace",
-        "description": "OpenBuilds CAM Workspace",
+        "name": "OpenBuilds CAM Project",
+        "description": "OpenBuilds CAM Project",
         "role": "Viewer"
       },
       {
@@ -121,16 +133,17 @@
     "asarUnpack": [
       "esptool.exe",
       "esptool-mac",
-      "esptool.py",
+      "esptool-linux",
       "*.bin"
     ],
     "win": {
+      "sign": "./signWin.js",
+      "signingHashAlgorithms": ["sha256"],
       "target": [
         {
           "target": "nsis",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         }
       ],
@@ -144,6 +157,7 @@
       ]
     },
     "dmg": {
+      "sign": false,
       "icon": "build/icon.icns",
       "contents": [
         {

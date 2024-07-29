@@ -462,7 +462,7 @@ function sortMacros(index, delta) {
   // var index = array.indexOf(element);
   var newIndex = index + delta;
   if (newIndex < 0 || newIndex == buttonsarray.length) return; //Already at the top or bottom.
-  var indexes = [index, newIndex].sort(); //Sort the indixes
+  var indexes = [index, newIndex].sort((a, b) => a - b); //Sort the indixes
   buttonsarray.splice(indexes[0], 2, buttonsarray[indexes[1]], buttonsarray[indexes[0]]); //Replace from lowest index, two elements, reverting the order
   populateMacroButtons();
 };

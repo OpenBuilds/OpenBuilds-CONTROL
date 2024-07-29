@@ -90,9 +90,7 @@ function applycalibrationx() {
   // $('#val-100-input').val(newsteps)
   // checkifchanged();
   sendGcode("$100=" + newsteps);
-  setTimeout(function() {
-    sendGcode(String.fromCharCode(0x18));
-  }, 500);
+  askToResetOnGrblSettingsChange()
 }
 
 

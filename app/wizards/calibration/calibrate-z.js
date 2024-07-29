@@ -88,9 +88,7 @@ function applycalibrationz() {
   // $('#val-102-input').val(newsteps)
   // checkifchanged();
   sendGcode("$102=" + newsteps);
-  setTimeout(function() {
-    sendGcode(String.fromCharCode(0x18));
-  }, 500);
+  askToResetOnGrblSettingsChange()
 }
 
 function zstepscalibrate() {
