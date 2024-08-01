@@ -6,21 +6,21 @@ echo "(1/10) Updating Repositories..."
 sudo apt-get update
 echo "(2/10) Upgrading RaspiOS..."
 sudo apt-get upgrade -y
-echo "(3/10) Installing remote desktop (TightVNC and XRDP)..."
-sudo apt install -y tightvncserver
-sudo apt install -y xrdp
+echo "(3/10) Installing local and remote desktop (LightDM, TightVNC and XRDP)..."
+sudo apt install -y tightvncserver xrdp lightdm
 echo "(4/10) Installing GIT..."
 sudo apt-get install -y git
-echo "(5/10) Installing NodeJS 19.x..."
-curl -sL https://deb.nodesource.com/setup_19.x | sudo -E bash -
-sudo apt-get install -y nodejs
+echo "(5/10) Installing NVM and NodeJS..."
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+. ~/.nvm/nvm.sh
+nvm install lts/iron
+nvm alias default lts/iron
 echo "(6/10) Updating npm..."
-sudo npm install -g npm@latest
+nvm install-latest-npm
 echo "(7/10) Downloading OpenBuilds-CONTROL source code..."
 cd ~; git clone https://github.com/OpenBuilds/OpenBuilds-CONTROL.git
 cd ~/OpenBuilds-CONTROL
 echo "(8/10) Installing OpenBuilds-CONTROL dependencies..."
-chmod 777 ~/.config
 npm install
 echo "(9/10) Recompiling OpenBuilds-CONTROL dependencies..."
 npm rebuild
