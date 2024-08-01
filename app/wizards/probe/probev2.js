@@ -54,7 +54,7 @@ $(document).ready(function() {
 
   if (localStorage.getItem('probeunitxyz')) {
     probeunitxyz = localStorage.getItem('probeunitxyz')
-    $('#probeunitxyz').data('select').val(probeunitxyz)  
+    $('#probeunitxyz').data('select').val(probeunitxyz)
   }
 });
 

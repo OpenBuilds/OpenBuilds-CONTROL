@@ -321,6 +321,7 @@
 
               <div class="group">
                 <div>
+                  <!-- Still used with browser based Open - don't delete -->
                   <button id="openGcodeBtn" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
                     <span class="icon">
                       <span class="far fa-folder-open fg-amber"></span>
@@ -340,6 +341,7 @@
                 </div>
 
                 <div>
+                  <!-- Used in Electron only -->
                   <button id="openGcodeBtnElectron19" class="ribbon-button dropdown-toggle" title="Open a GCODE file">
                     <span class="icon">
                       <span class="far fa-folder-open fg-amber"></span>
@@ -511,10 +513,10 @@
                     <li onclick="populateSurfaceToolForm();"><a href="#"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li onclick="jogWidget();"><a href="#"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                     <li class="divider fg-gray"></li>
-                    <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
-                    <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
-                    <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
-                    <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-wrench fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
+                    <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-arrows-alt-h fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
+                    <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-arrows-alt-v fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
+                    <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fas fa-sort-amount-down-alt fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
+                    <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-pen fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Keyboard Shortcuts</a></li>
                     <li class="divider fg-gray"></li>
@@ -538,7 +540,6 @@
                       <i class="fas fa-paint-brush"></i>
                     </span>
                     <span class="caption" id="currentThemeName">Dark<br>Mode</span>
-                    <span class="h6 badge bg-green fg-white"> <i class="fas fa-brush  fa-spin"></i> New!</span>
                   </button>
                 </div>
                 <span class="title">Theme</span>
@@ -596,10 +597,6 @@
                     <li onclick="disableSerialLog =! disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
                     <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
                     <li class="divider"></li>
-                    <li onclick="disableElectron19FileOpen = !disableElectron19FileOpen; saveDiagnostics(); location.reload();" id="disableElectron19FileOpenTick"><a href="#"><i class="far fa-folder-open fa-fw"></i> Disable Native File Open
-                        Dialog</a>
-                    </li>
-
                 </div>
                 <span class="title">Settings</span>
               </div>

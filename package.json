@@ -1,9 +1,12 @@
 {
   "name": "OpenBuildsCONTROL",
-  "version": "1.0.376",
+  "version": "1.0.381",
   "license": "AGPL-3.0",
   "description": "OpenBuildsCONTROL CNC Machine Host Software",
   "author": "github.com/openbuilds <support@openbuilds.com>",
+  "resolutions": {
+    "@electron/notarize": "2.3.2"
+  },
   "devDependencies": {
     "electron": "^23.1.1",
     "electron-builder": "^24.9.1",
@@ -130,7 +133,7 @@
     "asarUnpack": [
       "esptool.exe",
       "esptool-mac",
-      "esptool.py",
+      "esptool-linux",
       "*.bin"
     ],
     "win": {

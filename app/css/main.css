@@ -19,7 +19,7 @@ body {
 
 /* Implemented as default https://thayneco.com/expand-usb-port-selector-in-openbuilds-control/  */
 #section-jog div:nth-child(2) label {
-  width: 350px;
+  width: 450px;
 }
 
 /* Fix dialog-actions alignment */
@@ -179,7 +179,7 @@ select {
 }
 
 .openbuilds-switch .check::after {
-  background: rgb(64, 68, 71) !important;
+  : rgb(64, 68, 71) !important;
   border-color: rgb(64, 68, 71) !important;
 }
 
@@ -263,12 +263,17 @@ select {
   background-image: linear-gradient(to top, #888888, #ffffff, #888888);
 }
 
-/* html {
-  background: black;
-  background-color: black;
-  filter: invert(1) hue-rotate(180deg);
+.machine-profile-menu {
+  border: 1px solid rgb(64, 68, 71);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6),
+    /* Darker shadow for all sides */
+    0 4px 8px rgba(0, 0, 0, 0.4);
+  /* Additional dark shadow */
+  border-radius: 3px;
+  /* Optional: Adds rounded corners */
+  padding: 10px;
+  /* Optional: Adds some padding inside the div */
+  background: white;
+  left: 20px;
+  margin-top: 10px;
 }
-
-img {
-  filter: invert(1) hue-rotate(180deg);
-} */

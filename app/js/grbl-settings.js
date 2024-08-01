@@ -34,7 +34,6 @@ function loadGrblBackupFile(f) {
       };
 
       checkifchanged();
-      enableLimits(); // Enable or Disable
       displayDirInvert();
     }
   }
@@ -135,15 +134,16 @@ function grblPopulate() {
 
       <div id="grblProfileSection">
       <h6 class="fg-dark"><i class="fas fa-tasks fg-blue"></i> 1. Load Machine Profile<br>
-      <small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters below. Remember to click SAVE when done</small>
+      <small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters in Section (2) below. Remember to click <u>SAVE TO FIRMWARE</u> to save the settings to your controller</small>
       </h6>
 
-<div class="grid">
-   <div class="row">
-      <div class="cell-8">
-         <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/sphinx55.png"/> Select Machine</a>
-         <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  Custom Machine</a></li>
+      <div class="grid">
+        <div class="row">
+          <div class="cell-12">
+
+         <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/leadmachine1010.png"/> Select your machine type from the list:</a>
+         <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown" data-duration="100">
+            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  CUSTOM Machine (Profile sets sane defaults)</a></li>
             <li>
                <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
                <ul class="ribbon-dropdown" data-role="dropdown">
@@ -198,49 +198,46 @@ function grblPopulate() {
             </li>
          </ul>
       </div>
-      <div class="cell-4">
-         <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
-      </div>
+
    </div>
 </div>
 
 <hr class="bg-openbuilds">
 </div> <!-- End grblProfileSection -->
-<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a BACKUP so you don't lose your customized settings</small></h6>
+<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a <u>BACKUP</u> so you don't lose your customized settings</small></h6>
 
-<div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 460px); max-height: calc(100vh - 460px);">
-   <table class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="false" data-show-search="false">
+<div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 510px); max-height: calc(100vh - 460px);">
+  <table data-role="table" data-table-search-title="Search for Parameters by Name or $-Key" data-search-fields="Key, Parameter" data-on-draw="setup_settings_table" data-on-table-create="setup_settings_table" data-cell-wrapper="false" class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="true" data-show-search="true">
+    <thead>
+    <tr>
+      <th style="text-align: left;">Key</th>
+      <th style="text-align: left;">Parameter</th>
+      <th style="width: 250px; min-width: 240px !important;">Value</th>
+      <th style="width: 110px; min-width: 110px !important;">Utility</th>
+    </tr>
+  </thead>
+  <tbody>`
 
-      <tbody>
-
-         <tr>
-            <th style="text-align: left;">Key</th>
-            <th style="text-align: left;">Parameter</th>
-            <th style="width: 250px; min-width: 240px !important;">Value</th>
-            <th style="width: 110px; min-width: 110px !important;">Utility</th>
-         </tr>`
-
-    // Insert Table Rows here
     for (key in grblParams) {
       var key2 = key.split('=')[0].substr(1);
       //console.log(key2)
       if (grblSettingsTemplate2[key2] !== undefined) {
         //template += grblSettingsTemplate2[key2].template;
         template += `<tr id="grblSettingsRow` + key2 + `" title="` + grblSettingsTemplate2[key2].description + `">
-           <td>` + grblSettingsTemplate2[key2].key + `</td>
-           <td>` + grblSettingsTemplate2[key2].title + `</td>
-           <td>` + grblSettingsTemplate2[key2].template + `</td>
-           <td>` + grblSettingsTemplate2[key2].utils + `</td>
-        </tr>`
+         <td>` + grblSettingsTemplate2[key2].key + `</td>
+         <td>` + grblSettingsTemplate2[key2].title + `</td>
+         <td>` + grblSettingsTemplate2[key2].template + `</td>
+         <td>` + grblSettingsTemplate2[key2].utils + `</td>
+      </tr>`
       } else {
         template += `
-        <tr>
-           <td>` + key + `</td>
-           <td><span class="tally alert">` + key + `</span></td>
-           <td><input data-role="input" data-clear-button="false" data-append="?" type="text" value="` + grblParams[key] + `" id="val-` + key2 + `-input"></td>
-           <td></td>
-        </tr>
-        `
+      <tr>
+         <td>` + key + `</td>
+         <td><span class="tally alert">` + key + `</span></td>
+         <td><input data-role="input" data-clear-button="false" data-append="?" type="text" value="` + grblParams[key] + `" id="val-` + key2 + `-input"></td>
+         <td></td>
+      </tr>
+      `
       }
     }
 
@@ -252,76 +249,13 @@ function grblPopulate() {
         `
     $('#grblconfig').append(template)
 
-    for (key in grblParams) {
-      var key2 = key.split('=')[0].substr(1);
-      $("#val-" + key2 + "-input").val(grblParams[key])
-
-    }
-
-    setTimeout(function() {
-      $("#val-32-input").val(parseInt(grblParams['$32'])).trigger("change");
-      $("#val-20-input").val(parseInt(grblParams['$20'])).trigger("change");
-      $("#val-21-input").val(parseInt(grblParams['$21'])).trigger("change");
-      $("#val-22-input").val(parseInt(grblParams['$22'])).trigger("change");
-      $("#val-23-input").val(parseInt(grblParams['$23'])).trigger("change");
-      $("#val-5-input").val(parseInt(grblParams['$5'])).trigger("change");
-      $("#val-6-input").val(parseInt(grblParams['$6'])).trigger("change");
-      $("#val-2-input").val(parseInt(grblParams['$2'])).trigger("change");
-      $("#val-3-input").val(parseInt(grblParams['$3'])).trigger("change");
-      $("#val-4-input").val(parseInt(grblParams['$4'])).trigger("change");
-    }, 100);;
-
     $('#grblSettingsTable').on('keyup paste click change', 'input, select', function() {
       checkifchanged()
     });
 
-    // $("#grblSettingsTableView").scroll(function() {
-    //   var scroll = $("#grblSettingsTableView").scrollTop();
-    //   console.log('scrolling: ', scroll)
-    //   if (scroll > 200) {
-    //     if (allowGrblSettingsViewScroll) {
-    //       $("#grblProfileSection").slideUp('slow');
-    //       $("#grblSettingsTableView").css("max-height", "calc(100vh - 320px)")
-    //       $("#grblSettingsTableView").css("height", "calc(100vh - 320px)")
-    //     }
-    //   } else if (scroll < 200) {
-    //     $("#grblProfileSection").slideDown('slow')
-    //     $("#grblSettingsTableView").css("max-height", "calc(100vh - 460px)")
-    //     $("#grblSettingsTableView").css("height", "calc(100vh - 460px)")
-    //   }
-    // });
-
-
     // Event Handlers for Switch Checkboxes
     setTimeout(function() {
-      $('#limitsinstalled:checkbox').change(function() {
-        enableLimits();
-      });
-
-      $('#xdirinvert:checkbox').change(function() {
-        changeDirInvert();
-      });
-      $('#ydirinvert:checkbox').change(function() {
-        changeDirInvert();
-      });
-      $('#zdirinvert:checkbox').change(function() {
-        changeDirInvert();
-      });
-
-      $('#xHomeDir:checkbox').change(function() {
-        changeProbeDirInvert();
-      });
-      $('#yHomeDir:checkbox').change(function() {
-        changeProbeDirInvert();
-      });
-      $('#zHomeDir:checkbox').change(function() {
-        changeProbeDirInvert();
-      });
-
-      // populare Direction Invert Checkboxes
-      displayDirInvert()
-      displayProbeDirInvert()
-
+      setup_settings_table();
     }, 100)
 
 
@@ -329,11 +263,9 @@ function grblPopulate() {
     $('#grblSettingsBadge').hide();
 
     if (grblParams['$21'] == 1 && grblParams['$22'] > 0) {
-      $('#limitsinstalled:checkbox').prop('checked', true);
       $('#gotozeroMPos').removeClass('disabled')
       $('#homeBtn').attr('disabled', false)
     } else {
-      $('#limitsinstalled:checkbox').prop('checked', false);
       $('#gotozeroMPos').addClass('disabled')
       $('#homeBtn').attr('disabled', true)
     }
@@ -391,70 +323,6 @@ function checkifchanged() {
     $('#saveBtn').attr('disabled', true).addClass('disabled');
     $('#saveBtnIcon').removeClass('fg-grayBlue').addClass('fg-gray');
   }
-
-  // if ($("#val-21-input").val() == 1 && $("#val-22-input").val() == 1) {
-  //   $('#limitsinstalled:checkbox').prop('checked', true);
-  //   $('#gotozeroMPos').removeClass('disabled')
-  //   $('#homeBtn').attr('disabled', false)
-  // } else {
-  //   $('#limitsinstalled:checkbox').prop('checked', false);
-  //   $('#gotozeroMPos').addClass('disabled')
-  //   $('#homeBtn').attr('disabled', true)
-  // }
-
-  // if ($("#val-21-input").val() == 1) { // Hard Limits enabled?
-  //   if (laststatus.machine.inputs.includes('X') || laststatus.machine.inputs.includes('Y') || laststatus.machine.inputs.includes('Z')) { // But a limit is currently Active?
-  //     console.log("created")
-  //     for (i = 0; i < openDialogs.length; i++) {
-  //       Metro.dialog.close(openDialogs[i]);
-  //     }
-  //     openDialogs.length = 0;
-  //     var dialog = Metro.dialog.create({
-  //       title: "Enable Hard Limits / Endstops?",
-  //       content: `<div>You have <code>$21=1 ; Hard Limits = Enabled</code> in your settings. <br>
-  //       We detected one or more Limits inputs as Triggered.  <br>
-  //       Please make sure none of the Limit switches are triggered before enabling Hard Limits:<p>
-  //
-  //       <table class="table striped compact">
-  //         <thead>
-  //           <tr>
-  //             <th style="width: 40%;">PIN</th>
-  //             <th style="width: 60%;">Status</th>
-  //           </tr>
-  //         </thead>
-  //         <tbody>
-  //           <tr>
-  //             <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
-  //             <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus xpin">NOCOMM</span></td>
-  //           </tr>
-  //           <tr>
-  //             <td class="pt-1 mt-0 pb-0 pt-0">Y-Limit</td>
-  //             <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus ypin">NOCOMM</span></td>
-  //           </tr>
-  //           <tr>
-  //             <td class="pt-1 mt-0 pb-0 pt-0">Z-Limit</td>
-  //             <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus zpin">NOCOMM</span></td>
-  //           </tr>
-  //         </tbody>
-  //       </table>`,
-  //       clsDialog: 'dark',
-  //       actions: [{
-  //         caption: "Set 'Hard Limits' to Disabled",
-  //         cls: "js-dialog-close",
-  //         onclick: function() {
-  //           $("#limitsinstalled").prop("checked", false);
-  //           enableLimits()
-  //           setTimeout(function() {
-  //             checkifchanged()
-  //           }, 400); // reset
-  //         }
-  //       }]
-  //     });
-  //     openDialogs.push(dialog);
-  //   }
-  // }
-
-
 }
 
 function grblSaveSettings() {
@@ -548,60 +416,6 @@ function askToResetOnGrblSettingsChange() {
   }, 1000); // Just to show settings was written
 }
 
-
-// Old Gnea-Grbl way
-// function grblSaveSettings() {
-//   var commands = ""
-//   for (var key in grblParams) {
-//     if (grblParams.hasOwnProperty(key)) {
-//       var j = key.substring(1)
-//       var newVal = $("#val-" + j + "-input").val();
-//       // Only send values that changed
-//       if (newVal !== undefined) {
-//         if (parseFloat(newVal) != parseFloat(grblParams[key])) {
-//           // console.log(key + ' was ' + grblParams[key] + ' but now, its ' + newVal);
-//           commands += key + '=' + newVal + "\n"
-//           // sendGcode(key + '=' + newVal) + "\n";
-//         }
-//       }
-//     }
-//   }
-//   console.log("commands", commands)
-//   socket.emit('runJob', {
-//     data: commands,
-//     isJob: false,
-//     fileName: ""
-//   });
-//   grblParams = {};
-//
-//   Metro.dialog.create({
-//     title: "Configuration Updated. Reset Grbl?",
-//     content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
-//     actions: [{
-//         caption: "Yes",
-//         cls: "js-dialog-close secondary",
-//         onclick: function() {
-//           setTimeout(function() {
-//             sendGcode(String.fromCharCode(0x18));
-//             setTimeout(function() {
-//               refreshGrblSettings()
-//             }, 1000);
-//           }, 400);
-//         }
-//       },
-//       {
-//         caption: "Later",
-//         cls: "js-dialog-close",
-//         onclick: function() {
-//           console.log("Do nothing")
-//           refreshGrblSettings();
-//         }
-//       }
-//     ]
-//   });
-//   $('#grblSettingsBadge').hide();
-// }
-
 function refreshGrblSettings() {
   $('#saveBtn').attr('disabled', true).addClass('disabled');
   $('#saveBtnIcon').removeClass('fg-grayBlue').addClass('fg-gray');
@@ -615,37 +429,6 @@ function refreshGrblSettings() {
       grblPopulate();
     }, 500);
   }, 200);
-
-}
-
-function enableLimits() {
-  var grblParams_lim = {
-    $21: "0", //"Hard limits enable, boolean"
-    $22: "0", //"Homing cycle enable, boolean"
-  }
-  var hasLimits = $('#limitsinstalled').is(':checked');
-  if (hasLimits) {
-    grblParams_lim.$21 = "1"; //"Hard limits enable, boolean"
-    grblParams_lim.$22 = "1"; //"Homing cycle enable, boolean"
-  } else {
-    grblParams_lim.$21 = "0"; //"Hard limits enable, boolean"
-    grblParams_lim.$22 = "0"; //"Homing cycle enable, boolean"
-  }
-  for (var key in grblParams_lim) {
-    if (grblParams_lim.hasOwnProperty(key)) {
-      var j = key.substring(1)
-      var newVal = $("#val-" + j + "-input").val();
-      // console.log("$" + j + " = " + newVal)
-      $("#val-" + j + "-input").val(parseFloat(grblParams_lim[key]))
-    }
-  }
-  allowGrblSettingsViewScroll = false;
-  setTimeout(function() {
-    allowGrblSettingsViewScroll = true;
-  }, 500);
-  checkifchanged();
-  var elm = document.getElementById("grblSettingsLimits");
-  elm.scrollIntoView(true);
 
 }
 
@@ -789,4 +572,51 @@ function updateToolOnSValues() {
   $(".ToolOnS50").html((parseInt(grblParams.$30) * 0.5).toFixed(0))
   $(".ToolOnS75").html((parseInt(grblParams.$30) * 0.75).toFixed(0))
   $(".ToolOnS100").html(parseInt(grblParams.$30).toFixed(0))
+}
+
+function setup_settings_table() {
+
+  for (key in grblParams) {
+    var key2 = key.split('=')[0].substr(1);
+    $("#val-" + key2 + "-input").val(grblParams[key])
+  }
+
+  setTimeout(function() {
+    $("#val-32-input").val(parseInt(grblParams['$32'])).trigger("change");
+    $("#val-20-input").val(parseInt(grblParams['$20'])).trigger("change");
+    $("#val-21-input").val(parseInt(grblParams['$21'])).trigger("change");
+    $("#val-22-input").val(parseInt(grblParams['$22'])).trigger("change");
+    $("#val-23-input").val(parseInt(grblParams['$23'])).trigger("change");
+    $("#val-5-input").val(parseInt(grblParams['$5'])).trigger("change");
+    $("#val-6-input").val(parseInt(grblParams['$6'])).trigger("change");
+    $("#val-2-input").val(parseInt(grblParams['$2'])).trigger("change");
+    $("#val-3-input").val(parseInt(grblParams['$3'])).trigger("change");
+    $("#val-4-input").val(parseInt(grblParams['$4'])).trigger("change");
+  }, 100);;
+
+  $('#xdirinvert:checkbox').change(function() {
+    changeDirInvert();
+  });
+  $('#ydirinvert:checkbox').change(function() {
+    changeDirInvert();
+  });
+  $('#zdirinvert:checkbox').change(function() {
+    changeDirInvert();
+  });
+
+  $('#xHomeDir:checkbox').change(function() {
+    changeProbeDirInvert();
+  });
+  $('#yHomeDir:checkbox').change(function() {
+    changeProbeDirInvert();
+  });
+  $('#zHomeDir:checkbox').change(function() {
+    changeProbeDirInvert();
+  });
+
+  // populare Direction Invert Checkboxes
+  displayDirInvert()
+  displayProbeDirInvert()
+
+  console.log("Updated")
 }

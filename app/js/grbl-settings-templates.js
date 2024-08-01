@@ -25,50 +25,59 @@ var grblSettingsTemplate2 = {
     title: `Step direction invert, mask`,
     description: `This setting inverts the direction signal for each axis. By default, Grbl assumes that the axes move in a positive direction when the direction pin signal is low, and a negative direction when the pin is high. Often, axes don't move this way with some machines. This setting will invert the direction pin signal for those axes that move the opposite way.`,
     template: `<input  id="val-3-input" readonly type="hidden" />
-       <table style="width: 100%;">
-         <tr>
-           <td><span class="text-small">X</span>
-           </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="xdirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-          <tr>
-          <td><span class="text-small">Y</span>
-          </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="ydirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-         <tr>
-           <td><span class="text-small">Z</span>
-           </td>
-           <td><span class="text-small">Normal</span>
-           </td>
-           <td class="pb-1">
-             <label class="toggle">
-               <input type="checkbox" id="zdirinvert" />
-               <div>app-notification</div>
-             </label>
-           </td>
-           <td><span class="text-small">Reversed</span>
-           </td>
-         </tr>
-       </table>`,
+    <div class="row">
+    <div class="cell">
+        <span class="text-small">X</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="xdirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+<div class="row">
+    <div class="cell">
+        <span class="text-small">Y</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="ydirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+<div class="row">
+    <div class="cell">
+        <span class="text-small">Z</span>
+    </div>
+    <div class="cell">
+        <span class="text-small">Normal</span>
+    </div>
+    <div class="cell pb-1">
+        <label class="toggle">
+            <input type="checkbox" id="zdirinvert">
+            <div class="app-notification">app-notification</div>
+        </label>
+    </div>
+    <div class="cell">
+        <span class="text-small">Reversed</span>
+    </div>
+</div>
+
+      `,
     utils: ``
   },
   4: {
@@ -160,50 +169,59 @@ var grblSettingsTemplate2 = {
     title: `Homing direction invert, mask`,
     description: `By default, Grbl assumes your homing limit switches are in the positive direction, first moving the z-axis positive, then the x-y axes positive before trying to precisely locate machine zero by going back and forth slowly around the switch. If your machine has a limit switch in the negative direction, the homing direction mask can invert the axes' direction. It works just like the step port invert and direction port invert masks, where all you have to do is send the value in the table to indicate what axes you want to invert and search for in the opposite direction.`,
     template: `<input id="val-23-input" readonly type="hidden">
-          <table style="width: 100%;">
-            <tr>
-              <td><span class="text-small">X</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="xHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-             <tr>
-              <td><span class="text-small">Y</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="yHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-            <tr>
-              <td><span class="text-small">Z</span>
-              </td>
-              <td><span class="text-small">Min</span>
-              </td>
-              <td class="pb-1">
-                <label class="toggle">
-                  <input type="checkbox" id="zHomeDir" />
-                  <div>app-notification</div>
-                </label>
-              </td>
-              <td><span class="text-small">Max</span>
-              </td>
-            </tr>
-          </table>`,
+    <div class="row">
+<div class="cell">
+  <span class="text-small">X</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="xHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+<div class="row">
+<div class="cell">
+  <span class="text-small">Y</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="yHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+<div class="row">
+<div class="cell">
+  <span class="text-small">Z</span>
+</div>
+<div class="cell">
+  <span class="text-small">Min</span>
+</div>
+<div class="cell pb-1">
+  <label class="toggle">
+      <input type="checkbox" id="zHomeDir">
+      <div class="app-notification">app-notification</div>
+  </label>
+</div>
+<div class="cell">
+  <span class="text-small">Max</span>
+</div>
+</div>
+
+`,
     utils: ``
   },
   24: {
@@ -403,8 +421,8 @@ var grblSettingsTemplate2 = {
   },
   14: {
     key: `$14`,
-    title: `Limit pins invert, mask`,
-    description: ``,
+    title: `Invert control input signals, mask`,
+    description: `<control mask> = bitmask where bit 0 = reset, 1 = feed hold, 2 = cycle start, 3 = safety door, 4 = block delete, 5 = stop disable, 6 = e-stop, 7 = probe connected`,
     template: `<input id="val-14-input" data-role="input" data-clear-button="false" data-append="mask" type="text" >`,
     utils: ``
   },
@@ -874,7 +892,7 @@ var grblSettingsTemplate2 = {
   },
   486: {
     key: `$486`,
-    title: `Unlock required after E-Stop as boolean`,
+    title: `Lock coordinate systems as bitfield`,
     description: `Lock coordinate systems against accidental changes. 0 - G59.1 (1) / 1 - G59.2 (2) / 2 - G59.3 (4)`,
     template: `<input id="val-486-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``
@@ -885,5 +903,55 @@ var grblSettingsTemplate2 = {
     description: `Auto mount SD card on startup.  0 - Auto mount SD card (1) / 1 - Hide LittleFS (2)`,
     template: `<input id="val-650-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
     utils: ``
+  },
+  328: {
+    key: `$328`,
+    title: `FTP port, range: 1 - 65535, reboot required`,
+    description: `FTP port number listening for incoming connections. NOTE: A hard reset of the controller is required after changing this setting.`,
+    template: `<input id="val-328-input" data-role="input" data-clear-button="false" data-append="port" type="number" >`,
+    utils: ``
+  },
+  372: {
+    key: `$372`,
+    title: `Invert I/O Port outputs as bitfield`,
+    description: `Invert I/O Port outputs as bitfield`,
+    template: `<input id="val-372-input" data-role="input" data-clear-button="false" data-append="bitfield" type="number" >`,
+    utils: ``
+  },
+  140: {
+    key: `$140`,
+    title: `X-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-140-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  141: {
+    key: `$141`,
+    title: `Y-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-141-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  142: {
+    key: `$142`,
+    title: `Z-axis motor current in A, range: 0 - 3.0`,
+    description: `X-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-142-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  143: {
+    key: `$143`,
+    title: `X-axis motor current in A, range: 0 - 3.0`,
+    description: `A-axis motor current in A, range: 0 - 3.0`,
+    template: `<input id="val-143-input" data-role="input" data-clear-button="false" data-append="amps" type="number" >`,
+    utils: ``
+  },
+  536: {
+    key: `$536`,
+    title: `Neopixel LED strip length, max: 255`,
+    description: `WS2812B LED strip length, max: 255`,
+    template: `<input id="val-536-input" data-role="input" data-clear-button="false" data-append="LEDs" type="number" >`,
+    utils: ``
   }
+
 }

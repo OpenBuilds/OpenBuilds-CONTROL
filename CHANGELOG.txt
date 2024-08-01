@@ -1,3 +1,27 @@
+v1.0.381:
+- Added additional board support to Flashing tools
+- Fixed linebreak on realtime feedrate indicator
+- Updated esptool for Windows, Mac and Linux
+- Improved USB ID Descriptions handling
+- Added more grblHAL settings descriptions
+- Clean up Diagnostic Menu
+- Improved Servo Calibration Wizard to take Grbl Settings into account, and start at center-of-travel for calibration tool (Fix #362)
+- Default all machine profiles to have Limits enabled by default - been a couple years since we've started including limit switches as standard
+- Added quick search to Grbl Settings table (Note new search overwrites any changes, make sure to save before changing search)
+v1.0.380:
+- Test Fix for grblHAL startup alarm lock
+v1.0.379:
+- Major improvements to USB connection steps: set up parser before checking for firmware
+- Added more grblHAL errors/settings descriptions
+v1.0.378:
+- Test fix for 4X hanging on DTR connect
+v1.0.377:
+- Fixed Grbl Settings Description for $14, $486
+- Fixed USB descriptor for Pico
+- Removed remaining Smoothieware leftovers
+- Fixed issue #360: Clear queue on port.disconnect
+- Fixed issue #359: UI update downgrade to 3 axes
+- Fixed issue #330: Re-Enabled DTR toggle for native USB support
 v1.0.376:
 - Updated installer End User License Agreement
 v1.0.375:

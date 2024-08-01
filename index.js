@@ -60,7 +60,7 @@ config.nextWebPort = function() {
 config.webPort = process.env.WEB_PORT || config.nextWebPort();
 config.posDecimals = process.env.DRO_DECIMALS || 3;
 config.grblWaitTime = 0.5;
-config.firmwareWaitTime = 4;
+
 
 var express = require("express");
 var app = express();
@@ -516,8 +516,12 @@ var status = {
 async function findPorts() {
   const ports = await SerialPort.list()
   // console.log(ports)
-  oldportslist = ports;
   status.comms.interfaces.ports = ports;
+  for (i = 0; i < status.comms.interfaces.ports.length; i++) {
+    var data = friendlyPort(status.comms.interfaces.ports[i])
+    status.comms.interfaces.ports[i].img = data.img;
+    status.comms.interfaces.ports[i].note = data.note;
+  }
 }
 findPorts()
 
@@ -919,7 +923,6 @@ io.on("connection", function(socket) {
 
     var port = data.port;
     var firmwareImagePath = data.file;
-    var board = data.board
     var customImg = data.customImg
     console.log(__dirname, file, data.file)
     if (customImg) {
@@ -996,6 +999,16 @@ io.on("connection", function(socket) {
       debug_log('ERROR: Machine connection not open!');
     }
     flashInterface(data)
+  })
+
+  socket.on("flashBLOX", function(data) {
+    if (status.comms.connectionStatus > 0) {
+      debug_log('WARN: Closing Port ' + port);
+      stopPort();
+    } else {
+      debug_log('ERROR: Machine connection not open!');
+    }
+    flashBLOX(data)
   })
 
   socket.on("writeInterfaceUsbDrive", function(data) {
@@ -1131,17 +1144,15 @@ io.on("connection", function(socket) {
 
     if (status.comms.connectionStatus < 1) {
 
-
-
       if (data.type == "usb") {
         console.log("connect", "Connecting to " + data.port + " via " + data.type);
 
-        // Fix for autoreset getting stuck on MacOS with Silabs Chip
+
         var allowRtsCts = false
         var allowHupcl = false
         if (process.platform == 'darwin') {
-          allowRtsCts = true
-          allowHupcl = true
+          allowRtsCts = true // Fix for autoreset getting stuck on MacOS with Silabs Chip
+          allowHupcl = true // Fix for autoreset getting stuck on MacOS with Silabs Chip
         }
 
         port = new SerialPort({
@@ -1204,21 +1215,401 @@ io.on("connection", function(socket) {
         }
         io.sockets.emit('data', output);
         status.comms.connectionStatus = 0;
+        stopPort() // also clear queues etc
       }); // end port.onclose
 
+
       function portOpened(port, data) {
+        // setup listeners first
+
+        parser.on("data", function(data) {
+          //console.log(data)
+          var command = sentBuffer[0];
+
+          if (command == "$CD" && data != "ok") {
+            fluidncConfig = fluidncConfig += data + "\n"
+          }
+
+          if (data.indexOf("<") != 0) {
+            debug_log('data:', data)
+          }
+
+          // Grbl $I parser
+          if (data.indexOf("[VER:") === 0) {
+            status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
+            io.sockets.emit("status", status);
+            io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
+            status.machine.firmware.date = data.split(':')[1].split(".")[2];
+          }
+
+          if (data.indexOf("[OPT:") === 0) {
+
+            var startOpt = data.search(/opt:/i) + 4;
+            var grblOpt;
+            if (startOpt > 4) {
+              var grblOptLen = data.substr(startOpt).search(/]/);
+              grblOpts = data.substr(startOpt, grblOptLen).split(/,/);
+
+              status.machine.firmware.blockBufferSize = grblOpts[1];
+              status.machine.firmware.rxBufferSize = grblOpts[2];
+
+              var features = []
+
+              var i = grblOpts[0].length;
+              while (i--) {
+                features.push(grblOpts[0].charAt(i))
+                switch (grblOpts[0].charAt(i)) {
+                  case 'Q':
+                    debug_log('SPINDLE_IS_SERVO Enabled')
+                    //
+                    break;
+                  case 'V': //	Variable spindle enabled
+                    debug_log('Variable spindle enabled')
+                    //
+                    break;
+                  case 'N': //	Line numbers enabled
+                    debug_log('Line numbers enabled')
+                    //
+                    break;
+                  case 'M': //	Mist coolant enabled
+                    debug_log('Mist coolant enabled')
+                    //
+                    break;
+                  case 'C': //	CoreXY enabled
+                    debug_log('CoreXY enabled')
+                    //
+                    break;
+                  case 'P': //	Parking motion enabled
+                    debug_log('Parking motion enabled')
+                    //
+                    break;
+                  case 'Z': //	Homing force origin enabled
+                    debug_log('Homing force origin enabled')
+                    //
+                    break;
+                  case 'H': //	Homing single axis enabled
+                    debug_log('Homing single axis enabled')
+                    //
+                    break;
+                  case 'T': //	Two limit switches on axis enabled
+                    debug_log('Two limit switches on axis enabled')
+                    //
+                    break;
+                  case 'A': //	Allow feed rate overrides in probe cycles
+                    debug_log('Allow feed rate overrides in probe cycles')
+                    //
+                    break;
+                  case '$': //	Restore EEPROM $ settings disabled
+                    debug_log('Restore EEPROM $ settings disabled')
+                    //
+                    break;
+                  case '#': //	Restore EEPROM parameter data disabled
+                    debug_log('Restore EEPROM parameter data disabled')
+                    //
+                    break;
+                  case 'I': //	Build info write user string disabled
+                    debug_log('Build info write user string disabled')
+                    //
+                    break;
+                  case 'E': //	Force sync upon EEPROM write disabled
+                    debug_log('Force sync upon EEPROM write disabled')
+                    //
+                    break;
+                  case 'W': //	Force sync upon work coordinate offset change disabled
+                    debug_log('Force sync upon work coordinate offset change disabled')
+                    //
+                    break;
+                  case 'L': //	Homing init lock sets Grbl into an alarm state upon power up
+                    debug_log('Homing init lock sets Grbl into an alarm state upon power up')
+                    //
+                    break;
+                }
+              }
+              status.machine.firmware.features = features;
+              io.sockets.emit("features", features);
+            }
+          }
+
+          // [PRB:0.000,0.000,0.000:0]
+          //if (data.indexOf("[PRB:") === 0 && command != "$#" && command != undefined) {
+          if (data.indexOf("[PRB:") === 0) {
+            debug_log(data)
+            var prbLen = data.substr(5).search(/\]/);
+            var prbData = data.substr(5, prbLen).split(/,/);
+            var success = data.split(':')[2].split(']')[0];
+            status.machine.probe.x = prbData[0];
+            status.machine.probe.y = prbData[1];
+            status.machine.probe.z = prbData[2].split(':')[0];
+            status.machine.probe.state = success;
+            if (success > 0) {
+              var output = {
+                'command': '[ PROBE ]',
+                'response': "Probe Completed.",
+                'type': 'success'
+              }
+              io.sockets.emit('data', output);
+            } else {
+              var output = {
+                'command': '[ PROBE ]',
+                'response': "Probe move ERROR - probe did not make contact within specified distance",
+                'type': 'error'
+              }
+              io.sockets.emit('data', output);
+            }
+            io.sockets.emit('prbResult', status.machine.probe);
+          };
+
+          if (data.indexOf("[GC:") === 0) {
+            gotModals(data)
+          }
+
+          if (data.indexOf("[INTF:") === 0) {
+            var output = {
+              'command': 'connect',
+              'response': "Detected an OpenBuilds Interface on port " + port.path,
+              'type': 'success'
+            }
+            io.sockets.emit('data', output);
+            status.interface.connected = true;
+            if (data.split(":")[1].indexOf("ver") == 0) {
+              var installedVersion = parseFloat(data.split(":")[1].split("]")[0].split("-")[1])
+              status.interface.firmware.installedVersion = installedVersion
+              var output = {
+                'command': 'connect',
+                'response': "OpenBuilds Interface Firmware Version: v" + installedVersion,
+                'type': 'info'
+              }
+              io.sockets.emit('data', output);
+              if (installedVersion < status.interface.firmware.availVersion) {
+                var output = {
+                  'command': 'connect',
+                  'response': "OpenBuilds Interface Firmware OUTDATED: v" + installedVersion + " can be upgraded to v" + status.interface.firmware.availVersion,
+                  'type': 'error'
+                }
+                io.sockets.emit('data', output);
+                io.sockets.emit('interfaceOutdated', status);
+              }
+            }
+            io.sockets.emit("status", status);
+          }
+
+          // Machine Identification
+          if (data.indexOf("Grbl") === 0 || data.indexOf("[FIRMWARE:grblHAL]") === 0) { // Check if it's Grbl
+            debug_log(data)
+            status.comms.blocked = false;
+            if (data.indexOf("GrblHAL") === 0) {
+              status.machine.firmware.type = "grbl";
+              status.machine.firmware.platform = "grblHAL"
+              status.machine.firmware.version = data.substr(8, 4); // get version
+            } else if (data.indexOf("[FIRMWARE:grblHAL]") === 0) {
+              status.machine.firmware.type = "grbl";
+              status.machine.firmware.platform = "grblHAL"
+              // Parse version from seperate [VER:...] line not here for this response
+            } else if (data.indexOf("FluidNC") != -1) { // Grbl 3.6 [FluidNC v3.6.5 (wifi) '$' for help]
+              status.machine.firmware.type = "grbl";
+              status.machine.firmware.platform = "FluidNC"
+              status.machine.firmware.version = data.substr(19, 5); // get version
+            } else {
+              status.machine.firmware.type = "grbl";
+              status.machine.firmware.platform = "gnea"
+              status.machine.firmware.version = data.substr(5, 4); // get version
+            }
+            if (parseFloat(status.machine.firmware.version) < 1.1) { // If version is too old
+              if (status.machine.firmware.version.length < 3) {
+                debug_log('invalid version string, stay connected')
+              } else {
+                if (status.comms.connectionStatus > 0) {
+                  debug_log('WARN: Closing Port ' + port.path + " /  v" + parseFloat(status.machine.firmware.version));
+                  // stopPort();
+                } else {
+                  debug_log('ERROR: Machine connection not open!');
+                }
+                var output = {
+                  'command': command,
+                  'response': "Detected an unsupported version: Grbl " + status.machine.firmware.version + ". This is sadly outdated. Please upgrade to Grbl 1.1 or newer to use this software.  Go to http://github.com/gnea/grbl",
+                  'type': 'error'
+                }
+                io.sockets.emit('data', output);
+              }
+            }
+            status.machine.firmware.date = "";
+            // debug_log("GRBL detected");
+            // setTimeout(function() {
+            //   io.sockets.emit('grbl', status.machine.firmware)
+            //   //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
+            //   //io.sockets.emit('errorsCleared', true);
+            // }, 600)
+            // // Start interval for status queries
+            // clearInterval(statusLoop);
+            // statusLoop = setInterval(function() {
+            //   if (status.comms.connectionStatus > 0) {
+            //     addQRealtime("?");
+            //   }
+            // }, 200);
+            status.machine.modals.homedRecently = false;
+          } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
+            status.comms.blocked = false;
+            debug_log("Smoothieware detected");
+            status.machine.firmware.type = "smoothie";
+            status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
+            status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
+            // Start interval for status queries
+            // statusLoop = setInterval(function() {
+            //   if (status.comms.connectionStatus > 0) {
+            //     addQRealtime("?");
+            //   }
+            // }, 200);
+            var output = {
+              'command': "FIRMWARE ERROR",
+              'response': "Detected an unsupported version: Smoothieware " + status.machine.firmware.version + ". This software no longer support Smoothieware. \nLuckilly there is an alternative firmware you can install on your controller to make it work with this software. Check out Grbl-LPC at https://github.com/cprezzi/grbl-LPC - Grbl-LPC is a Grbl port for controllers using the NXP LPC176x chips, for example Smoothieboards",
+              'type': 'error'
+            }
+            io.sockets.emit('data', output);
+            stopPort();
+          } // end of machine identification
+
+          // Machine Feedback: Position
+          if (data.indexOf("<") === 0) {
+            // debug_log(' Got statusReport (Grbl & Smoothieware)')
+            // statusfeedback func
+            parseFeedback(data)
+            if (command == "?") {
+              var output = {
+                'command': command,
+                'response': data,
+                'type': 'info'
+              }
+              // debug_log(output.response)
+              io.sockets.emit('data', output);
+            }
+
+            // debug_log(data)
+          } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
+            io.sockets.emit('ok', command); // added per #325
+            // debug_log("OK FOUND")
+            if (status.machine.firmware.type === "grbl") {
+              // debug_log('got OK from ' + command)
+              command = sentBuffer.shift();
+            }
+            if (command == "$CD") {
+              io.sockets.emit('fluidncConfig', fluidncConfig);
+            }
+            status.comms.blocked = false;
+            send1Q();
+          } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
+            debug_log("ALARM:  " + data)
+            status.comms.connectionStatus = 5;
+            switch (status.machine.firmware.type) {
+              case 'grbl':
+                // sentBuffer.shift();
+                var alarmCode = parseInt(data.split(':')[1]);
+                debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
+                status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
+                if (alarmCode != 5) {
+                  io.sockets.emit("toastErrorAlarm", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
+                }
+                var output = {
+                  'command': '',
+                  'response': 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]",
+                  'type': 'error'
+                }
+                io.sockets.emit('data', output);
+                break;
+            }
+            status.comms.connectionStatus = 5;
+          } else if (data.indexOf('WARNING: After HALT you should HOME as position is currently unknown') != -1) { //} || data.indexOf('HALTED') === 0) {
+            status.comms.connectionStatus = 2;
+          } else if (data.indexOf('Emergency Stop Requested') != -1) { //} || data.indexOf('HALTED') === 0) {
+            debug_log("Emergency Stop Requested")
+            status.comms.connectionStatus = 5;
+          } else if (data.indexOf('wait') === 0) { // Got wait from Repetier -> ignore
+            // do nothing
+          } else if (data.indexOf('error') === 0) { // Error received -> stay blocked stops queue
+            switch (status.machine.firmware.type) {
+              case 'grbl':
+                // sentBuffer.shift();
+                var errorCode = parseInt(data.split(':')[1]);
+
+                var lastAlarm = "";
+                if (errorCode == 9 && status.comms.connectionStatus == 5 && status.comms.alarm.length > 0) {
+                  lastAlarm = "<hr>This error may just be a symptom of an earlier event:<br> ALARM: " + status.comms.alarm
+                }
+                debug_log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
+                var output = {
+                  'command': '',
+                  'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm,
+                  'type': 'error'
+                }
+                io.sockets.emit('data', output);
+                io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm)
+                break;
+            }
+            debug_log("error;")
+            sentBuffer.shift();
+            status.comms.connectionStatus = 5;
+          } else if (data === ' ') {
+            // nothing
+          } else {
+            // do nothing with +data
+          }
+
+          if (data.indexOf("[MSG:Reset to continue]") === 0) {
+            switch (status.machine.firmware.type) {
+              case 'grbl':
+                debug_log("[MSG:Reset to continue] -> Sending Reset")
+                addQRealtime(String.fromCharCode(0x18)); // ctrl-x
+                break;
+            }
+          }
+
+
+          if (command) {
+            command = command.replace(/(\r\n|\n|\r)/gm, "");
+            // debug_log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
+
+            if (command != "?" && command != "M105" && data.length > 0 && data.indexOf('<') == -1) {
+              var string = "";
+              if (status.comms.sduploading) {
+                string += "SD: "
+              }
+              string += data //+ "  [ " + command + " ]"
+              var output = {
+                'command': command,
+                'response': string,
+                'type': 'info'
+              }
+              // debug_log(output.response)
+              io.sockets.emit('data', output);
+            }
+          } else {
+            if (data.indexOf("<") != 0) {
+              var output = {
+                'command': "",
+                'response': data,
+                'type': 'info'
+              }
+              io.sockets.emit('data', output);
+            }
+          }
+        }); // end of parser.on(data)
+
+        // Then try to connect
+        // set status
+        status.comms.connectionStatus = 1;
+
+        // Log attempt 1
         debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
         var output = {
           'command': 'connect',
           'response': "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Controller...",
           'type': 'info'
         }
+        console.log(port, friendlyPort(port));
         io.sockets.emit('data', output);
-
-        status.comms.connectionStatus = 1;
-
+        // do attempt 1
         addQRealtime("\n"); // this causes smoothie and grblHAL to send the welcome string
 
+        // log attempt 2
         var output = {
           'command': 'connect',
           'response': "Attempting to detect Controller (1): (Autoreset)",
@@ -1226,6 +1617,7 @@ io.on("connection", function(socket) {
         }
         io.sockets.emit('data', output);
 
+        // do attempt 2 after 1 second
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
             debug_log("Didnt detect firmware after AutoReset. Lets see if we have Grbl instance with a board that doesnt have AutoReset");
@@ -1240,6 +1632,7 @@ io.on("connection", function(socket) {
           }
         }, config.grblWaitTime * 1000);
 
+        //do attempt 3 after 2 seconds Smoothie and soft-usb
         setTimeout(function() { //wait for controller to be ready
           if (status.machine.firmware.type.length < 1) {
             debug_log("No firmware yet, probably not Grbl then. lets see if we have Smoothie?");
@@ -1254,9 +1647,66 @@ io.on("connection", function(socket) {
           }
         }, config.grblWaitTime * 2000);
 
-        setTimeout(function() {
 
-          if (status.machine.firmware.type.length > 1) {
+        // Not smoothie, maybe DTR
+        setTimeout(function() { //wait for controller to be ready
+          if (status.machine.firmware.type.length < 1) {
+            debug_log("Didnt detect firmware after AutoReset or Ctrl+X. Lets try toggling DTR");
+            var output = {
+              'command': 'connect',
+              'response': "Attempting to detect Controller (4): (DTR Enable)",
+              'type': 'info'
+            }
+            io.sockets.emit('data', output);
+
+            // toggle DTR on
+            port.set({
+              "dtr": true
+            }, console.log("Set DTR"));
+
+            // then try Ctrl+X again
+            setTimeout(function() {
+
+              setTimeout(function() {
+                addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+              }, 100);
+
+              addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
+              debug_log("Sent: Ctrl+x after DTR toggle");
+
+              // port.set({
+              //   "dtr": false
+              // }, console.log("Set DTR"));
+            }, 100);
+          }
+
+          // port.set({ // toggle Off again else grbl on Uno gets stuck
+          //   "dtr": false
+          // }, console.log("Set DTR"));
+        }, config.grblWaitTime * 3000);
+
+
+        setTimeout(function() {
+          // Close port if we don't detect supported firmware after 2s.
+          if (status.machine.firmware.type.length < 1) {
+            debug_log("No supported firmware detected. Closing port " + port.path);
+            if (status.interface.connected) {
+              var output = {
+                'command': 'connect',
+                'response': `ERROR!:  Connection established to INTERFACE, but no response from Grbl on the upstream controller. See https://docs.openbuilds.com/interface for more details. Closing port ` + port.path,
+                'type': 'error'
+              }
+            } else {
+              var output = {
+                'command': 'connect',
+                'response': `ERROR!:  No Response from Controller - See https://docs.openbuilds.com/doku.php?id=docs:blackbox:faq-usb-connection-failed for troubleshooting information. Closing port ` + port.path,
+                'type': 'error'
+              }
+            }
+            io.sockets.emit('data', output);
+            stopPort();
+          } else {
+
             if (status.machine.firmware.type === "grbl") {
               debug_log("GRBL detected");
               var output = {
@@ -1269,7 +1719,7 @@ io.on("connection", function(socket) {
                 io.sockets.emit('grbl', status.machine.firmware)
                 //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
                 //io.sockets.emit('errorsCleared', true);
-              }, 600)
+              }, 100)
               // Start interval for status queries
               clearInterval(statusLoop);
               statusLoop = setInterval(function() {
@@ -1279,49 +1729,24 @@ io.on("connection", function(socket) {
               }, 200);
               status.machine.modals.homedRecently = false;
             }
-          }
 
-
-        }, config.grblWaitTime * 3000)
-
-        if (config.firmwareWaitTime > 0) {
-          setTimeout(function() {
-            // Close port if we don't detect supported firmware after 2s.
-            if (status.machine.firmware.type.length < 1) {
-              debug_log("No supported firmware detected. Closing port " + port.path);
-              if (status.interface.connected) {
-                var output = {
-                  'command': 'connect',
-                  'response': `ERROR!:  Connection established to INTERFACE, but no response from Grbl on the upstream controller. See https://docs.openbuilds.com/interface for more details. Closing port ` + port.path,
-                  'type': 'error'
-                }
-              } else {
-                var output = {
-                  'command': 'connect',
-                  'response': `ERROR!:  No Response from Controller - See https://docs.openbuilds.com/doku.php?id=docs:blackbox:faq-usb-connection-failed for troubleshooting information. Closing port ` + port.path,
-                  'type': 'error'
-                }
+            if (data.type == "usb") {
+              var output = {
+                'command': 'connect',
+                'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + port.path,
+                'type': 'success'
               }
-              io.sockets.emit('data', output);
-              stopPort();
-            } else {
-              if (data.type == "usb") {
-                var output = {
-                  'command': 'connect',
-                  'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + port.path,
-                  'type': 'success'
-                }
-              } else if (data.type = "telnet") {
-                var output = {
-                  'command': 'connect',
-                  'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + data.ip,
-                  'type': 'success'
-                }
+            } else if (data.type = "telnet") {
+              var output = {
+                'command': 'connect',
+                'response': "Firmware Detected:  " + status.machine.firmware.platform + " version " + status.machine.firmware.version + " dated " + status.machine.firmware.date + " on " + data.ip,
+                'type': 'success'
               }
-              io.sockets.emit('data', output);
             }
-          }, config.firmwareWaitTime * 1000);
-        }
+            io.sockets.emit('data', output);
+          }
+        }, config.grblWaitTime * 4000);
+
 
 
         status.comms.connectionStatus = 2;
@@ -1336,376 +1761,7 @@ io.on("connection", function(socket) {
         }
       }
 
-      parser.on("data", function(data) {
-        //console.log(data)
-        var command = sentBuffer[0];
 
-        if (command == "$CD" && data != "ok") {
-          fluidncConfig = fluidncConfig += data + "\n"
-        }
-
-        if (data.indexOf("<") != 0) {
-          debug_log('data:', data)
-        }
-
-        // Grbl $I parser
-        if (data.indexOf("[VER:") === 0) {
-          status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
-          io.sockets.emit("status", status);
-          io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
-          status.machine.firmware.date = data.split(':')[1].split(".")[2];
-        }
-
-        if (data.indexOf("[OPT:") === 0) {
-
-          var startOpt = data.search(/opt:/i) + 4;
-          var grblOpt;
-          if (startOpt > 4) {
-            var grblOptLen = data.substr(startOpt).search(/]/);
-            grblOpts = data.substr(startOpt, grblOptLen).split(/,/);
-
-            status.machine.firmware.blockBufferSize = grblOpts[1];
-            status.machine.firmware.rxBufferSize = grblOpts[2];
-
-            var features = []
-
-            var i = grblOpts[0].length;
-            while (i--) {
-              features.push(grblOpts[0].charAt(i))
-              switch (grblOpts[0].charAt(i)) {
-                case 'Q':
-                  debug_log('SPINDLE_IS_SERVO Enabled')
-                  //
-                  break;
-                case 'V': //	Variable spindle enabled
-                  debug_log('Variable spindle enabled')
-                  //
-                  break;
-                case 'N': //	Line numbers enabled
-                  debug_log('Line numbers enabled')
-                  //
-                  break;
-                case 'M': //	Mist coolant enabled
-                  debug_log('Mist coolant enabled')
-                  //
-                  break;
-                case 'C': //	CoreXY enabled
-                  debug_log('CoreXY enabled')
-                  //
-                  break;
-                case 'P': //	Parking motion enabled
-                  debug_log('Parking motion enabled')
-                  //
-                  break;
-                case 'Z': //	Homing force origin enabled
-                  debug_log('Homing force origin enabled')
-                  //
-                  break;
-                case 'H': //	Homing single axis enabled
-                  debug_log('Homing single axis enabled')
-                  //
-                  break;
-                case 'T': //	Two limit switches on axis enabled
-                  debug_log('Two limit switches on axis enabled')
-                  //
-                  break;
-                case 'A': //	Allow feed rate overrides in probe cycles
-                  debug_log('Allow feed rate overrides in probe cycles')
-                  //
-                  break;
-                case '$': //	Restore EEPROM $ settings disabled
-                  debug_log('Restore EEPROM $ settings disabled')
-                  //
-                  break;
-                case '#': //	Restore EEPROM parameter data disabled
-                  debug_log('Restore EEPROM parameter data disabled')
-                  //
-                  break;
-                case 'I': //	Build info write user string disabled
-                  debug_log('Build info write user string disabled')
-                  //
-                  break;
-                case 'E': //	Force sync upon EEPROM write disabled
-                  debug_log('Force sync upon EEPROM write disabled')
-                  //
-                  break;
-                case 'W': //	Force sync upon work coordinate offset change disabled
-                  debug_log('Force sync upon work coordinate offset change disabled')
-                  //
-                  break;
-                case 'L': //	Homing init lock sets Grbl into an alarm state upon power up
-                  debug_log('Homing init lock sets Grbl into an alarm state upon power up')
-                  //
-                  break;
-              }
-            }
-            status.machine.firmware.features = features;
-            io.sockets.emit("features", features);
-          }
-        }
-
-        // [PRB:0.000,0.000,0.000:0]
-        //if (data.indexOf("[PRB:") === 0 && command != "$#" && command != undefined) {
-        if (data.indexOf("[PRB:") === 0) {
-          debug_log(data)
-          var prbLen = data.substr(5).search(/\]/);
-          var prbData = data.substr(5, prbLen).split(/,/);
-          var success = data.split(':')[2].split(']')[0];
-          status.machine.probe.x = prbData[0];
-          status.machine.probe.y = prbData[1];
-          status.machine.probe.z = prbData[2].split(':')[0];
-          status.machine.probe.state = success;
-          if (success > 0) {
-            var output = {
-              'command': '[ PROBE ]',
-              'response': "Probe Completed.",
-              'type': 'success'
-            }
-            io.sockets.emit('data', output);
-          } else {
-            var output = {
-              'command': '[ PROBE ]',
-              'response': "Probe move ERROR - probe did not make contact within specified distance",
-              'type': 'error'
-            }
-            io.sockets.emit('data', output);
-          }
-          io.sockets.emit('prbResult', status.machine.probe);
-        };
-
-        if (data.indexOf("[GC:") === 0) {
-          gotModals(data)
-        }
-
-        if (data.indexOf("[INTF:") === 0) {
-          var output = {
-            'command': 'connect',
-            'response': "Detected an OpenBuilds Interface on port " + port.path,
-            'type': 'success'
-          }
-          io.sockets.emit('data', output);
-          status.interface.connected = true;
-          if (data.split(":")[1].indexOf("ver") == 0) {
-            var installedVersion = parseFloat(data.split(":")[1].split("]")[0].split("-")[1])
-            status.interface.firmware.installedVersion = installedVersion
-            var output = {
-              'command': 'connect',
-              'response': "OpenBuilds Interface Firmware Version: v" + installedVersion,
-              'type': 'info'
-            }
-            io.sockets.emit('data', output);
-            if (installedVersion < status.interface.firmware.availVersion) {
-              var output = {
-                'command': 'connect',
-                'response': "OpenBuilds Interface Firmware OUTDATED: v" + installedVersion + " can be upgraded to v" + status.interface.firmware.availVersion,
-                'type': 'error'
-              }
-              io.sockets.emit('data', output);
-              io.sockets.emit('interfaceOutdated', status);
-            }
-          }
-          io.sockets.emit("status", status);
-        }
-
-        // Machine Identification
-        if (data.indexOf("Grbl") === 0 || data.indexOf("[FIRMWARE:grblHAL]") === 0) { // Check if it's Grbl
-          debug_log(data)
-          status.comms.blocked = false;
-          if (data.indexOf("GrblHAL") === 0) {
-            status.machine.firmware.type = "grbl";
-            status.machine.firmware.platform = "grblHAL"
-            status.machine.firmware.version = data.substr(8, 4); // get version
-          } else if (data.indexOf("[FIRMWARE:grblHAL]") === 0) {
-            status.machine.firmware.type = "grbl";
-            status.machine.firmware.platform = "grblHAL"
-            // Parse version from seperate [VER:...] line not here for this response
-          } else if (data.indexOf("FluidNC") != -1) { // Grbl 3.6 [FluidNC v3.6.5 (wifi) '$' for help]
-            status.machine.firmware.type = "grbl";
-            status.machine.firmware.platform = "FluidNC"
-            status.machine.firmware.version = data.substr(19, 5); // get version
-          } else {
-            status.machine.firmware.type = "grbl";
-            status.machine.firmware.platform = "gnea"
-            status.machine.firmware.version = data.substr(5, 4); // get version
-          }
-          if (parseFloat(status.machine.firmware.version) < 1.1) { // If version is too old
-            if (status.machine.firmware.version.length < 3) {
-              debug_log('invalid version string, stay connected')
-            } else {
-              if (status.comms.connectionStatus > 0) {
-                debug_log('WARN: Closing Port ' + port.path + " /  v" + parseFloat(status.machine.firmware.version));
-                // stopPort();
-              } else {
-                debug_log('ERROR: Machine connection not open!');
-              }
-              var output = {
-                'command': command,
-                'response': "Detected an unsupported version: Grbl " + status.machine.firmware.version + ". This is sadly outdated. Please upgrade to Grbl 1.1 or newer to use this software.  Go to http://github.com/gnea/grbl",
-                'type': 'error'
-              }
-              io.sockets.emit('data', output);
-            }
-          }
-          status.machine.firmware.date = "";
-          // debug_log("GRBL detected");
-          // setTimeout(function() {
-          //   io.sockets.emit('grbl', status.machine.firmware)
-          //   //v1.0.318 - commented out as a test - too many normal alarms clear prematurely
-          //   //io.sockets.emit('errorsCleared', true);
-          // }, 600)
-          // // Start interval for status queries
-          // clearInterval(statusLoop);
-          // statusLoop = setInterval(function() {
-          //   if (status.comms.connectionStatus > 0) {
-          //     addQRealtime("?");
-          //   }
-          // }, 200);
-          status.machine.modals.homedRecently = false;
-        } else if (data.indexOf("LPC176") >= 0) { // LPC1768 or LPC1769 should be Smoothieware
-          status.comms.blocked = false;
-          debug_log("Smoothieware detected");
-          status.machine.firmware.type = "smoothie";
-          status.machine.firmware.version = data.substr(data.search(/version:/i) + 9).split(/,/);
-          status.machine.firmware.date = new Date(data.substr(data.search(/Build date:/i) + 12).split(/,/)).toDateString();
-          // Start interval for status queries
-          // statusLoop = setInterval(function() {
-          //   if (status.comms.connectionStatus > 0) {
-          //     addQRealtime("?");
-          //   }
-          // }, 200);
-          var output = {
-            'command': "FIRMWARE ERROR",
-            'response': "Detected an unsupported version: Smoothieware " + status.machine.firmware.version + ". This software no longer support Smoothieware. \nLuckilly there is an alternative firmware you can install on your controller to make it work with this software. Check out Grbl-LPC at https://github.com/cprezzi/grbl-LPC - Grbl-LPC is a Grbl port for controllers using the NXP LPC176x chips, for example Smoothieboards",
-            'type': 'error'
-          }
-          io.sockets.emit('data', output);
-          stopPort();
-        } // end of machine identification
-
-        // Machine Feedback: Position
-        if (data.indexOf("<") === 0) {
-          // debug_log(' Got statusReport (Grbl & Smoothieware)')
-          // statusfeedback func
-          parseFeedback(data)
-          if (command == "?") {
-            var output = {
-              'command': command,
-              'response': data,
-              'type': 'info'
-            }
-            // debug_log(output.response)
-            io.sockets.emit('data', output);
-          }
-
-          // debug_log(data)
-        } else if (data.indexOf("ok") === 0) { // Got an OK so we are clear to send
-          io.sockets.emit('ok', command); // added per #325
-          // debug_log("OK FOUND")
-          if (status.machine.firmware.type === "grbl") {
-            // debug_log('got OK from ' + command)
-            command = sentBuffer.shift();
-          }
-          if (command == "$CD") {
-            io.sockets.emit('fluidncConfig', fluidncConfig);
-          }
-          status.comms.blocked = false;
-          send1Q();
-        } else if (data.indexOf('ALARM') === 0) { //} || data.indexOf('HALTED') === 0) {
-          debug_log("ALARM:  " + data)
-          status.comms.connectionStatus = 5;
-          switch (status.machine.firmware.type) {
-            case 'grbl':
-              // sentBuffer.shift();
-              var alarmCode = parseInt(data.split(':')[1]);
-              debug_log('ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode));
-              status.comms.alarm = alarmCode + ' - ' + grblStrings.alarms(alarmCode)
-              if (alarmCode != 5) {
-                io.sockets.emit("toastErrorAlarm", 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]")
-              }
-              var output = {
-                'command': '',
-                'response': 'ALARM: ' + alarmCode + ' - ' + grblStrings.alarms(alarmCode) + " [ " + command + " ]",
-                'type': 'error'
-              }
-              io.sockets.emit('data', output);
-              break;
-          }
-          status.comms.connectionStatus = 5;
-        } else if (data.indexOf('WARNING: After HALT you should HOME as position is currently unknown') != -1) { //} || data.indexOf('HALTED') === 0) {
-          status.comms.connectionStatus = 2;
-        } else if (data.indexOf('Emergency Stop Requested') != -1) { //} || data.indexOf('HALTED') === 0) {
-          debug_log("Emergency Stop Requested")
-          status.comms.connectionStatus = 5;
-        } else if (data.indexOf('wait') === 0) { // Got wait from Repetier -> ignore
-          // do nothing
-        } else if (data.indexOf('error') === 0) { // Error received -> stay blocked stops queue
-          switch (status.machine.firmware.type) {
-            case 'grbl':
-              // sentBuffer.shift();
-              var errorCode = parseInt(data.split(':')[1]);
-
-              var lastAlarm = "";
-              if (errorCode == 9 && status.comms.connectionStatus == 5 && status.comms.alarm.length > 0) {
-                lastAlarm = "<hr>This error may just be a symptom of an earlier event:<br> ALARM: " + status.comms.alarm
-              }
-              debug_log('error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]");
-              var output = {
-                'command': '',
-                'response': 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm,
-                'type': 'error'
-              }
-              io.sockets.emit('data', output);
-              io.sockets.emit("toastError", 'error: ' + errorCode + ' - ' + grblStrings.errors(errorCode) + " [ " + command + " ]" + lastAlarm)
-              break;
-          }
-          debug_log("error;")
-          sentBuffer.shift();
-          status.comms.connectionStatus = 5;
-        } else if (data === ' ') {
-          // nothing
-        } else {
-          // do nothing with +data
-        }
-
-        if (data.indexOf("[MSG:Reset to continue]") === 0) {
-          switch (status.machine.firmware.type) {
-            case 'grbl':
-              debug_log("[MSG:Reset to continue] -> Sending Reset")
-              addQRealtime(String.fromCharCode(0x18)); // ctrl-x
-              break;
-          }
-        }
-
-
-        if (command) {
-          command = command.replace(/(\r\n|\n|\r)/gm, "");
-          // debug_log("CMD: " + command + " / DATA RECV: " + data.replace(/(\r\n|\n|\r)/gm, ""));
-
-          if (command != "?" && command != "M105" && data.length > 0 && data.indexOf('<') == -1) {
-            var string = "";
-            if (status.comms.sduploading) {
-              string += "SD: "
-            }
-            string += data //+ "  [ " + command + " ]"
-            var output = {
-              'command': command,
-              'response': string,
-              'type': 'info'
-            }
-            // debug_log(output.response)
-            io.sockets.emit('data', output);
-          }
-        } else {
-          if (data.indexOf("<") != 0) {
-            var output = {
-              'command': "",
-              'response': data,
-              'type': 'info'
-            }
-            io.sockets.emit('data', output);
-          }
-        }
-      }); // end of parser.on(data)
     }
   });
 
@@ -2344,9 +2400,14 @@ function stopPort() {
   // port.drain(port.close());
 
   if (status.comms.interfaces.type == "usb") {
-    port.drain(port.close());
+    if (port.isOpen) {
+      port.drain(port.close());
+    }
   } else if (status.comms.interfaces.type == "telnet") {
-    port.destroy();
+    if (port.isOpen) {
+      port.destroy();
+      port.isOpen = false;
+    }
   }
 }
 
@@ -2421,6 +2482,8 @@ function parseFeedback(data) {
           aPos = parseFloat(wPos[3]).toFixed(config.posDecimals);
           status.machine.has4thAxis = true;
         }
+      } else {
+        status.machine.has4thAxis = false;
       }
       if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(xPos);
@@ -2449,6 +2512,8 @@ function parseFeedback(data) {
           aPos = parseFloat(mPos[3]).toFixed(config.posDecimals);
           status.machine.has4thAxis = true;
         }
+      } else {
+        status.machine.has4thAxis = false;
       }
       if (status.machine.has4thAxis) {
         status.machine.position.work.x = parseFloat(parseFloat(xPos - status.machine.position.offset.x).toFixed(config.posDecimals));
@@ -3421,13 +3486,118 @@ const storage = multer.diskStorage({
   }
 });
 
+function flashBLOX(data) {
+  status.comms.connectionStatus = 6;
+
+  var port = data.port;
+  var file = data.file;
+  var customImg = data.customImg
+  var erase = data.erase
+
+  console.log(__dirname, file, data.file)
+
+  if (customImg == true) {
+    var firmwarePath = firmwareImagePath
+  } else {
+    var firmwarePath = path.join(__dirname, file)
+  }
+
+
+
+  console.log("Flashing BLOX on " + port + " with file: " + file)
+
+  var data = {
+    'port': port,
+    'string': "[Starting...]"
+  }
+  io.sockets.emit("progStatus", data);
+
+  //esptool.exe --chip esp32s3 --port "COM9" --baud 921600  --before default_reset --after hard_reset write_flash
+  //-e -z --flash_mode dio --flash_freq 80m --flash_size 4MB
+  //0x0 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.bootloader.bin"
+  //0x8000 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.partitions.bin"
+  //0xe000 "C:\Users\user\AppData\Local\Arduino15\packages\esp32\hardware\esp32\2.0.5/tools/partitions/boot_app0.bin"
+  //0x10000 "C:\Users\user\AppData\Local\Temp\arduino\sketches\1D51207397083FCB1C259015BEFF27B0/external_leds.ino.bin"
+
+  var esptool_opts = [
+    '--chip', 'esp32s3',
+    '--port', port,
+    '--baud', '921600',
+    '--before', 'default_reset',
+    '--after', 'hard_reset',
+    'write_flash',
+    '-z',
+    '--flash_mode', 'dio',
+    '--flash_freq', 'keep',
+    '--flash_size', 'keep',
+    '0x0', path.join(__dirname, "./blox-bootloader.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x8000', path.join(__dirname, "./blox-partition-table.bin").replace('app.asar', 'app.asar.unpacked'),
+    '0x10000', path.resolve(firmwarePath).replace('app.asar', 'app.asar.unpacked')
+  ];
+
+  if (erase == true) {
+    esptool_opts.push('--erase-all');
+  }
+
+  console.log(esptool_opts);
+
+  if (process.platform == 'linux') {
+    //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
+    fs.chmodSync(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'win32') {
+    var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  } else if (process.platform == 'darwin') {
+    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+  }
+
+
+
+
+  child.stdout.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.stderr.on('data', function(data) {
+    var debugString = data.toString();
+    console.log(debugString)
+    var data = {
+      'port': port,
+      'string': debugString
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 6;
+
+  });
+
+  child.on('close', (code) => {
+    var data = {
+      'port': port,
+      'string': `[exit:` + code + `]`,
+      'code': code
+    }
+    io.sockets.emit("progStatus", data);
+    status.comms.connectionStatus = 0;
+
+  });
+}
+// end BLOX Programming
+
 function flashInterface(data) {
   status.comms.connectionStatus = 6;
 
   var port = data.port;
   var file = data.file;
-  var board = data.board
-
+  var erase = data.erase
 
   console.log("Flashing Interface on " + port + " with file: " + file)
   // var data = {
@@ -3462,15 +3632,19 @@ function flashInterface(data) {
     '0x8000', path.join(__dirname, "./firmware.partitions.bin").replace('app.asar', 'app.asar.unpacked')
   ];
 
+  if (erase == true) {
+    esptool_opts.push('--erase-all');
+  }
+
   if (process.platform == 'linux') {
     //path.join(__dirname, "..", "lib", "resources", "vad.onnx"),
-    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'darwin') {
-    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
 
 
@@ -3557,14 +3731,14 @@ function flashGrblHal(data) {
   }
 
   if (process.platform == 'linux') {
-    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-linux").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'win32') {
     var child = spawn(path.join(__dirname, "./esptool.exe").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   } else if (process.platform == 'darwin') {
     console.log("Running on MacOS")
-    fs.chmodSync(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), 0o755);
-    var child = spawn(path.join(__dirname, "./esptool.py").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
+    fs.chmodSync(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), 0o755);
+    var child = spawn(path.join(__dirname, "./esptool-mac").replace('app.asar', 'app.asar.unpacked'), esptool_opts);
   }
 
 
@@ -3702,6 +3876,94 @@ function scanForTelnetDevices(range) {
   });
 }
 // end LAN Scanner
+
+// USB port details
+
+function friendlyPort(port) {
+  // var likely = false;
+  var img = 'usb.png';
+  var note = '';
+  var manufacturer = port.manufacturer
+  if (manufacturer == `(Standard port types)`) {
+    img = 'serial.png'
+    note = 'Motherboard Serial Port';
+  } else if (port.productId && port.vendorId) {
+    if (port.productId == '6015' && port.vendorId == '1D50') {
+      // found Smoothieboard
+      img = 'smoothieboard.png';
+      note = 'Smoothieware USB Port (Not Supported)';
+    }
+    if (port.productId == '6001' && port.vendorId == '0403') {
+      // found FTDI FT232
+      img = 'usb.png';
+      note = 'FTDI USB to Serial';
+    }
+    if (port.productId == '6015' && port.vendorId == '0403') {
+      // found FTDI FT230x
+      img = 'usb.png';
+      note = 'FTDI USD to Serial';
+    }
+    if (port.productId == '606D' && port.vendorId == '1D50') {
+      // found TinyG G2
+      img = 'usb.png';
+      note = 'Tiny G2';
+    }
+    if (port.productId == '003D' && port.vendorId == '2341') {
+      // found Arduino Due Prog Port
+      img = 'due.png';
+      note = 'Arduino Due Prog';
+    }
+    if (port.productId == '0043' && port.vendorId == '2341' || port.productId == '0001' && port.vendorId == '2341' || port.productId == '0043' && port.vendorId == '2A03') {
+      // found Arduino Uno
+      img = 'uno.png';
+      note = 'Arduino Uno';
+    }
+    if (port.productId == '2341' && port.vendorId == '0042') {
+      // found Arduino Mega
+      img = 'mega.png';
+      note = 'Arduino Mega';
+    }
+    if (port.productId == '7523' && port.vendorId == '1A86') {
+      // found CH340
+      img = 'uno.png';
+      note = 'WCH.cn CH340 USB to UART';
+    }
+    if (port.productId == 'EA60' && port.vendorId == '10C4') {
+      // found CP2102
+      img = 'silabs.png';
+      note = 'Silicon Labs USB to UART';
+    }
+    if (port.productId == '000A' && port.vendorId == '2E8A') {
+      // found CP2102
+      img = 'pipico.png';
+      note = 'Raspberry Pi Pico CDC UART';
+    }
+    if (port.productId == '4001' && port.vendorId == '303A') {
+      // found CP2102
+      img = 'blox.png';
+      note = 'OpenBuilds BLOX (with grblHAL)';
+    }
+    if (port.productId == '1001' && port.vendorId == '303A') {
+      // found CP2102
+      img = 'blox.png';
+      note = 'OpenBuilds BLOX (Alternate Firmware)';
+    }
+    if (port.productId == '2303' && port.vendorId == '067B') {
+      // found CP2102
+      // img = 'nodemcu.png';
+      note = 'Prolific USB to Serial';
+    }
+  } else {
+    img = "usb.png";
+  }
+
+  return {
+    img: img,
+    note: note
+  };
+}
+
+// End USB Port details
 
 
 process.on('exit', () => debug_log('exit'))
