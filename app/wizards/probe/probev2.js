@@ -31,6 +31,7 @@ var probemode = {
     position: "fl" // fl, fr, rl, rr, c
   },
   probe: xyzprobeplate,
+  interval: undefined,
 }
 
 $(document).ready(function() {
@@ -81,8 +82,23 @@ $("#probeunitxyz").change(function() {
 //   $(".needsXYZProbe").hide();
 // }
 
-function openProbeDialog() {
+function initProbeDialog() {
   Metro.dialog.open("#xyzProbeWindow");
+  $('#confirmNewProbeBtn')[0].innerHTML = "Confirm Probe Position";
+
+  probemode.interval = setInterval(() => {
+    if (laststatus.machine.inputs.contains("P")) {
+      $('#confirmNewProbeBtn').addClass("disabled");
+      $('#confirmNewProbeBtn')[0].innerHTML = "Touched";
+      $('#runNewProbeBtn').removeClass("disabled").focus();
+      clearInterval(probemode.interval);
+      probemode.interval = undefined;
+    }
+  }, 100);
+}
+
+function openProbeDialog() {
+  initProbeDialog();
   if (localStorage.getItem('probeType')) {
     probetype(localStorage.getItem('probeType'))
     if (localStorage.getItem('probeType') == "z") { // Z Touchplate
@@ -114,7 +130,7 @@ function openProbeDialog() {
 }
 
 function openProbeXDialog() {
-  Metro.dialog.open("#xyzProbeWindow");
+  initProbeDialog();
   if (localStorage.getItem('probeType')) {
     probetype(localStorage.getItem('probeType'))
     if (localStorage.getItem('probeType') == "z") {
@@ -140,7 +156,7 @@ function openProbeXDialog() {
 }
 
 function openProbeYDialog() {
-  Metro.dialog.open("#xyzProbeWindow");
+  initProbeDialog();
   if (localStorage.getItem('probeType')) {
     probetype(localStorage.getItem('probeType'))
     if (localStorage.getItem('probeType') == "z") {
@@ -166,7 +182,7 @@ function openProbeYDialog() {
 }
 
 function openProbeZDialog() {
-  Metro.dialog.open("#xyzProbeWindow");
+  initProbeDialog();
   if (localStorage.getItem('probeType')) {
     probetype(localStorage.getItem('probeType'))
     if (localStorage.getItem('probeType') == "z") {
@@ -409,17 +425,9 @@ function probetype(type) {
 
 function confirmProbeInPlace(operation) {
   $('#confirmNewProbeBtn').addClass("disabled");
-  $('#confirmNewProbeBtn')[0].innerHTML = "Touch Probe...";
-  let timeoutFunction = () => {
-    if (laststatus.machine.inputs.contains("P")) {
-      $('#confirmNewProbeBtn').addClass("disabled");
-      $('#confirmNewProbeBtn')[0].innerHTML = "Touched";
-      $('#runNewProbeBtn').removeClass("disabled").focus();
-    } else {
-      setTimeout(timeoutFunction, 50);
-    }
-  }
-  setTimeout(timeoutFunction, 50);
+  $('#runNewProbeBtn').removeClass("disabled").focus();
+  clearInterval(probemode.interval);
+  probemode.interval = undefined;
 }
 
 function resetJogModeAfterProbe() {
@@ -435,6 +443,8 @@ function resetJogModeAfterProbe() {
     }
   }
   $('#confirmNewProbeBtn').removeClass("disabled")
+  clearInterval(probemode.interval)
+  probemode.interval = undefined;
 }
 
 
