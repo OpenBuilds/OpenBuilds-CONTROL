@@ -592,7 +592,8 @@ function setup_settings_table() {
     $("#val-2-input").val(parseInt(grblParams['$2'])).trigger("change");
     $("#val-3-input").val(parseInt(grblParams['$3'])).trigger("change");
     $("#val-4-input").val(parseInt(grblParams['$4'])).trigger("change");
-  }, 100);;
+    $("#val-13-input").val(parseInt(grblParams['$13'])).trigger("change");
+  }, 100);
 
   $('#xdirinvert:checkbox').change(function() {
     changeDirInvert();
