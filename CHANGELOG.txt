@@ -8,6 +8,7 @@ v1.0.381:
 - Improved Servo Calibration Wizard to take Grbl Settings into account, and start at center-of-travel for calibration tool (Fix #362)
 - Default all machine profiles to have Limits enabled by default - been a couple years since we've started including limit switches as standard
 - Added quick search to Grbl Settings table (Note new search overwrites any changes, make sure to save before changing search)
+- Fixed bug #368 Calibration Wizard repeated runs but without entering distance causes desync
 v1.0.380:
 - Test Fix for grblHAL startup alarm lock
 v1.0.379:
