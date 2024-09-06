@@ -107,6 +107,9 @@ function zstepscalibrate() {
     }]
   });
 
+  // Restore value to entry field
+  $("#zcalmovedistance").val(zcalmovedistance);
+
   $("#zcalmovedistance").keyup(function() {
     zcalmovedistance = $("#zcalmovedistance").val();
     $(".zcalmovedistanceval").html(zcalmovedistance);
