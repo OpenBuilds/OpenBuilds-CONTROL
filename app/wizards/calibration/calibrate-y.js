@@ -109,6 +109,9 @@ function ystepscalibrate() {
     }]
   });
 
+  // Restore value to entry field
+  $("#ycalmovedistance").val(ycalmovedistance);
+
   $("#ycalmovedistance").keyup(function() {
     ycalmovedistance = $("#ycalmovedistance").val();
     $(".ycalmovedistanceval").html(ycalmovedistance);

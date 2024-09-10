@@ -110,6 +110,10 @@ function xstepscalibrate() {
     }]
   });
 
+  // Restore value to entry field
+  $("#xcalmovedistance").val(xcalmovedistance);
+
+
   $("#xcalmovedistance").keyup(function() {
     xcalmovedistance = $("#xcalmovedistance").val();
     $(".xcalmovedistanceval").html(xcalmovedistance);

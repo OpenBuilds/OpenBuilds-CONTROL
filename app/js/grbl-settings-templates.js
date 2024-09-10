@@ -948,7 +948,7 @@ var grblSettingsTemplate2 = {
   },
   536: {
     key: `$536`,
-    title: `Neopixel LED strip length, max: 255`,
+    title: `WS2812B LED strip length, max: 255`,
     description: `WS2812B LED strip length, max: 255`,
     template: `<input id="val-536-input" data-role="input" data-clear-button="false" data-append="LEDs" type="number" >`,
     utils: ``
