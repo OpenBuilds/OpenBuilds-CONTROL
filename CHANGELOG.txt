@@ -9,6 +9,9 @@ v1.0.381:
 - Default all machine profiles to have Limits enabled by default - been a couple years since we've started including limit switches as standard
 - Added quick search to Grbl Settings table (Note new search overwrites any changes, make sure to save before changing search)
 - Fixed bug #368 Calibration Wizard repeated runs but without entering distance causes desync
+- Added feature to Probing Wizard, touch off probe doubles as clicking Confirm (PR #339 Thanks @tippfehlr)
+- Improved port refresh (PR #367 Thanks Windfisch)
+- Fixed Select machine Dropdown for Servo/Pen ACROs (Issue #363)
 v1.0.380:
 - Test Fix for grblHAL startup alarm lock
 v1.0.379:

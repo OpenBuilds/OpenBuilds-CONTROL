@@ -1093,6 +1093,21 @@ function setMachineButton(type) {
   } else if (type == "leadmachine1515") {
     template = `<img src="img/mch/` + type + `.png"/>  OpenBuilds LEAD 1515`
     overlaytype = type;
+  } else if (type == "acro55pen") {
+    template = `<img src="img/mch/acro55.png"/>  OpenBuilds Acro 55 with Servo Pen Attachment`;
+    overlaytype = type;
+  } else if (type == "acro510pen") {
+    template = `<img src="img/mch/acro510.png"/>  OpenBuilds Acro 510 with Servo Pen Attachment`;
+    overlaytype = type;
+  } else if (type == "acro1010pen") {
+    template = `<img src="img/mch/acro1010.png"/>  OpenBuilds Acro 1010 with Servo Pen Attachment`;
+    overlaytype = type;
+  } else if (type == "acro1510pen") {
+    template = `<img src="img/mch/acro1510.png"/>  OpenBuilds Acro 1510 with Servo Pen Attachment`;
+    overlaytype = type;
+  } else if (type == "acro1515pen") {
+    template = `<img src="img/mch/acro1515.png"/>  OpenBuilds Acro 1515 with Servo Pen Attachment`;
+    overlaytype = type
   } else if (type == "custom") {
     template = `<img src="img/mch/` + type + `.png"/>  Custom Machine`
     overlaytype = type;
