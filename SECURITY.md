@@ -8,11 +8,6 @@ Thank you for your interest in the security of our software. We value the securi
 
 We aim to support the latest stable release of our software, but **security patches or updates are not guaranteed**. Users are encouraged to always use the most up-to-date version of the software for better stability and security.
 
-| Version     | Supported          |
-|-------------|--------------------|
-| X.X.X       | :white_check_mark: |
-| X.X.X       | :x:                |
-
 ## Reporting a Vulnerability
 
 If you discover a vulnerability in this project, please report it by creating an issue on our GitHub repository:
