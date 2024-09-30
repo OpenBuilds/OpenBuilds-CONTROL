@@ -367,7 +367,7 @@ function checkPowerSettings() {
 }
 
 
-var oldportslist, oldiplist;
+var oldiplist;
 var oldpinslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
@@ -525,25 +525,6 @@ async function findPorts() {
 }
 findPorts()
 
-async function findChangedPorts() {
-  const ports = await SerialPort.list()
-  // console.log(ports)
-  status.comms.interfaces.ports = ports;
-  if (!_.isEqual(ports, oldportslist)) {
-    var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
-    if (newPorts.length > 0) {
-      debug_log("Plugged " + newPorts[0].path);
-    }
-    var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
-    if (removedPorts.length > 0) {
-      debug_log("Unplugged " + removedPorts[0].path);
-    }
-  }
-  oldportslist = ports;
-  // throw new Error('No ports found')
-  findPorts()
-}
-
 // async function findDisks() {
 //   const drives = await drivelist.list();
 //   status.interface.diskdrives = drives;
@@ -551,7 +532,7 @@ async function findChangedPorts() {
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
-    findChangedPorts();
+    findPorts();
   }
   //findDisks(); // removed in 1.0.350 due to Drivelist stability issues
 }, 1000);
