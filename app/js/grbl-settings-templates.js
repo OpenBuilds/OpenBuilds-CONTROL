@@ -127,11 +127,11 @@ var grblSettingsTemplate2 = {
   },
   13: {
     key: `$13`,
-    title: `Report in inches, boolean`,
-    description: `Grbl has a real-time positioning reporting feature to provide a user feedback on where the machine is exactly at that time, as well as, parameters for coordinate offsets and probing. By default, it is set to report in mm, but by sending a $13=1 command, you send this boolean flag to true and these reporting features will now report in inches. $13=0 to set back to mm.`,
+    title: `Report in inches, boolean (CONTROL needs $13=0)`,
+    description: `CONTROL needs $13=0 as it handles inch mode seperately`,
     template: `<select id="val-13-input">
-             <option value="0">&#9898; Disable</option>
-             <option value="1">&#9899; Enable</option>
+             <option value="0">&#x2717; Disable</option>
+             <option value="1">&#x2713; Enable</option>
           </select>`,
     utils: ``
   },
