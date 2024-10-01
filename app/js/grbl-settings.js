@@ -73,7 +73,7 @@ function grblSettings(data) {
   grblconfig = data.split('\n')
   for (i = 0; i < grblconfig.length; i++) {
     var key = grblconfig[i].split('=')[0];
-    var param = grblconfig[i].split('=')[1]
+    var param = grblconfig[i].split(/[= ;(]/)[1]
     grblParams[key] = param
   }
   // $('#grblconfig').show();
