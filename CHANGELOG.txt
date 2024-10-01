@@ -12,6 +12,7 @@ v1.0.381:
 - Added feature to Probing Wizard, touch off probe doubles as clicking Confirm (PR #339 Thanks @tippfehlr)
 - Improved port refresh (PR #367 Thanks Windfisch)
 - Fixed Select machine Dropdown for Servo/Pen ACROs (Issue #363)
+- Improved Grbl settings parsing for odd 3rd party Grbl forks that include comments in settings strings (PR #371)
 v1.0.380:
 - Test Fix for grblHAL startup alarm lock
 v1.0.379:
