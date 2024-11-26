@@ -53,7 +53,7 @@ function openFlashingTool() {
       <li><a href="#" onclick="flashToolBoard('blackboxx32');"><img src="/wizards/flashingtool2/img/bbx32-icon.png" height="32"> <b>BlackBox X32</b></a></li>
       <!-- li><a href="#" onclick="flashToolBoard('blackbox4x');"><img src="/wizards/flashingtool2/img/bb4x-icon.png" height="32"> <b>BlackBox 4X</b></a></li -->
       <li><a href="#" onclick="flashToolBoard('interfacev1');"><img src="/wizards/flashingtool2/img/interfacev1-icon.png" height="32"> <b>Interface</b></a></li>
-      <li><a href="#" onclick="flashToolBoard('bloxv1');"><img src="/wizards/flashingtool2/img/blox-icon.png" height="32"> <b>BLOX</b></a></li>
+      <!-- li><a href="#" onclick="flashToolBoard('bloxv1');"><img src="/wizards/flashingtool2/img/blox-icon.png" height="32"> <b>BLOX</b></a></li -->
     </ul>`
 
   template += `
@@ -81,7 +81,7 @@ function openFlashingTool() {
       </div>
     </div>
 
-    <div class="row" id="flash-tool-blox-row"   style="display: none;">
+    <!-- div class="row" id="flash-tool-blox-row"   style="display: none;">
       <div class="cell-md-3 mb-1">Machine Style</div>
         <div class="cell-md-9 mb-1">
           <select data-prepend="&nbsp;<i class='fas fa-cube'></i>" data-role="select" data-filter="false" id="bloxFirmwareType" data-editable="true">
@@ -91,7 +91,7 @@ function openFlashingTool() {
           </select>
         </div>
       </div>
-    </div>
+    </div -->
 
     <div class="row" id="flash-tool-interface-fw-row" style="display: none;">
       <div class="cell-md-3 mb-1">Firmware Version</div>

@@ -1,8 +1,3 @@
-.theme_dark #splash {
-  background-image: linear-gradient(to top, #111, #555, #111);
-  color: #FFF;
-}
-
 body.theme_dark, .theme_dark div.window, .theme_dark .card {
   background: #222 !important;
   color: #FFF;
@@ -408,7 +403,7 @@ body.theme_dark, .theme_dark div.window, .theme_dark .card {
   border: 1px solid #ce352c;
 }
 
-.theme_dark select  {
+.theme_dark select {
   border: 1px solid #555;
 }
 

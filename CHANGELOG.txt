@@ -1,3 +1,6 @@
+v1.0.382:
+- Updated Theme
+- Updated SSL Certificates
 v1.0.381:
 - Added additional board support to Flashing tools
 - Fixed linebreak on realtime feedrate indicator
@@ -13,6 +16,8 @@ v1.0.381:
 - Improved port refresh (PR #367 Thanks Windfisch)
 - Fixed Select machine Dropdown for Servo/Pen ACROs (Issue #363)
 - Improved Grbl settings parsing for odd 3rd party Grbl forks that include comments in settings strings (PR #371)
+- Enabled Alpha Transparency on 3D viewer (minor cosmetic tweak)
+- Surfacing Wizard - remember last value of input for final depth (improvement)
 v1.0.380:
 - Test Fix for grblHAL startup alarm lock
 v1.0.379:

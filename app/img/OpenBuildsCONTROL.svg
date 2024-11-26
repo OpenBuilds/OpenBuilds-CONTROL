@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="400"
+   height="92"
+   viewBox="0 0 105.83333 24.341667"
+   version="1.1"
+   id="svg127"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="OpenBuildsCONTROL.svg">
+  <defs
+     id="defs121" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="307.51417"
+     inkscape:cy="144.37704"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="760"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata124">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       class="cls-1"
+       d="M 21.000298,7.5914652 C 18.491922,2.8839647 13.337722,1.3033479 9.2487244,2.5059923 4.4725002,3.9148046 1.8266774,8.0037999 1.9297614,12.367695 c 0.1030771,4.776228 3.1956036,8.349797 7.3876861,9.518091 4.7418625,1.305721 9.9647855,-0.996477 12.0264645,-5.841431 0.549781,0.309259 1.065202,0.618504 1.614983,0.962114 C 21.481356,20.820583 17.15183,24.359802 11.68838,24.187997 5.606424,23.981829 1.0707287,19.549212 0.17733367,14.257571 -0.92222926,7.6945557 3.2354924,2.2310974 8.6645814,0.68484392 14.299839,-0.93014935 19.866374,1.715684 22.409114,6.2513793 21.928054,6.6980658 21.481356,7.1447652 21.000298,7.5914652 Z"
+       id="path34"
+       style="fill:#ffffff;stroke-width:0.343613" />
+    <text
+       class="cls-2"
+       id="text38"
+       style="font-weight:700;font-size:13.2979px;font-family:SpaceBT-Bold, 'Space Bd BT';fill:#ffffff;stroke-width:0.343613;"
+       x="20.313072"
+       y="16.181801"><tspan
+         x="20.313072"
+         y="16.181801"
+         id="tspan36"
+         style="fill:#ffffff;stroke-width:0.343613;">OPENBUILDS</tspan></text>
+    <text
+       class="cls-3"
+       transform="scale(1.0488088,0.95346263)"
+       id="text42"
+       style="font-size:4.91366px;font-family:SegoeUISymbol, 'Segoe UI Symbol';letter-spacing:0.3em;fill:#ffffff;stroke-width:0.360385;"
+       x="68.67485"
+       y="22.701735"><tspan
+         x="68.67485"
+         y="22.701735"
+         id="tspan40"
+         style="fill:#ffffff;stroke-width:0.360385;">CONTROL</tspan></text>
+    <polygon
+       class="cls-1"
+       points="70.6,437.3 71.1,436.1 71.7,435.1 72.6,434.2 73.6,433.6 74.8,433.1 76,432.9 77.2,433 78.4,433.3 79.5,433.9 80.4,434.6 81.2,435.6 81.8,436.7 82.1,437.9 82.1,439.1 81.9,440.3 81.5,441.5 80.8,442.5 80,443.4 78.9,444 78.8,444.1 83.2,453.7 83.7,453.5 85,452.6 89.2,455.7 93.2,451.8 90,447.6 90.9,446.3 92.1,443.1 92.2,442.3 97.3,441.6 97.3,436 92.2,435.2 91.6,432.9 90.1,429.9 93.2,425.8 89.2,421.8 85.1,424.9 82.2,423.4 79.8,422.8 79.1,417.6 73.5,417.6 72.8,422.8 72,422.9 68.9,424.1 67.5,425 63.4,421.8 59.4,425.8 62.5,430 61.7,431.3 60.5,434.5 60.4,435.2 55.2,436 55.2,441.6 60.4,442.3 61,444.7 62.5,447.6 59.4,451.8 63.4,455.7 67.5,452.7 69.4,453.6 73.8,444.1 73.1,443.7 72.2,443 71.4,442 70.8,440.9 70.5,439.7 70.5,438.5 "
+       id="polygon44"
+       style="fill:#ffffff"
+       transform="matrix(0.34361329,0,0,0.34361329,-14.254425,-138.34104)" />
+  </g>
+</svg>

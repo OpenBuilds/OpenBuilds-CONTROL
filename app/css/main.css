@@ -167,24 +167,24 @@ select {
 
 /* OpenBuilds Navbar for MetroWindows */
 .fg-openbuilds {
-  color: rgb(64, 68, 71) !important;
+  color: rgb(0, 0, 0) !important;
 }
 
 .bg-openbuilds {
-  background-color: rgb(64, 68, 71) !important;
+  background-color: rgb(0, 0, 0) !important;
 }
 
 .bd-openbuilds {
-  border-color: rgb(64, 68, 71) !important;
+  border-color: rgb(0, 0, 0) !important;
 }
 
 .openbuilds-switch .check::after {
-  : rgb(64, 68, 71) !important;
-  border-color: rgb(64, 68, 71) !important;
+  : rgb(0, 0, 0) !important;
+  border-color: rgb(0, 0, 0) !important;
 }
 
 .openbuilds-switch input[type="checkbox"]:checked~.check {
-  background: rgb(64, 68, 71) !important;
+  background: rgb(0, 0, 0) !important;
 }
 
 .openbuilds-switch input[type="checkbox"]:checked~.check::after {
@@ -260,7 +260,7 @@ select {
   z-index: 2000;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(to top, #888888, #ffffff, #888888);
+  background-color: #000;
 }
 
 .machine-profile-menu {

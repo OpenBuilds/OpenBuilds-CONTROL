@@ -68,7 +68,7 @@ var surfacingWizardTemplate = `
               </select>
             </div>
           </div>
-          
+
           <div class="row mb-2 pb-2 border-bottom bd-gray">
             <label class="cell-sm-6">Enable Framing</label>
             <div class="cell-sm-6">
@@ -155,7 +155,7 @@ function populateSurfaceToolForm() {
   $("#surfaceY").val(data.surfaceY);
   $("#surfaceDepth").val(data.surfaceDepth);
   if (data.surfaceFinalDepth != undefined) {
-    data.surfaceFinalDepth = data.surfaceDepth;
+    data.surfaceFinalDepth = data.surfaceFinalDepth;
     $("#surfaceFinalDepth").val(data.surfaceFinalDepth);
   } else {
     $("#surfaceFinalDepth").val(data.surfaceDepth);

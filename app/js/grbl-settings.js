@@ -145,23 +145,15 @@ function grblPopulate() {
          <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown" data-duration="100">
             <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  CUSTOM Machine (Profile sets sane defaults)</a></li>
             <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro</a>
+               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds ACRO</a>
                <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55</a></li>
-                  <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510</a></li>
-                  <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010</a></li>
-                  <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510</a></li>
-                  <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds Acro with Servo Pen Attachment</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('acro55pen');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds Acro 55  with Servo Pen Attachment</a></li>
-                  <li onclick="selectMachine('acro510pen');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds Acro 510  with Servo Pen Attachment</a></li>
-                  <li onclick="selectMachine('acro1010pen');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds Acro 1010  with Servo Pen Attachment</a></li>
-                  <li onclick="selectMachine('acro1510pen');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds Acro 1510  with Servo Pen Attachment</a></li>
-                  <li onclick="selectMachine('acro1515pen');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds Acro 1515  with Servo Pen Attachment</a></li>
+                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds ACRO 55</a></li>
+                  <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds ACRO 510</a></li>
+                  <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds ACRO 1010</a></li>
+                  <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds ACRO 1510</a></li>
+                  <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds ACRO 1515</a></li>
+                  <li class="divider"></li>
+                  <li onclick="selectMachine('acroa1');"><a href="#"><img src="img/mch/acroa1.png" width="16px"/>  OpenBuilds ACRO A1</a></li>
                </ul>
             </li>
             <li>
