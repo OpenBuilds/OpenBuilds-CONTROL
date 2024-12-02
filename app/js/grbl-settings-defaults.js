@@ -465,7 +465,7 @@ function selectMachine(type) {
       $35: "5", //Spinde Min Value for RC Servo
       $36: "10", //Spindle max Value for RC Servo
       $44: "1", // Home X first
-      $45: "2", // Then Home Z
+      $45: "2", // Then Home Y
       $100: "57.143", //X-axis steps per millimeter-1/16 step
       $101: "57.143", //Y-axis steps per millimeter-1/16 step
       $102: "57.143", //Z-axis steps per millimeter-1/16 step
@@ -479,6 +479,15 @@ function selectMachine(type) {
       $131: "609.000", //Y-axis maximum travel, millimeters
       $132: "50.000", //Z-axis maximum travel, millimeters
     }
+    // Set Default Pen Up/Down values
+    penupval = 250
+    pendownval = 0
+    servo = {
+      up: penupval,
+      down: pendownval
+    }
+    localStorage.setItem("servo-calibration", JSON.stringify(servo));
+    // End default pen up/down
   } else if (type == "minimill") {
     // minimill
     var customFirmware = false;

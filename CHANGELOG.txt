@@ -1,3 +1,5 @@
+v1.0.383:
+- Added default servo values for Pen Up/Down for ACRO A1
 v1.0.382:
 - Updated Theme
 - Updated SSL Certificates
