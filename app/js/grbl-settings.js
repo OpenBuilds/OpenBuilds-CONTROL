@@ -131,6 +131,16 @@ function grblSettings(data) {
   }
 }
 
+function showBasicSettings() {
+  $("#grbl-settings-basic").show();
+  $("#grbl-settings-advanced").hide();
+}
+
+function showAdvSettings() {
+  $("#grbl-settings-basic").hide();
+  $("#grbl-settings-advanced").show();
+}
+
 function grblPopulate() {
   if (!isJogWidget) {
     $('#grblconfig').show();
@@ -138,7 +148,13 @@ function grblPopulate() {
     var template = `
     <form id="grblSettingsTable">
 
-      <div id="grblProfileSection">
+    <ul data-role="tabs" data-expand="true" class="mb-2">
+      <li onclick="showBasicSettings()"><a href="#"><small><i class="fas fa-fw fa-cog mr-1 fg-darkGreen"></i>Basic Settings</a></small></li>
+      <li onclick="showAdvSettings()"><a href="#"><small><i class="fas fa-fw fa-cogs mr-1 fg-darkRed"></i>Advanced Settings</a></small></li>
+    </ul>
+
+
+    <div id="grbl-settings-basic">
         <ul class="step-list mb-3">
           <li>
             <h6>Select your Machine<br><small>Tell us what machine you have?</small></h6>
@@ -285,34 +301,34 @@ function grblPopulate() {
           </li>
 
           <li>
-            <h6>Advanced Settings<br><small>If you have any custom requirements,
-                please customise the settings in the Advanced Settings section</small></h6>
+            <h6>Finished<br><small>Remember to "Save to Firmware" and Reset when Prompted. <br>If you have any custom requirements,
+                please customise the settings in the Advanced Settings section above</small></h6>
+          </li>
 
-            <button class="button" id="collapse_toggle_2">Show Advanced Settings</button>
-            <div class="pos-relative">
-              <div data-role="collapse" data-toggle-element="#collapse_toggle_2"
-                data-collapsed="true">
-                <div id="grblSettingsTableView"
-                  style="overflow-y: scroll; height: calc(100vh - 510px); max-height: calc(100vh - 460px);">
-                  <table data-role="table"
-                    data-table-search-title="Search for Parameters by Name or $-Key"
-                    data-search-fields="Key, Parameter"
-                    data-on-draw="setup_settings_table"
-                    data-on-table-create="setup_settings_table"
-                    data-cell-wrapper="false"
-                    class="table compact striped row-hover row-border"
-                    data-show-rows-steps="false" data-rows="200"
-                    data-show-pagination="false" data-show-table-info="true"
-                    data-show-search="true">
-                    <thead>
-                      <tr>
-                        <th style="text-align: left;">Key</th>
-                        <th style="text-align: left;">Parameter</th>
-                        <th style="width: 250px; min-width: 240px !important;">Value</th>
-                        <th style="width: 110px; min-width: 110px !important;">Utility</th>
-                      </tr>
-                    </thead>
-                    <tbody>`
+
+        </ul>
+    </div>
+    <div id="grbl-settings-advanced" style="display: none; overflow-y: scroll; max-height: calc(100vh - 300px);">
+        <div id="grblSettingsTableView">
+          <table data-role="table"
+            data-table-search-title="Search for Parameters by Name or $-Key"
+            data-search-fields="Key, Parameter"
+            data-on-draw="setup_settings_table"
+            data-on-table-create="setup_settings_table"
+            data-cell-wrapper="false"
+            class="table compact striped row-hover row-border"
+            data-show-rows-steps="false" data-rows="200"
+            data-show-pagination="false" data-show-table-info="true"
+            data-show-search="true">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Key</th>
+                <th style="text-align: left;">Parameter</th>
+                <th style="width: 250px; min-width: 240px !important;">Value</th>
+                <th style="width: 110px; min-width: 110px !important;">Utility</th>
+              </tr>
+            </thead>
+            <tbody>`
 
     for (key in grblParams) {
       var key2 = key.split('=')[0].substr(1);
@@ -320,35 +336,34 @@ function grblPopulate() {
       if (grblSettingsTemplate2[key2] !== undefined) {
         //template += grblSettingsTemplate2[key2].template;
         template += `<tr id="grblSettingsRow` + key2 + `"
-                        title="` + grblSettingsTemplate2[key2].description + `">
-                        <td>` + grblSettingsTemplate2[key2].key + `</td>
-                        <td>` + grblSettingsTemplate2[key2].title + `</td>
-                        <td>` + grblSettingsTemplate2[key2].template + `</td>
-                        <td>` + grblSettingsTemplate2[key2].utils + `</td>
-                      </tr>`
+                title="` + grblSettingsTemplate2[key2].description + `">
+                <td>` + grblSettingsTemplate2[key2].key + `</td>
+                <td>` + grblSettingsTemplate2[key2].title + `</td>
+                <td>` + grblSettingsTemplate2[key2].template + `</td>
+                <td>` + grblSettingsTemplate2[key2].utils + `</td>
+              </tr>`
       } else {
         template += `
-                      <tr>
-                        <td>` + key + `</td>
-                        <td><span class="tally alert">` + key + `</span></td>
-                        <td><input data-role="input" data-clear-button="false"
-                            data-append="?" type="text"
-                            value="` + grblParams[key] + `"
-                            id="val-` + key2 + `-input"></td>
-                        <td></td>
-                      </tr>
-                      `
+              <tr>
+                <td>` + key + `</td>
+                <td><span class="tally alert">` + key + `</span></td>
+                <td><input data-role="input" data-clear-button="false"
+                    data-append="?" type="text"
+                    value="` + grblParams[key] + `"
+                    id="val-` + key2 + `-input"></td>
+                <td></td>
+              </tr>
+              `
       }
     }
 
     template += `</tbody>
-                  </table>
-                </div> <!-- End of grblSettingsTableView --> </div>
-            </div>
-          </li>
+          </table>
+        </div> <!-- End of grblSettingsTableView -->
         </div>
-        <!-- End of grblProfileSection  -->
-      </form>
+      </div>
+    </nav>
+  </form>
       `
     $('#grblconfig').append(template)
 
@@ -398,43 +413,100 @@ function grblPopulate() {
 
 }
 
+// function checkifchanged() {
+//   var hasChanged = false;
+//   for (var key in grblParams) {
+//     if (grblParams.hasOwnProperty(key)) {
+//       var j = key.substring(1)
+//       var newVal = $("#val-" + j + "-input").val();
+//
+//       if (newVal !== undefined) {
+//         // Only send values that changed
+//         if (newVal != grblParams[key]) {
+//           hasChanged = true;
+//           console.log("changed: " + key)
+//           console.log("old: " + grblParams[key])
+//           console.log("new: " + newVal)
+//           if (!$("#val-" + j + "-input").parent().is('td')) {
+//             $("#val-" + j + "-input").parent().addClass('alert')
+//           } else if ($("#val-" + j + "-input").is('select')) {
+//             $("#val-" + j + "-input").addClass('alert')
+//           } else if (j == 3) { // axes
+//             $('#xdirinvert').parent().children('.check').addClass('bd-red')
+//             $('#ydirinvert').parent().children('.check').addClass('bd-red')
+//             $('#zdirinvert').parent().children('.check').addClass('bd-red')
+//           }
+//         } else {
+//           if (!$("#val-" + j + "-input").parent().is('td')) {
+//             $("#val-" + j + "-input").parent().removeClass('alert')
+//           } else if ($("#val-" + j + "-input").is('select')) {
+//             $("#val-" + j + "-input").removeClass('alert')
+//           } else if (j == 3) {
+//             $('#xdirinvert').parent().children('.check').removeClass('bd-red')
+//             $('#ydirinvert').parent().children('.check').removeClass('bd-red')
+//             $('#zdirinvert').parent().children('.check').removeClass('bd-red')
+//           }
+//         }
+//       }
+//     }
+//   }
+//   if (hasChanged) {
+//     $('#grblSettingsBadge').fadeIn('slow');
+//     $('#saveBtn').attr('disabled', false).removeClass('disabled');
+//     $('#saveBtnIcon').removeClass('fg-gray').addClass('fg-grayBlue');
+//   } else {
+//     $('#grblSettingsBadge').fadeOut('slow');
+//     $('#saveBtn').attr('disabled', true).addClass('disabled');
+//     $('#saveBtnIcon').removeClass('fg-grayBlue').addClass('fg-gray');
+//   }
+// }
+
 function checkifchanged() {
   var hasChanged = false;
+
   for (var key in grblParams) {
     if (grblParams.hasOwnProperty(key)) {
-      var j = key.substring(1)
+      var j = key.substring(1);
       var newVal = $("#val-" + j + "-input").val();
 
       if (newVal !== undefined) {
-        // Only send values that changed
-        if (newVal != grblParams[key]) {
+        // Determine if the value should be compared as text or number
+        var oldVal = grblParams[key];
+        var compareAsNumber = !isNaN(parseFloat(oldVal)) && !isNaN(parseFloat(newVal));
+
+        // Perform appropriate comparison
+        if ((compareAsNumber && parseFloat(newVal) !== parseFloat(oldVal)) ||
+          (!compareAsNumber && newVal !== oldVal)) {
           hasChanged = true;
-          console.log("changed: " + key)
-          console.log("old: " + grblParams[key])
-          console.log("new: " + newVal)
+
+          console.log("changed: " + key);
+          console.log("old: " + oldVal);
+          console.log("new: " + newVal);
+
           if (!$("#val-" + j + "-input").parent().is('td')) {
-            $("#val-" + j + "-input").parent().addClass('alert')
+            $("#val-" + j + "-input").parent().addClass('alert');
           } else if ($("#val-" + j + "-input").is('select')) {
-            $("#val-" + j + "-input").addClass('alert')
+            $("#val-" + j + "-input").addClass('alert');
           } else if (j == 3) { // axes
-            $('#xdirinvert').parent().children('.check').addClass('bd-red')
-            $('#ydirinvert').parent().children('.check').addClass('bd-red')
-            $('#zdirinvert').parent().children('.check').addClass('bd-red')
+            $('#xdirinvert').parent().children('.check').addClass('bd-red');
+            $('#ydirinvert').parent().children('.check').addClass('bd-red');
+            $('#zdirinvert').parent().children('.check').addClass('bd-red');
           }
         } else {
           if (!$("#val-" + j + "-input").parent().is('td')) {
-            $("#val-" + j + "-input").parent().removeClass('alert')
+            $("#val-" + j + "-input").parent().removeClass('alert');
           } else if ($("#val-" + j + "-input").is('select')) {
-            $("#val-" + j + "-input").removeClass('alert')
+            $("#val-" + j + "-input").removeClass('alert');
           } else if (j == 3) {
-            $('#xdirinvert').parent().children('.check').removeClass('bd-red')
-            $('#ydirinvert').parent().children('.check').removeClass('bd-red')
-            $('#zdirinvert').parent().children('.check').removeClass('bd-red')
+            $('#xdirinvert').parent().children('.check').removeClass('bd-red');
+            $('#ydirinvert').parent().children('.check').removeClass('bd-red');
+            $('#zdirinvert').parent().children('.check').removeClass('bd-red');
           }
         }
       }
     }
   }
+
   if (hasChanged) {
     $('#grblSettingsBadge').fadeIn('slow');
     $('#saveBtn').attr('disabled', false).removeClass('disabled');
@@ -445,6 +517,7 @@ function checkifchanged() {
     $('#saveBtnIcon').removeClass('fg-grayBlue').addClass('fg-gray');
   }
 }
+
 
 function grblSaveSettings() {
   var toSaveCommands = [];
