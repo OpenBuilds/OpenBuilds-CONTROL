@@ -83,6 +83,12 @@ function grblSettings(data) {
   // $('#grblFirmwareBtn').removeAttr('disabled');
   $('#grblSettings').show()
 
+  if (laststatus.machine.firmware.platform == "grblHAL") {
+    $("#grbl-settings-tab-title").html('grblHAL');
+  } else {
+    $("#grbl-settings-tab-title").html('Grbl');
+  }
+
 
 
   if (grblParams['$22'] > 0) {
@@ -105,7 +111,6 @@ function grblSettings(data) {
   } else {
     $('#enLaser').removeClass('success').addClass('alert').html('OFF')
   }
-
 
   // grblHAL - enable Servo Buttons if Spindle PWM == 50hz
   if (grblParams['$33'] == 50) {
@@ -134,120 +139,217 @@ function grblPopulate() {
     <form id="grblSettingsTable">
 
       <div id="grblProfileSection">
-      <h6 class="fg-dark"><i class="fas fa-tasks fg-blue"></i> 1. Load Machine Profile<br>
-      <small>Loads our standard Machine Profiles to your controller. If you have built a machine exactly to specification this is all your need. If you made modifications, or built a custom machine, you can customize the parameters in Section (2) below. Remember to click <u>SAVE TO FIRMWARE</u> to save the settings to your controller</small>
-      </h6>
-
-      <div class="grid">
-        <div class="row">
-          <div class="cell-8">
-
-         <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/leadmachine1010.png"/> Select your machine type from the list:</a>
-         <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown" data-duration="100">
-            <li><a href="#" onclick="selectMachine('custom');"><img src="img/mch/custom.png" width="16px"/>  CUSTOM Machine (Profile sets sane defaults)</a></li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png" width="16px"/> OpenBuilds ACRO</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('acro55');"><a href="#"><img src="img/mch/acro55.png" width="16px"/>  OpenBuilds ACRO 55</a></li>
-                  <li onclick="selectMachine('acro510');"><a href="#"><img src="img/mch/acro510.png" width="16px"/>  OpenBuilds ACRO 510</a></li>
-                  <li onclick="selectMachine('acro1010');"><a href="#"><img src="img/mch/acro1010.png" width="16px"/>  OpenBuilds ACRO 1010</a></li>
-                  <li onclick="selectMachine('acro1510');"><a href="#"><img src="img/mch/acro1510.png" width="16px"/>  OpenBuilds ACRO 1510</a></li>
-                  <li onclick="selectMachine('acro1515');"><a href="#"><img src="img/mch/acro1515.png" width="16px"/>  OpenBuilds ACRO 1515</a></li>
+        <ul class="step-list mb-3">
+          <li>
+            <h6>Select your Machine<br><small>Tell us what machine you have?</small></h6>
+            <a style="width: 100%;"
+              class="button dropdown-toggle bd-dark dark outline"
+              id="context_toggle2"><img src="img/mch/leadmachine1010.png" /> Select
+              your machine type from the list:</a>
+            <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown"
+              data-duration="100">
+              <li><a href="#" onclick="selectMachine('custom');"><img
+                    src="img/mch/custom.png" width="16px" /> CUSTOM Machine (Profile
+                  sets sane defaults)</a></li>
+              <li>
+                <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png"
+                    width="16px" /> OpenBuilds ACRO</a>
+                <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('acro55');"><a href="#"><img
+                        src="img/mch/acro55.png" width="16px" /> OpenBuilds ACRO 55</a></li>
+                  <li onclick="selectMachine('acro510');"><a href="#"><img
+                        src="img/mch/acro510.png" width="16px" /> OpenBuilds ACRO
+                      510</a></li>
+                  <li onclick="selectMachine('acro1010');"><a href="#"><img
+                        src="img/mch/acro1010.png" width="16px" /> OpenBuilds ACRO
+                      1010</a></li>
+                  <li onclick="selectMachine('acro1510');"><a href="#"><img
+                        src="img/mch/acro1510.png" width="16px" /> OpenBuilds ACRO
+                      1510</a></li>
+                  <li onclick="selectMachine('acro1515');"><a href="#"><img
+                        src="img/mch/acro1515.png" width="16px" /> OpenBuilds ACRO
+                      1515</a></li>
                   <li class="divider"></li>
-                  <li onclick="selectMachine('acroa1');"><a href="#"><img src="img/mch/acroa1.png" width="16px"/>  OpenBuilds ACRO A1</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('cbeam');"><a href="#"><img src="img/mch/cbeam.png" width="16px"/>  OpenBuilds C-Beam Machine</a></li>
-                  <li onclick="selectMachine('cbeamxl');"><a href="#"><img src="img/mch/cbeamxl.png" width="16px"/>  OpenBuilds C-Beam XL</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/leadmachine1010.png" width="16px"/>  OpenBuilds LEAD Machine</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('leadmachine1010');"><a href="#"><img src="img/mch/leadmachine1010.png" width="16px"/>OpenBuilds LEAD 1010</a></li>
-                  <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img src="img/mch/leadmachine1010laser.png" width="16px"/>OpenBuilds LEAD 1010 with Laser Module</a></li>
-                  <li onclick="selectMachine('leadmachine1010plasma');"><a href="#"><img src="img/mch/leadmachine1010plasma.png" width="16px"/>OpenBuilds LEAD 1010 Plasma Add-On</a></li>
-                  <li onclick="selectMachine('leadmachine1515');"><a href="#"><img src="img/mch/leadmachine1515.png" width="16px"/>OpenBuilds LEAD 1515</a></li>
-               </ul>
-            </li>
-            <li><a href="#" onclick="selectMachine('minimill');"><img src="img/mch/minimill.png" width="16px"/>  OpenBuilds MiniMill</a></li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('sphinx55');"><a href="#"><img src="img/mch/sphinx55.png" width="16px"/>  OpenBuilds Sphinx 55</a></li>
-                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img src="img/mch/sphinx1050.png" width="16px"/>  OpenBuilds Sphinx 1050</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#" class="dropdown-toggle"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee</a>
-               <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('workbee1010');"><a href="#"><img src="img/mch/workbee1010.png" width="16px"/>  OpenBuilds WorkBee 1010</a></li>
-                  <li onclick="selectMachine('workbee1050');"><a href="#"><img src="img/mch/workbee1050.png" width="16px"/>  OpenBuilds WorkBee 1050</a></li>
-                  <li onclick="selectMachine('workbee1510');"><a href="#"><img src="img/mch/workbee1510.png" width="16px"/>  OpenBuilds WorkBee 1510</a></li>
-               </ul>
-            </li>
-         </ul>
-      </div>
+                  <li onclick="selectMachine('acroa1');"><a href="#"><img
+                        src="img/mch/acroa1.png" width="16px" /> OpenBuilds ACRO A1</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png"
+                    width="16px" /> OpenBuilds C-Beam Machine</a>
+                <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('cbeam');"><a href="#"><img
+                        src="img/mch/cbeam.png" width="16px" /> OpenBuilds C-Beam
+                      Machine</a></li>
+                  <li onclick="selectMachine('cbeamxl');"><a href="#"><img
+                        src="img/mch/cbeamxl.png" width="16px" /> OpenBuilds C-Beam
+                      XL</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#" class="dropdown-toggle"><img
+                    src="img/mch/leadmachine1010.png" width="16px" /> OpenBuilds
+                  LEAD Machine</a>
+                <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('leadmachine1010');"><a href="#"><img
+                        src="img/mch/leadmachine1010.png" width="16px" />OpenBuilds
+                      LEAD 1010</a></li>
+                  <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img
+                        src="img/mch/leadmachine1010laser.png" width="16px" />OpenBuilds
+                      LEAD 1010 with Laser Module</a></li>
+                  <li onclick="selectMachine('leadmachine1010plasma');"><a href="#"><img
+                        src="img/mch/leadmachine1010plasma.png" width="16px" />OpenBuilds
+                      LEAD 1010 Plasma Add-On</a></li>
+                  <li onclick="selectMachine('leadmachine1515');"><a href="#"><img
+                        src="img/mch/leadmachine1515.png" width="16px" />OpenBuilds
+                      LEAD 1515</a></li>
+                </ul>
+              </li>
+              <li><a href="#" onclick="selectMachine('minimill');"><img
+                    src="img/mch/minimill.png" width="16px" /> OpenBuilds MiniMill</a></li>
+              <li>
+                <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png"
+                    width="16px" /> OpenBuilds Sphinx</a>
+                <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('sphinx55');"><a href="#"><img
+                        src="img/mch/sphinx55.png" width="16px" /> OpenBuilds Sphinx
+                      55</a></li>
+                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img
+                        src="img/mch/sphinx1050.png" width="16px" /> OpenBuilds
+                      Sphinx 1050</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#" class="dropdown-toggle"><img
+                    src="img/mch/workbee1010.png" width="16px" /> OpenBuilds WorkBee</a>
+                <ul class="ribbon-dropdown" data-role="dropdown">
+                  <li onclick="selectMachine('workbee1010');"><a href="#"><img
+                        src="img/mch/workbee1010.png" width="16px" /> OpenBuilds
+                      WorkBee 1010</a></li>
+                  <li onclick="selectMachine('workbee1050');"><a href="#"><img
+                        src="img/mch/workbee1050.png" width="16px" /> OpenBuilds
+                      WorkBee 1050</a></li>
+                  <li onclick="selectMachine('workbee1510');"><a href="#"><img
+                        src="img/mch/workbee1510.png" width="16px" /> OpenBuilds
+                      WorkBee 1510</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <h6>Add-Ons Installed<br><small>Telling us what kind of attachments the
+                machine has, allows us to pre-configure your Grbl Settings to match</small></h6>
+            <ul class="image-checkbox-ul">
+              <li>
+                <input type="checkbox" name="limits" id="limitsinstalled"
+                  value="limits">
+                <label for="limitsinstalled"><img
+                    src="./img/toolhead/xtensionslimit.png" /></label>
+                <div class="image-checkbox-text">Xtension Limit Switches</div>
+              </li>
+              <!-- Radio Group -->
+              <li>
+                <input type="radio" name="toolhead" id="toolhead_router11"
+                  value="router11">
+                <label for="toolhead_router11"><img
+                    src="./img/toolhead/router11.png" /></label>
+                <div class="image-checkbox-text">RoutER11 with IoT Relay</div>
+              </li>
+              <li>
+                <input type="radio" name="toolhead" id="toolhead_plasma"
+                  value="plasma">
+                <label for="toolhead_plasma"><img
+                    src="./img/toolhead/leadplasma.png" /></label>
+                <div class="image-checkbox-text">LEAD 1010 Plasma Add-On</div>
+              </li>
+              <li>
+                <input type="radio" name="toolhead" id="toolhead_laser"
+                  value="laser">
+                <label for="toolhead_laser"><img src="./img/toolhead/laser.png" /></label>
+                <div class="image-checkbox-text">Laser Diode Module</div>
+              </li>
+              <li>
+                <input type="radio" name="toolhead" id="toolhead_scribe"
+                  value="scribe">
+                <label for="toolhead_scribe"><img src="./img/toolhead/plotter.png" /></label>
+                <div class="image-checkbox-text">SCRIBE<br>Pen Lifter</div>
+              </li>
+              <li>
+                <input type="radio" name="toolhead" id="toolhead_vfd_spindle"
+                  value="vfd_spindle">
+                <label for="toolhead_vfd_spindle"><img src="./img/toolhead/vfd.png" /></label>
+                <div class="image-checkbox-text">Variable Speed Spindle</div>
+              </li>
+              <!-- End Radio Group -->
+            </ul>
+          </li>
 
-      <div class="cell-4">
-         <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
-      </div>
+          <li>
+            <h6>Advanced Settings<br><small>If you have any custom requirements,
+                please customise the settings in the Advanced Settings section</small></h6>
 
-      <div class="cell-4">
-        <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
-      </div>
-
-   </div>
-</div>
-
-<hr class="bg-openbuilds">
-</div> <!-- End grblProfileSection -->
-<h6 class="fg-dark"><i class="fas fa-cogs fg-lightOrange"></i> 2.  Customize Profile (Optional)<br><small>Customise your Grbl settings below. For custom machines, modifications and also for fine tuning your machine profile. Remember to make a <u>BACKUP</u> so you don't lose your customized settings</small></h6>
-
-<div id="grblSettingsTableView" style="overflow-y: scroll; height: calc(100vh - 510px); max-height: calc(100vh - 460px);">
-  <table data-role="table" data-table-search-title="Search for Parameters by Name or $-Key" data-search-fields="Key, Parameter" data-on-draw="setup_settings_table" data-on-table-create="setup_settings_table" data-cell-wrapper="false" class="table compact striped row-hover row-border" data-show-rows-steps="false" data-rows="200" data-show-pagination="false" data-show-table-info="true" data-show-search="true">
-    <thead>
-    <tr>
-      <th style="text-align: left;">Key</th>
-      <th style="text-align: left;">Parameter</th>
-      <th style="width: 250px; min-width: 240px !important;">Value</th>
-      <th style="width: 110px; min-width: 110px !important;">Utility</th>
-    </tr>
-  </thead>
-  <tbody>`
+            <button class="button" id="collapse_toggle_2">Show Advanced Settings</button>
+            <div class="pos-relative">
+              <div data-role="collapse" data-toggle-element="#collapse_toggle_2"
+                data-collapsed="true">
+                <div id="grblSettingsTableView"
+                  style="overflow-y: scroll; height: calc(100vh - 510px); max-height: calc(100vh - 460px);">
+                  <table data-role="table"
+                    data-table-search-title="Search for Parameters by Name or $-Key"
+                    data-search-fields="Key, Parameter"
+                    data-on-draw="setup_settings_table"
+                    data-on-table-create="setup_settings_table"
+                    data-cell-wrapper="false"
+                    class="table compact striped row-hover row-border"
+                    data-show-rows-steps="false" data-rows="200"
+                    data-show-pagination="false" data-show-table-info="true"
+                    data-show-search="true">
+                    <thead>
+                      <tr>
+                        <th style="text-align: left;">Key</th>
+                        <th style="text-align: left;">Parameter</th>
+                        <th style="width: 250px; min-width: 240px !important;">Value</th>
+                        <th style="width: 110px; min-width: 110px !important;">Utility</th>
+                      </tr>
+                    </thead>
+                    <tbody>`
 
     for (key in grblParams) {
       var key2 = key.split('=')[0].substr(1);
       //console.log(key2)
       if (grblSettingsTemplate2[key2] !== undefined) {
         //template += grblSettingsTemplate2[key2].template;
-        template += `<tr id="grblSettingsRow` + key2 + `" title="` + grblSettingsTemplate2[key2].description + `">
-         <td>` + grblSettingsTemplate2[key2].key + `</td>
-         <td>` + grblSettingsTemplate2[key2].title + `</td>
-         <td>` + grblSettingsTemplate2[key2].template + `</td>
-         <td>` + grblSettingsTemplate2[key2].utils + `</td>
-      </tr>`
+        template += `<tr id="grblSettingsRow` + key2 + `"
+                        title="` + grblSettingsTemplate2[key2].description + `">
+                        <td>` + grblSettingsTemplate2[key2].key + `</td>
+                        <td>` + grblSettingsTemplate2[key2].title + `</td>
+                        <td>` + grblSettingsTemplate2[key2].template + `</td>
+                        <td>` + grblSettingsTemplate2[key2].utils + `</td>
+                      </tr>`
       } else {
         template += `
-      <tr>
-         <td>` + key + `</td>
-         <td><span class="tally alert">` + key + `</span></td>
-         <td><input data-role="input" data-clear-button="false" data-append="?" type="text" value="` + grblParams[key] + `" id="val-` + key2 + `-input"></td>
-         <td></td>
-      </tr>
-      `
+                      <tr>
+                        <td>` + key + `</td>
+                        <td><span class="tally alert">` + key + `</span></td>
+                        <td><input data-role="input" data-clear-button="false"
+                            data-append="?" type="text"
+                            value="` + grblParams[key] + `"
+                            id="val-` + key2 + `-input"></td>
+                        <td></td>
+                      </tr>
+                      `
       }
     }
 
     template += `</tbody>
-   </table>
-</div> <!-- End of grblSettingsTableView -->
-
-</form>
-        `
+                  </table>
+                </div> <!-- End of grblSettingsTableView --> </div>
+            </div>
+          </li>
+        </div>
+        <!-- End of grblProfileSection  -->
+      </form>
+      `
     $('#grblconfig').append(template)
 
     $('#grblSettingsTable').on('keyup paste click change', 'input, select', function() {
@@ -271,6 +373,12 @@ function grblPopulate() {
       $('#limitsinstalled:checkbox').prop('checked', false);
       $('#gotozeroMPos').addClass('disabled')
       $('#homeBtn').attr('disabled', true)
+    }
+
+    if (grblParams['$33'] == 50 && grblParams['$34'] == 5 && grblParams['$35'] == 5 && grblParams['$36'] == 10) {
+      $('#scribeinstalled:checkbox').prop('checked', true);
+    } else {
+      $('#scribeinstalled:checkbox').prop('checked', false);
     }
 
     setTimeout(function() {
@@ -602,6 +710,27 @@ function setup_settings_table() {
     enableLimits();
   });
 
+  // $('#scribeinstalled:checkbox').change(function() {
+  //   enableScribe();
+  // });
+
+  // Handle the change event for radio buttons
+  $('input[name="toolhead"]').on('change', function() {
+    console.log(`Selected toolhead: ${$(this).val()}`);
+    var selectedToolhead = $(this).val();
+    if (selectedToolhead == 'router11') {
+      enableRouter();
+    } else if (selectedToolhead == 'scribe') {
+      enableScribe();
+    } else if (selectedToolhead == 'laser') {
+      enableLaser();
+    } else if (selectedToolhead == 'plasma') {
+      enablePlasma();
+    } else if (selectedToolhead == 'vfd_spindle') {
+      enableVFD();
+    }
+  });
+
   $('#xdirinvert:checkbox').change(function() {
     changeDirInvert();
   });
@@ -656,6 +785,144 @@ function enableLimits() {
   }, 500);
   checkifchanged();
   var elm = document.getElementById("grblSettingsLimits");
-  elm.scrollIntoView(true);
+  // elm.scrollIntoView(true);
+}
 
+function enableScribe() {
+  var grblParams_scribe = {
+    $33: "50", //PWM Freq for RC Servo
+    $34: "5", //Spindle Off Value for RC Servo
+    $35: "5", //Spinde Min Value for RC Servo
+    $36: "10", //Spindle max Value for RC Servo
+  }
+  for (var key in grblParams_scribe) {
+    if (grblParams_scribe.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_scribe[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsPWM");
+  // elm.scrollIntoView(true);
+}
+
+function enableLaser() {
+  var grblParams_laser = {
+    $30: "1000", // S Max
+    $32: "1", // Laser Mode On
+    $33: "100", //PWM Freq
+    $34: "0", //Spindle Off Value
+    $35: "0", //Spinde Min Value
+    $36: "100", //Spindle max Value
+  }
+  for (var key in grblParams_laser) {
+    if (grblParams_laser.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_laser[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsPWM");
+  // elm.scrollIntoView(true);
+}
+
+function enableRouter() {
+  var grblParams_router = {
+    $30: "1000", // S Max
+    $32: "0", // Laser Mode On
+    $33: "5000", //PWM Freq
+    $34: "0", //Spindle Off Value
+    $35: "0", //Spinde Min Value
+    $36: "100", //Spindle max Value
+  }
+  for (var key in grblParams_router) {
+    if (grblParams_router.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_router[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsPWM");
+  // elm.scrollIntoView(true);
+}
+
+function enablePlasma() {
+  var grblParams_router = {
+    $30: "1000", // S Max
+    $32: "0", // Laser Mode On
+    $33: "5000", //PWM Freq
+    $34: "0", //Spindle Off Value
+    $35: "0", //Spinde Min Value
+    $36: "100", //Spindle max Value
+  }
+  for (var key in grblParams_router) {
+    if (grblParams_router.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_router[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsPWM");
+  // elm.scrollIntoView(true);
+}
+
+function enableVFD() {
+  var grblParams_vfd = {
+    $30: "24000", // S Max
+    $32: "0", // Laser Mode On
+    $33: "1000", //PWM Freq
+    $34: "0", //Spindle Off Value
+    $35: "0", //Spinde Min Value
+    $36: "100", //Spindle max Value
+  }
+  for (var key in grblParams_vfd) {
+    if (grblParams_vfd.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_vfd[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsPWM");
+  // elm.scrollIntoView(true);
+}
+
+
+// Function to programmatically set the selected radio
+function setSelectedToolhead(value) {
+  const $radio = $(`input[name="toolhead"][value="${value}"]`);
+  if ($radio.length) {
+    $radio.prop('checked', true).trigger('change'); // Trigger the change event
+  } else {
+    console.error('Toolhead not found:', value);
+  }
 }

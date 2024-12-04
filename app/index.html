@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/buttons.css" />
     <link rel="stylesheet" href="css/probev2.css" />
     <link rel="stylesheet" href="/lib/furcanIconPicker/iconpicker-1.5.0.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="css/image-checkbox.css" />
 
   </head>
 
@@ -46,7 +47,7 @@
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
-            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> Grbl Settings</a></li>
+            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl</span> Settings</a></li>
             <li id="fluidncSettings" style="display: none;"><a id="fluidncTab" href="#section-fluidnc" onclick="fluidncPanel();"><i class="fas fa-fw fa-sliders-h"></i> FluidNC Settings</a></li>
             <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
           </ul>
