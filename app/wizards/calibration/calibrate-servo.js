@@ -1,22 +1,21 @@
+let servoCalibrationDialogOpen = false;
+
 // Calibration Wizard
 function penUpSend(data) {
+  if (!servoCalibrationDialogOpen) return; // Prevent sending commands if modal is closed
   console.log("Move to " + data)
   sendGcode("M3 S" + data);
 }
 
 function penDownSend(data) {
+  if (!servoCalibrationDialogOpen) return; // Prevent sending commands if modal is closed
   console.log("Move to " + data)
   sendGcode("M3 S" + data);
 }
 
-
-
-
-
 function servocalibrate() {
 
   var servoMaxScale = parseInt(grblParams.$30);
-
 
   var servocaltemplate = `
 
@@ -112,10 +111,15 @@ function servocalibrate() {
       cls: "js-dialog-close",
       onclick: function() {
         //
+        servoCalibrationDialogOpen = false; // Dialog is closed
       }
     }],
     defaultAction: false
   });
+
+  servoCalibrationDialogOpen = true; // Dialog is now open
+
+
   setTimeout(function() {
     $('#penupslider').data('slider').val(servoMaxScale / 2)
   }, 100);
@@ -159,6 +163,6 @@ function closeServoCal() {
   localStorage.setItem("servo-calibration", JSON.stringify(servo));
   Metro.dialog.close($('#servocalstep1').parent().parent());
   console.log(servo)
-
+  servoCalibrationDialogOpen = false; // Dialog is closed
   askToResetOnGrblSettingsChange();
 }
