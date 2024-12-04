@@ -375,10 +375,20 @@ function grblPopulate() {
       $('#homeBtn').attr('disabled', true)
     }
 
-    if (grblParams['$33'] == 50 && grblParams['$34'] == 5 && grblParams['$35'] == 5 && grblParams['$36'] == 10) {
-      $('#scribeinstalled:checkbox').prop('checked', true);
-    } else {
-      $('#scribeinstalled:checkbox').prop('checked', false);
+    // if (grblParams['$33'] == 50 && grblParams['$34'] == 5 && grblParams['$35'] == 5 && grblParams['$36'] == 10) {
+    //   setSelectedToolhead('scribe')
+    // }
+
+    if (isMatchingConfig(grblParams, grblParams_scribe)) {
+      setSelectedToolhead('scribe')
+    } else if (isMatchingConfig(grblParams, grblParams_plasma)) {
+      setSelectedToolhead('plasma')
+    } else if (isMatchingConfig(grblParams, grblParams_router)) {
+      setSelectedToolhead('router11')
+    } else if (isMatchingConfig(grblParams, grblParams_laser)) {
+      setSelectedToolhead('laser')
+    } else if (isMatchingConfig(grblParams, grblParams_vfd)) {
+      setSelectedToolhead('vfd_spindle')
     }
 
     setTimeout(function() {
@@ -788,13 +798,14 @@ function enableLimits() {
   // elm.scrollIntoView(true);
 }
 
+var grblParams_scribe = {
+  $33: "50", //PWM Freq for RC Servo
+  $34: "5", //Spindle Off Value for RC Servo
+  $35: "5", //Spinde Min Value for RC Servo
+  $36: "10", //Spindle max Value for RC Servo
+}
+
 function enableScribe() {
-  var grblParams_scribe = {
-    $33: "50", //PWM Freq for RC Servo
-    $34: "5", //Spindle Off Value for RC Servo
-    $35: "5", //Spinde Min Value for RC Servo
-    $36: "10", //Spindle max Value for RC Servo
-  }
   for (var key in grblParams_scribe) {
     if (grblParams_scribe.hasOwnProperty(key)) {
       var j = key.substring(1)
@@ -812,15 +823,17 @@ function enableScribe() {
   // elm.scrollIntoView(true);
 }
 
+var grblParams_laser = {
+  $30: "1000", // S Max
+  $32: "1", // Laser Mode On
+  $33: "1000", //PWM Freq
+  $34: "0", //Spindle Off Value
+  $35: "0", //Spinde Min Value
+  $36: "100", //Spindle max Value
+}
+
 function enableLaser() {
-  var grblParams_laser = {
-    $30: "1000", // S Max
-    $32: "1", // Laser Mode On
-    $33: "100", //PWM Freq
-    $34: "0", //Spindle Off Value
-    $35: "0", //Spinde Min Value
-    $36: "100", //Spindle max Value
-  }
+
   for (var key in grblParams_laser) {
     if (grblParams_laser.hasOwnProperty(key)) {
       var j = key.substring(1)
@@ -838,15 +851,17 @@ function enableLaser() {
   // elm.scrollIntoView(true);
 }
 
+var grblParams_router = {
+  $30: "1000", // S Max
+  $32: "0", // Laser Mode On
+  $33: "5000", //PWM Freq
+  $34: "0", //Spindle Off Value
+  $35: "0", //Spinde Min Value
+  $36: "100", //Spindle max Value
+}
+
 function enableRouter() {
-  var grblParams_router = {
-    $30: "1000", // S Max
-    $32: "0", // Laser Mode On
-    $33: "5000", //PWM Freq
-    $34: "0", //Spindle Off Value
-    $35: "0", //Spinde Min Value
-    $36: "100", //Spindle max Value
-  }
+
   for (var key in grblParams_router) {
     if (grblParams_router.hasOwnProperty(key)) {
       var j = key.substring(1)
@@ -862,23 +877,25 @@ function enableRouter() {
   checkifchanged();
   var elm = document.getElementById("grblSettingsPWM");
   // elm.scrollIntoView(true);
+}
+
+var grblParams_plasma = {
+  $30: "1000", // S Max
+  $32: "0", // Laser Mode On
+  $33: "1000", //PWM Freq
+  $34: "0", //Spindle Off Value
+  $35: "0", //Spinde Min Value
+  $36: "100", //Spindle max Value
 }
 
 function enablePlasma() {
-  var grblParams_router = {
-    $30: "1000", // S Max
-    $32: "0", // Laser Mode On
-    $33: "5000", //PWM Freq
-    $34: "0", //Spindle Off Value
-    $35: "0", //Spinde Min Value
-    $36: "100", //Spindle max Value
-  }
-  for (var key in grblParams_router) {
-    if (grblParams_router.hasOwnProperty(key)) {
+
+  for (var key in grblParams_plasma) {
+    if (grblParams_plasma.hasOwnProperty(key)) {
       var j = key.substring(1)
       var newVal = $("#val-" + j + "-input").val();
       // console.log("$" + j + " = " + newVal)
-      $("#val-" + j + "-input").val(parseFloat(grblParams_router[key]))
+      $("#val-" + j + "-input").val(parseFloat(grblParams_plasma[key]))
     }
   }
   allowGrblSettingsViewScroll = false;
@@ -890,15 +907,17 @@ function enablePlasma() {
   // elm.scrollIntoView(true);
 }
 
+var grblParams_vfd = {
+  $30: "24000", // S Max
+  $32: "0", // Laser Mode On
+  $33: "1000", //PWM Freq
+  $34: "0", //Spindle Off Value
+  $35: "0", //Spinde Min Value
+  $36: "100", //Spindle max Value
+}
+
 function enableVFD() {
-  var grblParams_vfd = {
-    $30: "24000", // S Max
-    $32: "0", // Laser Mode On
-    $33: "1000", //PWM Freq
-    $34: "0", //Spindle Off Value
-    $35: "0", //Spinde Min Value
-    $36: "100", //Spindle max Value
-  }
+
   for (var key in grblParams_vfd) {
     if (grblParams_vfd.hasOwnProperty(key)) {
       var j = key.substring(1)
@@ -914,6 +933,16 @@ function enableVFD() {
   checkifchanged();
   var elm = document.getElementById("grblSettingsPWM");
   // elm.scrollIntoView(true);
+}
+
+function isMatchingConfig(currentParams, predefinedParams) {
+  for (let key in predefinedParams) {
+    // Compare values as numbers to handle type mismatches
+    if (parseFloat(currentParams[key]) !== parseFloat(predefinedParams[key])) {
+      return false;
+    }
+  }
+  return true;
 }
 
 
