@@ -34,6 +34,7 @@ function loadGrblBackupFile(f) {
       };
 
       checkifchanged();
+      enableLimits(); // Enable or Disable
       displayDirInvert();
     }
   }
@@ -139,7 +140,7 @@ function grblPopulate() {
 
       <div class="grid">
         <div class="row">
-          <div class="cell-12">
+          <div class="cell-8">
 
          <a style="width: 100%;" class="button dropdown-toggle bd-dark dark outline" id="context_toggle2"><img src="img/mch/leadmachine1010.png"/> Select your machine type from the list:</a>
          <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown" data-duration="100">
@@ -189,6 +190,14 @@ function grblPopulate() {
                </ul>
             </li>
          </ul>
+      </div>
+
+      <div class="cell-4">
+         <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
+      </div>
+
+      <div class="cell-4">
+        <input id="limitsinstalled" data-cls-caption="fg-openbuilds" data-cls-check="bd-openbuilds openbuilds-switch" data-cls-switch="openbuilds-switch" type="checkbox" data-role="switch" data-caption="Limit&nbsp;Switches&nbsp;Installed">
       </div>
 
    </div>
@@ -255,9 +264,11 @@ function grblPopulate() {
     $('#grblSettingsBadge').hide();
 
     if (grblParams['$21'] == 1 && grblParams['$22'] > 0) {
+      $('#limitsinstalled:checkbox').prop('checked', true);
       $('#gotozeroMPos').removeClass('disabled')
       $('#homeBtn').attr('disabled', false)
     } else {
+      $('#limitsinstalled:checkbox').prop('checked', false);
       $('#gotozeroMPos').addClass('disabled')
       $('#homeBtn').attr('disabled', true)
     }
@@ -587,6 +598,10 @@ function setup_settings_table() {
     $("#val-13-input").val(parseInt(grblParams['$13'])).trigger("change");
   }, 100);;
 
+  $('#limitsinstalled:checkbox').change(function() {
+    enableLimits();
+  });
+
   $('#xdirinvert:checkbox').change(function() {
     changeDirInvert();
   });
@@ -612,4 +627,35 @@ function setup_settings_table() {
   displayProbeDirInvert()
 
   console.log("Updated")
+}
+
+function enableLimits() {
+  var grblParams_lim = {
+    $21: "0", //"Hard limits enable, boolean"
+    $22: "0", //"Homing cycle enable, boolean"
+  }
+  var hasLimits = $('#limitsinstalled').is(':checked');
+  if (hasLimits) {
+    grblParams_lim.$21 = "1"; //"Hard limits enable, boolean"
+    grblParams_lim.$22 = "1"; //"Homing cycle enable, boolean"
+  } else {
+    grblParams_lim.$21 = "0"; //"Hard limits enable, boolean"
+    grblParams_lim.$22 = "0"; //"Homing cycle enable, boolean"
+  }
+  for (var key in grblParams_lim) {
+    if (grblParams_lim.hasOwnProperty(key)) {
+      var j = key.substring(1)
+      var newVal = $("#val-" + j + "-input").val();
+      // console.log("$" + j + " = " + newVal)
+      $("#val-" + j + "-input").val(parseFloat(grblParams_lim[key]))
+    }
+  }
+  allowGrblSettingsViewScroll = false;
+  setTimeout(function() {
+    allowGrblSettingsViewScroll = true;
+  }, 500);
+  checkifchanged();
+  var elm = document.getElementById("grblSettingsLimits");
+  elm.scrollIntoView(true);
+
 }
