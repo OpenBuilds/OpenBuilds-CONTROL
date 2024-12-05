@@ -1389,7 +1389,7 @@
                   <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-tty"></i>&nbsp;Communications
                   </div>
-                  <div class="card-content" style="height: calc(100vh - 630px); min-height: 90px; overflow-x: auto;">
+                  <div class="card-content" style="height: calc(100vh - 530px); min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
                       <thead>
                         <tr>
@@ -1400,32 +1400,46 @@
                       <tbody>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Installed Version</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="driverver">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="driverver">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Backend Queue Blocked</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commblocked">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="commblocked">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Connection Status</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="commstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="commstatus">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Connected To</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="activeportstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="activeportstatus">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Serial Queue</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="drvqueue">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="drvqueue">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Websocket Status</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="websocketstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="websocketstatus">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Firmware</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally bg-openbuilds fg-white" id="firmwareversionstatus">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span id="firmwareversionstatus">NOCOMM</span></td>
                         </tr>
+                        <tr>
+                          <td class="pt-1 mt-0 pb-0 pt-0">Computer</td>
+                          <td class="pt-1 mt-0 pb-0 pt-0">
+                            <b>Motherboard:</b> <span id="mobospecs">NOCOMM</span><br>
+                            <b>CPU:</b> <span id="cpuspecs">NOCOMM</span><br>
+                            <b>GPU:</b> <span id="gpuspecs">NOCOMM</span><br>
+                            <b>Memory:</b> <span id="memoryspecs">NOCOMM</span><br>
+                            <b>OS:</b> <span id="osspecs">NOCOMM</span><br>
+                            <b>Network:</b> <span id="ipspecs">NOCOMM</span><br>
+                          </td>
+                        </tr>
+
+
+
                       </tbody>
                     </table>
                   </div>
