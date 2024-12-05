@@ -81,6 +81,7 @@ function selectMachine(type) {
       $131: "325.000", //"Y-axis maximum travel, millimeters"
       $132: "85.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "sphinx1050") {
     // Sphinx 1050
     var customFirmware = false;
@@ -120,6 +121,7 @@ function selectMachine(type) {
       $131: "325", //"Y-axis maximum travel, millimeters"
       $132: "85", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "workbee1050") {
     //Workbee 1050 COMPLETE with homing switches
     var customFirmware = false;
@@ -159,6 +161,7 @@ function selectMachine(type) {
       $131: "762.000", //"Y-axis maximum travel, millimeters"
       $132: "122.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "workbee1010") {
     // Workbee 1010
     var customFirmware = false;
@@ -198,6 +201,7 @@ function selectMachine(type) {
       $131: "780.000", //"Y-axis maximum travel, millimeters"
       $132: "122.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "workbee1510") {
     // Workbee1510
     var customFirmware = false;
@@ -237,6 +241,7 @@ function selectMachine(type) {
       $131: "1280.000", //"Y-axis maximum travel, millimeters"
       $132: "122.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "acro55") {
     // Acro 55
     var customFirmware = 'acro';
@@ -276,6 +281,7 @@ function selectMachine(type) {
       $131: "300.000", //Y-axis maximum travel, millimeters
       $132: "70.000", //Z-axis maximum travel, millimeters
     }
+    setSelectedToolhead('laser');
   } else if (type == "acro510") {
     // Acro 510
     var customFirmware = 'acro';
@@ -315,6 +321,7 @@ function selectMachine(type) {
       $131: "300.000", //Y-axis maximum travel, millimeters
       $132: "70.000", //Z-axis maximum travel, millimeters
     }
+    setSelectedToolhead('laser');
   } else if (type == "acro1010") {
     // Acro 1010
     var customFirmware = 'acro';
@@ -354,6 +361,7 @@ function selectMachine(type) {
       $131: "800.000", //Y-axis maximum travel, millimeters
       $132: "70.000", //Z-axis maximum travel, millimeters
     }
+    setSelectedToolhead('laser');
   } else if (type == "acro1510") {
     // Acro 1510
     var customFirmware = 'acro';
@@ -393,6 +401,7 @@ function selectMachine(type) {
       $131: "1300.000", //Y-axis maximum travel, millimeters
       $132: "70.000", //Z-axis maximum travel, millimeters
     }
+    setSelectedToolhead('laser');
   } else if (type == "acro1515") {
     // Acro 1515
     var customFirmware = 'acro';
@@ -432,6 +441,7 @@ function selectMachine(type) {
       $131: "1300.000", //Y-axis maximum travel, millimeters
       $132: "70.000", //Z-axis maximum travel, millimeters
     }
+    setSelectedToolhead('laser');
   } else if (type == "acroa1") {
     // Acro 1010
     var customFirmware = false;
@@ -479,14 +489,7 @@ function selectMachine(type) {
       $131: "609.000", //Y-axis maximum travel, millimeters
       $132: "50.000", //Z-axis maximum travel, millimeters
     }
-    // Set Default Pen Up/Down values
-    penupval = 250
-    pendownval = 0
-    servo = {
-      up: penupval,
-      down: pendownval
-    }
-    localStorage.setItem("servo-calibration", JSON.stringify(servo));
+    setSelectedToolhead('scribe')
     // End default pen up/down
   } else if (type == "minimill") {
     // minimill
@@ -527,6 +530,7 @@ function selectMachine(type) {
       $131: "120.000", //"Y-axis maximum travel, millimeters"
       $132: "60.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "cbeam") {
     // C-Beam Machine
     var customFirmware = false;
@@ -566,6 +570,7 @@ function selectMachine(type) {
       $131: "270.000", //"Y-axis maximum travel, millimeters"
       $132: "80.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "cbeamxl") {
     // C-Beam XL:
     var customFirmware = false;
@@ -605,6 +610,7 @@ function selectMachine(type) {
       $131: "200.000", //"Y-axis maximum travel, millimeters"
       $132: "200.000", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "leadmachine1010") {
     // Leadmachine 1010
     var customFirmware = false;
@@ -644,6 +650,7 @@ function selectMachine(type) {
       $131: "730", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "leadmachine1010plasma") {
     // Leadmachine 1010
     var customFirmware = false;
@@ -683,6 +690,7 @@ function selectMachine(type) {
       $131: "830", //"Y-axis maximum travel, millimeters"
       $132: "80", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('plasma')
   } else if (type == "leadmachine1515") {
     // Leadmachine 1010
     var customFirmware = false;
@@ -722,6 +730,7 @@ function selectMachine(type) {
       $131: "1270", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11');
   } else if (type == "leadmachine1010laser") {
     // Leadmachine 55
     var customFirmware = false;
@@ -761,6 +770,7 @@ function selectMachine(type) {
       $131: "730", //"Y-axis maximum travel, millimeters"
       $132: "90", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('laser');
   } else if (type == "custom") {
     // Leadmachine 55
     var customFirmware = false;
@@ -800,7 +810,9 @@ function selectMachine(type) {
       $131: "1000", //"Y-axis maximum travel, millimeters"
       $132: "100", //"Z-axis maximum travel, millimeters"
     }
+    setSelectedToolhead('router11')
   }
+
   for (var key in grblParams_def) {
     if (grblParams_def.hasOwnProperty(key)) {
       var j = key.substring(1)

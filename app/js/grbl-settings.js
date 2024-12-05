@@ -572,7 +572,7 @@ function grblSaveSettings() {
         toSaveCommands = [];
         askToResetOnGrblSettingsChange();
       }
-    }, 400); // send another command every 200ms
+    }, 400); // send another command every 400ms
   }
 
 }
@@ -1026,5 +1026,16 @@ function setSelectedToolhead(value) {
     $radio.prop('checked', true).trigger('change'); // Trigger the change event
   } else {
     console.error('Toolhead not found:', value);
+  }
+
+  if (value == "scribe") {
+    // Set Default Pen Up/Down values
+    penupval = 250
+    pendownval = 0
+    servo = {
+      up: penupval,
+      down: pendownval
+    }
+    localStorage.setItem("servo-calibration", JSON.stringify(servo));
   }
 }
