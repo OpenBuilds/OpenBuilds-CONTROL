@@ -980,6 +980,7 @@ function enableLimits() {
 }
 
 var grblParams_scribe = {
+  $32: "0", //PWM Freq for RC Servo
   $33: "50", //PWM Freq for RC Servo
   $34: "5", //Spindle Off Value for RC Servo
   $35: "5", //Spinde Min Value for RC Servo
