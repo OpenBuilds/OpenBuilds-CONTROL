@@ -5,7 +5,7 @@ var grblParams = {}
 var smoothieParams = {}
 var nostatusyet = true;
 var safeToUpdateSliders = false;
-var laststatus
+var laststatus, lastsysinfo
 var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
@@ -553,6 +553,11 @@ function initSocket() {
       }
 
     }
+  });
+
+  socket.on('sysinfo', function(sysinfo) {
+    console.log(sysinfo)
+    lastsysinfo = sysinfo;
   });
 
   socket.on('status', function(status) {
