@@ -153,6 +153,7 @@ function servocalslide3() {
 }
 
 function closeServoCal() {
+  autoBackup("Calibrated Servo");
   console.log("Saving calibration: up: " + $('#penupslider').data('slider').val() + ", down: " + $('#pendownslider').data('slider').val())
   servo = {
     up: $('#penupslider').data('slider').val(),

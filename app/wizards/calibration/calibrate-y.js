@@ -79,6 +79,7 @@ var ycaltemplate = `
 `
 
 function applycalibrationy() {
+  autoBackup("Calibrated Y");
   var actualdist = $('#ycaltraveldist').val();
   var currentstepspermm = parseFloat(grblParams['$101']);
   // var currentstepspermm = 199.9;

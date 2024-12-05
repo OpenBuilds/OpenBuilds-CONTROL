@@ -74,15 +74,36 @@
                   <span class="caption">Backup<br>Settings</span>
                 </button>
 
-
-
-                <button class="ribbon-button btn-file">
+                <!-- <button class="ribbon-button btn-file">
                   <input class="btn-file" id="grblBackupFile" type="file" accept=".txt, .settings, .grbl" />
                   <span class="icon">
                     <i class="fas fa-upload"></i>
                   </span>
                   <span class="caption">Restore<br>Backup</span>
-                </button>
+                </button> -->
+                <div>
+                  <button id="" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Restore<br>Backup</span>
+                  </button>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                    <li class="btn-file">
+                      <a href="#">
+                        <input class="btn-file" id="grblBackupFile" type="file" accept=".txt, .settings, .grbl" />
+                        <i class="fas fa-folder-open"></i>
+                        Restore Backup File
+                      </a>
+                    </li>
+                    <li class="divider fg-gray"></li>
+                    <div id="restoreBackupMenu">
+                    </div>
+                  </ul>
+                </div>
+
                 <span class="title">Grbl Settings</span>
               </div>
               <div class="group">

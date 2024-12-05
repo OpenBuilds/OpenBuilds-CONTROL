@@ -244,6 +244,7 @@ function readEspFirmwareFile() {
 }
 
 function flashFirmwarefromWizard() {
+  autoBackup("Updated Firmware: " + selectedControllerType);
   if (selectedControllerType == "blackbox4x") {
 
     if ($("#grblAxesCount").val() == "3axes-grbl") {
@@ -284,8 +285,6 @@ function flashFirmwarefromWizard() {
         $('#consoletab').click();
         printLog("<span class='fg-red'>[ Firmware Upgrade ] </span><span class='fg-red'><i class='fas fa-times fa-fw fg-red fa-fw'></i>You selected the option to use a custom firmware file, but failed to select a file to use for the operation. Please try again</span>")
       }
-
-
     } else {
       //  Precompiled Firmwares
       socket.emit('flashGrbl', data)

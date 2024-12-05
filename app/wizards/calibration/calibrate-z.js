@@ -79,6 +79,7 @@ var zcaltemplate = `
 `
 
 function applycalibrationz() {
+  autoBackup("Calibrated Z");
   var actualdist = $('#zcaltraveldist').val();
   var currentstepspermm = parseFloat(grblParams['$102']);
   // var currentstepspermm = 199.9;

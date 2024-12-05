@@ -40,7 +40,49 @@ function loadGrblBackupFile(f) {
   }
 }
 
+function populateRestoreMenu() {
+  // Retrieve backups from localStorage
+  const backups = JSON.parse(localStorage.getItem('grblParamsBackups')) || [];
+
+  // Get the dropdown menu element
+  const backupMenu = document.getElementById('restoreBackupMenu');
+
+  // Clear existing menu items (in case you're calling this multiple times)
+  backupMenu.innerHTML = '';
+
+  // Loop through each backup and create a list item for it
+  backups.forEach((backup, index) => {
+    const backupItem = document.createElement('li');
+
+    // Format the timestamp (you can format it as needed)
+    const formattedTimestamp = new Date(backup.timestamp).toLocaleString(); // Adjust formatting as needed
+
+    // Create the list item HTML content
+    backupItem.innerHTML = `
+      <a href="#" onclick="restoreAutoBackup(${index})">
+        <i class="fas fa-clock fa-fw"></i>
+        Restore AutoBackup: ${formattedTimestamp} (${backup.note || 'No note'})
+      </a>
+    `;
+
+    // Append the list item to the dropdown menu
+    backupMenu.appendChild(backupItem);
+  });
+}
+
+function restoreAutoBackup(index) {
+  const backups = JSON.parse(localStorage.getItem('grblParamsBackups')) || [];
+  const selectedBackup = backups[index];
+
+  // You can now access selectedBackup.grblParams and apply it as needed
+  console.log('Restoring backup:', selectedBackup);
+  // Call your function to restore the backup here, e.g., update grblParams
+  // Example: grblParams = selectedBackup.grblParams;
+}
+
+
 function backupGrblSettings() {
+  autoBackup("Manual Backup")
   var grblBackup = ""
   for (key in grblParams) {
     var key2 = key.split('=')[0].substr(1);
@@ -50,7 +92,6 @@ function backupGrblSettings() {
     } else {
       var descr = "unknown"
     }
-
     grblBackup += key + "=" + grblParams[key] + "  ;  " + descr + "\n"
   }
   if (laststatus.machine.name.length > 0) {
@@ -65,7 +106,6 @@ function backupGrblSettings() {
   } else {
     invokeSaveAsDialog(blob, 'grbl-settings-backup-' + date.yyyymmdd() + '.txt');
   }
-
 }
 
 function grblSettings(data) {
@@ -409,6 +449,8 @@ function grblPopulate() {
     setTimeout(function() {
       setMachineButton(laststatus.machine.name)
     }, 500)
+
+    populateRestoreMenu();
   }
 
 }
@@ -519,7 +561,38 @@ function checkifchanged() {
 }
 
 
+function autoBackup(note) {
+
+  const timestamp = new Date().toISOString(); // Generate current timestamp
+  const currentParams = {
+    machinetype: laststatus.machine.name,
+    note: note,
+    timestamp: timestamp,
+    grblParams: {
+      ...grblParams // Spread Operator copy
+    }
+  }; // Add timestamp to the current parameters
+
+  // Retrieve existing backups from localStorage or initialize an empty array
+  let backups = JSON.parse(localStorage.getItem('grblParamsBackups')) || [];
+
+  // Add the current backup to the beginning of the array
+  backups.unshift(currentParams);
+
+  // Trim backups to keep only the last 20
+  if (backups.length > 20) {
+    backups = backups.slice(0, 20);
+  }
+
+  // Save the updated backups array back to localStorage
+  localStorage.setItem('grblParamsBackups', JSON.stringify(backups));
+
+  // Optionally, add your existing save functionality here
+  console.log('Settings saved and backup created.');
+}
+
 function grblSaveSettings() {
+  autoBackup("Updated Grbl Settings")
   var toSaveCommands = [];
   var saveProgressBar = $("#grblSaveProgress").data("progress");
   for (var key in grblParams) {

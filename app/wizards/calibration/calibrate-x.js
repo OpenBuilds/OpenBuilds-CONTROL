@@ -81,6 +81,7 @@ var xcaltemplate = `
 `
 
 function applycalibrationx() {
+  autoBackup("Calibrated X");
   var actualdist = $('#xcaltraveldist').val();
   var currentstepspermm = parseFloat(grblParams['$100']);
   // var currentstepspermm = 199.9;
