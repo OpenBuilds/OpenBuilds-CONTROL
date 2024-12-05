@@ -1197,10 +1197,18 @@ io.on("connection", function(socket) {
 
           // Grbl $I parser
           if (data.indexOf("[VER:") === 0) {
-            status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
+            // Extracting the full version (1.1f)
+            const version = data.split(':')[1].split('.')[0] + '.' + data.split(':')[1].split('.')[1];
+            // Extracting the date (20240402)
+            const date = data.split(':')[1].split('.')[2];
+
+            status.machine.firmware.version = version;
+            status.machine.firmware.date = date;
+
             io.sockets.emit("status", status);
+
+            status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
             io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
-            status.machine.firmware.date = data.split(':')[1].split(".")[2];
           }
 
           if (data.indexOf("[OPT:") === 0) {
@@ -1393,7 +1401,6 @@ io.on("connection", function(socket) {
                 io.sockets.emit('data', output);
               }
             }
-            status.machine.firmware.date = "";
             // debug_log("GRBL detected");
             // setTimeout(function() {
             //   io.sockets.emit('grbl', status.machine.firmware)
@@ -4002,7 +4009,7 @@ async function getSystemInfo() {
   }, 60000); // 60,000 ms = 1 minute
 
   // Log the initial systemInformation object
-  console.log(JSON.stringify(systemInformation, null, 2));
+  debug_log(JSON.stringify(systemInformation, null, 2));
 
   // Return the systemInformation object (if needed for further use)
   io.sockets.emit("sysinfo", systemInformation);

@@ -36,6 +36,7 @@ function loadGrblBackupFile(f) {
       checkifchanged();
       enableLimits(); // Enable or Disable
       displayDirInvert();
+      $("#grblSettingsAdvTab").click();
     }
   }
 }
@@ -78,6 +79,40 @@ function restoreAutoBackup(index) {
   console.log('Restoring backup:', selectedBackup);
   // Call your function to restore the backup here, e.g., update grblParams
   // Example: grblParams = selectedBackup.grblParams;
+
+  // Retrieve grblParams from the backup
+  const grblParamsBackup = selectedBackup.grblParams;
+
+  // Iterate through the keys in the grblParams object and apply them using jQuery
+  for (const key in grblParamsBackup) {
+    if (grblParamsBackup.hasOwnProperty(key)) {
+      const paramValue = grblParamsBackup[key];
+      const parsedValue = parseFloat(paramValue);
+
+      // Check if the parsed value is a valid number
+      if (!isNaN(parsedValue)) {
+        // Update the input field based on the parameter using jQuery
+        const inputElement = $("#val-" + key.substring(1) + "-input");
+
+        if (inputElement.length) {
+          inputElement.val(parsedValue); // Apply the value to the input field
+        }
+      } else {
+        console.warn(`Invalid value for ${key}: ${paramValue}`);
+      }
+
+      // Optionally, fix or apply any GrblHAL-specific settings
+      fixGrblHALSettings(key.substring(1)); // Adjust as needed
+
+      // Optionally, other functions you might call for updating the machine state
+      // Example: checkifchanged(); enableLimits(); displayDirInvert();
+    }
+  }
+  // Call any post-restoration functions you need (e.g., re-enable limits, etc.)
+  checkifchanged();
+  enableLimits();
+  displayDirInvert();
+  $("#grblSettingsAdvTab").click();
 }
 
 
@@ -189,8 +224,8 @@ function grblPopulate() {
     <form id="grblSettingsTable">
 
     <ul data-role="tabs" data-expand="true" class="mb-2">
-      <li onclick="showBasicSettings()"><a href="#"><small><i class="fas fa-fw fa-cog mr-1 fg-darkGreen"></i>Basic Settings</a></small></li>
-      <li onclick="showAdvSettings()"><a href="#"><small><i class="fas fa-fw fa-cogs mr-1 fg-darkRed"></i>Advanced Settings</a></small></li>
+      <li id="grblSettingsBasicTab" onclick="showBasicSettings()"><a href="#"><small><i class="fas fa-fw fa-cog mr-1 fg-darkGreen"></i>Basic Settings</a></small></li>
+      <li id="grblSettingsAdvTab" onclick="showAdvSettings()"><a href="#"><small><i class="fas fa-fw fa-cogs mr-1 fg-darkRed"></i>Advanced Settings</a></small></li>
     </ul>
 
 
@@ -521,9 +556,9 @@ function checkifchanged() {
           (!compareAsNumber && newVal !== oldVal)) {
           hasChanged = true;
 
-          console.log("changed: " + key);
-          console.log("old: " + oldVal);
-          console.log("new: " + newVal);
+          // console.log("changed: " + key);
+          // console.log("old: " + oldVal);
+          // console.log("new: " + newVal);
 
           if (!$("#val-" + j + "-input").parent().is('td')) {
             $("#val-" + j + "-input").parent().addClass('alert');

@@ -60,9 +60,7 @@ function showGrbl(bool, firmware) {
   if (localStorage.getItem('jogOverride')) {
     jogOverride(localStorage.getItem('jogOverride'))
   }
-  if (laststatus !== undefined) {
-    $("#firmwareversionstatus").html(laststatus.machine.firmware.platform + " " + laststatus.machine.firmware.version);
-  };
+
 }
 
 function printLogModern(icon, source, string, printLogCls) {
@@ -741,6 +739,10 @@ function initSocket() {
     } else {
       $("#powerSettingsCard").hide();
     }
+
+
+    $("#firmwareversionstatus").html(status.machine.firmware.platform + " " + status.machine.firmware.version + " (" + status.machine.firmware.date + ")");
+
 
 
 
