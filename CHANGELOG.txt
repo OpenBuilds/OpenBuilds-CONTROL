@@ -1,3 +1,7 @@
+v1.0.384:
+- Simplified Grbl Settings: Basic/Advanced tabs and Wizard for setting up toolheads
+- Fixed bug where Servo Calibration was acting outside modal
+- Fixed minor cosmetic issue on ribbon menu colors in Dark Mode
 v1.0.383:
 - Added default servo values for Pen Up/Down for ACRO A1
 v1.0.382:
