@@ -2,6 +2,7 @@ v1.0.385
 - Disable laser mode if set on machine profile, when activating Scribe toolhead
 - Updated Grbl Settings defaults for ACRO A1
 - Updated OpenBuilds Logo on Window Header
+- Fixed Apple signing/notarizing
 v1.0.384:
 - Simplified Grbl Settings: Basic/Advanced tabs and Wizard for setting up toolheads
 - Fixed bug where Servo Calibration was acting outside modal
