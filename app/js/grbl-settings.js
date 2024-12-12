@@ -297,33 +297,7 @@ function grblPopulate() {
                 </ul>
               </li>
               <li><a href="#" onclick="selectMachine('minimill');"><img
-                    src="img/mch/minimill.png" width="16px" /> OpenBuilds MiniMill</a></li>
-              <li>
-                <a href="#" class="dropdown-toggle"><img src="img/mch/sphinx55.png"
-                    width="16px" /> OpenBuilds Sphinx</a>
-                <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('sphinx55');"><a href="#"><img
-                        src="img/mch/sphinx55.png" width="16px" /> OpenBuilds Sphinx
-                      55</a></li>
-                  <li onclick="selectMachine('sphinx1050');"><a href="#"><img
-                        src="img/mch/sphinx1050.png" width="16px" /> OpenBuilds
-                      Sphinx 1050</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="#" class="dropdown-toggle"><img
-                    src="img/mch/workbee1010.png" width="16px" /> OpenBuilds WorkBee</a>
-                <ul class="ribbon-dropdown" data-role="dropdown">
-                  <li onclick="selectMachine('workbee1010');"><a href="#"><img
-                        src="img/mch/workbee1010.png" width="16px" /> OpenBuilds
-                      WorkBee 1010</a></li>
-                  <li onclick="selectMachine('workbee1050');"><a href="#"><img
-                        src="img/mch/workbee1050.png" width="16px" /> OpenBuilds
-                      WorkBee 1050</a></li>
-                  <li onclick="selectMachine('workbee1510');"><a href="#"><img
-                        src="img/mch/workbee1510.png" width="16px" /> OpenBuilds
-                      WorkBee 1510</a></li>
-                </ul>
+                    src="img/mch/minimill.png" width="16px" /> OpenBuilds MiniMill</a>
               </li>
             </ul>
           </li>

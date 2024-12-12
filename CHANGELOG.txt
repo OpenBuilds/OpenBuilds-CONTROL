@@ -1,3 +1,7 @@
+v1.0.386
+- Implemented Click-on Handlers for A-Axis DRO Entry (Bug #374)
+- Added direction (Along X or Y) support to Surfacing Wizard (Feature request #375)
+- Removed retired machines from profiles list (Issue #380)
 v1.0.385
 - Disable laser mode if set on machine profile, when activating Scribe toolhead
 - Updated Grbl Settings defaults for ACRO A1
@@ -15,8 +19,8 @@ v1.0.382:
 - Updated Theme
 - Updated SSL Certificates
 v1.0.381:
-- Added additional board support to Flashing tools
 - Fixed linebreak on realtime feedrate indicator
+- Added additional board support to Flashing tools
 - Updated esptool for Windows, Mac and Linux
 - Improved USB ID Descriptions handling
 - Added more grblHAL settings descriptions

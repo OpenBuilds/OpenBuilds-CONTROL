@@ -45,6 +45,16 @@ var surfacingWizardTemplate = `
             </div>
           </div>
 
+          <div class="row mb-2 pb-2 border-bottom bd-gray">
+           <label class="cell-sm-6">Surface Direction</label>
+           <div class="cell-sm-6">
+             <select id="surfaceDirection" data-role="input" data-clear-button="false">
+               <option value="X" selected>Along X-Axis</option>
+               <option value="Y">Along Y-Axis</option>
+             </select>
+           </div>
+         </div>
+
           <div class="row mb-2">
             <label class="cell-sm-6">Cut Depth per Pass</label>
             <div class="cell-sm-6">
@@ -171,8 +181,7 @@ function populateSurfaceToolForm() {
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
   //Metro.dialog.open("#surfacingDialog");
-
-
+  $('#surfaceDirection').val(data.surfaceDirection); // Restore surface direction
 
 }
 
@@ -188,24 +197,45 @@ function createSurfaceGcode() {
     surfaceType: $("input[name='surfaceType']:checked").val(),
     surfaceRPM: $('#surfaceRPM').val(),
     surfaceCoolant: $('#surfaceCoolant').val(),
-    surfaceFraming: $('#surfaceFraming').val()
+    surfaceFraming: $('#surfaceFraming').val(),
+    surfaceDirection: $('#surfaceDirection').val() // New dropdown value
   };
+
   console.log(data);
 
   if (data.surfaceFinalDepth > data.surfaceDepth) {
-    console.log("multipass")
+    console.log("multipass");
   } else if (data.surfaceFinalDepth == data.surfaceDepth || data.surfaceFinalDepth < data.surfaceDepth) {
-    console.log("singlepass")
-    data.surfaceFinalDepth = data.surfaceDepth
+    console.log("singlepass");
+    data.surfaceFinalDepth = data.surfaceDepth;
   }
 
   localStorage.setItem("lastSurfacingTool", JSON.stringify(data));
 
-  var startpointX = 0 + data.surfaceDiameter / 2;
-  var endpointX = data.surfaceX - data.surfaceDiameter / 2;
-
-  var startpointY = 0 + data.surfaceDiameter / 2;
-  var endpointY = data.surfaceY - data.surfaceDiameter / 2;
+  var startpoint, endpoint, primaryAxis, secondaryAxis;
+  if (data.surfaceDirection === "X") {
+    primaryAxis = "X";
+    secondaryAxis = "Y";
+    startpoint = {
+      primary: 0 + data.surfaceDiameter / 2,
+      secondary: 0 + data.surfaceDiameter / 2
+    };
+    endpoint = {
+      primary: data.surfaceX - data.surfaceDiameter / 2,
+      secondary: data.surfaceY - data.surfaceDiameter / 2
+    };
+  } else {
+    primaryAxis = "Y";
+    secondaryAxis = "X";
+    startpoint = {
+      primary: 0 + data.surfaceDiameter / 2,
+      secondary: 0 + data.surfaceDiameter / 2
+    };
+    endpoint = {
+      primary: data.surfaceY - data.surfaceDiameter / 2,
+      secondary: data.surfaceX - data.surfaceDiameter / 2
+    };
+  }
 
   var lineOver = data.surfaceDiameter * (data.surfaceStepover / 100);
 
@@ -219,10 +249,10 @@ function createSurfaceGcode() {
     `%, Feedrate: ` +
     data.surfaceFeedrate +
     `mm/min
-; X: ` +
-    data.surfaceX +
-    `, Y: ` +
-    data.surfaceY +
+; ` + primaryAxis + `: ` +
+    (primaryAxis === "X" ? data.surfaceX : data.surfaceY) +
+    `, ` + secondaryAxis + `: ` +
+    (secondaryAxis === "X" ? data.surfaceX : data.surfaceY) +
     `, Z: ` +
     data.surfaceDepth +
     `
@@ -230,84 +260,42 @@ G54; Work Coordinates
 G21; mm-mode
 G90; Absolute Positioning
 M3 S` + data.surfaceRPM + `; Spindle On
-`
+`;
 
   if (data.surfaceCoolant == "enabled") {
     gcode += `M8 ;  Coolant On
-`
+`;
   }
 
   gcode += `G4 P1.8; Wait for spindle to come up to speed
 G0 Z10 ; Move to Safe Height
-G0 X0 Y0; Move to origin position
+G0 ` + primaryAxis + `0 ` + secondaryAxis + `0; Move to origin position
 G1 F` +
     data.surfaceFeedrate + ` ; Set feedrate\n`;
 
   // MULTIPASS
   for (q = data.surfaceDepth; q < data.surfaceFinalDepth + data.surfaceDepth; q += data.surfaceDepth) {
-    if (q > data.surfaceFinalDepth) {
-      var zval = -data.surfaceFinalDepth;
-    } else {
-      var zval = -q
-    }
-    console.log(q, zval)
+    var zval = q > data.surfaceFinalDepth ? -data.surfaceFinalDepth : -q;
+    console.log(q, zval);
+
+    gcode += `\nG0 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + startpoint.secondary.toFixed(4) + ` Z10 ; Move to start Position
+`;
+    gcode += `G1 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + startpoint.secondary.toFixed(4) + ` Z` + zval + `; Plunge\n`;
 
     var reverse = false;
 
-    if (!reverse) {
-      gcode +=
-        `\nG0 X` +
-        startpointX.toFixed(4) +
-        ` Y` +
-        startpointY.toFixed(4) +
-        ` Z10 ; Move to start Position
-  G1 X` +
-        startpointX.toFixed(4) +
-        ` Y` +
-        startpointY.toFixed(4) +
-        ` Z` +
-        zval +
-        `; Plunge\n`;
-    } else {
-      gcode +=
-        `\nG0 X` +
-        endpointX.toFixed(4) +
-        ` Y` +
-        startpointY.toFixed(4) +
-        ` Z10 ; Move to start Position
-  G1 X` +
-        endpointX.toFixed(4) +
-        ` Y` +
-        startpointY.toFixed(4) +
-        ` Z` +
-        zval +
-        `Plunge \n`;
-    }
-
-    for (i = startpointY; i.toFixed(4) < endpointY; i += lineOver) {
+    for (i = startpoint.secondary; i.toFixed(4) < endpoint.secondary; i += lineOver) {
       if (!reverse) {
-        gcode += `G1 Y` + i.toFixed(4) + `\n`;
-        gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z` + zval + `\n`;
-        gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z` + zval + `\n`;
+        gcode += `G1 ` + secondaryAxis + i.toFixed(4) + `\n`;
+        gcode += `G1 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + i.toFixed(4) + ` Z` + zval + `\n`;
+        gcode += `G1 ` + primaryAxis + endpoint.primary.toFixed(4) + ` ` + secondaryAxis + i.toFixed(4) + ` Z` + zval + `\n`;
         reverse = true;
       } else {
-        gcode += `G1 Y` + i.toFixed(4) + `\n`;
-        gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z` + zval + `\n`;
-        gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + i.toFixed(4) + ` Z` + zval + `\n`;
+        gcode += `G1 ` + secondaryAxis + i.toFixed(4) + `\n`;
+        gcode += `G1 ` + primaryAxis + endpoint.primary.toFixed(4) + ` ` + secondaryAxis + i.toFixed(4) + ` Z` + zval + `\n`;
+        gcode += `G1 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + i.toFixed(4) + ` Z` + zval + `\n`;
         reverse = false;
       }
-    }
-
-    if (!reverse) {
-      gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
-      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`;
-      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`;
-      reverse = true;
-    } else {
-      gcode += `G1 Y` + endpointY.toFixed(4) + `\n`;
-      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`;
-      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`;
-      reverse = false;
     }
 
     gcode += `G0 Z10; Pass complete, lifting to Z Safe height\n`;
@@ -315,34 +303,25 @@ G1 F` +
     // Framing Pass
     if (data.surfaceFraming == "enabled") {
       gcode += `; Framing pass\n`;
-      gcode += `G0 X` + startpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z10\n`; // position at start point
+      gcode += `G0 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + startpoint.secondary.toFixed(4) + ` Z10\n`; // position at start point
       gcode += `G1 Z` + zval + `\n`; // plunge
-      gcode += `G1 X` + startpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
+      gcode += `G1 ` + primaryAxis + startpoint.primary.toFixed(4) + ` ` + secondaryAxis + endpoint.secondary.toFixed(4) + ` Z` + zval + `\n`; // Cut side
       gcode += `G0 Z10\n`;
-      gcode += `G0 X` + endpointX.toFixed(4) + ` Y` + endpointY.toFixed(4) + `\n`; // position at start point
+      gcode += `G0 ` + primaryAxis + endpoint.primary.toFixed(4) + ` ` + secondaryAxis + endpoint.secondary.toFixed(4) + `\n`; // position at start point
       gcode += `G1 Z` + zval + `\n`; // plunge
-      gcode += `G1 X` + endpointX.toFixed(4) + ` Y` + startpointY.toFixed(4) + ` Z` + zval + `\n`; // Cut side
+      gcode += `G1 ` + primaryAxis + endpoint.primary.toFixed(4) + ` ` + secondaryAxis + startpoint.secondary.toFixed(4) + ` Z` + zval + `\n`; // Cut side
       gcode += `G0 Z10\n`;
-      gcode += `G0 X0 Y0\n`;
+      gcode += `G0 ` + primaryAxis + `0 ` + secondaryAxis + `0\n`;
     }
-
   }
-  // END MULTIPASS
-
-
-
 
   gcode += `M5 S0\n`;
 
   if (data.surfaceCoolant == "enabled") {
-    gcode += `M9 ;  Coolant Off`
+    gcode += `M9 ;  Coolant Off`;
   }
 
   editor.session.setValue(gcode);
-  parseGcodeInWebWorker(gcode)
-  printLog("<span class='fg-red'>[ Surfacing / Flattening Wizard ] </span><span class='fg-green'>GCODE Loaded</span>")
-
-  // console.log(gcode);
-  //
-  // $("#gcode").html(gcode.replace(/(?:\r\n|\r|\n)/g, "<br>"));
+  parseGcodeInWebWorker(gcode);
+  printLog("<span class='fg-red'>[ Surfacing / Flattening Wizard ] </span><span class='fg-green'>GCODE Loaded</span>");
 }
