@@ -155,7 +155,8 @@ function populateSurfaceToolForm() {
       surfaceFinalDepth: 3,
       surfaceCoolant: "enabled",
       surfaceFraming: "enabled",
-      surfaceRPM: 1000
+      surfaceRPM: 1000,
+      surfaceDirection: "X"
     };
   }
   $("#surfaceDiameter").val(data.surfaceDiameter);
@@ -182,9 +183,9 @@ function populateSurfaceToolForm() {
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
   //Metro.dialog.open("#surfacingDialog");
 
-  // if (data.surfaceDirection != undefined) {
-  $('#surfaceDirection').val(data.surfaceDirection); // Restore surface direction
-  // }
+  if (data.surfaceDirection != undefined) {
+    $('#surfaceDirection').val(data.surfaceDirection); // Restore surface direction
+  }
 
 }
 

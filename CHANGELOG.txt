@@ -1,4 +1,4 @@
-v1.0.387
+v1.0.387/388
 - Improved Feature request #375 handling of localstorage
 v1.0.386
 - Implemented Click-on Handlers for A-Axis DRO Entry (Bug #374)
