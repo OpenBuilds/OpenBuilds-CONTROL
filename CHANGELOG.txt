@@ -1,3 +1,5 @@
+v1.0.387
+- Improved Feature request #375 handling of localstorage
 v1.0.386
 - Implemented Click-on Handlers for A-Axis DRO Entry (Bug #374)
 - Added direction (Along X or Y) support to Surfacing Wizard (Feature request #375)

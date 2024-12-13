@@ -181,7 +181,10 @@ function populateSurfaceToolForm() {
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
   //Metro.dialog.open("#surfacingDialog");
+
+  // if (data.surfaceDirection != undefined) {
   $('#surfaceDirection').val(data.surfaceDirection); // Restore surface direction
+  // }
 
 }
 
