@@ -293,6 +293,41 @@ $(document).ready(function() {
   });
 
 
+  // A Axis DRO entry
+  $("#aPosDro").click(function() {
+    $("#aPos").hide()
+    $("#aPosDro").addClass("drop-shadow");
+    $("#aPosInput").show().focus().val(laststatus.machine.position.work.a)
+    document.getElementById("aPosInput").select();
+  });
+
+  $("#aPosInput").blur(function() {
+    $("#aPos").show()
+    $("#aPosDro").removeClass("drop-shadow");
+    $("#aPosInput").hide()
+  });
+
+  $('#aPosInput').on('keypress', function(e) {
+    if (e.which === 13) {
+      //Disable textbox to prevent multiple submit
+      $(this).attr("disabled", "disabled");
+      $("#aPos").show()
+      $("#aPosInput").hide()
+      //Enable the textbox again if needed.
+      $(this).removeAttr("disabled");
+
+      if (e.shiftKey) {
+        sendGcode("G21\nG10 P0 L20 A" + $("#aPosInput").val());
+      } else {
+        sendGcode("$J=G90 G21 A" + $("#aPosInput").val() + " F" + jogRateA);
+      }
+
+    }
+  });
+
+  // End A-Axis DRO Entry
+
+
   $('#dist01').on('click', function(ev) {
     if (unit == "mm") {
       jogdistXYZ = 0.1;

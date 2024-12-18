@@ -135,7 +135,7 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
     var coneGeo = new THREE.CylinderGeometry(0, 5, 40, 15, 1, false)
     coneGeo.applyMatrix(new THREE.Matrix4().makeTranslation(0, -20, 0));
 
-    cone = new THREE.Mesh(coneGeo, new THREE.MeshPhongMaterial({
+    cone = new THREE.Mesh(coneGeo, new THREE.MeshLambertMaterial({
       color: 0x0000ff,
       specular: 0x0000ff,
       shininess: 00
@@ -317,7 +317,8 @@ function init3D() {
     renderer = new THREE.WebGLRenderer({
       autoClearColor: true,
       antialias: true,
-      preserveDrawingBuffer: true
+      preserveDrawingBuffer: true,
+      alpha: true
     });
     // ThreeJS Render/Control/Camera
     scene = new THREE.Scene();

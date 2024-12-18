@@ -11,7 +11,7 @@ document.addEventListener("contextmenu", function(e) {
 
 function setWindowTitle(status) {
 
-  var string = "OpenBuilds CONTROL"
+  var string = ""
 
   if (status) {
     string += " v" + status.driver.version
@@ -29,7 +29,7 @@ function setWindowTitle(status) {
   }
 
   $('#windowtitle').html(string)
-  document.title = string
+  document.title = "OpenBuilds CONTROL" + string
 
 }
 

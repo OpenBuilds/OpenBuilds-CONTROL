@@ -5,7 +5,7 @@ var grblParams = {}
 var smoothieParams = {}
 var nostatusyet = true;
 var safeToUpdateSliders = false;
-var laststatus
+var laststatus, lastsysinfo
 var simstopped = false;
 var bellstate = false;
 var toast = Metro.toast.create;
@@ -60,9 +60,7 @@ function showGrbl(bool, firmware) {
   if (localStorage.getItem('jogOverride')) {
     jogOverride(localStorage.getItem('jogOverride'))
   }
-  if (laststatus !== undefined) {
-    $("#firmwareversionstatus").html(laststatus.machine.firmware.platform + " " + laststatus.machine.firmware.version);
-  };
+
 }
 
 function printLogModern(icon, source, string, printLogCls) {
@@ -555,6 +553,35 @@ function initSocket() {
     }
   });
 
+  socket.on('sysinfo', function(sysinfo) {
+    console.log(sysinfo)
+    lastsysinfo = sysinfo;
+
+    var mobo = sysinfo.hardware.motherboard.manufacturer + " " + sysinfo.hardware.motherboard.model
+    $("#mobospecs").html(mobo)
+
+
+    var cpu = sysinfo.hardware.cpu[0].model
+    $("#cpuspecs").html(cpu)
+
+    var gpu = sysinfo.hardware.gpu[0].model + " (" + sysinfo.hardware.gpu[0].vram + "mb)"
+    $("#gpuspecs").html(gpu)
+
+    var memory = "Free: " + sysinfo.hardware.memory.free + " / Total: " + sysinfo.hardware.memory.total;
+    $("#memoryspecs").html(memory)
+
+    var operatingsys = sysinfo.operatingSystem.distro + " / " + sysinfo.operatingSystem.arch + " (" + sysinfo.operatingSystem.version + ")";
+    $("#osspecs").html(operatingsys)
+
+
+
+    var ipaddresses = sysinfo.network.flatMap(iface => iface.addresses.map(addr => addr.address)).join(' / ');
+    $("#ipspecs").html(ipaddresses)
+
+
+
+  });
+
   socket.on('status', function(status) {
 
     if (nostatusyet) {
@@ -738,8 +765,7 @@ function initSocket() {
     }
 
 
-
-
+    $("#firmwareversionstatus").html(status.machine.firmware.platform + " " + status.machine.firmware.version + " (" + status.machine.firmware.date + ")");
 
     // Grbl Pins Input Status
     $('.pinstatus').removeClass('alert').addClass('success').html('OFF')

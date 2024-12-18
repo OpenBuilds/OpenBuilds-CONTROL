@@ -367,7 +367,7 @@ function checkPowerSettings() {
 }
 
 
-var oldportslist, oldiplist;
+var oldiplist;
 var oldpinslist;
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
@@ -381,7 +381,7 @@ var lastCommand = false
 var gcodeQueue = [];
 var queuePointer = 0;
 var statusLoop;
-var frontEndUpdateLoop
+var frontEndUpdateLoop, sysinfoUpdateLoop
 
 var queueCounter;
 var listPortsLoop;
@@ -525,25 +525,6 @@ async function findPorts() {
 }
 findPorts()
 
-async function findChangedPorts() {
-  const ports = await SerialPort.list()
-  // console.log(ports)
-  status.comms.interfaces.ports = ports;
-  if (!_.isEqual(ports, oldportslist)) {
-    var newPorts = _.differenceWith(ports, oldportslist, _.isEqual)
-    if (newPorts.length > 0) {
-      debug_log("Plugged " + newPorts[0].path);
-    }
-    var removedPorts = _.differenceWith(oldportslist, ports, _.isEqual)
-    if (removedPorts.length > 0) {
-      debug_log("Unplugged " + removedPorts[0].path);
-    }
-  }
-  oldportslist = ports;
-  // throw new Error('No ports found')
-  findPorts()
-}
-
 // async function findDisks() {
 //   const drives = await drivelist.list();
 //   status.interface.diskdrives = drives;
@@ -551,7 +532,7 @@ async function findChangedPorts() {
 
 var PortCheckinterval = setInterval(function() {
   if (status.comms.connectionStatus == 0) {
-    findChangedPorts();
+    findPorts();
   }
   //findDisks(); // removed in 1.0.350 due to Drivelist stability issues
 }, 1000);
@@ -699,46 +680,26 @@ io.on("connection", function(socket) {
 
   debug_log("New IO Connection ");
 
+  io.sockets.emit("sysinfo", systemInformation);
 
   iosocket = socket;
 
   if (status.machine.firmware.type == 'grbl') {
-
     debug_log("Is Grbl");
-
-
-    // // handle Grbl RESET external input
-    // if (status.machine.inputs.length > 0) {
-    //   for (i = 0; i < status.machine.inputs.length; i++) {
-    //     switch (status.machine.inputs[i]) {
-    //       case 'R':
-    //         // debug_log('PIN: SOFTRESET');
-    //         safetosend = true;
-    //         break;
-    //     }
-    //   }
-    // } else {
-    //   setTimeout(function() {
     debug_log("Emit Grbl: 1");
     io.sockets.emit('grbl', status.machine.firmware)
-    //   }, 10000);
-    // }
-    //
-    // if (safetosend != undefined && safetosend == true) {
-    //   setTimeout(function() {
-    //     debug_log("Emit Grbl: 2");
-    //     io.sockets.emit('grbl', status.machine.firmware)
-    //   }, 10000);
-    // }
-
   }
-
 
   // Global Update loop
   clearInterval(frontEndUpdateLoop);
   frontEndUpdateLoop = setInterval(function() {
     io.sockets.emit("status", status);
   }, 100);
+
+  clearInterval(sysinfoUpdateLoop);
+  sysinfoUpdateLoop = setInterval(function() {
+    io.sockets.emit("sysinfo", systemInformation);
+  }, 1000 * 60);
 
   socket.on("scannetwork", function(data) {
     scanForTelnetDevices(data)
@@ -1236,10 +1197,18 @@ io.on("connection", function(socket) {
 
           // Grbl $I parser
           if (data.indexOf("[VER:") === 0) {
-            status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
+            // Extracting the full version (1.1f)
+            const version = data.split(':')[1].split('.')[0] + '.' + data.split(':')[1].split('.')[1];
+            // Extracting the date (20240402)
+            const date = data.split(':')[1].split('.')[2];
+
+            status.machine.firmware.version = version;
+            status.machine.firmware.date = date;
+
             io.sockets.emit("status", status);
+
+            status.machine.name = data.split(':')[2].split(']')[0].toLowerCase()
             io.sockets.emit("machinename", data.split(':')[2].split(']')[0].toLowerCase());
-            status.machine.firmware.date = data.split(':')[1].split(".")[2];
           }
 
           if (data.indexOf("[OPT:") === 0) {
@@ -1432,7 +1401,6 @@ io.on("connection", function(socket) {
                 io.sockets.emit('data', output);
               }
             }
-            status.machine.firmware.date = "";
             // debug_log("GRBL detected");
             // setTimeout(function() {
             //   io.sockets.emit('grbl', status.machine.firmware)
@@ -3186,7 +3154,9 @@ if (isElectron()) {
       jogWindow = new BrowserWindow({
         // 1366 * 768 == minimum to cater for
         width: 1000,
+        minWidth: 1000,
         height: 850,
+        minHeight: 850,
         fullscreen: false,
         center: true,
         resizable: true,
@@ -3965,5 +3935,92 @@ function friendlyPort(port) {
 
 // End USB Port details
 
+// System Info on startup
+
+const os = require('os');
+const si = require('systeminformation');
+
+var systemInformation;
+
+async function getSystemInfo() {
+  // Basic OS and hardware details
+  const osType = os.type(); // 'Linux', 'Darwin' (Mac), 'Windows_NT'
+  const osPlatform = os.platform(); // 'win32', 'linux', 'darwin', etc.
+  const osRelease = os.release(); // OS version
+  const arch = os.arch(); // 'x64', 'arm', 'arm64', etc.
+  const totalMemory = os.totalmem();
+  const networkInterfaces = os.networkInterfaces();
+  const cpu = os.cpus();
+
+  // Additional system information using systeminformation
+  const [baseboard, graphics, osInfo] = await Promise.all([
+    si.baseboard(),
+    si.graphics(),
+    si.osInfo()
+  ]);
+
+  // Prepare systemInformation JSON object
+  systemInformation = {
+    operatingSystem: {
+      type: osType,
+      platform: osPlatform,
+      release: osRelease,
+      arch: arch,
+      distro: osInfo.distro || "N/A",
+      version: osInfo.release || "N/A",
+      codename: osInfo.codename || "N/A",
+    },
+    hardware: {
+      cpu: cpu.map(core => ({
+        model: core.model,
+        speed: core.speed, // in MHz
+        times: core.times
+      })),
+      motherboard: {
+        manufacturer: baseboard.manufacturer,
+        model: baseboard.model,
+        version: baseboard.version,
+        serialNumber: baseboard.serial,
+      },
+      gpu: graphics.controllers.map(gpu => ({
+        model: gpu.model,
+        vendor: gpu.vendor,
+        vram: gpu.vram, // in MB
+        bus: gpu.bus
+      })),
+      memory: {
+        total: (totalMemory / 1024 / 1024 / 1024).toFixed(2) + " GB",
+        free: (os.freemem() / 1024 / 1024 / 1024).toFixed(2) + " GB",
+      },
+    },
+    network: Object.keys(networkInterfaces).map(iface => ({
+      interface: iface,
+      addresses: networkInterfaces[iface].map(addr => ({
+        address: addr.address,
+        family: addr.family,
+        internal: addr.internal,
+      })),
+    })),
+  };
+
+  // Timer to update free memory every minute
+  setInterval(() => {
+    systemInformation.hardware.memory.free = (os.freemem() / 1024 / 1024 / 1024).toFixed(2) + " GB";
+  }, 60000); // 60,000 ms = 1 minute
+
+  // Log the initial systemInformation object
+  debug_log(JSON.stringify(systemInformation, null, 2));
+
+  // Return the systemInformation object (if needed for further use)
+  io.sockets.emit("sysinfo", systemInformation);
+
+  return systemInformation;
+}
+
+// Call the function
+getSystemInfo().catch(err => console.error("Error retrieving system information:", err));
+
+
+// End system info on startup
 
 process.on('exit', () => debug_log('exit'))

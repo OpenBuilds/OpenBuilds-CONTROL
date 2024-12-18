@@ -127,11 +127,11 @@ var grblSettingsTemplate2 = {
   },
   13: {
     key: `$13`,
-    title: `Report in inches, boolean`,
-    description: `Grbl has a real-time positioning reporting feature to provide a user feedback on where the machine is exactly at that time, as well as, parameters for coordinate offsets and probing. By default, it is set to report in mm, but by sending a $13=1 command, you send this boolean flag to true and these reporting features will now report in inches. $13=0 to set back to mm.`,
+    title: `Report in inches, boolean (CONTROL needs $13=0)`,
+    description: `CONTROL needs $13=0 as it handles inch mode seperately`,
     template: `<select id="val-13-input">
-             <option value="0">&#9898; Disable</option>
-             <option value="1">&#9899; Enable</option>
+             <option value="0">&#x2717; Disable</option>
+             <option value="1">&#x2713; Enable</option>
           </select>`,
     utils: ``
   },
@@ -256,7 +256,9 @@ var grblSettingsTemplate2 = {
     key: `$30`,
     title: `Maximum spindle speed, RPM`,
     description: `This sets the spindle speed for the maximum 5V PWM pin output. For example, if you want to set 10000rpm at 5V, program $30=10000. For 255rpm at 5V, program $30=255. If a program tries to set a higher spindle RPM greater than the $30 max spindle speed, Grbl will just output the max 5V, since it can't go any faster. By default, Grbl linearly relates the max-min RPMs to 5V-0.02V PWM pin output in 255 equally spaced increments. When the PWM pin reads 0V, this indicates spindle disabled. Note that there are additional configuration options are available in config.h to tweak how this operates.`,
-    template: `<input id="val-30-input" data-role="input" data-clear-button="false" data-append="RPM" type="text">`,
+    template: `
+    <span id="grblSettingsPWM">&nbsp;</span>
+    <input id="val-30-input" data-role="input" data-clear-button="false" data-append="RPM" type="text">`,
     utils: ``
   },
   31: {
@@ -479,7 +481,8 @@ var grblSettingsTemplate2 = {
     key: `$33`,
     title: `Spindle PWM frequency`,
     description: ``,
-    template: `<input id="val-33-input" data-role="input" data-clear-button="false" data-append="Hz" type="text" >`,
+    template: `
+    <input id="val-33-input" data-role="input" data-clear-button="false" data-append="Hz" type="text" >`,
     utils: ``
   },
   34: {
