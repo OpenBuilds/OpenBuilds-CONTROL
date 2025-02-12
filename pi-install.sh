@@ -11,7 +11,7 @@ sudo apt install -y tightvncserver xrdp lightdm
 echo "(4/10) Installing GIT..."
 sudo apt-get install -y git
 echo "(5/10) Installing NVM and NodeJS..."
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 . ~/.nvm/nvm.sh
 nvm install lts/iron
 nvm alias default lts/iron
