@@ -1,5 +1,6 @@
 # OpenBuilds CONTROL
-OpenBuilds CONTROL - Grbl Host / Interface for all CNC style machines running Grbl
+
+Rebadged OpenBuilds CONTROL - Grbl Host / Interface for all CNC style machines running Grbl
 
 ## Download
 
