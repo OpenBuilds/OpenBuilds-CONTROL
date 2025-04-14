@@ -1,5 +1,6 @@
 v1.0.389
 - Add pseudo filename entry for surfacing wizard jobs (cosmetic) #383
+- Add Mpos Gotozero menu item to Mobile Jog
 v1.0.387/388
 - Improved Feature request #375 handling of localstorage
 v1.0.386
