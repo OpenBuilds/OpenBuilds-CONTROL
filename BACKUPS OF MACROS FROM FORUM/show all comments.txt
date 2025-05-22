@@ -1,0 +1,32 @@
+function alertMacro() {
+  editor.session.on('change', function(e) {
+    var alertText = '';
+    if (editor.curOp && editor.curOp.command.name) {
+      return null;
+    }
+
+    let lines = editor.session.doc.getAllLines()
+
+    for (var i = 0, l = lines.length; i < l; i++) {
+      if (lines[i].indexOf('(') != -1) {
+        alertText = `${alertText} ${lines[i].replace('(', '').replace(')','')}<br>`;
+      }       
+    }
+  
+    if (alertText !== '') {
+      var dialog = Metro.dialog.create({
+        clsDialog: 'dark',
+        title: "<i class='fas fa-exclamation-triangle'></i> JOB SETUP",
+        content: alertText,
+        actions: [{
+          caption: "Close",
+          cls: "js-dialog-close",
+          onclick: function() {
+            //
+          }
+        }]
+      });
+    }   
+  });
+}
+$(document).ready(() => setTimeout(alertMacro, 1000));

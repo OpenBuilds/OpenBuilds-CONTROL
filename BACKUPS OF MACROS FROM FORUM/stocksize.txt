@@ -1,0 +1,21 @@
+if (typeof object !== 'undefined') {
+   var string = ""
+   if (object.userData.inch) {
+       string += "Width (X): " + (object.userData.bbbox2.max.x - object.userData.bbbox2.min.x) + "inch" + " / " + "Height (Y): " + (object.userData.bbbox2.max.y - object.userData.bbbox2.min.y) + "inch";
+   } else {
+       string += "Width (X): " + (object.userData.bbbox2.max.x - object.userData.bbbox2.min.x) + "mm" + " / " + "Height (Y): " + (object.userData.bbbox2.max.y - object.userData.bbbox2.min.y) + "mm";
+   }
+   console.log(string)
+   Metro.dialog.create({
+       title: "Stock Size needed",
+       clsDialog: "dark",
+       content: `
+          To run this job, you need a piece of stock:<hr>
+          ` + string + `
+      `,
+       actions: [{
+           caption: "Cancel",
+           cls: "js-dialog-close alert",
+       }]
+   });
+}

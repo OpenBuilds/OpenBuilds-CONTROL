@@ -1,0 +1,154 @@
+// Add some CSS classes
+$("<style type='text/css'> .keypadBtn {width: 80px;} .sawStopKeypadBtn {width: 80px;} .sawStopActionBtn {width: 280px; } </style>").appendTo("head");
+
+// variables placeholder
+window.sawStopValue = 0.0;
+window.sawStopFractionValue = 0;
+
+// Update the UI <span> fields to display value
+window.updateSawStopValueUI = setInterval(function() {
+  $("#sawStopValue").html(sawStopValue.toFixed(0));
+  if (sawStopFractionValue.length > 1) {
+    $("#sawStopFraction").html("&nbsp;and&nbsp;" + sawStopFractionValue);
+  } else {
+    $("#sawStopFraction").html("");
+  }
+}, 50);
+
+// keypad button
+window.sawStopBtn = function(val) {
+  var currentValue = sawStopValue.toString();
+  currentValue += val;
+  sawStopValue = parseInt(currentValue);
+}
+
+// fraction button
+window.sawStopFraction = function(val) {
+  sawStopFractionValue = val;
+}
+
+// backspace button
+window.sawStopBackSpace = function() {
+  var sawStopcurrentValue = sawStopValue.toString();
+  var sawStopNewValue = sawStopcurrentValue.slice(0, -1);
+  if (sawStopNewValue.length == 0) {
+    sawStopNewValue = "0";
+  }
+  sawStopValue = parseInt(sawStopNewValue);
+}
+
+window.sawStopMoveTo = function() {
+  // Calculate Decimals from fractions
+  if (sawStopFractionValue.length > 1) {
+    var sawStopFractionSplit = sawStopFractionValue.split("/");
+    var sawStopDecimals =
+      parseInt(sawStopFractionSplit[0], 10) /
+      parseInt(sawStopFractionSplit[1], 10);
+    var decimalSawStopFractionValue = eval(sawStopFractionValue);
+  } else {
+    var decimalSawStopFractionValue = 0;
+  }
+  // add decimals to integers
+  var sawStopFinalPosition = sawStopValue + decimalSawStopFractionValue;
+  // Send move command to Grbl
+  sendGcode("$J=G90 G20 X" + sawStopFinalPosition + " F10000");
+}
+
+// Create the User Interface
+Metro.dialog.create({
+  title: "Saw Stop Macro",
+  width: '90%',
+  content: `
+        <span class="display3" id="sawStopValue">0</span>
+        <span class="display3" id="sawStopFraction"></span>
+        <span class="display2">&nbsp;inch</span>
+
+        <div id="sawStopNumbersUI">
+
+        <table class="table striped compact">
+        <tr>
+        <td>
+        <table>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(7);">7</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(8);">8</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(9);">9</button></td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(4);">4</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(5);">5</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(6);">6</button></td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(1);">1</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(2);">2</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(3);">3</button></td>
+         </tr>
+         <tr>
+           <td></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBtn(0);">0</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopBackSpace();"><i class="fas fa-arrow-left"></i></button></td>
+         </tr>
+        </table>
+        </td>
+        <td>
+        <table>
+         <tr>
+           <td colspan="3">
+             <hr>
+           </td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('1/16');">1/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('3/16');">3/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('5/16');">5/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('7/16');">7/16</button></td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('9/16');">9/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('11/16');">11/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('13/16');">13/16</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('15/16');">15/16</button></td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('1/8');">1/8</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('3/8');">3/8</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('5/8');">5/8</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('7/8');">7/8</button></td>
+         </tr>
+         <tr>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('1/4');">1/4</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('1/2');">1/2</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFraction('3/4');">3/4</button></td>
+           <td><button class="button outline sawStopKeypadBtn" onclick="sawStopFractionValue=0;">0/0</button></td>
+         </tr>
+         <tr>
+           <td colspan="3">
+             <hr>
+           </td>
+         </tr>
+        </table>
+
+        </td>
+        </tr>
+        </table>
+        </div>
+
+        <hr>
+        <button class="button outline sawStopActionBtn alert" onclick="sawStopValue=0; sawStopFractionValue=0;">CLEAR</button>
+        <button class="button outline sawStopActionBtn success" onclick="sawStopMoveTo();">MOVE TO</button>
+        <hr>
+        <button class="button outline sawStopActionBtn warning" onclick="sendGcode('M8');">APPLY BRAKE</button>
+        <button class="button outline sawStopActionBtn primary" onclick="sendGcode('M9');">RELEASE BRAKE</button>
+        <hr>
+        <button class="button outline sawStopActionBtn secondary" onclick="sendGcode('$H');">HOME</button>
+        <button class="button outline sawStopActionBtn secondary" onclick="sendGcode('G10 P0 L20 X0');">SETZERO</button>
+       `,
+  actions: [{
+    caption: "Exit Macro",
+    cls: "js-dialog-close alert",
+    onclick: function() {
+      printLog("Saw Stop Macro Exited")
+    }
+  }]
+});
