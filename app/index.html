@@ -361,6 +361,16 @@
                   </ul>
                 </div>
 
+                <div>
+                  <!-- Used in Electron only -->
+                  <button id="reloadGcodeBtnElectron19" class="ribbon-button" title="Reload the current GCODE file from disk" onclick="socket.emit('reloadFile')" disabled>
+                    <span class="icon">
+                      <i id="reloadIcon" class="fas fa-sync-alt fg-gray"></i>
+                    </span>
+                    <span class="caption">Reload<br>G-CODE</span>
+                  </button>
+                </div>
+
                 <span class="title">File</span>
               </div>
 

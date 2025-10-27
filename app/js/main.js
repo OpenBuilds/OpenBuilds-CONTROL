@@ -113,10 +113,12 @@ $(document).ready(function() {
     console.log("Native Dialog Button Enabled")
     $("#openGcodeBtn").hide()
     $("#openGcodeBtnElectron19").show()
+    $("#reloadGcodeBtnElectron19").show()
   } else {
     console.log("Native Dialog Button Disabled")
     $("#openGcodeBtn").show()
     $("#openGcodeBtnElectron19").hide()
+    $("#reloadGcodeBtnElectron19").hide()
   }
 
 

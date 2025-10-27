@@ -154,6 +154,18 @@ function initSocket() {
     }
   })
 
+  socket.on('lastFilePathChangedEvent', function(data) {
+    console.log('File path changed:', data);
+    
+    if (data.filePath) {
+      $("#reloadGcodeBtnElectron19").prop("disabled", false);
+      $("#reloadIcon").removeClass("fg-gray").addClass("fg-amber");
+    } else {
+      $("#reloadGcodeBtnElectron19").prop("disabled", true);
+      $("#reloadIcon").removeClass("fg-amber").addClass("fg-gray");
+    }
+  });
+
   socket.on('gcodeupload', function(data) {
     var icon = ''
     var source = "api"
@@ -179,7 +191,9 @@ function initSocket() {
     } else {
       $('#gcodeeditortab').click()
     }
-    jobNeedsHoming();
+    if(!data.isReload) { // on reload don't mention homing
+      jobNeedsHoming();
+    }
   });
 
   socket.on('gcodeupload', function(data) {

@@ -62,6 +62,13 @@ config.posDecimals = process.env.DRO_DECIMALS || 3;
 config.grblWaitTime = 0.5;
 
 
+const fileManager = require('./app/js/fileManager');
+fileManager.on('lastFilePathChangedEvent', function(filePath) {
+  io.sockets.emit('lastFilePathChangedEvent', { 
+    filePath: filePath 
+  });
+});
+
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
@@ -721,6 +728,11 @@ io.on("connection", function(socket) {
       console.log(err)
     })
   })
+
+  socket.on("reloadFile", function(data) {
+    var lastFilePath= fileManager.lastFilePath; 
+    readFile(lastFilePath, true);
+  });
 
   socket.on("openInterfaceDir", function(data) {
     dialog.showOpenDialog(jogWindow, {
@@ -2231,7 +2243,7 @@ io.on("connection", function(socket) {
 
 });
 
-function readFile(filePath) {
+function readFile(filePath, isReload=false) {
   if (filePath) {
     if (filePath.length > 1) {
       var filename = path.parse(filePath)
@@ -2245,9 +2257,11 @@ function readFile(filePath) {
               'command': '',
               'response': "ERROR: File Upload Failed"
             }
+            fileManager.lastFilePath = "";
             uploadedgcode = "";
           }
           if (data) {
+            fileManager.lastFilePath = filePath;
             if (filePath.endsWith('.obc')) { // OpenBuildsCAM Workspace
               uploadedworkspace = data;
               const {
@@ -2257,8 +2271,8 @@ function readFile(filePath) {
             } else { // GCODE
               var payload = {
                 gcode: data,
-                filename: filename
-              }
+                filename: filename,
+                isReload: isReload,           }
               io.sockets.emit('gcodeupload', payload);
               uploadedgcode = data;
               return data
