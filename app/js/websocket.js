@@ -1,3 +1,14 @@
+/*
+ * MODIFIED FILE - this is not the original OpenBuilds CONTROL source.
+ *
+ * Modified 2026-08-11: hide the in-page titlebar when the platform draws native
+ * window decorations, so Linux does not show two titlebars at once.
+ *
+ * Upstream: https://github.com/OpenBuilds/OpenBuilds-CONTROL
+ * Licensed under the GNU GPL v3 - see LICENSE. See README.md for a note on the
+ * GPL/AGPL discrepancy inherited from upstream.
+ */
+
 var socket, laststatus;;
 var server = ''; //192.168.14.100';
 var programBoard = {};
@@ -587,7 +598,11 @@ function initSocket() {
     if (nostatusyet) {
       // $('#windowtitle').html("OpenBuilds CONTROL v" + status.driver.version)
       setWindowTitle(status)
-      if (status.driver.operatingsystem == "rpi") {
+      // Hide the in-page titlebar when something else is already drawing one:
+      // the Raspberry Pi kiosk browser, or a platform using native window
+      // decorations (Linux). Leaving both visible gives two titlebars, and the
+      // in-page window buttons would fight the real ones.
+      if (status.driver.operatingsystem == "rpi" || status.driver.nativeframe) {
         $('#windowtitlebar').hide();
       }
     }
