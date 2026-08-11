@@ -1,3 +1,22 @@
+/*
+ * MODIFIED FILE - this is not the original OpenBuilds CONTROL source.
+ *
+ * Modified 2026-08-11: Linux window management.
+ *   - Native window decorations on Linux, so the window manager owns maximize,
+ *     resize, snapping and tiling. Windows and macOS keep the custom titlebar.
+ *   - Window minimums lowered from 1000x850 to 800x600. The old minimum height
+ *     exceeded the 768px height of the displays this app targets, so the window
+ *     could be neither shrunk to fit nor maximized.
+ *   - Initial window size clamped to the available work area.
+ *   - Maximized state tracked from window events rather than isMaximized().
+ *   - close handler now uses event.preventDefault() so close-to-tray works.
+ *   - Platform reported correctly on Linux and on argument-less Windows launch.
+ *
+ * Upstream: https://github.com/OpenBuilds/OpenBuilds-CONTROL
+ * Licensed under the GNU GPL v3 - see LICENSE. See README.md for a note on the
+ * GPL/AGPL discrepancy inherited from upstream.
+ */
+
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 process.on('uncaughtException', function(err) {
@@ -208,6 +227,9 @@ var forceQuit
 var appIcon = null,
   jogWindow = null,
   mainWindow = null
+// Mirrors the window's maximized state from its own events, because
+// BrowserWindow.isMaximized() is not dependable under Wayland.
+var jogWindowMaximized = false
 var autoUpdater
 
 
@@ -369,6 +391,12 @@ function checkPowerSettings() {
 
 var oldiplist;
 var oldpinslist;
+
+// Linux (X11 and Wayland alike) uses native window decorations so the window
+// manager owns maximize, resize, snapping and tiling. Windows and macOS keep
+// the custom frameless titlebar drawn in app/index.html.
+const useNativeFrame = (process.platform === 'linux');
+
 const iconPath = path.join(__dirname, 'app/icon.png');
 const iconNoComm = path.join(__dirname, 'app/icon-notconnected.png');
 const iconPlay = path.join(__dirname, 'app/icon-play.png');
@@ -413,6 +441,9 @@ var status = {
     version: require('./package').version,
     ipaddress: ip.address(),
     operatingsystem: false,
+    // true when the window manager draws the titlebar, so the UI knows to hide
+    // its own in-page titlebar and window buttons
+    nativeframe: useNativeFrame,
     powersettings: {
       usbselectiveAC: null,
       usbselectiveDC: null
@@ -833,18 +864,25 @@ io.on("connection", function(socket) {
   });
 
   socket.on("minimisetotray", function(data) {
+    if (!jogWindow) return;
     jogWindow.hide();
   });
 
   socket.on("minimize", function(data) {
+    if (!jogWindow) return;
     jogWindow.minimize();
   });
 
   socket.on("maximize", function(data) {
+    if (!jogWindow) return;
     if (jogWindow.isFullScreen()) {
       jogWindow.setFullScreen(false);
     }
-    if (jogWindow.isMaximized()) {
+    // Toggle off jogWindowMaximized rather than isMaximized(). Under Wayland
+    // the latter does not reliably reflect the compositor's current state, so
+    // the toggle desynchronises and the window stops maximizing. The flag is
+    // kept honest by the window's own maximize/unmaximize events.
+    if (jogWindowMaximized) {
       jogWindow.unmaximize();
     } else {
       jogWindow.maximize();
@@ -852,6 +890,7 @@ io.on("connection", function(socket) {
   });
 
   socket.on("fullscreen", function(data) {
+    if (!jogWindow) return;
     if (jogWindow.isFullScreen()) {
       jogWindow.setFullScreen(false);
     } else {
@@ -2929,12 +2968,23 @@ function addQRealtime(gcode) {
 
 function showJogWindow() {
   if (jogWindow === null) {
+    // createJogWindow() shows the window itself from 'ready-to-show'. Showing
+    // it here as well would put an unpainted window on screen first, which is
+    // what produced the blank or wrongly sized frame on the initial open.
     createJogWindow();
+    return;
   }
   jogWindow.show()
-  jogWindow.setAlwaysOnTop(true);
+  // Briefly pinning always-on-top is a focus-stealing workaround for Windows.
+  // Wayland ignores both it and programmatic focus, and some compositors leave
+  // the window stuck above everything else, so it is skipped there.
+  if (!useNativeFrame) {
+    jogWindow.setAlwaysOnTop(true);
+  }
   jogWindow.focus();
-  jogWindow.setAlwaysOnTop(false);
+  if (!useNativeFrame) {
+    jogWindow.setAlwaysOnTop(false);
+  }
 }
 
 // Electron
@@ -3001,10 +3051,21 @@ if (isElectron()) {
 
     function createApp() {
       createTrayIcon();
+
+      // Report the platform up front. This used to be set for Windows only
+      // inside the argv check below, so a plain launch with no file argument
+      // left it as false and the UI's platform checks never matched.
+      if (process.platform == 'darwin') {
+        status.driver.operatingsystem = 'macos';
+      } else if (process.platform == 'win32') {
+        status.driver.operatingsystem = 'windows';
+      } else if (process.platform == 'linux') {
+        status.driver.operatingsystem = 'linux';
+      }
+
       if (process.platform == 'darwin') {
         debug_log("Creating MacOS Menu");
         createMenu();
-        status.driver.operatingsystem = 'macos';
       }
       if (process.platform == 'win32' && process.argv.length >= 2) {
         var openFilePath = process.argv[1];
@@ -3012,7 +3073,6 @@ if (isElectron()) {
           debug_log("path" + openFilePath);
           readFile(openFilePath);
         }
-        status.driver.operatingsystem = 'windows';
       }
 
       if (process.platform == 'darwin' || uploadedgcode.length > 1) {
@@ -3150,19 +3210,39 @@ if (isElectron()) {
     }
 
     function createJogWindow() {
+      // Open at 1000x850, but never larger than the screen actually available.
+      // 850 exceeds the 768px height of the 1366x768 panels this app targets,
+      // so the preferred size is clamped to the work area rather than trusted.
+      var workArea = electron.screen.getPrimaryDisplay().workAreaSize;
+      var startWidth = Math.min(1000, workArea.width);
+      var startHeight = Math.min(850, workArea.height);
+      debug_log("Screen work area " + workArea.width + "x" + workArea.height +
+        " - opening window at " + startWidth + "x" + startHeight);
+
       // Create the browser window.
       jogWindow = new BrowserWindow({
-        // 1366 * 768 == minimum to cater for
-        width: 1000,
-        minWidth: 1000,
-        height: 850,
-        minHeight: 850,
+        // The minimums must stay below the smallest supported panel (1366x768,
+        // and 1280x768 in practice). The old minHeight of 850 was taller than
+        // the screen itself, so the window could neither be shrunk to fit nor
+        // successfully maximized - the constraint was unsatisfiable.
+        width: startWidth,
+        minWidth: 800,
+        height: startHeight,
+        minHeight: 600,
         fullscreen: false,
         center: true,
         resizable: true,
         maximizable: true,
+        // Stay hidden until the first paint. BrowserWindow shows immediately by
+        // default, which put an empty window on screen while the UI was still
+        // loading. 'ready-to-show' below reveals it.
+        show: false,
         title: "OpenBuilds CONTROL ",
-        frame: false,
+        // Linux keeps its native decorations: under Wayland a frameless window
+        // gets no compositor resize edges and never reports its maximized state
+        // back correctly, which breaks both resizing and the maximize toggle.
+        // Windows and macOS keep the custom in-page titlebar.
+        frame: useNativeFrame,
         autoHideMenuBar: true,
         //icon: '/app/favicon.png',
         icon: nativeImage.createFromPath(
@@ -3171,7 +3251,6 @@ if (isElectron()) {
         webgl: true,
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
-        offscreen: true,
         backgroundColor: "#fff",
         webPreferences: {
           nodeIntegration: true,
@@ -3187,9 +3266,33 @@ if (isElectron()) {
 
       jogWindow.on('close', function(event) {
         if (!forceQuit) {
+          // Returning false does NOT cancel an Electron close - it must be
+          // preventDefault(). This matters now that Linux has a real native
+          // close button; without it the window would hide and then be
+          // destroyed, and reopening from the tray would fail.
+          event.preventDefault();
           jogWindow.hide();
           return false;
         }
+      });
+
+      // The in-page titlebar carries the only fullscreen control, and it is
+      // hidden when native decorations are used, so bind F11 to replace it.
+      jogWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.type === 'keyDown' && input.key === 'F11') {
+          event.preventDefault();
+          jogWindow.setFullScreen(!jogWindow.isFullScreen());
+        }
+      });
+
+      // Track the real maximized state from the window manager, so the
+      // maximize toggle stays correct even when the user maximizes by
+      // double-clicking the titlebar or tiling with the keyboard.
+      jogWindow.on('maximize', function() {
+        jogWindowMaximized = true;
+      });
+      jogWindow.on('unmaximize', function() {
+        jogWindowMaximized = false;
       });
 
       // Emitted when the window is closed.
@@ -3198,8 +3301,26 @@ if (isElectron()) {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         jogWindow = null;
+        jogWindowMaximized = false;
       });
+      // Safety net for the show: false above. If the UI fails to load,
+      // 'ready-to-show' never fires and the window would stay invisible with no
+      // reliable way back - GNOME hides Electron tray icons unless an
+      // AppIndicator extension is installed. Show it anyway after a few
+      // seconds so a broken UI is at least visible and reportable.
+      var readyToShowFallback = setTimeout(function() {
+        readyToShowFallback = null;
+        if (jogWindow && !jogWindow.isVisible()) {
+          debug_log("Window never reported ready-to-show, showing it anyway");
+          showJogWindow();
+        }
+      }, 10000);
+
       jogWindow.once('ready-to-show', () => {
+        if (readyToShowFallback) {
+          clearTimeout(readyToShowFallback);
+          readyToShowFallback = null;
+        }
         showJogWindow()
       })
     }

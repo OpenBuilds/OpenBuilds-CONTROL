@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!--
+  MODIFIED FILE - this is not the original OpenBuilds CONTROL source.
+
+  Modified 2026-08-11: hide the in-page titlebar before first paint on Linux,
+  where native window decorations are used, to avoid a duplicate titlebar.
+
+  Upstream: https://github.com/OpenBuilds/OpenBuilds-CONTROL
+  Licensed under the GNU GPL v3 - see LICENSE. See README.md for a note on the
+  GPL/AGPL discrepancy inherited from upstream.
+-->
 <html lang="en">
 
   <head>
@@ -43,6 +53,17 @@
           <span title="Close to Tray" class="btn-custom" onclick="socket.emit('minimisetotray')"><i class="fas fa-window-close"></i></span>
         </div>
       </div>
+      <script>
+        // Linux runs with native window decorations, so drop the in-page
+        // titlebar before first paint. Waiting for the socket 'status' event to
+        // do it flashes a duplicate titlebar on every launch. In a plain
+        // browser window.process is undefined and websocket.js handles it.
+        try {
+          if (window.process && window.process.platform === 'linux') {
+            document.getElementById('windowtitlebar').style.display = 'none';
+          }
+        } catch (e) {}
+      </script>
       <div class="window-content" style="height: 100%; overflow: hidden  !important;">
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
