@@ -840,13 +840,18 @@ function clearEEPROM() {
 }
 
 function updateToolOnSValues() {
-  $(".ToolOnS1").html((parseInt(grblParams.$30) * 0.01).toFixed(0))
-  $(".ToolOnS5").html((parseInt(grblParams.$30) * 0.05).toFixed(0))
-  $(".ToolOnS10").html((parseInt(grblParams.$30) * 0.1).toFixed(0))
-  $(".ToolOnS25").html((parseInt(grblParams.$30) * 0.25).toFixed(0))
-  $(".ToolOnS50").html((parseInt(grblParams.$30) * 0.5).toFixed(0))
-  $(".ToolOnS75").html((parseInt(grblParams.$30) * 0.75).toFixed(0))
-  $(".ToolOnS100").html(parseInt(grblParams.$30).toFixed(0))
+  const maxSpeed = parseInt(grblParams.$30);
+  $(".ToolOnS1").html((maxSpeed * 0.01).toFixed(0));
+  $(".ToolOnS5").html((maxSpeed * 0.05).toFixed(0));
+  $(".ToolOnS10").html((maxSpeed * 0.1).toFixed(0));
+  $(".ToolOnS25").html((maxSpeed * 0.25).toFixed(0));
+  $(".ToolOnS50").html((maxSpeed * 0.5).toFixed(0));
+  $(".ToolOnS75").html((maxSpeed * 0.75).toFixed(0));
+  $(".ToolOnS100").html(maxSpeed.toFixed(0));
+
+  const laser = parseInt(grblParams.$32) == 1;
+  $(".laserMode").toggle(laser);
+  $(".spindleMode").toggle(!laser);
 }
 
 function getEditorParamValue(key) {

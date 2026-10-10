@@ -285,31 +285,33 @@
                     <span class="caption">Tool<br>On</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))"><a class="grblmode" href="#">Router On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
-                    <li>
-                      <a href="#" class="dropdown-toggle">Variable Speed Spindle On (M3 Sxxx)</a>
+                    <li class="spindleMode" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\nG1F1000')"><a class="grblmode" href="#">Spindle On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li class="spindleMode">
+                      <a href="#" class="dropdown-toggle">VFD Spindle On (M3 Sxxx)</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 5% RPM (M3 S<span class="ToolOnS5">50</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 10% RPM (M3 S<span class="ToolOnS10">100</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 25% RPM (M3 S<span class="ToolOnS25">250</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 50% RPM (M3 S<span class="ToolOnS50">500</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 75% RPM (M3 S<span class="ToolOnS75">750</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\n G1F1000')"><a href="#">Spindle On 100% RPM (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 5% RPM (M3 S<span class="ToolOnS5">50</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 10% RPM (M3 S<span class="ToolOnS10">100</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 25% RPM (M3 S<span class="ToolOnS25">250</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 50% RPM (M3 S<span class="ToolOnS50">500</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 75% RPM (M3 S<span class="ToolOnS75">750</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\nG1F1000')"><a href="#">Spindle On 100% RPM (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                       </ul>
                     </li>
-                    <li>
+
+                    <li class="laserMode" onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0)+'\nG1F1000')"><a class="grblmode" href="#">Laser On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                    <li class="laserMode">
                       <a href="#" class="dropdown-toggle">Laser On (M3 Sxxx)</a>
                       <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.01).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 1% Power (M3 S<span class="ToolOnS1">10</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
-                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 1).toFixed(0)+'\n G1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.01).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 1% Power (M3 S<span class="ToolOnS1">10</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.05).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 5% Power (M3 S<span class="ToolOnS5">50</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.1).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 10% Power (M3 S<span class="ToolOnS10">100</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.25).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 25% Power (M3 S<span class="ToolOnS25">250</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.5).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 50% Power (M3 S<span class="ToolOnS50">500</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 0.75).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 75% Power (M3 S<span class="ToolOnS75">750</span>)</a></li>
+                        <li onclick="sendGcode('M3 S'+(parseInt(grblParams.$30) * 1).toFixed(0)+'\nG1F1000')"><a href="#">Laser On 100% Power (M3 S<span class="ToolOnS100">1000</span>)</a></li>
                       </ul>
                     </li>
-                    <li onclick="sendGcode('M3 S'+parseInt(grblParams.$30).toFixed(0))"><a class="grblmode" href="#">Plasma On (M3 S<span class="ToolOnS100">1000</span>)</a></li>
+
                     <li class="divider fg-gray"></li>
                     <li id="menuMisting" style="display: none;" onclick="sendGcode('M7')"><a class="grblmode" href="#">Misting On (M7)</a></li>
                     <li onclick="sendGcode('M8')"><a class="grblmode" href="#">Coolant On (M8)</a></li>
@@ -338,7 +340,8 @@ Not available in Laser mode.">Spindle Delay</a>
                     <span class="caption">Tool<br>Off</span>
                   </button>
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li onclick="sendGcode('M5')"><a class="grblmode" href="#">Router / Spindle / Laser / Plasma Off (M5)</a></li>
+                    <li class="spindleMode" onclick="sendGcode('M5')"><a class="grblmode" href="#">Spindle Off (M5)</a></li>
+                    <li class="laserMode" onclick="sendGcode('M5')"><a class="grblmode" href="#">Laser Off (M5)</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="sendGcode('M9')"><a class="grblmode" href="#">Coolant Off (M9)</a></li>
 
@@ -1843,7 +1846,7 @@ Restore previous origins from history.">
   <script type="text/javascript" src="/lib/lodash.core.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-  <script type="text/javascript" src="/js/macros.js"></script>
+  <script type="text/javascript" src="js/macros.js"></script>
 
   <script type="text/javascript" src="lib/threejs/three.min.js"></script>
   <script type="text/javascript" src="lib/threejs/GridRect.js"></script>
