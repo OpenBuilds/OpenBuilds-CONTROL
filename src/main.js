@@ -35,6 +35,8 @@ const {
   serverEmit,
   app,
   addConnectionHandler,
+  addDocReadyHandler,
+  removeDocReadyHandler,
   initServer
 } = require('./server.js');
 
@@ -110,6 +112,7 @@ function createApp() {
   appCreated = true;
 
   var showGui = forceShowGui || process.argv.indexOf("-showGui") > 0;
+  status.misc.trayIcon = persistentConfig.trayIcon;
   status.misc.autoStart = persistentConfig.autoStart;
 
   if (process.platform == 'darwin') {
@@ -121,7 +124,7 @@ function createApp() {
   }
   else if (process.platform == 'win32') {
     status.driver.operatingsystem = 'windows';
-    if (persistentConfig.autoStart) {
+    if (persistentConfig.trayIcon) {
       createTrayIcon();
     } else {
       showGui = true;
@@ -129,7 +132,7 @@ function createApp() {
   }
   else if (process.platform == 'linux') {
     status.driver.operatingsystem = 'linux';
-    if (persistentConfig.autoStart) {
+    if (persistentConfig.trayIcon) {
       createTrayIcon();
     }
     showGui = true;
@@ -222,7 +225,13 @@ function createMacMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+function onShowTraySettings() {
+  serverEmit('showSettings', "os");
+  removeDocReadyHandler(onShowTraySettings);
+}
+
 function createTrayIcon() {
+  console.log("Creating Tray Icon");
   if (process.platform !== 'darwin') {
     appIcon = appIcon || new Tray(nativeImage.createFromPath(iconPath));
     const contextMenuTemplate = [{
@@ -235,37 +244,18 @@ function createTrayIcon() {
       label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
       click: exitApp
     }];
-    if (process.platform == 'win32') {
+    if (process.platform == 'win32' || process.platform == 'linux') {
       contextMenuTemplate.push({type: 'separator'});
       contextMenuTemplate.push({
-        label: 'Disable Auto Start and the Tray Icon',
+        label: process.platform == 'win32' ? 'Configure Tray Icon and Auto Start' : 'Configure Tray Icon',
         click() {
-          showJogWindow();
-          setAutoStart(false);
-          dialog.showMessageBox(jogWindow, {
-            type: 'info',
-            buttons: ['OK'],
-            message: 'Auto Start and the tray icon have been disabled.\n\nThey can be restored from the Application Settings menu in the Troubleshooting tab.'
-          });
-          if (appIcon) {
-            appIcon.destroy();
+          if (jogWindow) {
+            showJogWindow();
+            serverEmit('showSettings', "os");
+          } else {
+            addDocReadyHandler(onShowTraySettings);
+            showJogWindow();
           }
-          appIcon = null;
-        }
-      });
-    } else if (process.platform == 'linux') {
-      contextMenuTemplate.push({type: 'separator'});
-      contextMenuTemplate.push({
-        label: 'Disable the Tray Icon',
-        click() {
-          showJogWindow();
-          setAutoStart(false);
-          dialog.showMessageBox(jogWindow, {
-            type: 'info',
-            buttons: ['OK'],
-            message: 'The tray icon has been disabled. It will be fully removed once the app closes.\n\nThe icon can be restored from the Application Settings menu in the Troubleshooting tab.'
-          });
-          destroyTrayIcon();
         }
       });
     }
@@ -321,6 +311,23 @@ function destroyTrayIcon() {
   }
 }
 
+function setTrayIcon(enabled) {
+  if (enabled != persistentConfig.trayIcon) {
+    persistentConfig.trayIcon = enabled;
+    status.misc.trayIcon = enabled;
+    savePersistentConfig();
+
+    if (process.platform == 'win32' || process.platform == 'linux') {
+      if (enabled) {
+        createTrayIcon();
+      }
+      else {
+        destroyTrayIcon();
+      }
+    }
+  }
+}
+
 function setAutoStart(enabled) {
   if (enabled != persistentConfig.autoStart) {
     persistentConfig.autoStart = enabled;
@@ -332,15 +339,6 @@ function setAutoStart(enabled) {
         openAtLogin: enabled,
         args: []
       });
-    }
-
-    if (process.platform == 'win32' || process.platform == 'linux') {
-      if (enabled) {
-        createTrayIcon();
-      }
-      else {
-        destroyTrayIcon();
-      }
     }
   }
 }
@@ -494,7 +492,7 @@ function onConnection(socket) {
   });
 
   socket.on("minimisetotray", function() {
-    if (persistentConfig.autoStart) {
+    if (persistentConfig.trayIcon) {
       jogWindow.hide();
     } else {
       exitApp();
@@ -526,6 +524,7 @@ function onConnection(socket) {
 
   socket.on("quit", exitApp);
 
+  socket.on("trayIcon", setTrayIcon);
   socket.on("autoStart", setAutoStart);
 }
 

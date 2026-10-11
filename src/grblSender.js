@@ -469,10 +469,6 @@ function handleGreeting(data, command) {
   status.comms.blocked = false;
   status.comms.paused = false;
   clearGcodeQueue(false);
-  if (persistentConfig.aggressiveHomeReset) {
-    // when aggressiveHomeReset is true (the default), reset the home state on every grbl reset
-    status.machine.modals.homedRecently = false;
-  }
 
   // after reset, immediately ask for modals
   gcodeQueue.splice(queuePointer, 0, "$G");
@@ -535,12 +531,10 @@ function handleAlarm(data, command) {
   const alarmCode = parseInt(data.split(':')[1]);
   const alarmMessage = alarmCode + ' - ' + grblStrings.alarms(alarmCode);
 
-  if (!persistentConfig.aggressiveHomeReset) {
-    // when aggressiveHomeReset is false, certain alarm codes will be safe and will not reset the home state
-    const safeAlarmCodes = [0, 2, 4, 5, 12];
-    if (!safeAlarmCodes.includes(alarmCode)) {
-      status.machine.modals.homedRecently = false;
-    }
+  // certain alarm codes are safe and will not reset the home state
+  const safeAlarmCodes = [0, 2, 4, 5, 12];
+  if (!safeAlarmCodes.includes(alarmCode)) {
+    status.machine.modals.homedRecently = false;
   }
 
   debug_log('ALARM: ' + alarmMessage);
@@ -1160,12 +1154,6 @@ function onConnection(socket) {
     }
   });
 
-  socket.on('aggressiveHomeReset', function(state) {
-    status.misc.aggressiveHomeReset = state;
-    persistentConfig.aggressiveHomeReset = state;
-    savePersistentConfig();
-  });
-
   socket.on('captureWcsHistory', function(data) {
     serverEmit('captureWcsHistory', data);
   });
@@ -1173,7 +1161,6 @@ function onConnection(socket) {
 
 function onDocReady(result) {
   result.firmware = status.machine.firmware;
-  result.aggressiveHomeReset = status.misc.aggressiveHomeReset;
 }
 
 function onPortOpen(_port, data) {

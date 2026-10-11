@@ -218,5 +218,10 @@ hr {
 
 /* The default margin of 0.65rem rounds weird and causes misalignment */
 .ribbon-button.dropdown-toggle::before {
-    margin-left: -10px;
+  margin-left: -10px;
+}
+
+.pinstatus, .powerstatus {
+  line-height: 20px;
+  pointer-events:none;
 }

@@ -48,7 +48,7 @@
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
             <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl Settings</span></a></li>
-            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting</a></li>
+            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting &amp; Settings</a></li>
           </ul>
           <div class="content-holder">
 
@@ -223,7 +223,7 @@
                   <button id="recentFilesBtn" class="ribbon-button dropdown-toggle" style="padding-left:10px; height:78px; margin-left:-4px;" title="Open recent G-code file">
                   </button>
                   <ul class="ribbon-dropdown drop-shadow no-checkmarks" data-role="dropdown" style="width:max-content; min-width:130px;">
-                    <li class="menu-title" id="recentFilesList" style2="height:26px;">Recent files
+                    <li class="menu-title" id="recentFilesList">Recent files
                       <button id="clearRecentBtn" class="button small light" style="position:absolute; right:0px; height:100%; pointer-events:all;" title="Clear recent files list" onclick="socket.emit('clearRecentFiles')">
                         <span class="fa fa-trash" style="vertical-align: baseline;"></span>
                       </button>
@@ -478,30 +478,7 @@ The spindle will automatically start when the job is resumed.">
             <div class="section" id="section-troubleshooting">
               <div class="group">
                 <div>
-                  <button id="diagbtn" class="ribbon-button dropdown-toggle">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-stethoscope"></i>
-                      </span>
-                    </span>
-                    <span class="caption">Perf<br>Diagnostics</span>
-                  </button>
-                  <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li onclick="socket.emit('gpuinfo')"><a href="#"><i class="fa fa-microchip fa-fw"></i> Show GPU Information</a></li>
-                    <li class="divider"></li>
-                    <li onclick="disable3Dviewer = !disable3Dviewer; saveDiagnostics(); location.reload();" id="disable3DviewerTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer System (For slower computers)</a></li>
-                    <li onclick="disable3Dcontrols = !disable3Dcontrols; saveDiagnostics(); location.reload();" id="disable3DcontrolsTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Interactions</a></li>
-                    <li onclick="disable3Dskybox = !disable3Dskybox; saveDiagnostics(); location.reload();" id="disable3DskyboxTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Skybox/Fog</a></li>
-                    <li onclick="disable3Drealtimepos = !disable3Drealtimepos; saveDiagnostics(); location.reload();" id="disable3DrealtimeposTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer Realtime Job Position
-                        Indicator</a></li>
-                    <li onclick="disable3Dgcodepreview = !disable3Dgcodepreview; saveDiagnostics(); location.reload();" id="disable3DgcodepreviewTick"><a href="#"><i class="mif-3d-rotation fa-fw"></i> Disable 3D Viewer G-code Preview</a></li>
-                    <li class="divider"></li>
-                    <li onclick="disableSerialLog = !disableSerialLog; saveDiagnostics(); location.reload();" id="disableSerialLogTick"><a href="#"><i class="fas fa-fw fa-terminal"></i> Disable Serial Log</a></li>
-                    <li onclick="disableDROupdates = !disableDROupdates; saveDiagnostics(); location.reload();" id="disableDROupdatesTick"><a href="#"><i class="fas fa-fw fa-list-ol"></i> Disable DRO/Status Updates</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <button id="settingsbtn" class="ribbon-button dropdown-toggle">
+                  <button id="settingsbtn" class="ribbon-button" onclick="appSettings()">
                     <span class="icon">
                       <span class="fa-layers fa-fw">
                         <i class="fas fa-cog"></i>
@@ -509,11 +486,6 @@ The spindle will automatically start when the job is resumed.">
                     </span>
                     <span class="caption">Application<br>Settings</span>
                   </button>
-                  <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
-                    <li onclick="toggleAutoStart();" id="disableAutoStartTick" style="display:none"><a href="#"><i class="fas fa-fw fa-running"></i> <span id="disableAutoStartLabel">Disable Auto Start and Tray Icon</span></a></li>
-                    <li onclick="toggleAggressiveHomeReset();" id="disableAggressiveHomeResetTick"><a href="#"><i class="fas fa-fw fa-home"></i> Disable Aggressive Home Reset</a></li>
-                    <li onclick="disable4thAxis = !disable4thAxis; saveDiagnostics();" id="disable4thAxisTick" class="4thaxis-present" style="display:none"><a href="#"><i class="fas fa-fw fa-chess-rook"></i> Disable 4th axis</a></li>
-                  </ul>
                 </div>
                 <span class="title">Settings</span>
               </div>
@@ -1167,7 +1139,7 @@ Restore previous origins from history.">
                     <div id="conetext" style="position:absolute; top:0px; left:0px; padding:2px; display:none; z-index:100;"></div>
                   </div>
                   <div class="section" id="tab-four">
-                    <ul id="macroVerticalTabs" data-tabs-position="vertical" data-role="tabs" data-expand="true" vertical style2="min-width:max-content;"></ul>
+                    <ul id="macroVerticalTabs" data-tabs-position="vertical" data-role="tabs" data-expand="true" vertical></ul>
                     <div style="flex:1">
                       <ul id="macroHorizontalTabs" data-role="tabs" data-expand="true"></ul>
                       <div id="macros" style="overflow-y:clip; display:flex; align-content:flex-start; flex-wrap:wrap;">
@@ -1207,9 +1179,6 @@ Restore previous origins from history.">
           <div id="grblconfig"></div>
         </div>
 
-        <div id="updatePanel" style="display: none;">
-          <div id="updateconsole">Click "Download Updates" above</div>
-        </div>
         <div id="troubleshootingPanel" style="display: none;">
           <div class="grid p-0 m-0">
             <div class="row  p-0 m-0">
@@ -1232,30 +1201,30 @@ Restore previous origins from history.">
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">X-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus xpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="xpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Y-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus ypin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="ypin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Z-Limit</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus zpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="zpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Probe</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus prbpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="prbpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Door Sensor</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus doorpin">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert pinstatus" id="doorpin">NOCOMM</span></td>
                         </tr>
                         <tr>
                           <td class="pt-1 mt-0 pb-0 pt-0">Buttons</td>
                           <td class="pt-1 mt-0 pb-0 pt-0">
-                            <span class="tally alert pinstatus startpin">NOCOMM</span>
-                            <span class="tally alert pinstatus holdpin">NOCOMM</span>
-                            <span class="tally alert pinstatus resetpin">NOCOMM</span>
+                            <span class="tally alert pinstatus" id="startpin">NOCOMM</span>
+                            <span class="tally alert pinstatus" id="holdpin">NOCOMM</span>
+                            <span class="tally alert pinstatus" id="resetpin">NOCOMM</span>
                           </td>
                         </tr>
                       </tbody>
@@ -1277,15 +1246,15 @@ Restore previous origins from history.">
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="pt-1 mt-1 mb-1 pb-0 pt-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
+                          <td class="pt-1 mt-1 mb-1 pb-0" colspan="2">We recommend USB Selective Suspend be Disabled to avoid USB issues</td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on AC Power</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0">USB Selective Suspend on AC Power</td>
+                          <td class="pt-1 mt-0 pb-0"><span class="tally alert powerstatus" id="selectivesuspendAC">NOCOMM</span></td>
                         </tr>
                         <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">USB Selective Suspend on Battery Power</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
+                          <td class="pt-1 mt-0 pb-0">USB Selective Suspend on Battery Power</td>
+                          <td class="pt-1 mt-0 pb-0"><span class="tally alert powerstatus" id="selectivesuspendDC">NOCOMM</span></td>
                         </tr>
 
                       </tbody>
@@ -1293,11 +1262,29 @@ Restore previous origins from history.">
                   </div>
                 </div>
 
+                <div class="card" id="powerSettingsCard">
+                  <div class="card-header p-1 m-0">
+                    <i class="fas fa-fw fa-laptop"></i>&nbsp;Computer
+                  </div>
+                  <div class="card-content">
+                    <div class="p-2 text-small">
+                      <b>Motherboard:</b> <span id="mobospecs">NOCOMM</span><br>
+                      <b>CPU:</b> <span id="cpuspecs">NOCOMM</span><br>
+                      <b>GPU:</b> <span id="gpuspecs">NOCOMM</span>
+                      <span class="tally info" style="margin-left:4px; line-height:20px" onclick="socket.emit('gpuinfo')">VIEW GPU REPORT</span><br>
+                      <b>Memory:</b> <span id="memoryspecs">NOCOMM</span><br>
+                      <b>OS:</b> <span id="osspecs">NOCOMM</span><br>
+                      <b>Network:</b> <span id="ipspecs">NOCOMM</span><br>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
               <div class="cell p-0 m-0">
                 <div class="card">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-tty"></i>&nbsp;Communications
+                    <i class="fab fa-fw fa-usb"></i>&nbsp;Communications
                   </div>
                   <div class="card-content" style="min-height: 90px; overflow-x: auto;">
                     <table class="table striped compact">
@@ -1336,30 +1323,16 @@ Restore previous origins from history.">
                           <td class="pt-1 mt-0 pb-0 pt-0">Firmware</td>
                           <td class="pt-1 mt-0 pb-0 pt-0"><span id="firmwareversionstatus">NOCOMM</span></td>
                         </tr>
-                        <tr>
-                          <td class="pt-1 mt-0 pb-0 pt-0">Computer</td>
-                          <td class="pt-1 mt-0 pb-0 pt-0">
-                            <b>Motherboard:</b> <span id="mobospecs">NOCOMM</span><br>
-                            <b>CPU:</b> <span id="cpuspecs">NOCOMM</span><br>
-                            <b>GPU:</b> <span id="gpuspecs">NOCOMM</span><br>
-                            <b>Memory:</b> <span id="memoryspecs">NOCOMM</span><br>
-                            <b>OS:</b> <span id="osspecs">NOCOMM</span><br>
-                            <b>Network:</b> <span id="ipspecs">NOCOMM</span><br>
-                          </td>
-                        </tr>
-
-
-
                       </tbody>
                     </table>
                   </div>
                 </div>
 
                 <div class="card">
-                  <div class="card-header  p-1 m-0">
+                  <div class="card-header p-1 m-0">
                     <i class="fas fa-fw fa-history"></i>&nbsp;Changelog
                   </div>
-                  <div class="card-content" style="height: calc(100vh - 680px); min-height: 120px; overflow-x: auto;">
+                  <div class="card-content" style="height: calc(100vh - 530px); min-height: 120px; overflow-x: auto;">
                     <div id="changelog" class="text-small"></div>
                   </div>
                 </div>
@@ -1829,7 +1802,7 @@ Restore previous origins from history.">
 
   <script type="text/javascript" src="js/theme.js"></script>
 
-  <script type="text/javascript" src="js/diagnostics.js"></script>
+  <script type="text/javascript" src="js/settings.js"></script>
 
   <script type="text/javascript" src="lib/qrcode/qrcode.min.js"></script>
 

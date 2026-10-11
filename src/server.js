@@ -30,14 +30,31 @@ var connectionHandlers = [];
 var docReadyHandlers = [];
 
 function addConnectionHandler(handler) {
+  removeConnectionHandler(handler);
   connectionHandlers.push(handler);
 }
 
+function removeConnectionHandler(handler) {
+  let index = connectionHandlers.indexOf(handler);
+  if (index >= 0) {
+    connectionHandlers.splice(index, 1);
+  }
+}
+
 function addDocReadyHandler(handler) {
+  removeDocReadyHandler(handler);
   docReadyHandlers.push(handler);
 }
 
+function removeDocReadyHandler(handler) {
+  let index = docReadyHandlers.indexOf(handler);
+  if (index >= 0) {
+    docReadyHandlers.splice(index, 1);
+  }
+}
+
 function onDocReady(callback) {
+  serverEmit("status", status);
   var result = {
     platform: process.platform,
   };
@@ -117,6 +134,8 @@ module.exports = {
   serverEmit,
   serverEmitOutput,
   addConnectionHandler,
+  removeConnectionHandler,
   addDocReadyHandler,
+  removeDocReadyHandler,
   initServer,
 };

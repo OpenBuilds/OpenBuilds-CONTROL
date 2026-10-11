@@ -11,57 +11,53 @@ var openDialogs = [];
 const MAX_GCODE_IN_EDITOR = 20 * 1024 * 1024;
 
 function printLogModern(icon, source, string, printLogCls) {
-  if (!disableSerialLog) {
-    if (document.getElementById("console") !== null) {
-      if (string.isString) {
-        string = string.replace(/\r\n|\n|\r/, "<br />");
-      }
-      if ($('#console p').length > 300) {
-        // remove oldest if already at 300 lines
-        $('#console p').first().remove();
-      }
-      let template = '<p class="pf">';
-      if (icon) {
-        template += icon
-      }
-      const time = new Date();
-      template += '<span class="fg-dark">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-
-      if (source) {
-        template += "<span class='fg-darkRed'>[ " + source + " ] </span>"
-      } else {
-        template += "<span class='fg-darkRed'>[  ] </span>"
-      }
-      if (string) {
-        template += "<span class='" + printLogCls + "'>" + string + "</span>"
-      }
-      $('#console').append(template);
-      $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
+  if (document.getElementById("console") !== null) {
+    if (string.isString) {
+      string = string.replace(/\r\n|\n|\r/, "<br />");
     }
+    if ($('#console p').length > 300) {
+      // remove oldest if already at 300 lines
+      $('#console p').first().remove();
+    }
+    let template = '<p class="pf">';
+    if (icon) {
+      template += icon
+    }
+    const time = new Date();
+    template += '<span class="fg-dark">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
+
+    if (source) {
+      template += "<span class='fg-darkRed'>[ " + source + " ] </span>"
+    } else {
+      template += "<span class='fg-darkRed'>[  ] </span>"
+    }
+    if (string) {
+      template += "<span class='" + printLogCls + "'>" + string + "</span>"
+    }
+    $('#console').append(template);
+    $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
   }
-};
+}
 
 function printLog(string) {
-  if (!disableSerialLog) {
-    if (document.getElementById("console") !== null) {
-      if (string.isString) {
-        // split(/\r\n|\n|\r/);
-        string = string.replace(/\r\n|\n|\r/, "<br />");
-      }
-      if ($('#console p').length > 100) {
-        // remove oldest if already at 300 lines
-        $('#console p').first().remove();
-      }
-      let template = '<p class="pf">';
-      const time = new Date();
-
-      template += '<span class="fg-dark">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
-      template += string;
-      $('#console').append(template);
-      $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
+  if (document.getElementById("console") !== null) {
+    if (string.isString) {
+      // split(/\r\n|\n|\r/);
+      string = string.replace(/\r\n|\n|\r/, "<br />");
     }
+    if ($('#console p').length > 100) {
+      // remove oldest if already at 300 lines
+      $('#console p').first().remove();
+    }
+    let template = '<p class="pf">';
+    const time = new Date();
+
+    template += '<span class="fg-dark">[' + (time.getHours() < 10 ? '0' : '') + time.getHours() + ":" + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ":" + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds() + ']</span> ';
+    template += string;
+    $('#console').append(template);
+    $('#console').scrollTop(($("#console")[0].scrollHeight - $("#console").height()) + 20);
   }
-};
+}
 
 function onGcodeUpload(gcode, filename) {
   if (isJogWidget) return;
@@ -600,14 +596,7 @@ function initSocket() {
       $('#runStatus').html("Controller: " + status.comms.runStatus);
     }
 
-    if (!disableDROupdates) {
-      updateDro(status);
-    } else {
-      $('#xPos').html('disabled');
-      $('#yPos').html('disabled');
-      $('#zPos').html('disabled');
-      $('#aPos').html('disabled');
-    }
+    updateDro(status);
 
     if (webgl) {
       if (!disable3Drealtimepos) {
@@ -663,40 +652,14 @@ function initSocket() {
     $("#firmwareversionstatus").html(status.machine.firmware.platform + " " + status.machine.firmware.version + " (" + status.machine.firmware.date + ")");
 
     // Grbl Pins Input Status
-    $('.pinstatus').removeClass('alert').addClass('success').html('OFF')
-    $('#holdpin').html('HOLD/DOOR:OFF')
-    $('#resetpin').html('RST:OFF')
-    $('#startpin').html('START:OFF')
-    if (status.machine.inputs.length > 0) {
-      for (let i = 0; i < status.machine.inputs.length; i++) {
-        switch (status.machine.inputs[i]) {
-          case 'X':
-            $('.xpin').removeClass('success').addClass('alert').html('TRIGGERED')
-            break;
-          case 'Y':
-            $('.ypin').removeClass('success').addClass('alert').html('TRIGGERED')
-            break;
-          case 'Z':
-            $('.zpin').removeClass('success').addClass('alert').html('TRIGGERED')
-            break;
-          case 'P':
-            $('.prbpin').removeClass('success').addClass('alert').html('TRIGGERED')
-            break;
-          case 'D':
-            $('.doorpin').removeClass('success').addClass('alert').html('DOOR OPEN')
-            break;
-          case 'H':
-            $('.holdpin').removeClass('success').addClass('alert').html('HOLD/DOOR:ON')
-            break;
-          case 'R':
-            $('.resetpin').removeClass('success').addClass('alert').html('RST:ON')
-            break;
-          case 'S':
-            $('.startpin').removeClass('success').addClass('alert').html('START:ON')
-            break;
-        }
-      }
-    }
+    updatePinStatus($('#xpin'), status.machine.inputs.includes('X'), 'TRIGGERED', 'OFF');
+    updatePinStatus($('#ypin'), status.machine.inputs.includes('Y'), 'TRIGGERED', 'OFF');
+    updatePinStatus($('#zpin'), status.machine.inputs.includes('Z'), 'TRIGGERED', 'OFF');
+    updatePinStatus($('#prbpin'), status.machine.inputs.includes('P'), 'TRIGGERED', 'OFF');
+    updatePinStatus($('#doorpin'), status.machine.inputs.includes('D'), 'DOOR OPEN', 'DOOR CLOSED');
+    updatePinStatus($('#holdpin'), status.machine.inputs.includes('H'), 'HOLD:ON', 'HOLD:OFF');
+    updatePinStatus($('#resetpin'), status.machine.inputs.includes('R'), 'RST:ON', 'RST:OFF');
+    updatePinStatus($('#startpin'), status.machine.inputs.includes('S'), 'START:ON', 'START:OFF');
 
     $('#driverver').html("v" + status.driver.version);
     if (!status.machine.firmware.type) {
@@ -787,10 +750,9 @@ function initSocket() {
     $(".4thaxis-present").toggle(status.machine.has4thAxis);
     $(".4thaxis-active").toggle(status.machine.has4thAxis && !disable4thAxis);
 
-    if ((!laststatus || laststatus.misc.autoStart != status.misc.autoStart) &&
+    if ((!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
         !isJogWidget && (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
       $('#mainCloseBtn').attr( "title", status.misc.autoStart ? "Close to Tray" : "Close");
-      AddRemoveClass('#disableAutoStartTick', "checked", !status.misc.autoStart);
     }
 
     laststatus = status;
@@ -891,6 +853,10 @@ function initSocket() {
     if (!isJogWidget) {
      captureWcsHistoryInternal(data.position, data.wcs, data.name, data.tooltip, data.isRunJob);
     }
+  });
+
+  socket.on('showSettings', function(data) {
+    appSettings(data);
   });
 
   socket.on('recentFiles', onRecentFiles);
@@ -1108,12 +1074,12 @@ function pauseSpindle() {
         clsDialog: 'dark',
         title: "<i class='fas fa-exclamation-triangle'></i> Spindle Paused",
         content: `The spindle will automatically turn back on when the job is resumed.<br>The movement will continue a few seconds later.<br><br>` +
-    `<input id="DisablePauseSpindleDlg" type="checkbox" data-role="checkbox" data-style="2" data-caption="Don't show this again"/>`,
+    `<input id="disablePauseSpindleDlg" type="checkbox" data-role="checkbox" data-style="2" data-caption="Don't show this again"/>`,
         actions: [{
           caption: "OK",
           cls: "js-dialog-close",
           onclick: function() {
-            if ($('#DisablePauseSpindleDlg').prop('checked')) {
+            if ($('#disablePauseSpindleDlg').prop('checked')) {
               localStorage.setItem('disablePauseSpindleDlg', "true");
             }
           }
