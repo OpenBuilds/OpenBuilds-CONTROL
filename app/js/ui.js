@@ -41,23 +41,20 @@ function rippleEffect(el, color) {
 
   $(".ripple").remove();
 
-  const size = Math.max(el.outerWidth(), el.outerHeight());
+  const size = Math.max(el.outerWidth(), el.outerHeight()) + "px";
 
   // Add the element
-  const ripple = $("<span class='ripple'></span>").css({
-    width: size,
-    height: size
-  });
-
-  el.prepend(ripple);
+  el.prepend(`<span class="ripple"></span>`);
+  const ripple = el.children(".ripple");
 
   // Add the ripples CSS and start the animation
   ripple.css({
     background: color,
+    opacity: "30%",
     width: size,
     height: size,
-    top: 0 + 'px',
-    left: 0 + 'px'
+    top: '0px',
+    left: '0px'
   }).addClass("rippleEffect");
   setTimeout(function() {
     $(".ripple").remove();

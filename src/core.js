@@ -37,8 +37,8 @@ config.maxRecentFiles = 10;
 // Individual settings are stored and restores wholesale.
 // If you add a new sub-field to the initial settings, it will be destroyed on load
 const persistentConfig = {
+  trayIcon: true,
   autoStart: true,
-  aggressiveHomeReset: true,
   defaultPaths: {},
   recentFiles: [],
   persistDisplayMode: false,
@@ -89,10 +89,10 @@ const status = {
     has4thAxis: false,
     inputs: [],
     overrides: {
-      feedOverride: 100, //
-      spindleOverride: 100, //
-      realFeed: 0, //
-      realSpindle: 0 //
+      feedOverride: 100,
+      spindleOverride: 100,
+      realFeed: 0,
+      realSpindle: 0
     },
     //
     tool: {
@@ -175,8 +175,8 @@ const status = {
   },
   misc: { // information to pass to the frontend
     jobStatus: 0, // 0 - no job, 1 - running, 2 - jog job running (can't be paused)
+    trayIcon: true,
     autoStart: true,
-    aggressiveHomeReset: true,
     lastFilePath: "",
     spindleDelay: 0,
     laserMode: false,
@@ -242,7 +242,6 @@ function loadPersistentConfig() {
 
 function initCore() {
   loadPersistentConfig();
-  status.misc.aggressiveHomeReset = persistentConfig.aggressiveHomeReset;
 }
 
 module.exports = {

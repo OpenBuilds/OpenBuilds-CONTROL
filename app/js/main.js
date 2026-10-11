@@ -124,8 +124,6 @@ $(document).ready(function() {
       return false;
     });
 
-    initDiagnostics(); // run second time to ensure checkboxes are ticked
-
     if (typeof ace !== 'undefined') {
       editor = ace.edit("editor");
       editor.$blockScrolling = Infinity;
@@ -159,22 +157,7 @@ $(document).ready(function() {
 
     if (!webgl) {
       $('#gcodeviewertab').hide();
-    }
-
-    if (disableSerialLog) {
-      $('#consoletab').hide();
-    }
-
-    // determine the preferred starting tab
-    if (!webgl) {
-      if (!disableSerialLog) {
-        $('#consoletab').click();
-      } else if (editor) {
-        $('#gcodeeditortab').click();
-      }
-      else {
-        $('#macrostab').click();
-      }
+      $('#consoletab').click();
     }
 
     getChangelog();
@@ -244,8 +227,6 @@ function onDocReady(data) {
     if (data.platform == 'linux') {
       $('#disableAutoStartLabel').html("Disable Tray Icon"); // no autostart on linux
     }
-
-    AddRemoveClass('#disableAggressiveHomeResetTick', "checked", !data.aggressiveHomeReset);
   }
 }
 
@@ -304,12 +285,12 @@ function jobNeedsHoming(gcode) {
     content: `<i class='fas fa-exclamation-triangle fg-darkRed'></i> Alert: The job you are about to run contains a ` + command + ` command, which uses machine coordinates and requires homing.<br><br>` +
 `The homing state of the machine cannot be determined at the moment.<br>` +
 `Please make sure to home the machine to establish the Machine Coordinate (G53) System and prevent crashes.<br><br>` +
-`<input id="DisableJobHomeCheck" type="checkbox" data-role="checkbox" data-style="2" data-caption="Don't show this again"/>`,
+`<input id="disableJobHomeCheck" type="checkbox" data-role="checkbox" data-style="2" data-caption="Don't show this again"/>`,
     actions: [{
       caption: "Run Job Anyway",
       cls: "js-dialog-close warning",
       onclick: function() {
-        if ($('#DisableJobHomeCheck').prop('checked')) {
+        if ($('#disableJobHomeCheck').prop('checked')) {
           localStorage.setItem('disableJobNeedsHoming', "true");
         }
         runJobFileInternal(gcode);
@@ -319,7 +300,7 @@ function jobNeedsHoming(gcode) {
       caption: "Abort",
       cls: "js-dialog-close",
       onclick: function() {
-        if ($('#DisableJobHomeCheck').prop('checked')) {
+        if ($('#disableJobHomeCheck').prop('checked')) {
           localStorage.setItem('disableJobNeedsHoming', "true");
         }
       }
@@ -416,49 +397,12 @@ function isWebGL2Available() {
 
 function getWebGLErrorMessage() {
 
-  return getErrorMessage(1);
-
-}
-
-function getWebGL2ErrorMessage() {
-
-  return getErrorMessage(2);
-
-}
-
-function getErrorMessage(version) {
-
-  const names = {
-    1: 'WebGL',
-    2: 'WebGL 2'
-  };
-
-  const contexts = {
-    1: window.WebGLRenderingContext,
-    2: window.WebGL2RenderingContext
-  };
-
-  let message = 'Your $0 does not seem to support $1: See http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation to learn more';
-
-  if (contexts[version]) {
-
-    message = message.replace('$0', 'graphics card');
-
+  if (window.WebGLRenderingContext) {
+    return 'Your graphics card does not seem to support WebGL: See https://wikis.khronos.org/webgl/Main_Page to learn more';
   } else {
-
-    message = message.replace('$0', 'browser');
-
+    return 'Your browser does not seem to support WebGL: See https://wikis.khronos.org/webgl/Main_Page to learn more';
   }
-
-  message = message.replace('$1', names[version]);
-
-
-
-  return message;
-
 }
-
-
 
 const webgl = (function() {
   if (disable3Dviewer) {

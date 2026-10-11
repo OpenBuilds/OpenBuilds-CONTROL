@@ -76,9 +76,8 @@ function mmMode() {
   }
   jogdistXYZ = jogDistArray[jogDistIndex].mm;
 
-  if (!disableDROupdates && laststatus) {
-    updateDro(laststatus);
-  }
+  updateDro(laststatus);
+
   if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
     redrawGrid(sizexmin, sizexmax, sizeymin, sizeymax, false);
   }
@@ -94,9 +93,7 @@ function inMode() {
   }
   jogdistXYZ = jogDistArray[jogDistIndex].in;
 
-  if (!disableDROupdates && laststatus && laststatus.comms.connectionStatus != 0) {
-    updateDro(laststatus);
-  }
+  updateDro(laststatus);
 
   if (typeof redrawGrid === "function") { // Check if function exists, because in Mobile view it does not
     redrawGrid(sizexmin / 25.4, sizexmax / 25.4, sizeymin / 25.4, sizeymax / 25.4, true);
@@ -111,9 +108,7 @@ function toggleWCS() {
   AddRemoveClass('#mcsBtn, .dro', 'droMCS', showMCS);
   EnableViaClass($(".setzero"), !showMCS);
 
-  if (!disableDROupdates && laststatus) {
-    updateDro(laststatus);
-  }
+  updateDro(laststatus);
 }
 
 function cancelJog() {
@@ -160,7 +155,7 @@ function prettyCoord(val, dec) {
 }
 
 function updateDro(status) {
-  if (status.comms.connectionStatus == 0 || status.comms.connectionStatus == 6) {
+  if (!status || status.comms.connectionStatus == 0 || status.comms.connectionStatus == 6) {
     $('#xPos, #yPos, #zPos, #aPos').html('0.00');
     $("#xPosDro, #yPosDro, #zPosDro, #aPosDro").attr('title', '');
     return;
