@@ -153,9 +153,7 @@ function parseGcodeInWebWorker(gcode) {
           $('#3dviewlabel').html(' 3D View');
         } else {
           // Didn't get an Object
-          if (!disableSerialLog) {
-            $('#consoletab').click();
-          }
+          $('#consoletab').click();
           $('#timeRemaining').html("");
           $('#3dviewicon').removeClass('fa-pulse');
           $('#3dviewlabel').html(' 3D View');

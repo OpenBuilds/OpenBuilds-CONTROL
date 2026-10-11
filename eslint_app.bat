@@ -17,8 +17,8 @@ echo // NOTE: js\theme.js >> all.js
 copy /b all.js + js\theme.js
 
 echo // >> all.js
-echo // NOTE: js\diagnostics.js >> all.js
-copy /b all.js + js\diagnostics.js
+echo // NOTE: js\settings.js >> all.js
+copy /b all.js + js\settings.js
 
 echo // >> all.js
 echo // NOTE: js\macros.js >> all.js
