@@ -271,8 +271,8 @@ function grblSettings(data) {
 
   const homingEnabled = grblParams['$22'] > 0;
   $('#homeBtn, #homeSingleMenu').attr('disabled', !homingEnabled);
-  AddRemoveClass('#gotoXMinMpos, #gotoXMaxMpos, #gotoYMinMpos, #gotoYMaxMpos, #gotoZMinMpos, #gotoZMaxMpos, #gotoAMinMpos, #gotoAMaxMpos', 'disabled', !homingEnabled);
-  AddRemoveClass('#gotozeroZmPosXYwPos, #gotozeroMPos', 'disabled', !homingEnabled);
+  addRemoveClass('#gotoXMinMpos, #gotoXMaxMpos, #gotoYMinMpos, #gotoYMaxMpos, #gotoZMinMpos, #gotoZMaxMpos, #gotoAMinMpos, #gotoAMaxMpos', 'disabled', !homingEnabled);
+  addRemoveClass('#gotozeroZmPosXYwPos, #gotozeroMPos', 'disabled', !homingEnabled);
 
   updateGotoLimits();
   if (!isJogWidget && webgl) {

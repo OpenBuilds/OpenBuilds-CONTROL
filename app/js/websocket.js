@@ -70,14 +70,14 @@ function onGcodeUpload(gcode, filename) {
   if (!editor) {
     useEditor = false;
   } else if (gcode.length > MAX_GCODE_IN_EDITOR) {
-    EnableViaClass('.editorEnabled', false);
+    enableViaClass('.editorEnabled', false);
     editor.session.setValue(
 `The G-code file ` + filename + ` is too large (` + (gcode.length / (1024*1024)).toFixed(1) + ` MB) to load into the G-code Editor.
 If you need to edit it, please use a standalone text editing application and reload it.
 The editor is currently disabled. You can click the Clear button to clear the current G-code and type a new program here.`);
     useEditor = false;
   } else {
-    EnableViaClass('.editorEnabled', true);
+    enableViaClass('.editorEnabled', true);
     editor.session.setValue(gcode);
     useEditor = true;
   }
@@ -94,22 +94,6 @@ The editor is currently disabled. You can click the Clear button to clear the cu
   }
 }
 
-function onGrbl(firmware) {
-  if (firmware.type != "grbl") return;
-  grblParams = {};
-  fluidncConfig = undefined;
-  fluidncConfigYaml = undefined;
-  setTimeout(function() {
-    sendGcode(firmware.platform == "FluidNC" ? '$$\n$I\n$CD' : '$$\n$I');
-  }, 500);
-
-  $("#grblButtons").show();
-  $("#firmwarename").html(firmware.platform);
-  if (localStorage.getItem('jogOverride')) {
-    jogOverride(localStorage.getItem('jogOverride'));
-  }
-}
-
 function onRecentFiles(recentFiles) {
   if (!isJogWidget) {
     $('#recentFilesList').nextAll().remove();
@@ -120,7 +104,7 @@ function onRecentFiles(recentFiles) {
         `')"><span class="fas fa-file-alt fg-darkGray icon"></span> ` + recentFiles[i].split(/[/\\]/).at(-1) + `</a></li>\n`;
     }
     $('#recentFilesList').after(elements);
-    EnableViaClass('#clearRecentBtn', recentFiles.length > 0);
+    enableViaClass('#clearRecentBtn', recentFiles.length > 0);
   }
 }
 
@@ -148,6 +132,571 @@ function onSysInfo(sysinfo) {
   }
 }
 
+function onSocketConnect() {
+  $("#websocketstatus").html("Connected")
+}
+
+function onSocketDisconnect() {
+  console.log("WEBSOCKET DISCONNECTED")
+  const icon = ''
+  const source = "websocket"
+  const string = "Disconnected.  OpenBuilds CONTROL probably quit or crashed"
+  const printLogCls = "fg-darkRed"
+  printLogModern(icon, source, string, printLogCls)
+  $("#websocketstatus").html("Disconnected")
+}
+
+function onInterfaceDrive(data) {
+  console.log(data)
+  if (data && data.length > 1) {
+    $("#interfaceDriveLetterBtn").html("<i class='fab fa-usb'></i> Selected: " + data)
+    if ($("#profileTargetController").val() != "") {
+      $(".interfaceCopyBtn").removeClass('disabled');
+    }
+  }
+}
+function onSocketData(data) {
+  let toPrint = escapeHTML(data.response);
+
+  let lineColor = "fg-dark"
+  if (data.type == "error") {
+    lineColor = "fg-darkRed"
+  } else if (data.type == "success") {
+    lineColor = "fg-darkGreen"
+  } else if (data.type == "info") {
+    lineColor = "fg-dark"
+  }
+
+  // look for grbl settings change and update grblparams variable
+  // matches $number(s)=
+  if (/^\$\d*=/.test(data.command) && data.response == 'ok') {
+    grblSettings(data.command)
+  }
+
+  // Parse Grbl Settings Feedback
+  if (data.response.indexOf('$') === 0) {
+
+    const key = data.response.split('=')[0].substr(1);
+    let descr;
+    if (grblSettingsTemplate[key] !== undefined) {
+      descr = grblSettingsTemplate[key].title
+    } else {
+      descr = "unknown"
+    }
+    toPrint = data.response + "  ;" + descr
+    const icon = ''
+    const source = data.command
+    const string = toPrint
+    const printLogCls = lineColor
+    printLogModern(icon, source, string, printLogCls)
+
+    if (data.response.match(/\$(\d+)(=)/)) {
+      if (typeof grblSettings !== 'undefined') {
+        grblSettings(data.response);
+      }
+    }
+
+  } else {
+    const icon = ''
+    const source = data.command
+    const string = toPrint
+    const printLogCls = lineColor
+    printLogModern(icon, source, string, printLogCls)
+  };
+}
+
+function onGrbl(firmware) {
+  if (firmware.type != "grbl") return;
+  grblParams = {};
+  fluidncConfig = undefined;
+  fluidncConfigYaml = undefined;
+  setTimeout(function() {
+    sendGcode(firmware.platform == "FluidNC" ? '$$\n$I\n$CD' : '$$\n$I');
+  }, 500);
+
+  $("#grblButtons").show();
+  $("#firmwarename").html(firmware.platform);
+  if (localStorage.getItem('jogOverride')) {
+    jogOverride(localStorage.getItem('jogOverride'));
+  }
+}
+
+function onJobComplete(data) {
+  if (isJogWidget) return;
+
+  if (data.completed && data.jobStartTime && data.jobEndTime) {
+    console.log("jobComplete", data)
+    const runTime = data.jobEndTime - data.jobStartTime; // in Milliseconds
+    $('#timeRemaining').html("DONE: " + msToTime(runTime));
+    let estimateTime = 0;
+    if (object && object.userData != undefined) {
+      estimateTime = object.userData.totalTime; // in Minutes
+    }
+    const startDate = new Date(data.jobStartTime);
+    const startDateString = startDate.toString();
+    const endDate = new Date(data.jobEndTime);
+    const endDateString = endDate.toString();
+    let completionStatus = "complete"
+    if (data.failed) {
+      completionStatus = "incomplete"
+    }
+    console.log("Completed: " + completionStatus + " / Filename: " + loadedFileName + " / Estimated Runtime: " + timeConvert(estimateTime) + " / Streaming Runtime: " + msToTime(runTime) + " / Start Date: " + startDateString + " / End Date: " + endDateString)
+    const completedJob = {
+      "completed": !data.failed, // Did job complete?
+      "filename": loadedFileName, // File Name
+      "estruntime": estimateTime, // in Minutes
+      "streamruntime": runTime,
+      "startdate": data.jobStartTime,
+      "enddate": data.jobEndTime
+    }
+    storeJob(completedJob);
+
+  }
+
+  // With jobCompletedMsg Message
+  if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
+    let runTime = undefined;
+    if (data.jobStartTime && data.jobEndTime) {
+      runTime = data.jobEndTime - data.jobStartTime;
+      $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
+      $('#timeRemaining').html("DONE: " + msToTime(runTime));
+    } else {
+      $("#completeMsgDiv").html(data.jobCompletedMsg);
+      $('#timeRemaining').html("DONE: " + msToTime(runTime));
+    }
+    Metro.dialog.open("#completeMsgModal");
+    const icon = ''
+    const source = "JOB COMPLETE"
+    const string = (runTime != undefined ? "Job completed in " + msToTime(runTime) : "Job completed") + " / " + data.jobCompletedMsg
+    const printLogCls = "fg-darkGreen"
+    printLogModern(icon, source, string, printLogCls)
+    $('#timeRemaining').html("DONE: " + msToTime(runTime));
+  } else if (data.jobStartTime && data.jobEndTime) {
+    // Without jobCompletedMsg Message (Normal Job)
+    const runTime = data.jobEndTime - data.jobStartTime;
+    const icon = ''
+    const source = "JOB COMPLETE"
+    const string = "Job completed in " + msToTime(runTime)
+    const printLogCls = "fg-darkGreen"
+    printLogModern(icon, source, string, printLogCls)
+    $('#timeRemaining').html("DONE: " + msToTime(runTime));
+  }
+
+  // Focus Button
+  setTimeout(function() {
+    $('#jobCompleteBtnOk').focus();
+  }, 200)
+
+  // Cleanup
+  lastJobStartTime = false;
+}
+
+function onQueueCount(data) {
+  // calc percentage
+  const left = data[0]
+  const total = data[1]
+  const done = total - left;
+  const donepercent = done / total * 100
+  const progressbar = $("#progressbar").data("progress");
+  if (progressbar) {
+    progressbar.val(donepercent);
+  }
+
+  if (laststatus) {
+    if (typeof object !== 'undefined' && done > 0) {
+      if (object.userData !== 'undefined' && object.userData && object.userData.pointCount > 2) {
+        const timeremain = object.userData.totalTime;
+        if (!isNaN(timeremain)) {
+          if (lastJobStartTime) {
+            $('#timeRemaining').html(timeConvert((new Date().getTime() - lastJobStartTime) / 1000 / 60) + " / " + timeConvert(timeremain));
+          }
+        }
+      }
+
+    } else {
+      $('#timeRemaining').empty();
+    }
+  }
+  $('#gcodesent').html("Job Queue: " + data[0]);
+}
+
+function toastErrorAlarm(data) {
+  const icon = ''
+  const source = "ALARM"
+  const string = data
+  const printLogCls = "fg-darkRed"
+  printLogModern(icon, source, string, printLogCls)
+
+  const dialog = Metro.dialog.create({
+    clsDialog: 'dark',
+    title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
+    content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
+    actions: [{
+        caption: "Clear Alarm",
+        cls: "js-dialog-close alert closeAlarmBtn",
+        onclick: function() {
+          socket.emit('clearAlarm', 2)
+        }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {
+          //
+        }
+      }
+    ]
+  });
+
+  if (data.indexOf("ALARM: 6") == -1 && data.indexOf("ALARM: 7") == -1 && data.indexOf("ALARM: 8") == -1 && data.indexOf("ALARM: 9") == -1 && data.indexOf("ALARM: 10") == -1) {
+    openDialogs.push(dialog);
+  }
+
+  setTimeout(function() {
+    $(".closeAlarmBtn").focus();
+  }, 200);
+}
+
+function toastError(data) {
+  const icon = ''
+  const source = "ERROR"
+  const string = data
+  const printLogCls = "fg-darkRed"
+  printLogModern(icon, source, string, printLogCls)
+
+  const dialog = Metro.dialog.create({
+    title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
+    content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
+    clsDialog: 'dark',
+    actions: [{
+      caption: "OK",
+      cls: "js-dialog-close alert closeErrorBtn",
+      onclick: function() {
+        socket.emit('clearAlarm', 2)
+      }
+    }]
+  });
+  openDialogs.push(dialog);
+  setTimeout(function() {
+    $(".closeErrorBtn").focus();
+  }, 200);
+}
+
+function errorsCleared(data) {
+  if (data) {
+    for (let i = 0; i < openDialogs.length; i++) {
+      Metro.dialog.close(openDialogs[i]);
+    }
+    openDialogs.length = 0;
+  }
+}
+
+function onStatus(status) {
+  if (nostatusyet && !isJogWidget) {
+    setWindowTitle(status);
+    if (status.driver.operatingsystem == "rpi") {
+      $('#windowtitlebar').hide();
+    }
+  }
+  nostatusyet = false;
+
+  let featuresChanged = false;
+  let offsetChanged = false;
+
+  if (laststatus !== undefined) {
+
+    featuresChanged = !_.isEqual(status.machine.firmware.features, laststatus.machine.firmware.features);
+    offsetChanged = !_.isEqual(status.machine.position.offset, laststatus.machine.position.offset);
+
+    if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
+      let string = "Detected a change in available ports: ";
+      for (let i = 0; i < status.comms.interfaces.ports.length; i++) {
+        string += "[" + status.comms.interfaces.ports[i].path + "]"
+      }
+
+      if (!status.comms.interfaces.ports.length) {
+        string += "[ No devices connected ]"
+      }
+      const icon = ''
+      const source = "usb ports"
+      const printLogCls = "fg-dark"
+      printLogModern(icon, source, string, printLogCls)
+      laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
+      populatePortsMenu();
+    }
+
+    if (!_.isEqual(status.comms.interfaces.networkDevices, laststatus.comms.interfaces.networkDevices)) {
+      let string = "Detected a change in IP devices: ";
+      for (let i = 0; i < status.comms.interfaces.networkDevices.length; i++) {
+        string += "[" + status.comms.interfaces.networkDevices[i].ip + "]"
+      }
+
+      if (!status.comms.interfaces.networkDevices.length) {
+        string += "[ No IP devices ]"
+      }
+      const icon = ''
+      const source = "network ports"
+      //const string = string
+      const printLogCls = "fg-dark"
+      printLogModern(icon, source, string, printLogCls)
+      laststatus.comms.interfaces.networkDevices = status.comms.interfaces.networkDevices;
+      populatePortsMenu();
+    }
+  }
+
+  if (status.comms.runStatus.startsWith("Door")) {
+    const doorType = status.comms.runStatus.split(":")[1]
+    let doorMsg = "";
+    if (doorType == 0) {
+      doorMsg += "Door Closed: Ready to Resume"
+    }
+    if (doorType == 1) {
+      doorMsg += "Door Open: Paused"
+    }
+    if (doorType == 2) {
+      doorMsg += "Door Open: Tool Stopping"
+    }
+    if (doorType == 3 || doorType == 4) {
+      doorMsg += "Door Closed: Tool Starting Up"
+    }
+    $('#runStatus').html(doorMsg);
+  } else {
+    $('#runStatus').html("Controller: " + status.comms.runStatus);
+  }
+
+  updateDro(status);
+
+  if (webgl) {
+    if (!disable3Drealtimepos) {
+      if (!isJogWidget) {
+        if (!simRunning) {
+          cone.position.x = status.machine.position.work.x
+          cone.position.y = status.machine.position.work.y
+          cone.position.z = status.machine.position.work.z
+        }
+      }
+    }
+  }
+
+  if (safeToUpdateSliders) {
+    if ($('#fro').data('slider') && $('#fro').data('slider').val() != status.machine.overrides.feedOverride) {
+      $('#fro').data('slider').val(status.machine.overrides.feedOverride);
+    }
+
+    if ($('#tro').data('slider') && $('#tro').data('slider').val() != status.machine.overrides.spindleOverride) {
+      $('#tro').data('slider').val(status.machine.overrides.spindleOverride);
+    }
+  }
+
+  if (unit == "in") {
+    $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "<br>in/min");
+  } else {
+    $("#realFeed").html(status.machine.overrides.realFeed.toFixed(0) + "<br>mm/min");
+  }
+  $("#realSpeed").html( status.machine.overrides.realSpindle.toFixed(0) + "<br>rpm");
+
+
+  // Windows Power Management
+  if (status.driver.operatingsystem == "windows") {
+    $("#powerSettingsCard").show();
+    if (status.driver.powersettings.usbselectiveAC == false) {
+      $('#selectivesuspendAC').removeClass('alert').addClass('success').html('DISABLED')
+    } else if (status.driver.powersettings.usbselectiveAC == null) {
+      $('#selectivesuspendAC').removeClass('success').addClass('alert').html('UNKNOWN')
+    } else if (status.driver.powersettings.usbselectiveAC == true) {
+      $('#selectivesuspendAC').removeClass('success').addClass('alert').html('ENABLED')
+    }
+
+    if (status.driver.powersettings.usbselectiveDC == false) {
+      $('#selectivesuspendDC').removeClass('alert').addClass('success').html('DISABLED')
+    } else if (status.driver.powersettings.usbselectiveDC == null) {
+      $('#selectivesuspendDC').removeClass('success').addClass('alert').html('UNKNOWN')
+    } else if (status.driver.powersettings.usbselectiveDC == true) {
+      $('#selectivesuspendDC').removeClass('success').addClass('alert').html('ENABLED')
+    }
+  } else {
+    $("#powerSettingsCard").hide();
+  }
+
+  $("#firmwareversionstatus").html(status.machine.firmware.platform + " " + status.machine.firmware.version + " (" + status.machine.firmware.date + ")");
+
+  // Grbl Pins Input Status
+  updatePinStatus($('#xpin'), status.machine.inputs.includes('X'), 'TRIGGERED', 'OFF');
+  updatePinStatus($('#ypin'), status.machine.inputs.includes('Y'), 'TRIGGERED', 'OFF');
+  updatePinStatus($('#zpin'), status.machine.inputs.includes('Z'), 'TRIGGERED', 'OFF');
+  updatePinStatus($('#prbpin'), status.machine.inputs.includes('P'), 'TRIGGERED', 'OFF');
+  updatePinStatus($('#doorpin'), status.machine.inputs.includes('D'), 'DOOR OPEN', 'DOOR CLOSED');
+  updatePinStatus($('#holdpin'), status.machine.inputs.includes('H'), 'HOLD:ON', 'HOLD:OFF');
+  updatePinStatus($('#resetpin'), status.machine.inputs.includes('R'), 'RST:ON', 'RST:OFF');
+  updatePinStatus($('#startpin'), status.machine.inputs.includes('S'), 'START:ON', 'START:OFF');
+
+  $('#driverver').html("v" + status.driver.version);
+  if (!status.machine.firmware.type) {
+    $('#firmwarever').html("NOCOMM");
+  } else {
+    $('#firmwarever').html(status.machine.firmware.type + " v" + status.machine.firmware.version);
+  }
+  $('#commblocked').html(status.comms.blocked ? "BLOCKED" : "Ready");
+  let string = '';
+  switch (status.comms.connectionStatus) {
+    case 0:
+      string += "Not Connected"
+      break;
+    case 2:
+      string += "Connected"
+      break;
+    case 3:
+      string += "Streaming"
+      break;
+    case 4:
+      string += "Paused"
+      break;
+    case 5:
+      string += "Alarmed"
+      break;
+
+  }
+  $('#commstatus').html(string);
+  $('#drvqueue').html(status.comms.queue);
+
+  $('#activeportstatus').html(status.comms.interfaces.activePort || "none")
+
+  // Only allow jogging during idle
+  $('.jogbtn').attr('disabled', status.comms.connectionStatus != 2);
+  $('.dro').attr('disconnected', status.comms.connectionStatus < 2 || status.comms.connectionStatus == 6);
+
+  // Allow typing on the console only during idle or alarm
+  $("#command, #sendCommand").attr('disabled', status.comms.connectionStatus != 2 && status.comms.connectionStatus != 5);
+
+  // Set the Connection Toolbar option
+  setConnectBar(status.comms.connectionStatus, status);
+  setControlBar(status.comms.connectionStatus, status);
+  if (status.comms.connectionStatus != 5) {
+    bellstate = false
+  }
+  if (status.comms.connectionStatus == 0) {
+    $("#grblButtons").hide();
+    $("#firmwarename").html('');
+    if (localStorage.getItem('jogOverride')) {
+      jogOverride(localStorage.getItem('jogOverride'));
+    }
+  }
+
+  enableViaClass('#resetGrblBtn, #section-grbl .group:not(.estop)', status.comms.connectionStatus != 3 && status.comms.connectionStatus != 4);
+  enableViaClass('#grblMetroTable', status.comms.connectionStatus != 3 && status.comms.connectionStatus != 4 && status.machine.firmware.platform != "FluidNC");
+
+  if (laststatus == undefined || status.machine.modals.coordinatesys != laststatus.machine.modals.coordinatesys) {
+    $('.wcsText').html(status.machine.modals.coordinatesys)
+    addRemoveClass($('#wcsItemG54'), 'checked', status.machine.modals.coordinatesys == "G54");
+    addRemoveClass($('#wcsItemG55'), 'checked', status.machine.modals.coordinatesys == "G55");
+    addRemoveClass($('#wcsItemG56'), 'checked', status.machine.modals.coordinatesys == "G56");
+    addRemoveClass($('#wcsItemG57'), 'checked', status.machine.modals.coordinatesys == "G57");
+    addRemoveClass($('#wcsItemG58'), 'checked', status.machine.modals.coordinatesys == "G58");
+    addRemoveClass($('#wcsItemG59'), 'checked', status.machine.modals.coordinatesys == "G59");
+    updateWcsHistory(status.machine.modals.coordinatesys);
+  }
+
+  // Enable or disable 4th axis UI elements
+  $(".4thaxis-present").toggle(status.machine.has4thAxis);
+  $(".4thaxis-active").toggle(status.machine.has4thAxis && !disable4thAxis);
+
+  if (!isJogWidget && (!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
+      (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
+    $('#mainCloseBtn').attr( "title", status.misc.autoStart ? "Close to Tray" : "Close");
+  }
+
+  laststatus = status;
+
+  if (!isJogWidget && webgl && (featuresChanged || offsetChanged)) {
+    updateMachineCoordinates();
+  }
+
+  if (featuresChanged) {
+    updateGotoLimits();
+  }
+
+  waitingForStatus = false;
+}
+
+function onFeatures(data) {
+/* Ivo: none of these UI elements exist anymore. Besides, there is no code to revert the state if the feature disappears. Disabling the entire thing.
+  for (let i = 0; i < data.length; i++) {
+    switch (data[i]) {
+      case 'Q':
+        // console.log('SPINDLE_IS_SERVO Enabled')
+        // Also enabled for grblHAL from grbl-settings if $33=50
+        $('#enServo').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'V': // Variable spindle enabled
+        // console.log('Variable spindle enabled')
+        $('#enVariableSpindle').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'N': // Line numbers enabled
+        // console.log('Line numbers enabled')
+        $('#enLineNumbers').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'M': // Mist coolant enabled
+        // console.log('Mist coolant enabled')
+        $('#enMisting').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'C': // CoreXY enabled
+        // console.log('CoreXY enabled')
+        $('#enCoreXY').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'P': // Parking motion enabled
+        // console.log('Parking motion enabled')
+        $('#enParking').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'Z': // Homing force origin enabled
+        // console.log('Homing force origin enabled')
+        $('#enHomingOrigin').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'H': // Homing single axis enabled
+        // console.log('Homing single axis enabled')
+        $('#enSingleAxisHome').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'T': // Two limit switches on axis enabled
+        // console.log('Two limit switches on axis enabled')
+        $('#enTwoLimits').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'A': // Allow feed rate overrides in probe cycles
+        // console.log('Allow feed rate overrides in probe cycles')
+        $('#enFeedOVProbe').removeClass('alert').addClass('success').html('ON')
+        break;
+      case '$': // Restore EEPROM $ settings disabled
+        // console.log('Restore EEPROM $ settings disabled')
+        $('#enEepromSettingsDisable').removeClass('alert').addClass('success').html('ON')
+        break;
+      case '#': // Restore EEPROM parameter data disabled
+        // console.log('Restore EEPROM parameter data disabled')
+        $('#enEepromParamsDisable').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'I': // Build info write user string disabled
+        // console.log('Build info write user string disabled')
+        $('#enBuildInfoDisabled').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'E': // Force sync upon EEPROM write disabled
+        // console.log('Force sync upon EEPROM write disabled')
+        $('#enForceSyncEeprom').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'W': // Force sync upon work coordinate offset change disabled
+        // console.log('Force sync upon work coordinate offset change disabled')
+        $('#enForceSyncWco').removeClass('alert').addClass('success').html('ON')
+        break;
+      case 'L': // Homing init lock sets Grbl into an alarm state upon power up
+        // console.log('Homing init lock sets Grbl into an alarm state upon power up')
+        $('#enHomingInitLock').removeClass('alert').addClass('success').html('ON')
+        break;
+    }
+  }
+*/
+  if (laststatus.machine.firmware.platform != "grblHAL") {
+    $(".servo-active").toggle(data.contains('Q')); // the grblHAL case is handled by setting $33
+  }
+  $('#menuMisting').toggle(data.contains('M'));
+  $("#homeSingleMenu").parent().toggle(data.contains('H'));
+}
+
 function initSocket() {
   socket = io.connect(server, {
     'timeout': 60000,
@@ -162,41 +711,13 @@ function initSocket() {
     populatePortsMenu();
   }, 2000);
 
-  socket.on('disconnect', function() {
-    console.log("WEBSOCKET DISCONNECTED")
-    const icon = ''
-    const source = "websocket"
-    const string = "Disconnected.  OpenBuilds CONTROL probably quit or crashed"
-    const printLogCls = "fg-darkRed"
-    printLogModern(icon, source, string, printLogCls)
-    $("#websocketstatus").html("Disconnected")
-  });
+  socket.on('connect', onSocketConnect);
 
-  socket.on('connect', function() {
-    $("#websocketstatus").html("Connected")
-  });
+  socket.on('disconnect', onSocketDisconnect);
 
-  socket.on('interfaceDrive', function(data) {
-    console.log(data)
-    if (data && data.length > 1) {
-      $("#interfaceDriveLetterBtn").html("<i class='fab fa-usb'></i> Selected: " + data)
-      if ($("#profileTargetController").val() != "") {
-        $(".interfaceCopyBtn").removeClass('disabled');
-      }
-    }
-  })
+  socket.on('interfaceDrive', onInterfaceDrive);
 
   socket.on('gcodeupload', function(data) { onGcodeUpload(data.gcode, data.filename); });
-
-  socket.on('integrationpopup', function(data) {
-    const icon = ''
-    const source = "api"
-    const string = "Integration called from " + data
-    const printLogCls = "fg-darkGreen"
-    printLogModern(icon, source, string, printLogCls)
-    $('#controlTab').click()
-    $('#consoletab').click()
-  });
 
   socket.on('updatedata', function(data) {
     const icon = ''
@@ -229,621 +750,34 @@ function initSocket() {
 
   socket.on('fluidncConfig', setFluidNcConfig);
 
-  socket.on('data', function(data) {
-    let toPrint = escapeHTML(data.response);
-
-    let lineColor = "fg-dark"
-    if (data.type == "error") {
-      lineColor = "fg-darkRed"
-    } else if (data.type == "success") {
-      lineColor = "fg-darkGreen"
-    } else if (data.type == "info") {
-      lineColor = "fg-dark"
-    }
-
-    // look for grbl settings change and update grblparams variable
-    // matches $number(s)=
-    if (/^\$\d*=/.test(data.command) && data.response == 'ok') {
-      grblSettings(data.command)
-    }
-
-    // Parse Grbl Settings Feedback
-    if (data.response.indexOf('$') === 0) {
-
-      const key = data.response.split('=')[0].substr(1);
-      let descr;
-      if (grblSettingsTemplate[key] !== undefined) {
-        descr = grblSettingsTemplate[key].title
-      } else {
-        descr = "unknown"
-      }
-      toPrint = data.response + "  ;" + descr
-      const icon = ''
-      const source = data.command
-      const string = toPrint
-      const printLogCls = lineColor
-      printLogModern(icon, source, string, printLogCls)
-
-      if (data.response.match(/\$(\d+)(=)/)) {
-        if (typeof grblSettings !== 'undefined') {
-          grblSettings(data.response);
-        }
-      }
-
-    } else {
-      const icon = ''
-      const source = data.command
-      const string = toPrint
-      const printLogCls = lineColor
-      printLogModern(icon, source, string, printLogCls)
-    };
-
-  });
+  socket.on('data', onSocketData);
 
   socket.on("grbl", onGrbl);
 
   // eslint-disable-next-line no-unused-vars
-  socket.on("queueComplete", function(data) {
-  });
+  socket.on("queueComplete", function(data) {});
 
-  socket.on("jobComplete", function(data) {
-    if (isJogWidget) return;
+  socket.on("jobComplete", onJobComplete);
 
-    if (data.completed && data.jobStartTime && data.jobEndTime) {
-      console.log("jobComplete", data)
-      const runTime = data.jobEndTime - data.jobStartTime; // in Milliseconds
-      $('#timeRemaining').html("DONE: " + msToTime(runTime));
-      let estimateTime = 0;
-      if (object && object.userData != undefined) {
-        estimateTime = object.userData.totalTime; // in Minutes
-      }
-      const startDate = new Date(data.jobStartTime);
-      const startDateString = startDate.toString();
-      const endDate = new Date(data.jobEndTime);
-      const endDateString = endDate.toString();
-      let completionStatus = "complete"
-      if (data.failed) {
-        completionStatus = "incomplete"
-      }
-      console.log("Completed: " + completionStatus + " / Filename: " + loadedFileName + " / Estimated Runtime: " + timeConvert(estimateTime) + " / Streaming Runtime: " + msToTime(runTime) + " / Start Date: " + startDateString + " / End Date: " + endDateString)
-      const completedJob = {
-        "completed": !data.failed, // Did job complete?
-        "filename": loadedFileName, // File Name
-        "estruntime": estimateTime, // in Minutes
-        "streamruntime": runTime,
-        "startdate": data.jobStartTime,
-        "enddate": data.jobEndTime
-      }
-      storeJob(completedJob);
+  if (typeof setMachineButton !== 'undefined') {
+    socket.on("machinename", setMachineButton);
+  }
 
-    }
+  socket.on("queueCount", onQueueCount);
 
-    // With jobCompletedMsg Message
-    if (data.jobCompletedMsg && data.jobCompletedMsg.length > 0) {
-      let runTime = undefined;
-      if (data.jobStartTime && data.jobEndTime) {
-        runTime = data.jobEndTime - data.jobStartTime;
-        $("#completeMsgDiv").html("Job completed in " + msToTime(runTime) + "<hr>" + data.jobCompletedMsg);
-        $('#timeRemaining').html("DONE: " + msToTime(runTime));
-      } else {
-        $("#completeMsgDiv").html(data.jobCompletedMsg);
-        $('#timeRemaining').html("DONE: " + msToTime(runTime));
-      }
-      Metro.dialog.open("#completeMsgModal");
-      const icon = ''
-      const source = "JOB COMPLETE"
-      const string = (runTime != undefined ? "Job completed in " + msToTime(runTime) : "Job completed") + " / " + data.jobCompletedMsg
-      const printLogCls = "fg-darkGreen"
-      printLogModern(icon, source, string, printLogCls)
-      $('#timeRemaining').html("DONE: " + msToTime(runTime));
-    } else if (data.jobStartTime && data.jobEndTime) {
-      // Without jobCompletedMsg Message (Normal Job)
-      const runTime = data.jobEndTime - data.jobStartTime;
-      const icon = ''
-      const source = "JOB COMPLETE"
-      const string = "Job completed in " + msToTime(runTime)
-      const printLogCls = "fg-darkGreen"
-      printLogModern(icon, source, string, printLogCls)
-      $('#timeRemaining').html("DONE: " + msToTime(runTime));
-    }
+  socket.on('toastErrorAlarm', toastErrorAlarm);
 
-    // Focus Button
-    setTimeout(function() {
-      $('#jobCompleteBtnOk').focus();
-    }, 200)
+  socket.on('toastError', toastError);
 
-    // Cleanup
-    lastJobStartTime = false;
-  });
+  socket.on("errorsCleared", errorsCleared);
 
-  socket.on("machinename", function(data) {
-    if (typeof setMachineButton !== 'undefined') {
-      setMachineButton(data)
-    }
-  });
-
-  socket.on("queueCount", function(data) {
-    // calc percentage
-    const left = data[0]
-    const total = data[1]
-    const done = total - left;
-    const donepercent = done / total * 100
-    const progressbar = $("#progressbar").data("progress");
-    if (progressbar) {
-      progressbar.val(donepercent);
-    }
-
-    if (laststatus) {
-      if (typeof object !== 'undefined' && done > 0) {
-        if (object.userData !== 'undefined' && object.userData && object.userData.pointCount > 2) {
-          const timeremain = object.userData.totalTime;
-          if (!isNaN(timeremain)) {
-            if (lastJobStartTime) {
-              $('#timeRemaining').html(timeConvert((new Date().getTime() - lastJobStartTime) / 1000 / 60) + " / " + timeConvert(timeremain));
-            }
-          }
-        }
-
-      } else {
-        $('#timeRemaining').empty();
-      }
-    }
-    $('#gcodesent').html("Job Queue: " + data[0]);
-  })
-
-  socket.on('toastErrorAlarm', function(data) {
-    const icon = ''
-    const source = "ALARM"
-    const string = data
-    const printLogCls = "fg-darkRed"
-    printLogModern(icon, source, string, printLogCls)
-
-    const dialog = Metro.dialog.create({
-      clsDialog: 'dark',
-      title: "<i class='fas fa-exclamation-triangle'></i> Grbl Alarm:",
-      content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
-      actions: [{
-          caption: "Clear Alarm",
-          cls: "js-dialog-close alert closeAlarmBtn",
-          onclick: function() {
-            socket.emit('clearAlarm', 2)
-          }
-        },
-        {
-          caption: "Cancel",
-          cls: "js-dialog-close",
-          onclick: function() {
-            //
-          }
-        }
-      ]
-    });
-
-    if (data.indexOf("ALARM: 6") == -1 && data.indexOf("ALARM: 7") == -1 && data.indexOf("ALARM: 8") == -1 && data.indexOf("ALARM: 9") == -1 && data.indexOf("ALARM: 10") == -1) {
-      openDialogs.push(dialog);
-    }
-
-    setTimeout(function() {
-      $(".closeAlarmBtn").focus();
-    }, 200)
-    //
-  });
-
-  socket.on('toastError', function(data) {
-    const icon = ''
-    const source = "ERROR"
-    const string = data
-    const printLogCls = "fg-darkRed"
-    printLogModern(icon, source, string, printLogCls)
-
-    const dialog = Metro.dialog.create({
-      title: "<i class='fas fa-exclamation-triangle'></i> Grbl Error:",
-      content: "<i class='fas fa-exclamation-triangle fg-darkRed'></i>  " + data,
-      clsDialog: 'dark',
-      actions: [{
-        caption: "OK",
-        cls: "js-dialog-close alert closeErrorBtn",
-        onclick: function() {
-          socket.emit('clearAlarm', 2)
-        }
-      }]
-    });
-    openDialogs.push(dialog);
-    setTimeout(function() {
-      $(".closeErrorBtn").focus();
-    }, 200)
-    //
-  });
-
-  socket.on("errorsCleared", function(data) {
-    if (data) {
-      for (let i = 0; i < openDialogs.length; i++) {
-        Metro.dialog.close(openDialogs[i]);
-      }
-      openDialogs.length = 0;
-    }
-  })
-
-  socket.on('progStatus', function(data) {
-    $('#controlTab').click();
-    $('#consoletab').click();
-    let string = data.string
-    if (string) {
-      if (string.indexOf('flash complete') != -1) {
-        setTimeout(function() {
-          populatePortsMenu();
-        }, 400)
-      }
-      string = string.replace('[31mflash complete.[39m', "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'> </i> FLASH FAILED!</span> ");
-      string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
-      string = string.replace('[39m', "</span>");
-      if (string.indexOf("Hash of data verified") != -1) {
-        string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
-      }
-      if (string.indexOf("could not open port") != -1) {
-        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-      }
-      if (string.indexOf("something went wrong") != -1) {
-        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-      }
-      if (string.indexOf("fatal error occurred") != -1) {
-        string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-      }
-
-      if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
-        string = "<span class='fg-darkRed'>" + string + ":  Make sure the device is in BOOTLOADER MODE. Your computer failed to put it into Bootloader mode automatically. You can enter bootloader mode by: Press and hold down MODE, then Press RESET while still holding MODE. Let go of RESET, then wait a second or two and let go of MODE.  Best performed right after starting the Firmware Flashing operation."
-      }
-
-      {
-        const icon = ''
-        const source = " Firmware Upgrade"
-        //const string = string
-        const printLogCls = "fg-dark"
-        printLogModern(icon, source, string, printLogCls)
-      }
-
-      if (data.code != undefined) {
-        const icon = ''
-        const source = " Firmware Upgrade"
-        let printLogCls;
-        if (data.code == 0) {
-          string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the device now, to reboot it with the new firmware. "
-          printLogCls = "fg-darkGreen"
-        } else {
-          string = "<i class='fas fa-times fa-fw fg-darkRed fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
-          printLogCls = "fg-darkRed"
-        }
-        printLogModern(icon, source, string, printLogCls)
-        populatePortsMenu()
-      }
-
-    }
-  });
+  socket.on('progStatus', onProgStatus);
 
   socket.on('sysinfo', onSysInfo);
 
-  socket.on('status', function(status) {
+  socket.on('status', onStatus);
 
-    if (nostatusyet && !isJogWidget) {
-      setWindowTitle(status);
-      if (status.driver.operatingsystem == "rpi") {
-        $('#windowtitlebar').hide();
-      }
-    }
-    nostatusyet = false;
-
-    let featuresChanged = false;
-    let offsetChanged = false;
-
-    if (laststatus !== undefined) {
-
-      featuresChanged = !_.isEqual(status.machine.firmware.features, laststatus.machine.firmware.features);
-      offsetChanged = !_.isEqual(status.machine.position.offset, laststatus.machine.position.offset);
-
-      if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
-        let string = "Detected a change in available ports: ";
-        for (let i = 0; i < status.comms.interfaces.ports.length; i++) {
-          string += "[" + status.comms.interfaces.ports[i].path + "]"
-        }
-
-        if (!status.comms.interfaces.ports.length) {
-          string += "[ No devices connected ]"
-        }
-        const icon = ''
-        const source = "usb ports"
-        const printLogCls = "fg-dark"
-        printLogModern(icon, source, string, printLogCls)
-        laststatus.comms.interfaces.ports = status.comms.interfaces.ports;
-        populatePortsMenu();
-      }
-
-      if (!_.isEqual(status.comms.interfaces.networkDevices, laststatus.comms.interfaces.networkDevices)) {
-        let string = "Detected a change in IP devices: ";
-        for (let i = 0; i < status.comms.interfaces.networkDevices.length; i++) {
-          string += "[" + status.comms.interfaces.networkDevices[i].ip + "]"
-        }
-
-        if (!status.comms.interfaces.networkDevices.length) {
-          string += "[ No IP devices ]"
-        }
-        const icon = ''
-        const source = "network ports"
-        //const string = string
-        const printLogCls = "fg-dark"
-        printLogModern(icon, source, string, printLogCls)
-        laststatus.comms.interfaces.networkDevices = status.comms.interfaces.networkDevices;
-        populatePortsMenu();
-      }
-    }
-
-    if (status.comms.runStatus.indexOf("Door") == 0) {
-      const doorType = status.comms.runStatus.split(":")[1]
-      let doorMsg = "";
-      if (doorType == 0) {
-        doorMsg += "Door Closed: Ready to Resume"
-      }
-      if (doorType == 1) {
-        doorMsg += "Door Open: Paused"
-      }
-      if (doorType == 2) {
-        doorMsg += "Door Open: Tool Stopping"
-      }
-      if (doorType == 3 || doorType == 4) {
-        doorMsg += "Door Closed: Tool Starting Up"
-      }
-      $('#runStatus').html(doorMsg);
-    } else {
-      $('#runStatus').html("Controller: " + status.comms.runStatus);
-    }
-
-    updateDro(status);
-
-    if (webgl) {
-      if (!disable3Drealtimepos) {
-        if (!isJogWidget) {
-          if (!simRunning) {
-            cone.position.x = status.machine.position.work.x
-            cone.position.y = status.machine.position.work.y
-            cone.position.z = status.machine.position.work.z
-          }
-        }
-      }
-    }
-
-    if (safeToUpdateSliders) {
-      if ($('#fro').data('slider') && $('#fro').data('slider').val() != status.machine.overrides.feedOverride)
-        $('#fro').data('slider').val(status.machine.overrides.feedOverride)
-
-      if ($('#tro').data('slider') && $('#tro').data('slider').val() != status.machine.overrides.spindleOverride)
-        $('#tro').data('slider').val(status.machine.overrides.spindleOverride)
-    }
-
-    if (unit == "in") {
-      $("#realFeed").html((status.machine.overrides.realFeed / 25.4).toFixed(0) + "<br>in/min");
-    } else {
-      $("#realFeed").html(status.machine.overrides.realFeed.toFixed(0) + "<br>mm/min");
-    }
-    $("#realSpeed").html( status.machine.overrides.realSpindle.toFixed(0) + "<br>rpm");
-
-
-    // Windows Power Management
-    if (status.driver.operatingsystem == "windows") {
-      $("#powerSettingsCard").show();
-      if (status.driver.powersettings.usbselectiveAC == false) {
-        $('#selectivesuspendAC').removeClass('alert').addClass('success').html('DISABLED')
-      } else if (status.driver.powersettings.usbselectiveAC == null) {
-        $('#selectivesuspendAC').removeClass('success').addClass('alert').html('UNKNOWN')
-      } else if (status.driver.powersettings.usbselectiveAC == true) {
-        $('#selectivesuspendAC').removeClass('success').addClass('alert').html('ENABLED')
-      }
-
-      if (status.driver.powersettings.usbselectiveDC == false) {
-        $('#selectivesuspendDC').removeClass('alert').addClass('success').html('DISABLED')
-      } else if (status.driver.powersettings.usbselectiveDC == null) {
-        $('#selectivesuspendDC').removeClass('success').addClass('alert').html('UNKNOWN')
-      } else if (status.driver.powersettings.usbselectiveDC == true) {
-        $('#selectivesuspendDC').removeClass('success').addClass('alert').html('ENABLED')
-      }
-    } else {
-      $("#powerSettingsCard").hide();
-    }
-
-
-    $("#firmwareversionstatus").html(status.machine.firmware.platform + " " + status.machine.firmware.version + " (" + status.machine.firmware.date + ")");
-
-    // Grbl Pins Input Status
-    updatePinStatus($('#xpin'), status.machine.inputs.includes('X'), 'TRIGGERED', 'OFF');
-    updatePinStatus($('#ypin'), status.machine.inputs.includes('Y'), 'TRIGGERED', 'OFF');
-    updatePinStatus($('#zpin'), status.machine.inputs.includes('Z'), 'TRIGGERED', 'OFF');
-    updatePinStatus($('#prbpin'), status.machine.inputs.includes('P'), 'TRIGGERED', 'OFF');
-    updatePinStatus($('#doorpin'), status.machine.inputs.includes('D'), 'DOOR OPEN', 'DOOR CLOSED');
-    updatePinStatus($('#holdpin'), status.machine.inputs.includes('H'), 'HOLD:ON', 'HOLD:OFF');
-    updatePinStatus($('#resetpin'), status.machine.inputs.includes('R'), 'RST:ON', 'RST:OFF');
-    updatePinStatus($('#startpin'), status.machine.inputs.includes('S'), 'START:ON', 'START:OFF');
-
-    $('#driverver').html("v" + status.driver.version);
-    if (!status.machine.firmware.type) {
-      $('#firmwarever').html("NOCOMM");
-    } else {
-      $('#firmwarever').html(status.machine.firmware.type + " v" + status.machine.firmware.version);
-    }
-    $('#commblocked').html(status.comms.blocked ? "BLOCKED" : "Ready");
-    let string = '';
-    switch (status.comms.connectionStatus) {
-      case 0:
-        string += "Not Connected"
-        break;
-      case 2:
-        string += "Connected"
-        break;
-      case 3:
-        string += "Streaming"
-        break;
-      case 4:
-        string += "Paused"
-        break;
-      case 5:
-        string += "Alarmed"
-        break;
-
-    }
-    $('#commstatus').html(string);
-    $('#drvqueue').html(status.comms.queue);
-
-    if (status.comms.interfaces.activePort) {
-      $('#activeportstatus').html(status.comms.interfaces.activePort)
-    } else {
-      $('#activeportstatus').html("none")
-    }
-
-    // Only allow jogging during idle
-    $('.jogbtn').attr('disabled', status.comms.connectionStatus != 2);
-    $('.dro').attr('disconnected', status.comms.connectionStatus < 2 || status.comms.connectionStatus == 6);
-
-    // Allow typing on the console only during idle or alarm
-    $("#command, #sendCommand").attr('disabled', status.comms.connectionStatus != 2 && status.comms.connectionStatus != 5);
-
-    // Set the Connection Toolbar option
-    setConnectBar(status.comms.connectionStatus, status);
-    setControlBar(status.comms.connectionStatus, status)
-    if (status.comms.connectionStatus != 5) {
-      bellstate = false
-    }
-    if (status.comms.connectionStatus == 0) {
-      $("#grblButtons").hide();
-      $("#firmwarename").html('');
-      if (localStorage.getItem('jogOverride')) {
-        jogOverride(localStorage.getItem('jogOverride'));
-      }
-    }
-
-    EnableViaClass('#resetGrblBtn, #section-grbl .group:not(.estop)', status.comms.connectionStatus != 3 && status.comms.connectionStatus != 4);
-    EnableViaClass('#grblMetroTable', status.comms.connectionStatus != 3 && status.comms.connectionStatus != 4 && status.machine.firmware.platform != "FluidNC");
-
-    if (laststatus == undefined || status.machine.modals.coordinatesys != laststatus.machine.modals.coordinatesys) {
-      $('.wcsText').html(status.machine.modals.coordinatesys)
-      $('.wcsItem').removeClass('checked')
-      switch (status.machine.modals.coordinatesys) {
-        case "G54":
-          $('.wcsItemG54').addClass('checked')
-          break;
-        case "G55":
-          $('.wcsItemG55').addClass('checked')
-          break;
-        case "G56":
-          $('.wcsItemG56').addClass('checked')
-          break;
-        case "G57":
-          $('.wcsItemG57').addClass('checked')
-          break;
-        case "G58":
-          $('.wcsItemG58').addClass('checked')
-          break;
-        case "G59":
-          $('.wcsItemG59').addClass('checked')
-          break;
-      }
-      updateWcsHistory(status.machine.modals.coordinatesys);
-    }
-
-    // Enable or disable 4th axis UI elements
-    $(".4thaxis-present").toggle(status.machine.has4thAxis);
-    $(".4thaxis-active").toggle(status.machine.has4thAxis && !disable4thAxis);
-
-    if (!isJogWidget && (!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
-        (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
-      $('#mainCloseBtn').attr( "title", status.misc.autoStart ? "Close to Tray" : "Close");
-    }
-
-    laststatus = status;
-
-    if (!isJogWidget && webgl && (featuresChanged || offsetChanged))
-      updateMachineCoordinates();
-    if (featuresChanged)
-        updateGotoLimits();
-
-    waitingForStatus = false;
-  });
-
-  socket.on('features', function(data) {
-
-/* Ivo: none of these UI elements exist anymore. Besides, there is no code to revert the state if the feature disappears. Disabling the entire thing.
-    for (let i = 0; i < data.length; i++) {
-      switch (data[i]) {
-        case 'Q':
-          // console.log('SPINDLE_IS_SERVO Enabled')
-          // Also enabled for grblHAL from grbl-settings if $33=50
-          $('#enServo').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'V': // Variable spindle enabled
-          // console.log('Variable spindle enabled')
-          $('#enVariableSpindle').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'N': // Line numbers enabled
-          // console.log('Line numbers enabled')
-          $('#enLineNumbers').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'M': // Mist coolant enabled
-          // console.log('Mist coolant enabled')
-          $('#enMisting').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'C': // CoreXY enabled
-          // console.log('CoreXY enabled')
-          $('#enCoreXY').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'P': // Parking motion enabled
-          // console.log('Parking motion enabled')
-          $('#enParking').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'Z': // Homing force origin enabled
-          // console.log('Homing force origin enabled')
-          $('#enHomingOrigin').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'H': // Homing single axis enabled
-          // console.log('Homing single axis enabled')
-          $('#enSingleAxisHome').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'T': // Two limit switches on axis enabled
-          // console.log('Two limit switches on axis enabled')
-          $('#enTwoLimits').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'A': // Allow feed rate overrides in probe cycles
-          // console.log('Allow feed rate overrides in probe cycles')
-          $('#enFeedOVProbe').removeClass('alert').addClass('success').html('ON')
-          break;
-        case '$': // Restore EEPROM $ settings disabled
-          // console.log('Restore EEPROM $ settings disabled')
-          $('#enEepromSettingsDisable').removeClass('alert').addClass('success').html('ON')
-          break;
-        case '#': // Restore EEPROM parameter data disabled
-          // console.log('Restore EEPROM parameter data disabled')
-          $('#enEepromParamsDisable').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'I': // Build info write user string disabled
-          // console.log('Build info write user string disabled')
-          $('#enBuildInfoDisabled').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'E': // Force sync upon EEPROM write disabled
-          // console.log('Force sync upon EEPROM write disabled')
-          $('#enForceSyncEeprom').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'W': // Force sync upon work coordinate offset change disabled
-          // console.log('Force sync upon work coordinate offset change disabled')
-          $('#enForceSyncWco').removeClass('alert').addClass('success').html('ON')
-          break;
-        case 'L': // Homing init lock sets Grbl into an alarm state upon power up
-          // console.log('Homing init lock sets Grbl into an alarm state upon power up')
-          $('#enHomingInitLock').removeClass('alert').addClass('success').html('ON')
-          break;
-      }
-    }
-*/
-    if (laststatus.machine.firmware.platform != "grblHAL") {
-      $(".servo-active").toggle(data.contains('Q')); // the grblHAL case is handled by setting $33
-    }
-    $('#menuMisting').toggle(data.contains('M'));
-    $("#homeSingleMenu").parent().toggle(data.contains('H'));
-  })
+  socket.on('features', onFeatures);
 
   socket.on("interfaceOutdated", function(status) {
     console.log("interfaceOutdated", status)
@@ -855,9 +789,7 @@ function initSocket() {
     }
   });
 
-  socket.on('showSettings', function(data) {
-    appSettings(data);
-  });
+  socket.on('showSettings', appSettings);
 
   socket.on('recentFiles', onRecentFiles);
 
@@ -886,10 +818,7 @@ function initSocket() {
       }
     }
   }, 200);
-
 }
-
-
 
 function scanNetwork() {
 
@@ -997,8 +926,7 @@ function populatePortsMenu() {
           response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
         }
 
-
-      };
+      }
     }
     response += `</optgroup>`
 

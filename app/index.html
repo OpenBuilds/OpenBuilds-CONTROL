@@ -554,12 +554,12 @@ Restore previous origins from history.">
                             <span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> <span class="wcsText">G54</span></button>
                           <ul class="ribbon-dropdown drop-shadow" data-role="dropdown" style="width:max-content;">
                             <li class="menu-title">Current Coordinate System</li>
-                            <li class="checked wcsItem wcsItemG54" onclick="sendGcode('G54')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G54</a></li>
-                            <li class="wcsItem wcsItemG55" onclick="sendGcode('G55')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G55</a></li>
-                            <li class="wcsItem wcsItemG56" onclick="sendGcode('G56')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G56</a></li>
-                            <li class="wcsItem wcsItemG57" onclick="sendGcode('G57')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G57</a></li>
-                            <li class="wcsItem wcsItemG58" onclick="sendGcode('G58')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G58</a></li>
-                            <li class="wcsItem wcsItemG59" onclick="sendGcode('G59')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G59</a></li>
+                            <li class="checked" id="wcsItemG54" onclick="sendGcode('G54')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G54</a></li>
+                            <li id="wcsItemG55" onclick="sendGcode('G55')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G55</a></li>
+                            <li id="wcsItemG56" onclick="sendGcode('G56')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G56</a></li>
+                            <li id="wcsItemG57" onclick="sendGcode('G57')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G57</a></li>
+                            <li id="wcsItemG58" onclick="sendGcode('G58')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G58</a></li>
+                            <li id="wcsItemG59" onclick="sendGcode('G59')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G59</a></li>
                             <li class="menu-title" id="wcsHistory"><span class="wcsText">G54</span> Origin History</li>
                             <li class="disabled">G54 history will show here</li>
                           </ul>
