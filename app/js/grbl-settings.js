@@ -259,13 +259,13 @@ function grblSettings(data) {
 
   if (laststatus.machine.firmware.platform == "FluidNC") {
     $('#backupSettingsGroup').hide();
-    $("#grbl-settings-tab-title").html('FluidNC Settings (read-only)');
+    $("#grbl-settings-tab-title").html('FluidNC Configuration (read-only)');
   } else {
     $('#backupSettingsGroup').show();
     if (laststatus.machine.firmware.platform == "grblHAL") {
-      $("#grbl-settings-tab-title").html('grblHAL Settings');
+      $("#grbl-settings-tab-title").html('grblHAL Configuration');
     } else {
-      $("#grbl-settings-tab-title").html('Grbl Settings');
+      $("#grbl-settings-tab-title").html('Grbl Configuration');
     }
   }
 
