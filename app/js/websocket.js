@@ -750,8 +750,8 @@ function initSocket() {
     $(".4thaxis-present").toggle(status.machine.has4thAxis);
     $(".4thaxis-active").toggle(status.machine.has4thAxis && !disable4thAxis);
 
-    if ((!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
-        !isJogWidget && (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
+    if (!isJogWidget && (!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
+        (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
       $('#mainCloseBtn').attr( "title", status.misc.autoStart ? "Close to Tray" : "Close");
     }
 

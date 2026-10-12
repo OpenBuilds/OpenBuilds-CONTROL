@@ -67,7 +67,21 @@ const appSettingsDlg = `
 </div>
 
 <div class="row border-top mt-2 bd-gray">
-  <label class="cell-sm-3"><b>Controls</b></label>
+  <label class="cell-sm-8"><b>Machine Control</b></label>
+</div>
+
+<div class="row ml-3">
+  <label class="cell-sm-3" style="padding-left:0px; padding-top:5px;" title="Insert a pause after the spindle starts. Useful primarily for Grbl.
+For GrblHAL use parameter $394 instead and for FluidNC use the spinup_ms setting.
+Ignored in Laser mode.">Spindle Delay</label>
+  <div class="cell-sm-7">
+    <select data-role="select" id="spindleDelay" data-filter="false" data-drop-height="">
+      <option value="0" selected>No Delay</option>
+      <option value="3">Delay 3 sec (G4 P3)</option>
+      <option value="5">Delay 5 sec (G4 P5)</option>
+      <option value="8">Delay 8 sec (G4 P8)</option>
+    </select>
+  </div>
 </div>
 
 <div class="row ml-2" title="Hide the 4th axis controls if the controller supports a 4th axis but it is not currently in use">
@@ -102,10 +116,11 @@ function applySettings() {
     }
   }
 
-  if (!$('#disable4thAxisCheck').prop('disabled')) {
-    disable4thAxis = $('#disable4thAxisCheck').prop('checked');
-    localStorage.setItem('disable4thAxis', disable4thAxis);
-  }
+  disable4thAxis = $('#disable4thAxisCheck').prop('checked');
+  localStorage.setItem('disable4thAxis', disable4thAxis);
+  updateWcsHistory();
+
+  spindleDelay(parseInt($('#spindleDelay').val()));
 
   if (reload) {
     location.reload();
@@ -119,6 +134,7 @@ function resetWarnings() {
 
 // eslint-disable-next-line no-unused-vars
 function appSettings(category) {
+  if (!laststatus) return; // not ready
   if ($('#enable3DviewerCheck').length > 0) return; // avoid reentrancy
 
   Metro.dialog.create({
@@ -163,11 +179,9 @@ function appSettings(category) {
     $('#osSettings').hide();
   }
 
-  if (laststatus && laststatus.machine.has4thAxis) {
-    $('#disable4thAxisCheck').prop('checked', disable4thAxis);
-  } else {
-    $('#disable4thAxisCheck').prop('disabled', true);
-  }
+  $('#spindleDelay').val(laststatus.misc.spindleDelay);
+
+  $('#disable4thAxisCheck').prop('checked', disable4thAxis);
 
   $('.reset-warnings').attr('title', "Resets \"Don't show this again\" for all warning dialogs");
 

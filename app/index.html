@@ -47,8 +47,8 @@
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
-            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl Settings</span></a></li>
-            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Troubleshooting &amp; Settings</a></li>
+            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl Configuration</span></a></li>
+            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Settings &amp; Troubleshooting</a></li>
           </ul>
           <div class="content-holder">
 
@@ -315,16 +315,6 @@
                     <li class="divider fg-gray"></li>
                     <li id="menuMisting" style="display: none;" onclick="sendGcode('M7')"><a class="grblmode" href="#">Misting On (M7)</a></li>
                     <li onclick="sendGcode('M8')"><a class="grblmode" href="#">Coolant On (M8)</a></li>
-                    <li>
-                      <a href="#" class="dropdown-toggle" title="Insert a pause after the spindle starts (for grblHAL use setting $394 instead).
-Not available in Laser mode.">Spindle Delay</a>
-                      <ul class="ribbon-dropdown" data-role="dropdown">
-                        <li id="spinDelay0" onclick="spindleDelay(0)"><a href="#">No Delay</a></li>
-                        <li id="spinDelay3" onclick="spindleDelay(3)"><a href="#">Delay 3 sec (G4 P3)</a></li>
-                        <li id="spinDelay5" onclick="spindleDelay(5)"><a href="#">Delay 5 sec (G4 P5)</a></li>
-                        <li id="spinDelay8" onclick="spindleDelay(8)"><a href="#">Delay 8 sec (G4 P8)</a></li>
-                      </ul>
-                    </li>
                   </ul>
                 </div>
 
