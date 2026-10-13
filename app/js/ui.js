@@ -15,7 +15,7 @@ var wcsHistory = {
 var wcsHistoryEmpty = true;
 var lastWcsCapture = {};
 
-function AddRemoveClass(element, className, add) {
+function addRemoveClass(element, className, add) {
   if (typeof element == "string") {
     element = $(element);
   }
@@ -26,8 +26,8 @@ function AddRemoveClass(element, className, add) {
   }
 }
 
-function EnableViaClass(button, enabled) {
-  AddRemoveClass(button, "disabled", !enabled);
+function enableViaClass(button, enabled) {
+  addRemoveClass(button, "disabled", !enabled);
 }
 
 function rippleEffect(el, color) {
@@ -72,8 +72,8 @@ function setConnectBar(val, status) {
     $("#connectBtn").attr('disabled', $('#portUSB').val() == "");
     $('#portUSB').parent(".select").addClass('success');
     $('#portUSB').parent(".select").removeClass('alert');
-    EnableViaClass('.macrobtn', true);
-    EnableViaClass('.grblCalibrationMenu', false);
+    enableViaClass('.macrobtn', true);
+    enableViaClass('.grblCalibrationMenu', false);
 
     if (!wcsHistoryEmpty) {
       clearWcsHistory();
@@ -99,8 +99,8 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
 
-    EnableViaClass('.macrobtn', val != 3); // disable macros while running
-    EnableViaClass('.grblCalibrationMenu', val == 2); // enable calibration only during idle
+    enableViaClass('.macrobtn', val != 3); // disable macros while running
+    enableViaClass('.grblCalibrationMenu', val == 2); // enable calibration only during idle
   } else if (val == 6) { // Firmware Upgrade State
     $('#connectStatus').html("Port: Flashing");
     $("#disconnectBtn").hide();
@@ -114,8 +114,8 @@ function setConnectBar(val, status) {
     // Set Port Dropdown to Current Value
     $("#portUSB").val(status.comms.interfaces.activePort);
 
-    EnableViaClass('.macrobtn', true);
-    EnableViaClass('.grblCalibrationMenu', false);
+    enableViaClass('.macrobtn', true);
+    enableViaClass('.grblCalibrationMenu', false);
   }
 }
 
@@ -141,11 +141,11 @@ function setControlBar(val, status) {
     const doorOpen = status.machine.inputs.includes('D');
 
     $('#toolBtn').show().attr('disabled', activeJob);
-    AddRemoveClass('#spinDelay0', "checked", status.misc.spindleDelay == 0 || status.misc.laserMode);
-    AddRemoveClass('#spinDelay3', "checked", status.misc.spindleDelay == 3 && !status.misc.laserMode);
-    AddRemoveClass('#spinDelay5', "checked", status.misc.spindleDelay == 5 && !status.misc.laserMode);
-    AddRemoveClass('#spinDelay8', "checked", status.misc.spindleDelay == 8 && !status.misc.laserMode);
-    EnableViaClass('#spinDelay0, #spinDelay3, #spinDelay5, #spinDelay8', !status.misc.laserMode);
+    addRemoveClass('#spinDelay0', "checked", status.misc.spindleDelay == 0 || status.misc.laserMode);
+    addRemoveClass('#spinDelay3', "checked", status.misc.spindleDelay == 3 && !status.misc.laserMode);
+    addRemoveClass('#spinDelay5', "checked", status.misc.spindleDelay == 5 && !status.misc.laserMode);
+    addRemoveClass('#spinDelay8', "checked", status.misc.spindleDelay == 8 && !status.misc.laserMode);
+    enableViaClass('#spinDelay0, #spinDelay3, #spinDelay5, #spinDelay8', !status.misc.laserMode);
 
     $('#toolBtn2').toggle(!activeJob);
     $('#toolBtn3').toggle(activeJob).attr('disabled', val != 4 || status.machine.overrides.realSpindle == 0);

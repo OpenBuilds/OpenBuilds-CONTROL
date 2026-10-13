@@ -105,8 +105,8 @@ function toggleWCS() {
   showMCS = !showMCS;
   $('#mcsBtn').html(showMCS ? "MCS" : "WCS");
   $('#Xwork, #Ywork, #Zwork, #Awork').html(showMCS ? "MCS" : "WORK");
-  AddRemoveClass('#mcsBtn, .dro', 'droMCS', showMCS);
-  EnableViaClass($(".setzero"), !showMCS);
+  addRemoveClass('#mcsBtn, .dro', 'droMCS', showMCS);
+  enableViaClass($(".setzero"), !showMCS);
 
   updateDro(laststatus);
 }
@@ -774,9 +774,7 @@ function smartHome() {
         {
           caption: "Cancel",
           cls: "js-dialog-close",
-          onclick: function() {
-            // do nothing
-          }
+          onclick: function() {}
         }],
     });
   } else {

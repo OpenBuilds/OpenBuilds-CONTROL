@@ -83,7 +83,6 @@ function populateFlashDrivePrepForm() {
     </div>
   </div>
   `
-  //Metro.dialog.open("#usbPrepDialog");
   Metro.dialog.create({
     title: "Prepare USB drive for Interface",
     clsDialog: "dark",
@@ -91,18 +90,15 @@ function populateFlashDrivePrepForm() {
     width: "60%",
     content: interfacePrepToolTemplate,
     actions: [{
-      caption: "Cancel",
-      cls: "js-dialog-close alert",
-      // onclick: function() {
-      //   macro1repeat = false;
-      //   printLog("Repeating Macro Exited")
-      // }
-    }, {
       caption: "Copy Supporting Files and Wifi Configuration to Flashdrive",
       cls: "js-dialog-close success disabled interfaceCopyBtn",
       onclick: function() {
         copyFilesToUsb()
       }
+    }, {
+      caption: "Cancel",
+      cls: "js-dialog-close alert",
+      onclick: function() {}
     }]
   });
 

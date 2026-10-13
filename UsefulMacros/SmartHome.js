@@ -87,9 +87,7 @@ $(document).ready(function()
 					{
 						caption: "Cancel",
 						cls: "js-dialog-close",
-						onclick: function() {
-							// do nothing
-						}
+						onclick: function() {}
 					}
 				],
 			});

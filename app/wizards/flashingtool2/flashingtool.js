@@ -156,9 +156,7 @@ function openFlashingTool() {
     }, {
       caption: "Cancel",
       cls: "js-dialog-close",
-      onclick: function() {
-        //
-      }
+      onclick: function() {}
     }]
   });
 

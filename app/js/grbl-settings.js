@@ -271,8 +271,8 @@ function grblSettings(data) {
 
   const homingEnabled = grblParams['$22'] > 0;
   $('#homeBtn, #homeSingleMenu').attr('disabled', !homingEnabled);
-  AddRemoveClass('#gotoXMinMpos, #gotoXMaxMpos, #gotoYMinMpos, #gotoYMaxMpos, #gotoZMinMpos, #gotoZMaxMpos, #gotoAMinMpos, #gotoAMaxMpos', 'disabled', !homingEnabled);
-  AddRemoveClass('#gotozeroZmPosXYwPos, #gotozeroMPos', 'disabled', !homingEnabled);
+  addRemoveClass('#gotoXMinMpos, #gotoXMaxMpos, #gotoYMinMpos, #gotoYMaxMpos, #gotoZMinMpos, #gotoZMaxMpos, #gotoAMinMpos, #gotoAMaxMpos', 'disabled', !homingEnabled);
+  addRemoveClass('#gotozeroZmPosXYwPos, #gotozeroMPos', 'disabled', !homingEnabled);
 
   updateGotoLimits();
   if (!isJogWidget && webgl) {
@@ -786,8 +786,7 @@ function clearSettings() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -809,8 +808,7 @@ function clearWCO() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -832,8 +830,7 @@ function clearEEPROM() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });

@@ -456,7 +456,7 @@ function clearGcode() {
   parseGcodeInWebWorker("");
   loadedFileName = '';
   useEditor = true;
-  EnableViaClass('.editorEnabled', true);
+  enableViaClass('.editorEnabled', true);
   setWindowTitle();
 }
 

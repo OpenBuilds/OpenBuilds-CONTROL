@@ -1192,22 +1192,22 @@ function applyHeightmap() {
 }
 
 function updateHeightmapMenu() {
-  EnableViaClass('#editHeightmapSettings', laststatus.comms.connectionStatus != 3);
-  EnableViaClass('#generateHeightmap', laststatus.comms.runStatus == "Idle" && laststatus.comms.connectionStatus == 2);
+  enableViaClass('#editHeightmapSettings', laststatus.comms.connectionStatus != 3);
+  enableViaClass('#generateHeightmap', laststatus.comms.runStatus == "Idle" && laststatus.comms.connectionStatus == 2);
 
-  EnableViaClass('#saveHeightmap', heightmapDataValid);
-  EnableViaClass('#clearHeightmap', heightmapDataValid);
+  enableViaClass('#saveHeightmap', heightmapDataValid);
+  enableViaClass('#clearHeightmap', heightmapDataValid);
 
-  EnableViaClass('#applyHeightmap', heightmapDataValid && laststatus.comms.connectionStatus != 3);
+  enableViaClass('#applyHeightmap', heightmapDataValid && laststatus.comms.connectionStatus != 3);
 
-  EnableViaClass('#revertHeightmap', editor.session.getLine(0) == HEIGHTMAP_GCODE_HEADER1a && laststatus.comms.connectionStatus != 3);
+  enableViaClass('#revertHeightmap', editor.session.getLine(0) == HEIGHTMAP_GCODE_HEADER1a && laststatus.comms.connectionStatus != 3);
 }
 
 function toggleHeightmapTools() {
   heightmapSettings.enabled = !heightmapSettings.enabled;
   localStorage.setItem("heightmapSettings", JSON.stringify(heightmapSettings));
 
-  AddRemoveClass('#toggleHeightmapTools', 'checked', heightmapSettings.enabled);
+  addRemoveClass('#toggleHeightmapTools', 'checked', heightmapSettings.enabled);
   $('.heightmap').toggle(heightmapSettings.enabled);
   if (heightmapGeo) {
     heightmapGeo.visible = heightmapSettings.enabled;
@@ -1231,6 +1231,6 @@ function heightmapDocReady() {
     }
   }
 
-  AddRemoveClass('#toggleHeightmapTools', 'checked', heightmapSettings.enabled);
+  addRemoveClass('#toggleHeightmapTools', 'checked', heightmapSettings.enabled);
   $('.heightmap').toggle(heightmapSettings.enabled);
 }

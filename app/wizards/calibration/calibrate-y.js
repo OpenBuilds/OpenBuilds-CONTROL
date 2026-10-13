@@ -104,9 +104,7 @@ function ystepscalibrate() {
     actions: [{
       caption: "Cancel",
       cls: "js-dialog-close",
-      onclick: function() {
-        //
-      }
+      onclick: function() {}
     }]
   });
 

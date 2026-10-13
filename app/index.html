@@ -554,12 +554,12 @@ Restore previous origins from history.">
                             <span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> <span class="wcsText">G54</span></button>
                           <ul class="ribbon-dropdown drop-shadow" data-role="dropdown" style="width:max-content;">
                             <li class="menu-title">Current Coordinate System</li>
-                            <li class="checked wcsItem wcsItemG54" onclick="sendGcode('G54')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G54</a></li>
-                            <li class="wcsItem wcsItemG55" onclick="sendGcode('G55')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G55</a></li>
-                            <li class="wcsItem wcsItemG56" onclick="sendGcode('G56')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G56</a></li>
-                            <li class="wcsItem wcsItemG57" onclick="sendGcode('G57')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G57</a></li>
-                            <li class="wcsItem wcsItemG58" onclick="sendGcode('G58')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G58</a></li>
-                            <li class="wcsItem wcsItemG59" onclick="sendGcode('G59')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G59</a></li>
+                            <li class="checked" id="wcsItemG54" onclick="sendGcode('G54')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G54</a></li>
+                            <li id="wcsItemG55" onclick="sendGcode('G55')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G55</a></li>
+                            <li id="wcsItemG56" onclick="sendGcode('G56')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G56</a></li>
+                            <li id="wcsItemG57" onclick="sendGcode('G57')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G57</a></li>
+                            <li id="wcsItemG58" onclick="sendGcode('G58')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G58</a></li>
+                            <li id="wcsItemG59" onclick="sendGcode('G59')"><a href="#"><span class="fas fa-fw fa-layer-group icon fg-darkGray"></span> G59</a></li>
                             <li class="menu-title" id="wcsHistory"><span class="wcsText">G54</span> Origin History</li>
                             <li class="disabled">G54 history will show here</li>
                           </ul>
@@ -1422,8 +1422,8 @@ Restore previous origins from history.">
           This release has already been downloaded <span id="releaseStats">several</span> times since its release on <span id="releaseDate"></span>
         </div>
         <div class="dialog-actions ">
-          <button class="button js-dialog-close">Not right now</button>
           <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
+          <button class="button js-dialog-close">Not right now</button>
         </div>
       </div>
 
@@ -1694,9 +1694,6 @@ Restore previous origins from history.">
               <li onclick="probetype('xyz');"><a href="#"><span class="icon"><img src="./img/xyzprobe/xyztouch.png" /></span> OpenBuilds XYZ Probe Plus</a></li>
               <li onclick="probetype('z');"><a href="#"><span class="icon"><img src="./img/xyzprobe/ztouch.png" /></span> Z Touch Plate</a></li>
               <li onclick="probetype('custom');"><a href="#"><span class="icon"><img src="./img/xyzprobe/custom.png" /></span> Custom XYZ Probe</a></li>
-
-              <li class="divider"></li>
-              <!-- li  onclick="probetype('custom');"><a href="#">Custom</a></li -->
             </ul>
           </div>
           <button title="Configure Custom Probe parameters" class="button" onclick="editCustomProbe();" id="editCustomProbeBtn" style="display: none;"><i class="fas fa-cogs"></i></button>
@@ -1718,8 +1715,8 @@ Restore previous origins from history.">
           <input type="text" data-role="input" class="mb-1" data-prepend="Z Offset" data-append="mm" id="customProbeZOffset">
         </div>
         <div class="dialog-actions ">
+          <button class="button primary js-dialog-close" onclick="saveEditCustomProbe()">Save</button>
           <button class="button js-dialog-close" onclick="resetJogModeAfterProbe()">Cancel</button>
-          <button class="button primary js-dialog-close" onclick="saveEditCustomProbe();">Save</button>
         </div>
       </div>
       <!-- End Edit Custom Probe -->

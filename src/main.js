@@ -10,7 +10,6 @@ const {
   Tray,
   nativeImage,
   Menu,
-  dialog,
   shell,
   app: electronApp,
 } = require('electron');
@@ -126,6 +125,7 @@ function createApp() {
     status.driver.operatingsystem = 'windows';
     if (persistentConfig.trayIcon) {
       createTrayIcon();
+      showGui = !persistentConfig.autoStart;
     } else {
       showGui = true;
     }

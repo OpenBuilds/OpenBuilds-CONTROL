@@ -132,18 +132,16 @@ function populateSurfaceToolForm() {
     width: '90%',
     clsDialog: 'dark',
     actions: [{
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      },
-      {
         caption: "Proceed",
         cls: "js-dialog-close success",
         onclick: function() {
           createSurfaceGcode()
         }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {}
       }
     ]
   });
@@ -191,7 +189,6 @@ function populateSurfaceToolForm() {
   $('#surfaceRPM').val(data.surfaceRPM)
   var $radios = $("input:radio[name=surfaceType]");
   $radios.filter("[value=" + data.surfaceType + "]").prop("checked", true);
-  //Metro.dialog.open("#surfacingDialog");
 
   if (data.surfaceDirection != undefined) {
     $('#surfaceDirection').val(data.surfaceDirection); // Restore surface direction

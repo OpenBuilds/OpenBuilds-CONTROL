@@ -72,17 +72,8 @@ function showJobLog() {
     actions: [{
         caption: "Close",
         cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
+        onclick: function() {}
       },
-      // {
-      //   caption: "Cancel",
-      //   cls: "js-dialog-close",
-      //   onclick: function() {
-      //     // do nothing
-      //   }
-      // }
     ]
   });
 }

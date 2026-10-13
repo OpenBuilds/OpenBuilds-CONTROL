@@ -20,9 +20,7 @@ $(document).ready(function() {
         {
           caption: "No",
           cls: "js-dialog-close",
-          onclick: function() {
-            //
-          }
+          onclick: function() {}
         }
       ]
     });

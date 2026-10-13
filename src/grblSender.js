@@ -43,7 +43,7 @@ const {
 
 // Globals variables
 var port;
-var connectTimeout;
+var connectionCancelToken;
 
 // Status parsing
 var oldPinsList;
@@ -658,8 +658,9 @@ function onParserData(data) {
 }
 
 function onGrblDetected() {
-  clearTimeout(connectTimeout);
-  connectTimeout = undefined;
+  if (connectionCancelToken) {
+    connectionCancelToken.abort = true;
+  }
   debug_log("GRBL detected");
   setTimeout(function() {
     serverEmit('grbl', status.machine.firmware);
@@ -683,73 +684,19 @@ function onGrblDetected() {
   });
 }
 
+// Helper promise that creates a cancelable delay
+function connectionDelay(ms, cancelToken) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      (cancelToken.abort ? reject : resolve)();
+    }, ms);
+  });
+}
+
 // Initiates handshake with the controller
-function connectController(data) {
+async function connectController(data) {
   // set status
   status.comms.connectionStatus = 1;
-
-  // Log attempt 1
-  debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
-  serverEmitOutput({
-    command: 'connect',
-    response: "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Controller...",
-    type: 'info'
-  });
-  // do attempt 1
-//  addQRealtime("\n"); // this causes grblHAL to send the welcome string (Ivo: No, it doesn't)
-
-  serverEmitOutput({
-    command: 'connect',
-    response: "Attempting to detect Controller (1): (Ctrl+X)",
-    type: 'info'
-  });
-
-  addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
-  debug_log("Sent: Ctrl+x");
-
-  connectTimeout = setTimeout(function() {
-    if (data.type == "usb") {
-      debug_log("Didn't detect firmware after Ctrl+X. Lets try toggling DTR");
-      serverEmitOutput({
-        command: 'connect',
-        response: "Attempting to detect Controller (2): (DTR Enable)",
-        type: 'info'
-      });
-
-      // toggle DTR on
-      port.set({
-        "dtr": true
-      }, console.log("Set DTR"));
-
-      // then try Ctrl+X again (but why twice 100ms apart? not sure - it was in the original code)
-      addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
-      debug_log("Sent: Ctrl+x after DTR toggle");
-
-      setTimeout(function() {
-        addQRealtime(String.fromCharCode(0x18)); // ctrl-x (needed for rx/tx connection)
-      }, 100);
-    }
-
-    connectTimeout = setTimeout(function() {
-      debug_log("No supported firmware detected. Closing port " + port.path);
-      if (status.interface.connected) {
-        serverEmitOutput({
-          command: 'connect',
-          response: `ERROR!:  Connection established to INTERFACE, but no response from Grbl on the upstream controller. See https://github.com/OpenBuilds/docs-migrated/wiki for more details. Closing port ` + port.path,
-          type: 'error'
-        });
-      } else {
-        serverEmitOutput({
-          command: 'connect',
-          response: `ERROR!:  No Response from Controller - See https://github.com/OpenBuilds/docs-migrated/wiki for troubleshooting information. Closing port ` + port.path,
-          type: 'error'
-        });
-      }
-      closePort();
-      connectTimeout = undefined;
-    }, data.type == "usb" ? persistentConfig.grblWaitTime2 * 1000 : 100);
-  }, persistentConfig.grblWaitTime1 * 1000);
-
   if (data.type == "usb") {
     status.comms.interfaces.activePort = port.path;
     status.comms.interfaces.type = data.type
@@ -759,6 +706,72 @@ function connectController(data) {
     status.comms.interfaces.type = data.type
     status.comms.interfaces.activeBaud = "net";
   }
+
+  debug_log("PORT INFO: Connected to " + port.path + " at " + port.baudRate);
+  serverEmitOutput({
+    command: 'connect',
+    response: "PORT INFO: Port is now open: " + port.path + " - Attempting to detect Controller...",
+    type: 'info'
+  });
+
+  serverEmitOutput({
+    command: 'connect',
+    response: "Attempting to detect Controller (1): (Ctrl+X)",
+    type: 'info'
+  });
+
+  if (connectionCancelToken) {
+    connectionCancelToken.abort = true; // cancel any previous connection
+  }
+
+  try {
+    connectionCancelToken = {abort: false};
+
+    // First attempt - send Ctrl+X and wait for response
+    addQRealtime(String.fromCharCode(0x18));
+    debug_log("Sent: Ctrl+X");
+
+    await connectionDelay(persistentConfig.grblWaitResponse * 1000, connectionCancelToken);
+
+    if (data.type == "usb") {
+      // Second attempt - toggle DTR to trigger a reset
+      debug_log("Didn't detect firmware after Ctrl+X. Lets try toggling DTR");
+      serverEmitOutput({
+        command: 'connect',
+        response: "Attempting to detect Controller (2): (DTR Enable)",
+        type: 'info'
+      });
+      port.set({dtr: true});
+
+      // Wait for the bootloader to give up on connecting with the programmer and start the main code. Ideally this should send a greeting automatically
+      await connectionDelay(persistentConfig.grblWaitReboot * 1000, connectionCancelToken);
+
+      // If no greeting was received, send one more Ctrl+X and wait for response
+      addQRealtime(String.fromCharCode(0x18));
+      debug_log("Sent: Ctrl+X");
+
+      await connectionDelay(persistentConfig.grblWaitResponse * 1000, connectionCancelToken);
+    }
+
+    // Finally give up and close the port
+    debug_log("No supported firmware detected. Closing port " + port.path);
+    if (status.interface.connected) {
+      serverEmitOutput({
+        command: 'connect',
+        response: `ERROR!:  Connection established to INTERFACE, but no response from Grbl on the upstream controller. See https://github.com/OpenBuilds/docs-migrated/wiki for more details. Closing port ` + port.path,
+        type: 'error'
+      });
+    } else {
+      serverEmitOutput({
+        command: 'connect',
+        response: `ERROR!:  No Response from Controller - See https://github.com/OpenBuilds/docs-migrated/wiki for troubleshooting information. Closing port ` + port.path,
+        type: 'error'
+      });
+    }
+    closePort();
+  }
+  // eslint-disable-next-line no-unused-vars, no-empty
+  catch (ex) {}
 }
 
 function machineSendRealtime(gcode) {
