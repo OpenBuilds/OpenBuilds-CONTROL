@@ -602,7 +602,7 @@ function onStatus(status) {
 
   if (!isJogWidget && (!laststatus || laststatus.misc.trayIcon != status.misc.trayIcon) &&
       (status.driver.platform == 'win32' || status.driver.platform == 'linux')) {
-    $('#mainCloseBtn').attr( "title", status.misc.autoStart ? "Close to Tray" : "Close");
+    $('#mainCloseBtn').attr( "title", status.misc.trayIcon ? "Close to Tray" : "Close");
   }
 
   laststatus = status;
