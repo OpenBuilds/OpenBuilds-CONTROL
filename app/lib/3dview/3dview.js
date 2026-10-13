@@ -567,8 +567,7 @@ function simAnimate() {
     if (lastToolRange && simIdx >= lastToolRange.startPoint && simIdx < lastToolRange.endPoint) {
       spin = lastToolRange.direction;
     } else {
-      for (let i = 0; i < object.userData.toolRanges.length; i++) {
-        const range = object.userData.toolRanges[i];
+      for (const range of object.userData.toolRanges) {
         if (simIdx >= range.startPoint && simIdx < range.endPoint) {
           lastToolRange = range;
           spin = range.direction;

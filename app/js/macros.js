@@ -284,39 +284,10 @@ function editMacro(buttonIdx, fileName, script) {
     ]
   });
 
-  $('#macrokeyboardshortcut').bind('keydown', null, function(e) {
-    e.preventDefault();
-    let newVal = "";
-    if (e.altKey) {
-      newVal += 'alt+'
-    }
-    if (e.ctrlKey) {
-      newVal += 'ctrl+'
-    }
-    if (e.shiftKey) {
-      newVal += 'shift+'
-    }
-
-    if (e.key.toLowerCase() != 'alt' && e.key.toLowerCase() != 'control' && e.key.toLowerCase() != 'shift') {
-      // Handle MetroUI naming non-standards of some keys
-      if (e.keyCode == 32) {
-        newVal += 'space';
-      } else if (e.key.toLowerCase() == 'escape') {
-        newVal += 'esc';
-      } else if (e.key.toLowerCase() == 'arrowleft') {
-        newVal += 'left';
-      } else if (e.key.toLowerCase() == 'arrowright') {
-        newVal += 'right';
-      } else if (e.key.toLowerCase() == 'arrowup') {
-        newVal += 'up';
-      } else if (e.key.toLowerCase() == 'arrowdown') {
-        newVal += 'down';
-      } else if (e.key.toLowerCase() == 'delete') {
-        newVal += 'del';
-      } else {
-        newVal += e.key.toLowerCase();
-      }
-
+  $('#macrokeyboardshortcut').bind('keydown', null, function(event) {
+    event.preventDefault();
+    let newVal = keyNameFromDownEvent(event);
+    if (newVal != "") {
       const alreadyAssigned = newVal != macrokeyboardshortcut && newVal.length > 0 && keyInUse(newVal, true).inUse;
       if (alreadyAssigned) {
         $('#alreadyAssignedWarnMacro').html("\"" + newVal + "\" is already assigned to " + keyInUse(newVal, true).source);
@@ -393,14 +364,6 @@ function macrosDocReady() {
   populateMacroButtons(!safeMode);
   setMacroGroupView(macroGroupView);
   bindKeys();
-}
-
-function searchMacro(prop, nameKey, myArray) {
-  for (let i = 0; i < myArray.length; i++) {
-    if (myArray[i][prop] === nameKey) {
-      return myArray[i];
-    }
-  }
 }
 
 function editorGcodeMode() {
@@ -507,6 +470,7 @@ function confirmMacroDelete(buttonIdx) {
         onclick: function() {
           buttonsarray.splice(buttonIdx, 1);
           populateMacroButtons();
+          bindKeys();
         }
       },
       {
@@ -766,8 +730,8 @@ function setMacroGroupView(view) {
 function rebuildMacroGroupNames() {
   macroGroups = [""];
   macroGroupsLower = [""];
-  for (let i = 0; i < buttonsarray.length; i++) {
-    const groupName = sanitizeGroupName(buttonsarray[i].group);
+  for (const button of buttonsarray) {
+    const groupName = sanitizeGroupName(button.group);
     const groupNameLower = groupName.toLowerCase();
     if (macroGroupsLower.indexOf(groupNameLower) == -1) {
       macroGroups.push(groupName);
