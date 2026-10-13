@@ -786,8 +786,7 @@ function clearSettings() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -809,8 +808,7 @@ function clearWCO() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -832,8 +830,7 @@ function clearEEPROM() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-        }
+        onclick: function() {}
       }
     ]
   });

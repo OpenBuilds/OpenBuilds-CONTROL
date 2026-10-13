@@ -91,9 +91,7 @@ function xstepspermm() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-          // alert("You clicked Disagree action");
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -121,9 +119,7 @@ function ystepspermm() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-          // alert("You clicked Disagree action");
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -150,9 +146,7 @@ function zstepspermm() {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-          // alert("You clicked Disagree action");
-        }
+        onclick: function() {}
       }
     ]
   });

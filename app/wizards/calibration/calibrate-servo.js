@@ -111,7 +111,6 @@ function servocalibrate() {
       caption: "Cancel",
       cls: "js-dialog-close",
       onclick: function() {
-        //
         servoCalibrationDialogOpen = false; // Dialog is closed
       }
     }],

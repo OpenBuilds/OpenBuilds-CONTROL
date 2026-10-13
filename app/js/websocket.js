@@ -341,9 +341,7 @@ function toastErrorAlarm(data) {
       {
         caption: "Cancel",
         cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
+        onclick: function() {}
       }
     ]
   });
@@ -863,9 +861,7 @@ function scanNetwork() {
     }, {
       caption: "Cancel",
       cls: "js-dialog-close",
-      onclick: function() {
-        //
-      }
+      onclick: function() {}
     }]
   });
 

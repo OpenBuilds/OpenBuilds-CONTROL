@@ -145,17 +145,17 @@ window.RenameSelectedGroup = function()
 		content: dialogContent,
 		dataToTop: true,
 		actions: [{
-				caption: "Cancel",
-				cls: "js-dialog-close",
-				onclick: function() {}
-			},
-			{
 				caption: "Apply",
 				cls: "js-dialog-close success",
 				onclick: function() {
 					RenameGroup(g_SelectedGroup, $('#MacroGroupRename').val());
 					g_SelectedGroup = undefined;
 				}
+			},
+			{
+				caption: "Cancel",
+				cls: "js-dialog-close",
+				onclick: function() {}
 			}
 		]
 	});
@@ -350,16 +350,16 @@ window.MoveMacroToGroup = function()
 		content: dialogContent,
 		dataToTop: true,
 		actions: [{
-				caption: "Cancel",
-				cls: "js-dialog-close",
-				onclick: function() {}
-			},
-			{
 				caption: "Apply",
 				cls: "js-dialog-close success",
 				onclick: function() {
 					ApplyMoveMacro(buttonIdx);
 				}
+			},
+			{
+				caption: "Cancel",
+				cls: "js-dialog-close",
+				onclick: function() {}
 			}
 		]
 	});

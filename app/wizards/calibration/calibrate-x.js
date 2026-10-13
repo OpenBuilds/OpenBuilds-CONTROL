@@ -105,9 +105,7 @@ function xstepscalibrate() {
     actions: [{
       caption: "Cancel",
       cls: "js-dialog-close",
-      onclick: function() {
-        //
-      }
+      onclick: function() {}
     }]
   });
 

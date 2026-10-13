@@ -774,9 +774,7 @@ function smartHome() {
         {
           caption: "Cancel",
           cls: "js-dialog-close",
-          onclick: function() {
-            // do nothing
-          }
+          onclick: function() {}
         }],
     });
   } else {

@@ -254,13 +254,6 @@ function editMacro(buttonIdx, fileName, script) {
     content: macroTemplate,
     dataToTop: true,
     actions: [{
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      },
-      {
         caption: "Apply",
         cls: "js-dialog-close success",
         onclick: function() {
@@ -282,6 +275,11 @@ function editMacro(buttonIdx, fileName, script) {
           populateMacroButtons();
           bindKeys();
         }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {}
       }
     ]
   });
@@ -504,19 +502,17 @@ function confirmMacroDelete(buttonIdx) {
     //width: '60%',
     clsDialog: 'dark',
     actions: [{
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      },
-      {
         caption: "Delete",
         cls: "js-dialog-close alert",
         onclick: function() {
           buttonsarray.splice(buttonIdx, 1);
           populateMacroButtons();
         }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {}
       }
     ]
   });
@@ -681,13 +677,6 @@ function renameMacroGroup(groupIdx) {
     content: dialogContent,
     dataToTop: true,
     actions: [{
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      },
-      {
         caption: "Apply",
         cls: "js-dialog-close success",
         onclick: function() {
@@ -712,6 +701,11 @@ function renameMacroGroup(groupIdx) {
           rebuildMacroGroups();
           selectedMacroGroup = undefined;
         }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {}
       }
     ]
   });
@@ -835,13 +829,6 @@ function moveMacroToGroup(buttonIdx) {
     content: dialogContent,
     dataToTop: true,
     actions: [{
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {
-          //
-        }
-      },
-      {
         caption: "Apply",
         cls: "js-dialog-close success",
         onclick: function() {
@@ -865,6 +852,11 @@ function moveMacroToGroup(buttonIdx) {
           saveMacroButtons();
           rebuildMacroGroups();
         }
+      },
+      {
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {}
       }
     ]
   });
