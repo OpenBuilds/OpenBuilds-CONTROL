@@ -10,7 +10,6 @@ const {
   Tray,
   nativeImage,
   Menu,
-  dialog,
   shell,
   app: electronApp,
 } = require('electron');

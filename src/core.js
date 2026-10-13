@@ -42,8 +42,8 @@ const persistentConfig = {
   defaultPaths: {},
   recentFiles: [],
   persistDisplayMode: false,
-  grblWaitTime1: 2, // timeout for the first handshake attempt (Cltr+X)
-  grblWaitTime2: 2, // timeout for the second handshake attempt (DTR Enable)
+  grblWaitResponse: 1, // timeout for a response from Ctrl+X
+  grblWaitReboot: 2, // timeout for bootloader to reboot after DTR toggle. this may have to be a large number for FluidNC, which takes a long time to start up
   spindleDelay: 0,
   forceDevMode: false,
 };
