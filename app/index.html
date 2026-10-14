@@ -720,6 +720,7 @@ Restore previous origins from history.">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode('G0 G90 G21 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Work Coord) (G0 A0)</a></li>
+                            <li><a href="#" onclick="sendGcode('G0 G53 G90 G21 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Machine Coord) (G0 G53 A0)</a></li>
                             <li id="gotoAMinMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto CCW limit (G0 G53 A<span class="coord">0</span>)</a></li>
                             <li id="gotoAMaxMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto CW limit (G0 G53 A<span class="coord">0</span>)</a></li>
                         </div>

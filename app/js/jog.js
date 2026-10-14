@@ -262,6 +262,139 @@ function onDroBlur(axis) {
   input.hide();
 }
 
+function onJogAxisMinus(event, axis, jogdist, pulloffOverride, ripple) {
+  if (event.which > 1) {
+    return;
+  }
+  event.preventDefault();
+
+  let Axis = axis.toUpperCase();
+  if (allowContinuousJog) {
+    if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
+      const currentPos = parseFloat(laststatus.machine.position.offset[axis]) + parseFloat(laststatus.machine.position.work[axis]);
+      let minPos = currentPos - 1000;
+      const hasSoftLimits = pulloffOverride != null && Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
+      if (hasSoftLimits) {
+        // Soft Limits is enabled so lets use the minimum machine position
+        minPos = computeMachineLimits(pulloffOverride)["min" + Axis];
+      }
+
+      if (minPos < currentPos) {
+        sendGcode("$J=G53 G90 G21 " + Axis + minPos.toFixed(2) + " F" + jogRate[axis]);
+        continuousJogRunning = true;
+        waitingForStatus = true;
+        rippleEffect($(event.currentTarget), ripple);
+      } else {
+        toastJogWillHit(Axis + "-");
+      }
+    } else {
+      toastJogNotIdle();
+    }
+  } else {
+    sendGcode("$J=G91 G21 " + Axis + (-jogdist).toFixed(2) + " F" + jogRate[axis]);
+    rippleEffect($(event.currentTarget), ripple);
+  }
+  $('#runNewProbeBtn').addClass("disabled");
+  $('#confirmNewProbeBtn').removeClass("disabled");
+}
+
+function onJogAxisPlus(event, axis, jogdist, pulloffOverride, ripple) {
+  if (event.which > 1) {
+    return;
+  }
+  event.preventDefault();
+
+  let Axis = axis.toUpperCase();
+  if (allowContinuousJog) {
+    if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
+      const currentPos = parseFloat(laststatus.machine.position.offset[axis]) + parseFloat(laststatus.machine.position.work[axis]);
+      let maxPos = currentPos + 1000;
+      const hasSoftLimits = pulloffOverride != null && Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
+      if (hasSoftLimits) {
+        // Soft Limits is enabled so lets use the maximum machine position
+        maxPos = computeMachineLimits(pulloffOverride)["max" + Axis];
+      }
+
+      if (maxPos > currentPos) {
+        sendGcode("$J=G53 G90 G21 " + Axis + maxPos.toFixed(2) + " F" + jogRate[axis]);
+        continuousJogRunning = true;
+        waitingForStatus = true;
+        rippleEffect($(event.currentTarget), ripple);
+      } else {
+         toastJogWillHit(Axis + "+");
+       }
+    } else {
+      toastJogNotIdle();
+    }
+  } else {
+    sendGcode("$J=G91 G21 " + Axis + jogdist.toFixed(2) + " F" + jogRate[axis]);
+    rippleEffect($(event.currentTarget), ripple);
+  }
+  $('#runNewProbeBtn').addClass("disabled");
+  $('#confirmNewProbeBtn').removeClass("disabled");
+}
+
+function onJogAxisCancel(event) {
+  event.preventDefault();
+  if (allowContinuousJog) {
+    cancelJog()
+  }
+}
+
+function changeStepSize(dir) {
+  $('.distbtn').blur();
+  setJogDist(Math.min(Math.max(jogDistIndex + dir, 0), jogDistArray.length - 1));
+}
+
+function jog(dir, dist, feed) {
+  sendGcode("$J=G91 G21 " + dir + dist.toFixed(3) + " F" + feed);
+}
+
+function jogXY(xincrement, yincrement, feed = null) {
+  const data = {
+    x: xincrement,
+    y: yincrement,
+    feed: feed
+  }
+  socket.emit('jogXY', data);
+}
+
+function home() {
+  sendGcode('$H');
+}
+
+function smartHome() {
+  if (laststatus.machine.modals.homedRecently) {
+    Metro.dialog.create({
+      title: "Home All",
+      content: "The machine was recently homed. Do you want to home again?",
+      clsDialog: 'dark',
+      actions: [{
+          caption: "Proceed",
+          cls: "js-dialog-close success",
+          onclick: home
+        },
+        {
+          caption: "Cancel",
+          cls: "js-dialog-close",
+          onclick: function() {}
+        }],
+    });
+  } else {
+    home();
+  }
+}
+
+function toastJogWillHit(axis) {
+  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-red'>Unable to jog toward " + axis + ", will hit soft-limit</span>")
+  Metro.toast.create("Unable to jog toward " + axis + ", will hit soft-limit", null, 1000, "bg-darkRed fg-white")
+}
+
+function toastJogNotIdle() {
+  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-red'>Please wait for machine to be Idle, before jogging</span>")
+  Metro.toast.create("Please wait for machine to be Idle, before jogging. Try again once it is Idle", null, 1000, "bg-darkRed fg-white")
+}
+
 function jogDocReady() {
 
   if (localStorage.getItem('continuousJog')) {
@@ -388,343 +521,32 @@ function jogDocReady() {
     }
   });
 
-  $('.xM').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) {
-      return
-    }
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsX = parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x);
-        let minX = mcsX - 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          minX = computeMachineLimits(1).minX;
-          if (minX >= mcsX) {
-            toastJogWillHit("X-");
-          }
-        }
+  $('.xM').on('touchstart mousedown', (event) => { onJogAxisMinus(event, 'x', jogdistXYZ, 1, "#e21b1b"); });
+  $('.xM').on('touchend mouseup', onJogAxisCancel);
 
-        if (minX < mcsX) {
-          sendGcode("$J=G53 G90 G21 X" + minX.toFixed(2) + " F" + jogRate.x);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#e21b1b");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 X" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.x);
-      rippleEffect($(ev.currentTarget), "#e21b1b");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.xM').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
+  $('.xP').on('touchstart mousedown', (event) => {  onJogAxisPlus(event, 'x', jogdistXYZ, 1, "#e21b1b"); });
+  $('.xP').on('touchend mouseup', onJogAxisCancel);
 
-  $('.xP').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) {
-      return
-    }
-    ev.preventDefault();
+  $('.yM').on('touchstart mousedown', (event) => { onJogAxisMinus(event, 'y', jogdistXYZ, 1, "#5de21b"); });
+  $('.yM').on('touchend mouseup', onJogAxisCancel);
 
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsX = parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x);
-        let maxX = mcsX + 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          maxX = computeMachineLimits(1).maxX;
-          if (maxX <= mcsX) {
-            toastJogWillHit("X+");
-          }
-        }
-        if (maxX > mcsX) {
-          sendGcode("$J=G53 G90 G21 X" + maxX.toFixed(2) + " F" + jogRate.x);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#e21b1b");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 X" + jogdistXYZ.toFixed(2) + " F" + jogRate.x);
-      rippleEffect($(ev.currentTarget), "#e21b1b");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.xP').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
+  $('.yP').on('touchstart mousedown', (event) => {  onJogAxisPlus(event, 'y', jogdistXYZ, 1, "#5de21b"); });
+  $('.yP').on('touchend mouseup', onJogAxisCancel);
 
-  $('.yM').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
+  $('.zM').on('touchstart mousedown', (event) => { onJogAxisMinus(event, 'z', jogdistXYZ, 1, "#1ba1e2"); });
+  $('.zM').on('touchend mouseup', onJogAxisCancel);
 
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsY = parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y);
-        let minY = mcsY - 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          minY = computeMachineLimits(1).minY;
-          if (minY >= mcsY) {
-            toastJogWillHit("Y-");
-          }
-        }
+  $('.zP').on('touchstart mousedown', (event) => {  onJogAxisPlus(event, 'z', jogdistXYZ, 1, "#1ba1e2"); });
+  $('.zP').on('touchend mouseup', onJogAxisCancel);
 
-        if (minY < mcsY) {
-          sendGcode("$J=G53 G90 G21 Y" + minY.toFixed(2) + " F" + jogRate.y);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#5de21b");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 Y" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.y);
-      rippleEffect($(ev.currentTarget), "#5de21b");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.yM').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
+  // A axis has unlimited rotation if $133 == 0, otherwise assume pulloff 0
+  $('.aM').on('touchstart mousedown', (event) => { onJogAxisMinus(event, 'a', jogdistA, parseFloat(grblParams.$133) == 0 ? null : 0, "#fa6800"); });
+  $('.aM').on('touchend mouseup', onJogAxisCancel);
 
-  $('.yP').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
+  $('.aP').on('touchstart mousedown', (event) => {  onJogAxisPlus(event, 'a', jogdistA, parseFloat(grblParams.$133) == 0 ? null : 0, "#fa6800"); });
+  $('.aP').on('touchend mouseup', onJogAxisCancel);
 
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsY = parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y);
-        let maxY = mcsY + 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          maxY = computeMachineLimits(1).maxY;
-          if (maxY <= mcsY) {
-            toastJogWillHit("Y+");
-          }
-        }
-        if (maxY > mcsY) {
-          sendGcode("$J=G53 G90 G21 Y" + maxY.toFixed(2) + " F" + jogRate.y);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#5de21b");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 Y" + jogdistXYZ.toFixed(2) + " F" + jogRate.y);
-      rippleEffect($(ev.currentTarget), "#5de21b");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.yP').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
-
-  $('.zM').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
-
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsZ = parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z);
-        let minZ = mcsZ - 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          minZ = computeMachineLimits(1).minZ;
-          if (minZ >= mcsZ) {
-            toastJogWillHit("Z-");
-          }
-        }
-
-        if (minZ < mcsZ) {
-          sendGcode("$J=G53 G90 G21 Z" + minZ.toFixed(2) + " F" + jogRate.z);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#1ba1e2");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 Z" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.z);
-      rippleEffect($(ev.currentTarget), "#1ba1e2");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.zM').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
-
-  $('.zP').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
-
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsZ = parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z);
-        let maxZ = mcsZ + 1000;
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          maxZ = computeMachineLimits(1).maxZ;
-          if (maxZ <= mcsZ) {
-            toastJogWillHit("Z+");
-          }
-        }
-        if (maxZ > mcsZ) {
-          sendGcode("$J=G53 G90 G21 Z" + maxZ.toFixed(2) + " F" + jogRate.z);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#1ba1e2");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 Z" + jogdistXYZ.toFixed(2) + " F" + jogRate.z);
-      rippleEffect($(ev.currentTarget), "#1ba1e2");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.zP').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
-
-  $('.aM').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
-
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsA = parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a);
-        let minA = mcsA - 1000;
-        const travelA = parseFloat(grblParams.$133);
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits && travelA > 0) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          minA = computeMachineLimits(0).minA;
-          if (minA >= mcsA) {
-            toastJogWillHit("A-");
-          }
-        }
-
-        if (minA < mcsA) {
-          sendGcode("$J=G53 G90 G21 A" + minA.toFixed(3) + " F" + jogRate.a);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#fa6800");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 A" + (-jogdistA).toFixed(3) + " F" + jogRate.a);
-      rippleEffect($(ev.currentTarget), "#fa6800");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.aM').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
-
-  $('.aP').on('touchstart mousedown', function(ev) {
-    if (ev.which > 1) { // Ignore middle and right click
-      return
-    }
-    ev.preventDefault();
-
-    if (allowContinuousJog) {
-      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
-        const mcsA = parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a);
-        let maxA = mcsA + 1000;
-        const travelA = parseFloat(grblParams.$133);
-        const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
-        if (hasSoftLimits && travelA > 0) {
-          // Soft Limits is enabled so lets calculate maximum move distance
-          maxA = computeMachineLimits(0).maxA;
-          if (maxA <= mcsA) {
-            toastJogWillHit("A+");
-          }
-        }
-        if (maxA > mcsA) {
-          sendGcode("$J=G53 G90 G21 A" + maxA.toFixed(3) + " F" + jogRate.a);
-          continuousJogRunning = true;
-          waitingForStatus = true;
-          rippleEffect($(ev.currentTarget), "#fa6800");
-        }
-      } else {
-        toastJogNotIdle();
-      }
-    } else {
-      sendGcode("$J=G91 G21 A" + jogdistA.toFixed(3) + " F" + jogRate.a);
-      rippleEffect($(ev.currentTarget), "#fa6800");
-    }
-    $('#runNewProbeBtn').addClass("disabled")
-    $('#confirmNewProbeBtn').removeClass("disabled")
-  });
-  $('.aP').on('touchend mouseup', function(ev) {
-    ev.preventDefault();
-    if (allowContinuousJog) {
-      cancelJog()
-    }
-  });
-
-
-  $('#homeBtn').on('click', function() {
-    smartHome();
-  })
+  $('#homeBtn').on('click', smartHome);
 
   $('#chkSize').on('click', function() {
     const bbox2 = new THREE.Box3().setFromObject(object);
@@ -744,58 +566,4 @@ function jogDocReady() {
     });
   });
 
-}
-
-function changeStepSize(dir) {
-  $('.distbtn').blur();
-  setJogDist(Math.min(Math.max(jogDistIndex + dir, 0), jogDistArray.length - 1));
-}
-
-function jog(dir, dist, feed) {
-  sendGcode("$J=G91 G21 " + dir + dist.toFixed(3) + " F" + feed);
-}
-
-function jogXY(xincrement, yincrement, feed = null) {
-  const data = {
-    x: xincrement,
-    y: yincrement,
-    feed: feed
-  }
-  socket.emit('jogXY', data);
-}
-
-function home() {
-  sendGcode('$H');
-}
-
-function smartHome() {
-  if (laststatus.machine.modals.homedRecently) {
-    Metro.dialog.create({
-      title: "Home All",
-      content: "The machine was recently homed. Do you want to home again?",
-      clsDialog: 'dark',
-      actions: [{
-          caption: "Proceed",
-          cls: "js-dialog-close success",
-          onclick: home
-        },
-        {
-          caption: "Cancel",
-          cls: "js-dialog-close",
-          onclick: function() {}
-        }],
-    });
-  } else {
-    home();
-  }
-}
-
-function toastJogWillHit(axis) {
-  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-red'>Unable to jog toward " + axis + ", will hit soft-limit</span>")
-  Metro.toast.create("Unable to jog toward " + axis + ", will hit soft-limit", null, 1000, "bg-darkRed fg-white")
-}
-
-function toastJogNotIdle() {
-  printLog("<span class='fg-red'>[ jog ] </span><span class='fg-red'>Please wait for machine to be Idle, before jogging</span>")
-  Metro.toast.create("Please wait for machine to be Idle, before jogging. Try again once it is Idle", null, 1000, "bg-darkRed fg-white")
 }
