@@ -23,7 +23,7 @@ jobs:
           node-version: 26
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Compile and Package App
         run: npx electron-builder
