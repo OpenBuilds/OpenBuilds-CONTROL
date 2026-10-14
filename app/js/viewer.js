@@ -176,13 +176,11 @@ function drawWorkspace(xmin, xmax, ymin, ymax) {
   }
 
   gridsystem.name = "Grid System"
-  workspace.add(gridsystem)
-  if (localStorage.getItem('unitsMode')) {
-    if (localStorage.getItem('unitsMode') == "in") {
-      redrawGrid(xmin / 25.4, xmax / 25.4, ymin / 25.4, ymax / 25.4, true);
-    } else {
-      redrawGrid(xmin, xmax, ymin, ymax, false);
-    }
+  workspace.add(gridsystem);
+  if (localStorage.getItem('unitsMode') == "in") {
+    redrawGrid(xmin / 25.4, xmax / 25.4, ymin / 25.4, ymax / 25.4, true);
+  } else {
+    redrawGrid(xmin, xmax, ymin, ymax, false);
   }
 
   const machineBoxVerts = [ // unit cube
