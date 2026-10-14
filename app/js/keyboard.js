@@ -467,13 +467,9 @@ function keyboardShortcutsEditor() {
 
   let template = `
   <span class="text-small fg-red" id="alreadyAssignedWarnShortcut" style="display: none;"></span>
-  <div class="p-0 m-0" style="overflow-y: auto; height: calc(100vh - 430px);">
-    <form id="keyboardAssignmentForm">
-      <div class="row mb-1 ml-1 mr-1">
-        <div class="cell-sm-12">
-          <span class="text-small">Click below to assign a new Keyboard Shortcut / combination to a function. Ctrl, Alt and Shift can be added to create combinations.</span>
-        </div>
-      </div>`;
+  <span class="text-small">Click below to assign a new Keyboard Shortcut to each action.<br>Ctrl, Alt and Shift can be added to create combinations.</span>
+  <div class="p-0 mt-2" style="overflow-y:auto; height:430px;">
+    <form id="keyboardAssignmentForm">`;
 
   for (const action of keyboardActions) {
     template += `
@@ -492,7 +488,6 @@ function keyboardShortcutsEditor() {
 
   Metro.dialog.create({
     title: "<i class='far fa-keyboard fa-fw'></i> Customize Keyboard Shortcuts",
-    toTop: true,
     content: template,
     width: 600,
     clsDialog: 'dark',

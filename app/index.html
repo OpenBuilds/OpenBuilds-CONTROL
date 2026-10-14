@@ -403,21 +403,19 @@ The spindle will automatically start when the job is resumed.">
                   <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100">
                     <li onclick="populateSurfaceToolForm();"><a href="#"><i class="fas fa-exchange-alt"></i> Surfacing / Flattening Wizard</a></li>
                     <li onclick="toggleHeightmapTools()" id="toggleHeightmapTools"><a href="#"><i class="mif-chart-bars"></i> Heightmap Tools</a></li>
-                    <li onclick="jogWidget();"><a href="#"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
+                    <li onclick="recoverCrashedJob();"><a href="#"><i class="fas fa-fw fa-route"></i> Recover stopped/crashed job </a></li>
                     <li class="divider fg-gray"></li>
                     <li class="disabled grblCalibrationMenu" onclick="xstepscalibrate();"><a href="#"><i class="fas fa-arrows-alt-h fa-fw"></i> Calibrate X-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="ystepscalibrate();"><a href="#"><i class="fas fa-arrows-alt-v fa-fw"></i> Calibrate Y-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fas fa-sort-amount-down-alt fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-pen fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
                     <li class="divider fg-gray"></li>
-                    <li onclick="keyboardShortcutsEditor();"><a href="#"><i class="far fa-edit fa-fw"></i> Customize Keyboard Shortcuts</a></li>
-                    <li class="divider fg-gray"></li>
                     <li onclick="openFlashingTool();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
                     <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
                     <li class="divider fg-gray"></li>
-                    <li onclick="recoverCrashedJob();"><a href="#"><i class="fas fa-fw fa-route"></i> Recover stopped/crashed job </a></li>
+                    <li onclick="jogWidget();"><a href="#"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
                   </ul>
                 </div>
 
@@ -467,16 +465,22 @@ The spindle will automatically start when the job is resumed.">
 
             <div class="section" id="section-troubleshooting">
               <div class="group">
-                <div>
-                  <button id="settingsbtn" class="ribbon-button" onclick="appSettings()">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-cog"></i>
-                      </span>
+                <button class="ribbon-button" onclick="appSettings()">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-cog"></i>
                     </span>
-                    <span class="caption">Application<br>Settings</span>
-                  </button>
-                </div>
+                  </span>
+                  <span class="caption">Application<br>Settings</span>
+                </button>
+                <button class="ribbon-button" onclick="keyboardShortcutsEditor()">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-keyboard"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Keyboard<br>Shortcuts</span>
+                </button>
                 <span class="title">Settings</span>
               </div>
 
