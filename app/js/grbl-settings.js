@@ -491,7 +491,7 @@ function grblPopulate() {
   const sortedKeys = Object.keys(grblParams).sort((a, b) => {
     return parseInt(a.substr(1)) - parseInt(b.substr(1));
   });
-  sortedKeys.forEach((key) => {
+  for (const key of sortedKeys) {
     const key2 = key.substr(1);
     const revertButton = `<button class="button small revert-button" type="button" title="Revert change"` + 
       `onclick="revertGrblSetting('` + key + `')"><i class="fas fa-undo"></i></button>`;
@@ -515,7 +515,7 @@ function grblPopulate() {
             </tr>
             `
     }
-  });
+  }
 
   template += `
           </tbody>

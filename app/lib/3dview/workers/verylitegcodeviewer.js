@@ -664,10 +664,10 @@ parseGcode(gcode) {
   let firstX = undefined;
   let firstY = undefined;
   let maxZ = undefined;
-  for (let i = 0; i < linePoints.length; i++) {
-    const x = linePoints[i].x;
-    const y = linePoints[i].y;
-    const z = linePoints[i].z;
+  for (const point of linePoints) {
+    const x = point.x;
+    const y = point.y;
+    const z = point.z;
 
     if (firstX == undefined && !isNaN(x)) {
       firstX = x;
@@ -680,15 +680,15 @@ parseGcode(gcode) {
     }
   }
 
-  for (let i = 0; i < linePoints.length; i++) {
-    if (isNaN(linePoints[i].x)) {
-      linePoints[i].x = firstX || 0;
+  for (let point of linePoints) {
+    if (isNaN(point.x)) {
+      point.x = firstX || 0;
     }
-    if (isNaN(linePoints[i].y)) {
-      linePoints[i].y = firstY || 0;
+    if (isNaN(point.y)) {
+      point.y = firstY || 0;
     }
-    if (isNaN(linePoints[i].z)) {
-      linePoints[i].z = maxZ || 0;
+    if (isNaN(point.z)) {
+      point.z = maxZ || 0;
     }
   }
 

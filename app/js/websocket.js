@@ -99,9 +99,9 @@ function onRecentFiles(recentFiles) {
     $('#recentFilesList').nextAll().remove();
 
     let elements = ``;
-    for (let i = 0; i < recentFiles.length; i++) {
-      elements += `<li title="` + recentFiles[i] +`"><a href="#" onclick="reloadJobFile('` + recentFiles[i].replaceAll('\\', '\\\\') + 
-        `')"><span class="fas fa-file-alt fg-darkGray icon"></span> ` + recentFiles[i].split(/[/\\]/).at(-1) + `</a></li>\n`;
+    for (const file of recentFiles) {
+      elements += `<li title="` + file +`"><a href="#" onclick="reloadJobFile('` + file.replaceAll('\\', '\\\\') + 
+        `')"><span class="fas fa-file-alt fg-darkGray icon"></span> ` + file.split(/[/\\]/).at(-1) + `</a></li>\n`;
     }
     $('#recentFilesList').after(elements);
     enableViaClass('#clearRecentBtn', recentFiles.length > 0);
@@ -382,8 +382,8 @@ function toastError(data) {
 
 function errorsCleared(data) {
   if (data) {
-    for (let i = 0; i < openDialogs.length; i++) {
-      Metro.dialog.close(openDialogs[i]);
+    for (const dlg of openDialogs) {
+      Metro.dialog.close(dlg);
     }
     openDialogs.length = 0;
   }
@@ -408,12 +408,12 @@ function onStatus(status) {
 
     if (!_.isEqual(status.comms.interfaces.ports, laststatus.comms.interfaces.ports)) {
       let string = "Detected a change in available ports: ";
-      for (let i = 0; i < status.comms.interfaces.ports.length; i++) {
-        string += "[" + status.comms.interfaces.ports[i].path + "]"
+      for (const port of status.comms.interfaces.ports) {
+        string += "[" + port.path + "]";
       }
 
-      if (!status.comms.interfaces.ports.length) {
-        string += "[ No devices connected ]"
+      if (status.comms.interfaces.ports.length == 0) {
+        string += "[ No devices connected ]";
       }
       const icon = ''
       const source = "usb ports"
@@ -425,11 +425,11 @@ function onStatus(status) {
 
     if (!_.isEqual(status.comms.interfaces.networkDevices, laststatus.comms.interfaces.networkDevices)) {
       let string = "Detected a change in IP devices: ";
-      for (let i = 0; i < status.comms.interfaces.networkDevices.length; i++) {
-        string += "[" + status.comms.interfaces.networkDevices[i].ip + "]"
+      for (const device in status.comms.interfaces.networkDevices) {
+        string += "[" + device.ip + "]"
       }
 
-      if (!status.comms.interfaces.networkDevices.length) {
+      if (status.comms.interfaces.networkDevices.length == 0) {
         string += "[ No IP devices ]"
       }
       const icon = ''
@@ -909,17 +909,17 @@ function populatePortsMenu() {
     const lastGrblPort = localStorage.getItem("lastGrblPort");
     let foundPort = false;
     let response = ``
-    if (!laststatus.comms.interfaces.ports.length) {
+    if (laststatus.comms.interfaces.ports.length == 0) {
       response += `<optgroup label="USB/Serial Ports">`
       response += `<option value="">No USB/Serial Ports</option>`
     } else {
       response += `<optgroup label="USB Ports">`
-      for (let i = 0; i < laststatus.comms.interfaces.ports.length; i++) {
+      for (const port of laststatus.comms.interfaces.ports) {
         const lastUsedPort = localStorage.getItem('lastUsedPort');
-        if (laststatus.comms.interfaces.ports[i].path == lastUsedPort) {
-          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `" selected>` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
+        if (port.path == lastUsedPort) {
+          response += `<option value="` + port.path + `" selected>` + port.path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
         } else {
-          response += `<option value="` + laststatus.comms.interfaces.ports[i].path + `">` + laststatus.comms.interfaces.ports[i].path.replace("/dev/tty.", "") + " " + laststatus.comms.interfaces.ports[i].note + `</option>`;
+          response += `<option value="` + port.path + `">` + port.path.replace("/dev/tty.", "") + " " + port.note + `</option>`;
         }
 
       }
@@ -934,15 +934,15 @@ function populatePortsMenu() {
     $('#portUSB2').parent(".select").removeClass('disabled')
 
     // Add the Network Ports to the list then populate the Machine Connection selection
-    if (!laststatus.comms.interfaces.networkDevices.length) {
+    if (laststatus.comms.interfaces.networkDevices.length == 0) {
       response += `<optgroup label="Network Ports">`
       response += `<option value="">No Network Ports</option>`
     } else {
       response += `<optgroup label="Network Ports">`
-      for (let i = 0; i < laststatus.comms.interfaces.networkDevices.length; i++) {
-        const name = laststatus.comms.interfaces.networkDevices[i].ip;
-        if (laststatus.comms.interfaces.networkDevices[i].type) {
-          response += `<option value="` + name + `">` + name + " [ " + laststatus.comms.interfaces.networkDevices[i].type + ` ]</option>`;
+      for (const device of laststatus.comms.interfaces.networkDevices) {
+        const name = device.ip;
+        if (device.type) {
+          response += `<option value="` + name + `">` + name + " [ " + device.type + ` ]</option>`;
         } else {
           response += `<option value="` + name + `">` + name + `</option>`;
         }
