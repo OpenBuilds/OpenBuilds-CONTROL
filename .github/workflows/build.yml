@@ -11,7 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+#        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -21,9 +22,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 26
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Compile and Package App
         run: npx electron-builder
