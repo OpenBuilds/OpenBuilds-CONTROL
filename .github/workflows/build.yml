@@ -1,6 +1,9 @@
 name: Build/release
 
-on: push
+# on: push
+
+on:
+  workflow_dispatch: # Enables the manual "Run workflow" button
 
 jobs:
   release:
