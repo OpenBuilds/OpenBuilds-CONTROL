@@ -189,11 +189,11 @@ function appSettings(category) {
 }
 
 function initSettings() {
-  disable3Dviewer = localStorage.getItem('disable3Dviewer') && (JSON.parse(localStorage.getItem('disable3Dviewer')) == true);
-  disable3Dskybox = localStorage.getItem('disable3Dskybox') && (JSON.parse(localStorage.getItem('disable3Dskybox')) == true);
-  disable3Drealtimepos = localStorage.getItem('disable3Drealtimepos') && (JSON.parse(localStorage.getItem('disable3Drealtimepos')) == true);
-  disable3Dgcodepreview = localStorage.getItem('disable3Dgcodepreview') && (JSON.parse(localStorage.getItem('disable3Dgcodepreview')) == true);
-  disable4thAxis = localStorage.getItem('disable4thAxis') && (JSON.parse(localStorage.getItem('disable4thAxis')) == true);
+  disable3Dviewer = localStorage.getItem('disable3Dviewer') != null && (JSON.parse(localStorage.getItem('disable3Dviewer')) == true);
+  disable3Dskybox = localStorage.getItem('disable3Dskybox') != null  && (JSON.parse(localStorage.getItem('disable3Dskybox')) == true);
+  disable3Drealtimepos = localStorage.getItem('disable3Drealtimepos') != null  && (JSON.parse(localStorage.getItem('disable3Drealtimepos')) == true);
+  disable3Dgcodepreview = localStorage.getItem('disable3Dgcodepreview') != null  && (JSON.parse(localStorage.getItem('disable3Dgcodepreview')) == true);
+  disable4thAxis = localStorage.getItem('disable4thAxis') != null  && (JSON.parse(localStorage.getItem('disable4thAxis')) == true);
 
   $('#runSimBtn').parent().toggle(!disable3Drealtimepos && !disable3Dgcodepreview);
 }

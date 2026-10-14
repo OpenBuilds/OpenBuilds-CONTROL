@@ -8,7 +8,7 @@ const keyboardActions = [
     name: "xP",
     label: `<i class="fas fa-arrow-right fg-red fa-fw"></i> Jog X+`,
     defaultKey: "right",
-    keydown: (event) => { jogKeyDown(event, "xP", "#e21b1b") },
+    keydown: (event) => { jogKeyDown(event, "xP") },
     keyup: (event) => { jogKeyUp(event, "xP") },
   },
 
@@ -16,7 +16,7 @@ const keyboardActions = [
     name: "xM",
     label: `<i class="fas fa-arrow-left fg-red fa-fw"></i> Jog X-`,
     defaultKey: "left",
-    keydown: (event) => { jogKeyDown(event, "xM", "#e21b1b") },
+    keydown: (event) => { jogKeyDown(event, "xM") },
     keyup: (event) => { jogKeyUp(event, "xM") },
   },
 
@@ -24,7 +24,7 @@ const keyboardActions = [
     name: "yP",
     label: `<i class="fas fa-arrow-up fg-green fa-fw"></i> Jog Y+`,
     defaultKey: "up",
-    keydown: (event) => { jogKeyDown(event, "yP", "#5de21b") },
+    keydown: (event) => { jogKeyDown(event, "yP") },
     keyup: (event) => { jogKeyUp(event, "yP") },
   },
 
@@ -32,7 +32,7 @@ const keyboardActions = [
     name: "yM",
     label: `<i class="fas fa-arrow-down fg-green fa-fw"></i> Jog Y-`,
     defaultKey: "down",
-    keydown: (event) => { jogKeyDown(event, "yM", "#5de21b") },
+    keydown: (event) => { jogKeyDown(event, "yM") },
     keyup: (event) => { jogKeyUp(event, "yM") },
   },
 
@@ -40,7 +40,7 @@ const keyboardActions = [
     name: "zP",
     label: `<i class="fas fa-arrow-up fg-blue fa-fw"></i> Jog Z+`,
     defaultKey: "pageup",
-    keydown: (event) => { jogKeyDown(event, "zP", "#1ba1e2") },
+    keydown: (event) => { jogKeyDown(event, "zP") },
     keyup: (event) => { jogKeyUp(event, "zP") },
   },
 
@@ -48,7 +48,7 @@ const keyboardActions = [
     name: "zM",
     label: `<i class="fas fa-arrow-down fg-blue fa-fw"></i>Jog Z-`,
     defaultKey: "pagedown",
-    keydown: (event) => { jogKeyDown(event, "zM", "#1ba1e2") },
+    keydown: (event) => { jogKeyDown(event, "zM") },
     keyup: (event) => { jogKeyUp(event, "zM") },
   },
 
@@ -56,7 +56,7 @@ const keyboardActions = [
     name: "aP",
     label: `<i class="fas fa-redo fg-orange fa-fw"></i> Jog A+`,
     defaultKey: "2",
-    keydown: (event) => { jogKeyDown(event, "aP", "#fa6800") },
+    keydown: (event) => { jogKeyDown(event, "aP") },
     keyup: (event) => { jogKeyUp(event, "aP") },
   },
 
@@ -64,7 +64,7 @@ const keyboardActions = [
     name: "aM",
     label: `<i class="fas fa-undo fg-orange fa-fw"></i> Jog A-`,
     defaultKey: "1",
-    keydown: (event) => { jogKeyDown(event, "aM", "#fa6800") },
+    keydown: (event) => { jogKeyDown(event, "aM") },
     keyup: (event) => { jogKeyUp(event, "aM") },
   },
 
@@ -247,17 +247,16 @@ function keyboardDocReady() {
   bindKeys();
 }
 
-function jogKeyDown(event, name, ripple) {
+function jogKeyDown(event, name) {
   event.preventDefault();
   if (!event.originalEvent.repeat) {
-    rippleEffect($('.' + name), ripple);
     $('#' + name).mousedown();
   }
 }
 
 function jogKeyUp(event, name) {
   event.preventDefault();
-  $('#x' + name).mouseup();
+  $('#' + name).mouseup();
 }
 
 function jogStepSize(event, dir) {
@@ -469,11 +468,11 @@ function keyboardShortcutsEditor() {
   <span class="text-small fg-red" id="alreadyAssignedWarnShortcut" style="display: none;"></span>
   <span class="text-small">Click below to assign a new Keyboard Shortcut to each action.<br>Ctrl, Alt and Shift can be added to create combinations.</span>
   <div class="p-0 mt-2" style="overflow-y:auto; height:430px;">
-    <form id="keyboardAssignmentForm">`;
+    <form id="keyboardAssignmentForm" style="padding:2px 0px;">`;
 
   for (const action of keyboardActions) {
     template += `
-      <div class="row mb-1 ml-1 mr-1">
+      <div class="row mt-1 ml-1 mr-1">
         <label class="cell-sm-6" style="margin-top:4px">` + action.label + `</label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly data-role="input" data-clear-button="true" data-editable="true" onchange="onShortcutInputChange()"
