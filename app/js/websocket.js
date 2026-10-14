@@ -761,6 +761,10 @@ function initSocket() {
     socket.on("machinename", setMachineButton);
   }
 
+  socket.on('status', onStatus);
+
+  socket.on('features', onFeatures);
+
   socket.on("queueCount", onQueueCount);
 
   socket.on('toastErrorAlarm', toastErrorAlarm);
@@ -769,27 +773,23 @@ function initSocket() {
 
   socket.on("errorsCleared", errorsCleared);
 
-  socket.on('progStatus', onProgStatus);
+  if (!isJogWidget) {
+    socket.on('progStatus', onProgStatus);
 
-  socket.on('sysinfo', onSysInfo);
+    socket.on('sysinfo', onSysInfo);
 
-  socket.on('status', onStatus);
+    socket.on("interfaceOutdated", function(status) {
+      console.log("interfaceOutdated", status)
+    })
 
-  socket.on('features', onFeatures);
-
-  socket.on("interfaceOutdated", function(status) {
-    console.log("interfaceOutdated", status)
-  })
-
-  socket.on('captureWcsHistory', function(data) {
-    if (!isJogWidget) {
+    socket.on('captureWcsHistory', function(data) {
      captureWcsHistoryInternal(data.position, data.wcs, data.name, data.tooltip, data.isRunJob);
-    }
-  });
+    });
 
-  socket.on('showSettings', appSettings);
+    socket.on('showSettings', appSettings);
 
-  socket.on('recentFiles', onRecentFiles);
+    socket.on('recentFiles', onRecentFiles);
+  }
 
   $('#sendCommand').on('click', function() {
     const commandValue = $('#command').val();

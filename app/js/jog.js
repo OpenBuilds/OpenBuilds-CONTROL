@@ -394,7 +394,7 @@ function jogDocReady() {
     }
     ev.preventDefault();
     if (allowContinuousJog) {
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsX = parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x);
         let minX = mcsX - 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -410,13 +410,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 X" + minX.toFixed(2) + " F" + jogRate.x);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.xM').click();
+          rippleEffect($(ev.currentTarget), "#e21b1b");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 X" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.x);
+      rippleEffect($(ev.currentTarget), "#e21b1b");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -434,8 +435,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsX = parseFloat(laststatus.machine.position.offset.x) + parseFloat(laststatus.machine.position.work.x);
         let maxX = mcsX + 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -450,13 +451,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 X" + maxX.toFixed(2) + " F" + jogRate.x);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.xP').click();
+          rippleEffect($(ev.currentTarget), "#e21b1b");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 X" + jogdistXYZ.toFixed(2) + " F" + jogRate.x);
+      rippleEffect($(ev.currentTarget), "#e21b1b");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -474,8 +476,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsY = parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y);
         let minY = mcsY - 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -491,13 +493,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 Y" + minY.toFixed(2) + " F" + jogRate.y);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.yM').click();
+          rippleEffect($(ev.currentTarget), "#5de21b");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 Y" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.y);
+      rippleEffect($(ev.currentTarget), "#5de21b");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -515,8 +518,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsY = parseFloat(laststatus.machine.position.offset.y) + parseFloat(laststatus.machine.position.work.y);
         let maxY = mcsY + 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -531,13 +534,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 Y" + maxY.toFixed(2) + " F" + jogRate.y);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('#yP').click();
+          rippleEffect($(ev.currentTarget), "#5de21b");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 Y" + jogdistXYZ.toFixed(2) + " F" + jogRate.y);
+      rippleEffect($(ev.currentTarget), "#5de21b");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -555,8 +559,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsZ = parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z);
         let minZ = mcsZ - 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -572,13 +576,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 Z" + minZ.toFixed(2) + " F" + jogRate.z);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.zM').click();
+          rippleEffect($(ev.currentTarget), "#1ba1e2");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 Z" + (-jogdistXYZ).toFixed(2) + " F" + jogRate.z);
+      rippleEffect($(ev.currentTarget), "#1ba1e2");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -596,8 +601,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsZ = parseFloat(laststatus.machine.position.offset.z) + parseFloat(laststatus.machine.position.work.z);
         let maxZ = mcsZ + 1000;
         const hasSoftLimits = Object.keys(grblParams).length > 0 && parseInt(grblParams.$20) == 1;
@@ -612,13 +617,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 Z" + maxZ.toFixed(2) + " F" + jogRate.z);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.zP').click();
+          rippleEffect($(ev.currentTarget), "#1ba1e2");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 Z" + jogdistXYZ.toFixed(2) + " F" + jogRate.z);
+      rippleEffect($(ev.currentTarget), "#1ba1e2");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -636,8 +642,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsA = parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a);
         let minA = mcsA - 1000;
         const travelA = parseFloat(grblParams.$133);
@@ -654,13 +660,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 A" + minA.toFixed(3) + " F" + jogRate.a);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.aM').click();
+          rippleEffect($(ev.currentTarget), "#fa6800");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 A" + (-jogdistA).toFixed(3) + " F" + jogRate.a);
+      rippleEffect($(ev.currentTarget), "#fa6800");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")
@@ -678,8 +685,8 @@ function jogDocReady() {
     }
     ev.preventDefault();
 
-    if (allowContinuousJog) { // startJog();
-      if (!waitingForStatus && laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Door:0") {
+    if (allowContinuousJog) {
+      if (!waitingForStatus && (laststatus.comms.runStatus == "Idle" || laststatus.comms.runStatus == "Jog" || laststatus.comms.runStatus == "Door:0")) {
         const mcsA = parseFloat(laststatus.machine.position.offset.a) + parseFloat(laststatus.machine.position.work.a);
         let maxA = mcsA + 1000;
         const travelA = parseFloat(grblParams.$133);
@@ -695,13 +702,14 @@ function jogDocReady() {
           sendGcode("$J=G53 G90 G21 A" + maxA.toFixed(3) + " F" + jogRate.a);
           continuousJogRunning = true;
           waitingForStatus = true;
-          $('.aP').click();
+          rippleEffect($(ev.currentTarget), "#fa6800");
         }
       } else {
         toastJogNotIdle();
       }
     } else {
       sendGcode("$J=G91 G21 A" + jogdistA.toFixed(3) + " F" + jogRate.a);
+      rippleEffect($(ev.currentTarget), "#fa6800");
     }
     $('#runNewProbeBtn').addClass("disabled")
     $('#confirmNewProbeBtn').removeClass("disabled")

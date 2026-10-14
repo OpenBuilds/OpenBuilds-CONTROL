@@ -14,6 +14,7 @@ var wcsHistory = {
 
 var wcsHistoryEmpty = true;
 var lastWcsCapture = {};
+var rippleTimeout = undefined;
 
 function addRemoveClass(element, className, add) {
   if (typeof element == "string") {
@@ -40,6 +41,9 @@ function rippleEffect(el, color) {
   });
 
   $(".ripple").remove();
+  if (rippleTimeout) {
+    clearTimeout(rippleTimeout);
+  }
 
   const size = Math.max(el.outerWidth(), el.outerHeight()) + "px";
 
@@ -56,8 +60,10 @@ function rippleEffect(el, color) {
     top: '0px',
     left: '0px'
   }).addClass("rippleEffect");
-  setTimeout(function() {
+
+  rippleTimeout = setTimeout(function() {
     $(".ripple").remove();
+    rippleTimeout = undefined;
   }, 400);
 }
 
