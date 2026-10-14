@@ -68,32 +68,32 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: sudo -H pip install setuptools
 
-      - name: Prepare for app notarization (macos)
-        if: startsWith(matrix.os, 'macos')
-        # Import Apple API key for app notarization on macOS
-        run: |
-          mkdir -p ~/private_keys/
-          echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
-
-      - name: Electron Builder Action
-        uses: OpenBuilds/action-electron-build@v1.9.0
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-          release: true
-          debugElectron: true
-          # Used to Sign before notarizing with Notarize.js
-          mac_certs: ${{ secrets.mac_certs }}
-          mac_certs_password: ${{ secrets.mac_certs_password }}
-        env:
-          #npm_config_verbose: true
-          #npm_config_loglevel: verbose
-          # new MacOS notarize.js secrets (2024)
-          DEBUG: electron-builder # To debug electron-builder
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          # Required to authenticate Signing certs
-          API_KEY_ID: ${{ secrets.api_key_id }}
-          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
+#      - name: Prepare for app notarization (macos)
+#        if: startsWith(matrix.os, 'macos')
+#        # Import Apple API key for app notarization on macOS
+#        run: |
+#          mkdir -p ~/private_keys/
+#          echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
+#
+#      - name: Electron Builder Action
+#        uses: OpenBuilds/action-electron-build@v1.9.0
+#        with:
+#          # GitHub token, automatically provided to the action
+#          # (No need to define this secret in the repo settings)
+#          github_token: ${{ secrets.github_token }}
+#          release: true
+#          debugElectron: true
+#          # Used to Sign before notarizing with Notarize.js
+#          mac_certs: ${{ secrets.mac_certs }}
+#          mac_certs_password: ${{ secrets.mac_certs_password }}
+#        env:
+#          #npm_config_verbose: true
+#          #npm_config_loglevel: verbose
+#          # new MacOS notarize.js secrets (2024)
+#          DEBUG: electron-builder # To debug electron-builder
+#          APPLE_ID: ${{ secrets.APPLE_ID }}
+#          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+#          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+#          # Required to authenticate Signing certs
+#          API_KEY_ID: ${{ secrets.api_key_id }}
+#          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
