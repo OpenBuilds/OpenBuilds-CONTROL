@@ -20,7 +20,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 26
 
       # new Windows Signing (2024)
       - name: Setup Certificate (Windows)
