@@ -529,6 +529,7 @@ function onConnection(socket) {
 }
 
 function main() {
+
   process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
   app.get('/api/version', (req, res) => {
@@ -577,6 +578,9 @@ function main() {
   initServer();
 
   initElectron();
+
+console.log("EXITING");
+exitApp();
 
   // Global Update loop
   setInterval(function() {

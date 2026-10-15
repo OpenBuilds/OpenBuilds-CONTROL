@@ -11,8 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-#        os: [windows-latest, ubuntu-latest]
+#        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -83,9 +83,9 @@ jobs:
 #          smctl windows certsync
 #        shell: cmd
 #
-      - name: Install setuptools (macos)
-        if: startsWith(matrix.os, 'macos')
-        run: sudo -H pip install setuptools
+#      - name: Install setuptools (macos)
+#        if: startsWith(matrix.os, 'macos')
+#        run: sudo -H pip install setuptools
 
 #      - name: Prepare for app notarization (macos)
 #        if: startsWith(matrix.os, 'macos')
