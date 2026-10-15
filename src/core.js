@@ -71,6 +71,14 @@ function findLocalIpAddress() {
   return ip.address();
 }
 
+function getRepoName() {
+  let repo = require('../package').repository;
+  if (repo.startsWith('https://github.com/')) {
+    repo = repo.substring(19);
+  }
+  return repo;
+}
+
 // Main status
 const status = {
   driver: {
@@ -180,6 +188,7 @@ const status = {
     lastFilePath: "",
     spindleDelay: 0,
     laserMode: false,
+    repoName: getRepoName(),
   },
 };
 

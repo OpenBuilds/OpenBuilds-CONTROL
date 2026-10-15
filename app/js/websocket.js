@@ -603,6 +603,7 @@ function onStatus(status) {
     $('#mainCloseBtn').attr( "title", status.misc.trayIcon ? "Close to Tray" : "Close");
   }
 
+  const firstStatus = !laststatus;
   laststatus = status;
 
   if (!isJogWidget && webgl && (featuresChanged || offsetChanged)) {
@@ -614,6 +615,9 @@ function onStatus(status) {
   }
 
   waitingForStatus = false;
+  if (firstStatus) {
+		updatesFirstStatus();
+	}
 }
 
 function onFeatures(data) {
@@ -716,35 +720,6 @@ function initSocket() {
   socket.on('interfaceDrive', onInterfaceDrive);
 
   socket.on('gcodeupload', function(data) { onGcodeUpload(data.gcode, data.filename); });
-
-  socket.on('updatedata', function(data) {
-    const icon = ''
-    const source = data.command
-    const string = data.response
-    const printLogCls = "fg-darkGreen"
-    printLogModern(icon, source, string, printLogCls)
-  });
-
-  socket.on('updateready', function(data) {
-    // 0 = not connected
-    // 1 = Connected, but not Playing yet
-    // 2 = Connected, but not Playing yet
-    // 3 = Busy Streaming G-code
-    // 4 = Paused
-    // 5 = Alarm State
-    // 6 = Firmware Upgrade State
-    if (laststatus.comms.connectionStatus < 3 && !continuousJogRunning) {
-      $('#availVersion').html(data)
-      getReleaseStats()
-      getChangelog();
-      Metro.dialog.open('#downloadUpdate')
-    }
-
-  });
-
-  socket.on('updateprogress', function(data) {
-    $('#downloadprogress').html(data + "%");
-  });
 
   socket.on('fluidncConfig', setFluidNcConfig);
 

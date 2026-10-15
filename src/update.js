@@ -2,6 +2,12 @@
 
 "use strict";
 
+// System dependencies
+const {
+  shell,
+} = require('electron');
+
+
 // App dependencies
 const {
   debug_log,
@@ -21,7 +27,8 @@ var updateIsDownloading = false;
 
 
 function createAutoUpdater() {
-  autoUpdater = require("electron-updater").autoUpdater
+  autoUpdater = require("electron-updater").autoUpdater;
+  autoUpdater.autoInstallOnAppQuit = false;
   var availversion = '0.0.0'
 
   autoUpdater.on('checking-for-update', () => {
@@ -102,6 +109,10 @@ function createAutoUpdater() {
 function onConnection(socket) {
   socket.on("applyUpdate", function() {
     autoUpdater.quitAndInstall();
+  });
+
+  socket.on("openUpdatePage", function() {
+    shell.openExternal("https://github.com/" + status.misc.repoName + "/releases/latest");
   })
 
   socket.on("downloadUpdate", function() {

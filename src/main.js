@@ -579,9 +579,6 @@ function main() {
 
   initElectron();
 
-console.log("EXITING");
-exitApp();
-
   // Global Update loop
   setInterval(function() {
     serverEmit("status", status);
