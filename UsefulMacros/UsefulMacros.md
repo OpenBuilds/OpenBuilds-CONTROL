@@ -64,4 +64,4 @@ Fast and precise method for finding the center of a circular or rectangular hole
 
 The Snippets folder contains code fragments that can be reused in future scripts.
 The **SequenceFramework** fragment is particularly useful.
-It assists with the creation of complex scripts that mix G-code with JavaScript logic.
+It can help develop complex scripts that mix G-code with JavaScript logic.
