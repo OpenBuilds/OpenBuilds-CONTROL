@@ -34,8 +34,10 @@ Prevents accidental homing if the machine was recently homed. Also allows homing
 
 Relies on the **homedRecently** status of OpenBuilds.
 
+![Screenshot](screenshots/smart_home.png)
+
 ### OpenFile
-Removes the dropdown from the file button.
+Removes the dropdown from the Open G-code button.
 
 It is a simplified version of the original by Thayne Co: https://thayneco.com/single-click-to-open-a-file-browser-in-openbuilds-control/
 
@@ -55,7 +57,7 @@ Measures the height of a surface without changing the work zero.
 This is useful for making accurate height measurements at different points on the surface.
 
 ### SpindleDelay
-Pauses the execution after M3 and M4 commands without using the G4 G-code. Useful on some machines where G4 is not working properly.
+Pauses the execution after M3 and M4 commands without using the G4 command. Useful on some machines where G4 is not working properly.
 
 ### FindHoleCenter
 Fast and precise method for finding the center of a circular or rectangular hole.

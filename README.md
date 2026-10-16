@@ -7,7 +7,7 @@ This is a fork by Ivo Beltchev with multiple improvements.
 
 * Ability to view and set machine coordinates
 * Stores a history of work origins and allows for rolling back to a previous one
-* Corrected the math and improved the safety of the "goto zero" buttons
+* Corrected the calculations and improved the safety of the "goto zero" buttons
 * More accurate machine limits, compatible with a variety of homing settings for Grbl, GrblHAL and FluidNC
 * The Pause and Stop buttons remain available until the very end of the job
 * While the job is paused, the Tool Off button can stop the spindle. It will resume automatically
@@ -20,9 +20,9 @@ This is a fork by Ivo Beltchev with multiple improvements.
 
 ### User Interface
 
-* Removed the dropdown menu from the G-code open button to save unnecessary mouse click
+* Removed the dropdown menu from the Open G-code button to save unnecessary mouse click
 * New button to reload the current G-code file or load from a list of recent files
-* New dialog for editing all settings in one place
+* New dialog for editing all application settings in one place
 * New settings to disable the autostart and the tray icon, making it behave like a regular desktop app
 * Allow clearing the key assignment in the keyboard shortcut editor and the macro editor
 * The dialogs for opening and saving files have independent default directories for G-code, macros and grbl settings
@@ -67,8 +67,8 @@ This is a fork by Ivo Beltchev with multiple improvements.
 
 ### New Heightmap Tool
 
-The heightmap tool probes the height at points on a grid and modifies the G-code to follow the surface.
-The heightmap can be saved to a CSV file to be edited by hand.
+* You can generate a heightmap by sampling the surface at multiple points
+* The heightmap can then be used to modify the G-code to follow the surface
 
 ### Code Improvements
 
@@ -93,7 +93,7 @@ Some are standalone versions of the new features, which can be added to the orig
 * **Macro manager** - Allows organizing macros into groups, export and import all macros into a single file
 * **Heightmap** - Probes the height at points on a grid and modifies the G-code to follow the surface
 * **Smart Home** - Prevents accidental homing and allows homing single axis if supported
-* **Open File** - Removes the dropdown from the file open button
+* **Open File** - Removes the dropdown from the Open G-code button
 * **StoreWcs** - Stores the work origin of the last job. This is a simplified version of the new WCS history feature
 
 Others are new features that can be added to either this version or the original software:
@@ -130,9 +130,9 @@ Of course, you are free to build your own copy from the source code. These steps
 
 Before the official release, I plan to remove the parts that are specific to OpenBuilds hardware.
 This includes the flashing capabilities and the bespoke configuration presets.
-The hardware is no longer in production, and I can't realistically test any of those features.
+The hardware is no longer in production, and I can't realistically validate any of those features.
 
-Also I want to restore the auto-update feature to prepare for a public release.
+I will restore the update feature that checks for new versions and auto-updates the software.
 
 ### Public Release
 
@@ -154,10 +154,10 @@ Please, report any issues you encounter. They can't be fixed if I don't know abo
 ### Future Features
 
 Adding new features is tricky, especially to this software. What made the original OpenBuilds so brilliant is its clean
-and approachable user interface. New features by their very nature complicate things as they need their own space on the screen.
+and approachable user interface. New features by their very nature complicate the interface as they need their own space on the screen.
 I have seen too many apps get bloated over time to an unusable mess because of the urge to add new features in each release.
 
-New features will be added only if they don't sacrifice usability. Here are few things I am considering:
+New features will be added only if they don't sacrifice usability. Here are a few things I am considering:
 
 * **Gamepad support** - will allow you to jog the machine using the analog stick, maybe let you assign actions to buttons
 
@@ -168,3 +168,4 @@ New features will be added only if they don't sacrifice usability. Here are few 
 That said, new features can be added via macros as well. The bar for those is lower than for features in the main software,
 since they are optional addons, and usually address a niche need.
 I am more willing to add new features this way, especially if they can be back-ported to the original software.
+A new feature could realistically start up as a macro, and then find its way into the main software after it as proven to work well.
