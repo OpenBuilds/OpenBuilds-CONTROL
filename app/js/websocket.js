@@ -616,8 +616,10 @@ function onStatus(status) {
 
   waitingForStatus = false;
   if (firstStatus) {
-		updatesFirstStatus();
-	}
+    if (!isJogWidget) {
+      updatesFirstStatus();
+    }
+  }
 }
 
 function onFeatures(data) {

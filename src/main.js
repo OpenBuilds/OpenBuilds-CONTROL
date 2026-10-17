@@ -381,7 +381,9 @@ function createJogWindow() {
     }
   });
 
-  jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
+  if (!electronApp.isPackaged) {
+    jogWindow.setOverlayIcon(nativeImage.createFromPath(iconPath), 'Icon');
+  }
 
   var url = `http://localhost:${config.webPort}/`;
   if (safeMode) {

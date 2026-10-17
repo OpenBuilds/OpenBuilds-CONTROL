@@ -96,7 +96,7 @@ function convertParsedDataToObject(parsedData) {
 function getGcodeLine(pointIndex) {
   const offset = object.userData.offsetArray[pointIndex];
   let end = currentGcode.indexOf('\n', offset);
-  if (end > offset && currentGcode[end - 1]) {
+  if (end > offset && currentGcode[end - 1] == '\r') {
     end--;
   }
   return currentGcode.slice(offset, end >= 0 ? end : undefined);
