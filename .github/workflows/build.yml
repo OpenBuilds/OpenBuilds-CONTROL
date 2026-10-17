@@ -9,8 +9,8 @@ jobs:
   release:
     runs-on: ${{ matrix.os }}
 
-  permissions:
-    contents: write
+    permissions:
+      contents: write
 
     strategy:
       matrix:
