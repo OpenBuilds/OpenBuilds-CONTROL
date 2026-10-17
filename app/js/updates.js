@@ -91,10 +91,7 @@ function getChangelog() {
 }
 
 function handleNewVersion(currentVersion, latestVersion) {
-  if (laststatus.driver.platform == "win32") {
-    // Auto-update is only supported for Windows.
-    // The original OpenBuilds disables it for Mac for some unknown reason.
-    // On Linux it doesn't work for Deb files. Maybe in the future enable it for the AppImage case.
+  if (laststatus.misc.updatesEnabled) {
     updateCountdown = 10;
     printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds CONTROL <code>" + latestVersion + "</code>. is available now.</span>")
     printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-darkGray'>Download will start in <span class='tally' id='countdown'>10</span> seconds (<a href='#' onclick='cancelUpdateTimer();'>cancel</a>) </span>")
@@ -215,10 +212,10 @@ function onUpdateReady(latestVersion) {
     width: 600,
     clsDialog: 'dark',
     actions: [{
-        caption: "OK, Proceed with Update",
+        caption: "Update Now",
         cls: "js-dialog-close success",
         onclick: function() {
-          socket.emit('applyUpdate');
+          socket.emit('applyUpdate', true);
         }
       },
       {
@@ -229,9 +226,11 @@ function onUpdateReady(latestVersion) {
         }
       },
       {
-        caption: "Update later",
+        caption: "Update on Exit",
         cls: "js-dialog-close",
-        onclick: function() {}
+        onclick: function() {
+          socket.emit('applyUpdate', false);
+        }
       }
     ]
   });
@@ -242,7 +241,7 @@ function onUpdateReady(latestVersion) {
 
 function updatesFirstStatus() {
 // Ivo: disable update checks until there is a public version
-//  checkUpdate();
+  checkUpdate();
 
   getChangelog();
 

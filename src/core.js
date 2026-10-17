@@ -189,6 +189,7 @@ const status = {
     spindleDelay: 0,
     laserMode: false,
     repoName: getRepoName(),
+    updatesEnabled: false,
   },
 };
 

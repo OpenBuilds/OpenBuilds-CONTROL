@@ -107,8 +107,12 @@ function createAutoUpdater() {
 }
 
 function onConnection(socket) {
-  socket.on("applyUpdate", function() {
-    autoUpdater.quitAndInstall();
+  socket.on("applyUpdate", function(installNow) {
+    if (installNow) {
+      autoUpdater.quitAndInstall();
+    } else {
+      autoUpdater.autoInstallOnAppQuit = true;
+    }
   });
 
   socket.on("openUpdatePage", function() {
@@ -130,6 +134,16 @@ function onConnection(socket) {
 function initUpdate() {
   addConnectionHandler(onConnection);
   createAutoUpdater();
+
+  if (process.platform == 'win32') {
+    status.misc.updatesEnabled = true;
+  }
+  else if (process.platform == 'linux') {
+    // on Linux updates are supported only for AppImage packages
+    status.misc.updatesEnabled = (process.env.APPIMAGE != undefined);
+  } else {
+    // The original OpenBuilds disables updates on Mac for some unknown reason. Until I can test this, it will be disabled
+  }
 }
 
 module.exports = {

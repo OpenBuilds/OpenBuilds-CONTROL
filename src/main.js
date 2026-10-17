@@ -574,7 +574,10 @@ function main() {
   initGrblSender();
   initGrblUtilities();
   initFlash();
-  initUpdate();
+
+  if (electronApp.isPackaged) {
+    initUpdate();
+  }
 
   // must be the last module to start the server once all handlers are registered
   initServer();
