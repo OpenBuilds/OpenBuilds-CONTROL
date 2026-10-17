@@ -531,9 +531,6 @@ function onConnection(socket) {
 }
 
 function main() {
-console.log("EXIT");
-  electronApp.exit(0);
-return;
   process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
   app.get('/api/version', (req, res) => {
