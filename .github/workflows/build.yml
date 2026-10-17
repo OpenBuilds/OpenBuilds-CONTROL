@@ -28,18 +28,18 @@ jobs:
         run: npm ci
 
       - name: Compile and Package App
-        run: npx electron-builder
+        run: npx electron-builder --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: electron-binaries
-          path: |
-            dist/*.*
-          if-no-files-found: error
+#      - name: Upload Artifacts
+#        uses: actions/upload-artifact@v6
+#        with:
+#          name: electron-binaries
+#          path: |
+#            dist/*.*
+#          if-no-files-found: error
 
 #      # new Windows Signing (2024)
 #      - name: Setup Certificate (Windows)
