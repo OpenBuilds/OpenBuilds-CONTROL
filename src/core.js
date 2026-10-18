@@ -45,6 +45,7 @@ const persistentConfig = {
   grblWaitResponse: 1, // timeout for a response from Ctrl+X
   grblWaitReboot: 2, // timeout for bootloader to reboot after DTR toggle. this may have to be a large number for FluidNC, which takes a long time to start up
   spindleDelay: 0,
+  enableUpdates: true,
   forceDevMode: false,
 };
 
@@ -185,11 +186,11 @@ const status = {
     jobStatus: 0, // 0 - no job, 1 - running, 2 - jog job running (can't be paused)
     trayIcon: true,
     autoStart: true,
+    enableUpdates: true,
     lastFilePath: "",
     spindleDelay: 0,
     laserMode: false,
     repoName: getRepoName(),
-    updatesEnabled: false,
   },
 };
 

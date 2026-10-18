@@ -236,12 +236,10 @@ function createTrayIcon() {
     appIcon = appIcon || new Tray(nativeImage.createFromPath(iconPath));
     const contextMenuTemplate = [{
       label: 'Open User Interface (GUI)',
-      click() {
-        // debug_log("Clicked Systray")
-        showJogWindow()
-      }
-    }, {
-      label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
+      click: showJogWindow
+    },
+    {
+      label: 'Quit OpenBuilds CONTROL',
       click: exitApp
     }];
     if (process.platform == 'win32' || process.platform == 'linux') {
@@ -262,17 +260,11 @@ function createTrayIcon() {
 
     const contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
     if (appIcon) {
-      appIcon.on('click', function() {
-        // debug_log("Clicked Systray")
-        showJogWindow()
-      })
+      appIcon.on('click', showJogWindow);
     }
 
     if (appIcon) {
-      appIcon.on('balloon-click', function() {
-        // debug_log("Clicked Systray")
-        showJogWindow()
-      })
+      appIcon.on('balloon-click', showJogWindow);
     }
 
     // Call this again for Linux because we modified the context menu
@@ -289,7 +281,7 @@ function createTrayIcon() {
     }
   } else { // darwin
     const dockMenu = Menu.buildFromTemplate([{
-      label: 'Quit OpenBuilds CONTROL (Disables all integration until started again)',
+      label: 'Quit OpenBuilds CONTROL',
       click() {
         electronApp.exit(0);
       }
@@ -574,9 +566,7 @@ function main() {
   initGrblUtilities();
   initFlash();
 
-  if (electronApp.isPackaged) {
-    initUpdate();
-  }
+  initUpdate(electronApp.isPackaged);
 
   // must be the last module to start the server once all handlers are registered
   initServer();

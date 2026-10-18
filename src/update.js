@@ -2,70 +2,72 @@
 
 "use strict";
 
+const MAX_CHANGELOG_LINES = 12;
+
 // System dependencies
+var fs = require('fs');
+var path = require('path');
+
 const {
   shell,
 } = require('electron');
+
+const {
+  autoUpdater,
+  CancellationToken
+} = require('electron-updater');
 
 
 // App dependencies
 const {
   debug_log,
   status,
+  persistentConfig,
+  savePersistentConfig,
 } = require('./core.js');
 
 const {
   serverEmit,
   addConnectionHandler,
+  addDocReadyHandler,
 } = require('./server.js');
 
 
-
 // Global variables
-var autoUpdater;
-var updateIsDownloading = false;
+var changelogText = "";
+var downloadCancelToken = null;
+var pendingInfo = null; // null - not ready, false - ready, object - send on next onDocReady
 
-
-function createAutoUpdater() {
-  autoUpdater = require("electron-updater").autoUpdater;
+function createAutoUpdater(isPackaged) {
   autoUpdater.autoInstallOnAppQuit = false;
-  var availversion = '0.0.0'
+  autoUpdater.autoDownload = false;
+  autoUpdater.fullChangelog = true;
 
-  autoUpdater.on('checking-for-update', () => {
-    var string = 'Starting update... Please wait';
-    var output = {
-      'command': 'autoupdate',
-      'response': string
+  if (!isPackaged) {
+    autoUpdater.forceDevUpdateConfig = true;
+    let repo = require('../package').repository;
+    if (repo.startsWith('https://github.com/')) {
+      repo = repo.substring(19).split('/');
+      autoUpdater.setFeedURL({provider: "github", owner: repo[0], repo: repo[1]});
     }
-    serverEmit('updatedata', output);
-  })
+  }
 
-  // eslint-disable-next-line no-unused-vars
-  autoUpdater.on('update-available', (ev, info) => {
-    updateIsDownloading = true;
-    var string = "Starting Download: v" + ev.version;
-    availversion = ev.version
-    var output = {
-      'command': 'autoupdate',
-      'response': string
+  autoUpdater.on('update-available', (info) => {
+    if (process.platform == 'win32') {
+      info.canInstall = true;
+    } else if (process.platform == 'linux') {
+      // on Linux updates are supported only for AppImage packages
+      info.canInstall = (process.env.APPIMAGE != undefined);
+    } else { // Mac
+      // The original OpenBuilds disables updates on Mac for some unknown reason. Until I can test it, auto updates will be disabled
     }
-    serverEmit('updatedata', output);
-    debug_log(JSON.stringify(ev))
-  })
 
-  // eslint-disable-next-line no-unused-vars
-  autoUpdater.on('update-not-available', (ev, info) => {
-    var string = 'Update not available. Installed version: ' + status.driver.version + " / Available version: " + ev.version + ".\n";
-    if (status.driver.version === ev.version) {
-      string += "You are already running the latest version!"
+    if (pendingInfo == false) {
+      serverEmit('update-available', info);
+    } else {
+      pendingInfo = info;
     }
-    var output = {
-      'command': 'autoupdate',
-      'response': string
-    }
-    serverEmit('updatedata', output);
-    debug_log(JSON.stringify(ev))
-  })
+  });
 
   autoUpdater.on('error', (ev, err) => {
     const string = err ? 'Error in auto-updater: \n' + err.split('SyntaxError')[0] : 'Error in auto-updater';
@@ -76,73 +78,71 @@ function createAutoUpdater() {
     serverEmit('updatedata', output);
   })
 
-  // eslint-disable-next-line no-unused-vars
-  autoUpdater.on('download-progress', (ev, progressObj) => {
-    updateIsDownloading = true;
-    var string = 'Download update ... ' + ev.percent.toFixed(1) + '%';
-    debug_log(string)
-    var output = {
-      'command': 'autoupdate',
-      'response': string
-    }
-    serverEmit('updatedata', output);
-    serverEmit('updateprogress', ev.percent.toFixed(0));
+  autoUpdater.on('download-progress', (ev) => {
+    serverEmit('download-progress', Math.max(Math.floor(ev.percent), 99));
   })
 
-  // eslint-disable-next-line no-unused-vars
-  autoUpdater.on('update-downloaded', (info) => {
-    var string = "New update ready";
-    var output = {
-      'command': 'autoupdate',
-      'response': string
-    }
-    serverEmit('updatedata', output);
-    serverEmit('updateready', availversion);
-    // repeat every minute
-    setTimeout(function() {
-      serverEmit('updateready', availversion);
-    }, 1000 * 60 * 60 * 8) // 8hrs before alerting again if it was snoozed
-    updateIsDownloading = false;
+  autoUpdater.on('update-cancelled', () => {
+    downloadCancelToken = null;
+    serverEmit('download-progress', -1);
   });
+
+  autoUpdater.on('update-downloaded', () => {
+    downloadCancelToken = null;
+    serverEmit('download-progress', 100);
+    autoUpdater.quitAndInstall();
+  });
+
+  autoUpdater.checkForUpdates();
 }
 
 function onConnection(socket) {
-  socket.on("applyUpdate", function(installNow) {
-    if (installNow) {
-      autoUpdater.quitAndInstall();
-    } else {
-      autoUpdater.autoInstallOnAppQuit = true;
+  socket.on("openUpdatePage", function() {
+    shell.openExternal("https://github.com/" + status.misc.repoName + "/releases/latest");
+  });
+
+  socket.on("cancelUpdate", function() {
+    if (downloadCancelToken) {
+      downloadCancelToken.cancel();
+      downloadCancelToken = null;
     }
   });
 
-  socket.on("openUpdatePage", function() {
-    shell.openExternal("https://github.com/" + status.misc.repoName + "/releases/latest");
-  })
+  socket.on("downloadAndInstall", function() {
+    downloadCancelToken =  new CancellationToken();
+    autoUpdater.downloadUpdate(downloadCancelToken);
+  });
 
-  socket.on("downloadUpdate", function() {
-    if (!updateIsDownloading) {
-      if (typeof autoUpdater !== 'undefined') {
-        autoUpdater.checkForUpdates();
-      } else {
-        debug_log("autoUpdater not found")
-      }
-    }
-  })
-
+  socket.on("enableUpdates", function(enable) {
+    persistentConfig.enableUpdates = enable;
+    status.misc.enableUpdates = enable;
+    savePersistentConfig();
+  });
 }
 
-function initUpdate() {
-  addConnectionHandler(onConnection);
-  createAutoUpdater();
-
-  if (process.platform == 'win32') {
-    status.misc.updatesEnabled = true;
+function onDocReady(result) {
+  if (pendingInfo) {
+    serverEmit('update-available', pendingInfo);
   }
-  else if (process.platform == 'linux') {
-    // on Linux updates are supported only for AppImage packages
-    status.misc.updatesEnabled = (process.env.APPIMAGE != undefined);
-  } else {
-    // The original OpenBuilds disables updates on Mac for some unknown reason. Until I can test this, it will be disabled
+  pendingInfo = false;
+  result.changelogText = changelogText;
+}
+
+function initUpdate(isPackaged) {
+  addConnectionHandler(onConnection);
+  addDocReadyHandler(onDocReady);
+  if (persistentConfig.enableUpdates) {
+    createAutoUpdater(isPackaged);
+  }
+  status.misc.enableUpdates = persistentConfig.enableUpdates;
+
+  try {
+    const changelog = path.join(__dirname, "..", "CHANGELOG.txt");
+    var text = fs.readFileSync(changelog, 'utf8');
+    text = text.split('\n', MAX_CHANGELOG_LINES);
+    changelogText = text.join('\n');
+  } catch (err) {
+    debug_log(err);
   }
 }
 

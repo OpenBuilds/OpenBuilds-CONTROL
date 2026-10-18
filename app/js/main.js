@@ -165,6 +165,8 @@ function onDocReady(data) {
     if (data.platform == 'linux') {
       $('#disableAutoStartLabel').html("Disable Tray Icon"); // no autostart on linux
     }
+
+    setChangelog(data.changelogText);
   }
 }
 

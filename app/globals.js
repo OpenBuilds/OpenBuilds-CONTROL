@@ -17,7 +17,6 @@ const IconPicker = {};
 // eslint-disable-next-line no-unused-vars
 const usedFunctions = {
   gotoHistory,
-  cancelUpdateTimer,
   updateSettingsState,
   appSettings,
   onMacroShortcutInputClick,

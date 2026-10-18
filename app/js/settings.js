@@ -55,6 +55,9 @@ const appSettingsDlg = `
     <label class="cell-sm-8"><b>OS Integration</b></label>
   </div>
 
+  <div class="cell-sm-10" style="padding-left:8px;">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Check for updates on startup" id="enableUpdatesCheck" />
+  </div>
   <div class="row" style="padding-left:8px;">
     <div class="cell-sm-5" id="enableTrayIconCell">
       <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable Tray Icon" id="enableTrayIconCheck" onclick="updateSettingsState()" />
@@ -115,6 +118,7 @@ function applySettings() {
       socket.emit('autoStart', $('#enableAutoStartCheck').prop('checked'));
     }
   }
+  socket.emit('enableUpdates', $('#enableUpdatesCheck').prop('checked'));
 
   disable4thAxis = $('#disable4thAxisCheck').prop('checked');
   localStorage.setItem('disable4thAxis', disable4thAxis);
@@ -176,8 +180,8 @@ function appSettings(category) {
   } else {
     $('#enableTrayIconCheckCell').hide();
     $('#enableAutoStartCheckCell').hide();
-    $('#osSettings').hide();
   }
+  $('#enableUpdatesCheck').prop('checked', laststatus.misc.enableUpdates);
 
   $('#spindleDelay').val(laststatus.misc.spindleDelay);
 
