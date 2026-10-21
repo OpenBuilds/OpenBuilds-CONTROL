@@ -1,7 +1,0 @@
-1) ssh to server
-2) Run certbot -d mymachine.openbuilds.com --manual --preferred-challenges dns certonly
-3) Update DNS record
-4) Continue with CertBot
-5) scp /etc/letsencrypt/archive/mymachine.openbuilds.com
-- copy fullchain1.pem and privkey1.pem to CONTROL root directory  (NB check 1. 2. 3. etc - certbot can append a version number, look at the date)
-6) Build and Deploy
