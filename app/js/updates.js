@@ -30,11 +30,36 @@ function getReleaseStats() {
 }
 
 function setChangelog(changelogText) {
-  let template = `<ul>`;
+  let closeUl = false;
+  let firstLine = false;
+  let template = "";
   for (let line of changelogText.split('\n')) {
-    template += '<li>' + line + '</li>';
+    if (line[0] == '*') {
+      if (!closeUl) {
+        template += firstLine ? '<ul style="padding-bottom:4px; padding-left:6px; margin:0px;">\n' : '<ul style="padding-top:4px; padding-bottom:4px; padding-left:6px; margin:0px;">\n';
+        closeUl = true;
+      }
+      firstLine = false;
+      template += '<li>' + line.substr(1) + '</li>\n';
+      continue;
+    }
+
+    if (closeUl) {
+      template += '</ul>\n';
+      closeUl = false;
+    }
+
+    if (line[0] == 'v') {
+      template += '<b style="line-height:2rem;">' + line + '</b><br>\n';
+      firstLine = true;
+    } else if (line.length > 0) {
+      template += line + '<br>\n';
+      firstLine = false;
+    }
   }
-  template += `</ul>`;
+  if (!closeUl) {
+    template += '<ul><br>\n';
+  }
 
   $("#changelog").html(template);
 }
@@ -84,7 +109,7 @@ function onUpdateAvailable(info) {
 
   let template = `
   <div class="dialog-content">
-    A new version ` + info.version + ` of OpenBuilds CONTROL is available for download.<br>
+    A new version ` + info.version + ` of Groove Control is available for download.<br>
     <h6>What's new since v` + laststatus.driver.version + `</h6>
     <div class="text-small bd-openbuilds" style="max-height:300px; overflow-y:auto; padding:2px 10px; border:solid 1px;">
     <style>p { margin-top: 5px; }</style>

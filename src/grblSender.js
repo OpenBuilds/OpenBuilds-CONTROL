@@ -187,7 +187,7 @@ function parseStatusReport(data) {
         pause();
         serverEmitOutput({
           command: '[external from hardware]',
-          response: "OpenBuilds CONTROL received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected)",
+          response: "Groove Control received a FEEDHOLD notification from Grbl: This could be due to someone pressing the HOLD button (if connected)",
           type: 'info'
         });
       } // end if HOLD
@@ -202,7 +202,7 @@ function parseStatusReport(data) {
         stop(true);
         serverEmitOutput({
           command: '[external from hardware]',
-          response: "OpenBuilds CONTROL received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected)",
+          response: "Groove Control received a RESET/ABORT notification from Grbl: This could be due to someone pressing the RESET/ABORT button (if connected)",
           type: 'info'
         });
       } // end if ABORT
@@ -212,7 +212,7 @@ function parseStatusReport(data) {
         unpause();
         serverEmitOutput({
           command: '[external from hardware]',
-          response: "OpenBuilds CONTROL received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)",
+          response: "Groove Control received a CYCLESTART/RESUME notification from Grbl: This could be due to someone pressing the CYCLESTART/RESUME button (if connected)",
           type: 'info'
         });
       } // end if RESUME/START
@@ -479,33 +479,6 @@ function handleGreeting(data, command) {
   send1Q();
 }
 
-function parseInterface(data) {
-  serverEmitOutput({
-    command: 'connect',
-    response: "Detected an OpenBuilds Interface on port " + port.path,
-    type: 'success'
-  });
-  status.interface.connected = true;
-  if (data.split(":")[1].indexOf("ver") == 0) {
-    var installedVersion = parseFloat(data.split(":")[1].split("]")[0].split("-")[1])
-    status.interface.firmware.installedVersion = installedVersion
-    serverEmitOutput({
-      command: 'connect',
-      response: "OpenBuilds Interface Firmware Version: v" + installedVersion,
-      type: 'info'
-    });
-    if (installedVersion < status.interface.firmware.availVersion) {
-      serverEmitOutput({
-        command: 'connect',
-        response: "OpenBuilds Interface Firmware OUTDATED: v" + installedVersion + " can be upgraded to v" + status.interface.firmware.availVersion,
-        type: 'error'
-      });
-      serverEmit('interfaceOutdated', status);
-    }
-  }
-  serverEmit("status", status);
-}
-
 function handleOK(data, command) {
   serverEmit('ok', command);
   sentBuffer.shift();
@@ -587,7 +560,6 @@ function onParserData(data) {
   else if (data.startsWith("[VER:")) {
     parseVersion(data);
     serverEmit("status", status);
-    serverEmit("machinename", status.machine.name);
   }
   else if (data.startsWith("[OPT:")) {
     parseOptions(data);
@@ -598,9 +570,6 @@ function onParserData(data) {
   }
   else if (data.startsWith("[PRB:")) {
     handleProbe(data, command != "$#" && command != undefined);
-  }
-  else if (data.startsWith("[INTF:")) {
-    parseInterface(data);
   }
   else if (data.startsWith("Grbl") || data.startsWith("[FIRMWARE:grblHAL]")) { // Check if it's Grbl
     handleGreeting(data, command);
@@ -755,19 +724,11 @@ async function connectController(data) {
 
     // Finally give up and close the port
     debug_log("No supported firmware detected. Closing port " + port.path);
-    if (status.interface.connected) {
-      serverEmitOutput({
-        command: 'connect',
-        response: `ERROR!:  Connection established to INTERFACE, but no response from Grbl on the upstream controller. See https://github.com/OpenBuilds/docs-migrated/wiki for more details. Closing port ` + port.path,
-        type: 'error'
-      });
-    } else {
-      serverEmitOutput({
-        command: 'connect',
-        response: `ERROR!:  No Response from Controller - See https://github.com/OpenBuilds/docs-migrated/wiki for troubleshooting information. Closing port ` + port.path,
-        type: 'error'
-      });
-    }
+    serverEmitOutput({
+      command: 'connect',
+      response: `ERROR!:  No Response from Controller - See https://github.com/OpenBuilds/docs-migrated/wiki for troubleshooting information. Closing port ` + port.path,
+      type: 'error'
+    });
     closePort();
   }
   // eslint-disable-next-line no-unused-vars, no-empty

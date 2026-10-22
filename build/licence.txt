@@ -20,4 +20,4 @@ We are not obliged to provide any technical support or assistance with the use o
 Termination:
 We reserve the right to terminate your use of the software, including any beta features, at any time without prior notice.
 
-By using this machine control software or any software provided by OpenBuilds and its affiliates, including any beta features, you agree to the terms and conditions set forth in this legal disclaimer. If you do not agree to these terms, you may not use any of the software provided by OpenBuilds and its affiliates , including any beta features.
+By using this machine control software, including any beta features, you agree to the terms and conditions set forth in this legal disclaimer. If you do not agree to these terms, you may not use any of the software, including any beta features.

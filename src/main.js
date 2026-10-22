@@ -63,16 +63,12 @@ const {
 } = require('./grblUtilities.js');
 
 const {
-  initFlash
-} = require('./flash.js');
-
-const {
   initUpdate
 } = require('./update.js');
 
 
 // Global variables
-const iconPath = path.join(rootDir, 'app/icon.png');
+const iconPath = path.join(rootDir, 'app/icon_w.png');
 
 var devMode = false;
 var safeMode = false;
@@ -239,7 +235,7 @@ function createTrayIcon() {
       click: showJogWindow
     },
     {
-      label: 'Quit OpenBuilds CONTROL',
+      label: 'Quit Groove Control',
       click: exitApp
     }];
     if (process.platform == 'win32' || process.platform == 'linux') {
@@ -275,13 +271,13 @@ function createTrayIcon() {
     if (appIcon) {
       appIcon.displayBalloon({
         icon: nativeImage.createFromPath(iconPath),
-        title: "OpenBuilds CONTROL Started",
-        content: "OpenBuilds CONTROL has started successfully"
+        title: "Groove Control Started",
+        content: "Groove Control has started successfully"
       })
     }
   } else { // darwin
     const dockMenu = Menu.buildFromTemplate([{
-      label: 'Quit OpenBuilds CONTROL',
+      label: 'Quit Groove Control',
       click() {
         electronApp.exit(0);
       }
@@ -351,12 +347,12 @@ function createJogWindow() {
     center: true,
     resizable: true,
     maximizable: true,
-    title: "OpenBuilds CONTROL ",
+    title: "Groove Control ",
     name: PERSISTED_STATE_TAG,
     frame: false,
     autoHideMenuBar: true,
     icon: nativeImage.createFromPath(
-      path.join(rootDir, "/app/favicon.png")
+      path.join(rootDir, "/app/icon_w.png")
     ),
     webgl: true,
     experimentalFeatures: true,
@@ -420,7 +416,7 @@ function showJogWindow() {
 }
 
 function initElectron() {
-  electronApp.setAppUserModelId("openbuilds.control")
+  electronApp.setAppUserModelId("groove.control")
   electronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
   electronApp.commandLine.appendSwitch('enable-gpu-rasterization')
   electronApp.commandLine.appendSwitch('enable-zero-copy')
@@ -469,20 +465,20 @@ function initElectron() {
 }
 
 function onConnection(socket) {
-  socket.on("openbuilds", function() {
-    shell.openExternal('https://github.com/OpenBuilds/OpenBuilds-CONTROL')
+  socket.on("opengroove", function() {
+    shell.openExternal('https://github.com/ivomirb/OpenBuilds-CONTROL')
   });
 
   socket.on("opencam", function() {
     shell.openExternal('https://github.com/OpenBuilds/OpenBuilds-CAM')
   });
 
-  socket.on("opendocs", function() {
+  socket.on("openwiki", function() {
     shell.openExternal('https://github.com/OpenBuilds/docs-migrated/wiki')
   });
 
   socket.on("openforum", function() {
-    shell.openExternal('https://github.com/OpenBuilds/docs-migrated/wiki')
+    shell.openExternal('https://github.com/ivomirb/OpenBuilds-CONTROL/discussions')
   });
 
   socket.on("minimisetotray", function() {
@@ -540,7 +536,7 @@ function main() {
     debug_log(req.hostname)
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.send('Host: ' + req.hostname + ' asked to activate OpenBuilds CONTROL v' + status.driver.version);
+    res.send('Host: ' + req.hostname + ' asked to activate Groove Control v' + status.driver.version);
     showJogWindow()
     setTimeout(function() {
       serverEmit('activate', req.hostname);
@@ -564,7 +560,6 @@ function main() {
   initGrblPort();
   initGrblSender();
   initGrblUtilities();
-  initFlash();
 
   initUpdate(electronApp.isPackaged);
 

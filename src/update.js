@@ -2,7 +2,7 @@
 
 "use strict";
 
-const MAX_CHANGELOG_LINES = 12;
+const MAX_CHANGELOG_LINES = 16;
 
 // System dependencies
 var fs = require('fs');
@@ -139,7 +139,7 @@ function initUpdate(isPackaged) {
   try {
     const changelog = path.join(__dirname, "..", "CHANGELOG.txt");
     var text = fs.readFileSync(changelog, 'utf8');
-    text = text.split('\n', MAX_CHANGELOG_LINES);
+    text = text.split(/\r?\n/, MAX_CHANGELOG_LINES);
     changelogText = text.join('\n');
   } catch (err) {
     debug_log(err);

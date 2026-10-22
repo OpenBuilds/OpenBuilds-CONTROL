@@ -2,8 +2,6 @@
 // Uses the pause/resume functionality instead of the G4 command.
 // This is useful if G4 is not working for some reason.
 
-// Requires OpenBuilds v1.0.371 or newer.
-
 // To install it:
 //   * Go to the Macros tab in OpenBuilds
 //   * Click the +Create button

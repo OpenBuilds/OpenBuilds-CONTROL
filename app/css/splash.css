@@ -15,7 +15,7 @@
   background-color: #000;
 }
 
-#openbuildslogosplash img {
+#logosplash img {
   width: 500px;
   max-width: 100%;
   /* Ensure it scales on smaller screens */

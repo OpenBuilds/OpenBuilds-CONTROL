@@ -2,7 +2,7 @@
 <html lang="en">
 
   <head>
-    <title>OpenBuilds CONTROL</title>
+    <title>Groove Control</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="author" content="">
@@ -23,8 +23,7 @@
 
     <div class="pos-fixed pos-center" id="splash">
       <center>
-        <div id="openbuildslogosplash" style="display: none;">
-          <img src="/img/OpenBuildsCONTROL.svg">
+        <div id="logosplash" style="display: none;">
         </div>
       </center>
     </div>
@@ -33,8 +32,8 @@
     <div class="window bd-black" style="height: 100vh; overflow-y: hidden;">
       <div id="windowtitlebar" class="window-caption bg-black bd-black" style="-webkit-app-region: drag; height: 42px; padding-left: 3px;">
         <!-- <span class="icon mif-cog"></span> -->
-        <span><img src="/img/OpenBuildsCONTROL.svg" height="40" /></span>
-        <span class="title" id="windowtitle" style="padding-left: 10px;">OpenBuilds CONTROL</span>
+        <span><img src="/img/groove-control-logo.svg" height="40" /></span>
+        <span class="title" id="windowtitle" style="padding-left: 10px;">Groove Control</span>
 
         <div class="buttons" style="-webkit-app-region: no-drag">
           <span title="Minimize" class="btn-custom" onclick="socket.emit('minimize')"><i class="fas fa-window-minimize"></i></span>
@@ -169,15 +168,6 @@
 
             <div class="section" id="section-jog">
               <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('openbuilds', true);">
-                  <span class="icon">
-                    <img src="img/openbuilds-logo.svg">
-                  </span>
-                  <span class="caption">OpenBuilds<br>&nbsp;</span>
-                </button>
-                <span class="title">Visit</span>
-              </div>
-              <div class="group">
                 <div class="form-group">
                   <form class="form">
                     <select data-prepend="&nbsp;<i class='fab fa-usb'></i>" class="success" style="width:450px" data-role="select" data-filter="false" id="portUSB" disabled>
@@ -186,7 +176,6 @@
 
                     <button class="button small success float-right" onclick="selectPort()" id="connectBtn" type="button" style="margin-top:5px;" disabled>Connect</button>
                     <button class="button small alert" style="display:none; padding:0px 14px; margin:0 3px;" onclick="closePort()" id="disconnectBtn" type="button">Disconnect</button>
-                    <button class="button small secondary disabled" disabled style="display:none; margin:5px;" id="flashBtn" type="button">Flashing: please wait...</button>
                     <button class="button small outline success float-right" onclick="scanNetwork();" id="scanBtn" type="button" style="margin:5px;">Scan Network</button>
 
                     <div class="ribbon-group" id="grblButtons">
@@ -410,9 +399,6 @@ The spindle will automatically start when the job is resumed.">
                     <li class="disabled grblCalibrationMenu" onclick="zstepscalibrate();"><a href="#"><i class="fas fas fa-sort-amount-down-alt fa-fw"></i> Calibrate Z-Axes Steps/mm</a></li>
                     <li class="disabled grblCalibrationMenu servo-active" onclick="servocalibrate();"><a href="#"><i class="fas fa-pen fa-fw"></i> Calibrate Servo Pen Up/Down</a></li>
                     <li class="divider fg-gray"></li>
-                    <li onclick="openFlashingTool();"><a href="#"><i class="fas fa-microchip fa-fw"></i> Firmware Flashing Tool</a></li>
-                    <li onclick="populateFlashDrivePrepForm();"><a href="#"><i class="fas fa-upload fa-fw"></i> Prepare USB Flashdrive for Interface</a></li>
-                    <li class="divider fg-gray"></li>
                     <li onclick="showJobLog();"><a href="#"><i class="fas fa-history fa-fw"></i> Job Log</a></li>
                     <li class="divider fg-gray"></li>
                     <li onclick="jogWidget();"><a href="#"><i class="fas fa-mobile-alt"></i> Mobile Jog Widget</a></li>
@@ -465,6 +451,16 @@ The spindle will automatically start when the job is resumed.">
 
             <div class="section" id="section-troubleshooting">
               <div class="group">
+                <button class="ribbon-button" onclick="socket.emit('opengroove', true);">
+                  <span class="icon" style="justify-items:center;">
+                    <img class="light_theme_only" src="img/groove-logo_b.svg">
+                    <img class="dark_theme_only" src="img/groove-logo_w.svg">
+                  </span>
+                  <span class="caption">Groove<br>Control</span>
+                </button>
+                <span class="title">Website</span>
+              </div>
+              <div class="group">
                 <button class="ribbon-button" onclick="appSettings()">
                   <span class="icon">
                     <span class="fa-layers fa-fw">
@@ -485,20 +481,20 @@ The spindle will automatically start when the job is resumed.">
               </div>
 
               <div class="group">
-                <button class="ribbon-button" onclick="socket.emit('opendocs', true);">
+                <button class="ribbon-button" onclick="socket.emit('openwiki');">
                   <span class="icon">
                     <i class="fas fa-book" data-fa-transform=""></i>
                   </span>
-                  <span class="caption">OpenBuilds<br>Documentation</span>
+                  <span class="caption">OpenBuilds<br>Archive</span>
                 </button>
-                <button class="ribbon-button" onclick="socket.emit('openforum', true);">
+                <button class="ribbon-button" onclick="socket.emit('openforum');">
                   <span class="icon">
                     <span class="fa-layers fa-fw">
                       <i class="far fa-comment-alt" data-fa-transform=""></i>
                       <i class="fas fa-question" data-fa-transform="shrink-8 up-1"></i>
                     </span>
                   </span>
-                  <span class="caption">OpenBuilds<br>Forum</span>
+                  <span class="caption">Groove<br>Forum</span>
                 </button>
                 <span class="title">Support</span>
               </div>
@@ -1102,10 +1098,6 @@ Restore previous origins from history.">
                     </div>
 
 
-                    <div style="position: absolute; top: 10px; right:10px; z-index: 1; max-width: 100px; max-width: 100px;" id="overlayimg">
-                      <!-- <img src="img/mch/acro55.png" style="max-width:100%; max-height:100%;">
-                    <span style="position: absolute; top: 3px; right:3px; z-index: 1;" class="fas fa-cogs"></span> -->
-                    </div>
                     <div class="fixed-bottom" style="position:absolute; left:10px; bottom:0px; display:flex; flex-direction:row; align-items:self-end; justify-content:flex-start;">
                       <button id="runSimBtn" style="margin-right:11px; margin-bottom:10px;" title="Run simulation" class="button dark" onclick="sim(0, true)"><i class="fas fa-fighter-jet"></i> Simulate</button>
                       <div class="content-holder" id="simControls" style="display:none; height: auto; padding:5px;  margin-left:-6px; margin-bottom:4px; border: 1px solid;">
@@ -1328,7 +1320,7 @@ Restore previous origins from history.">
                     <i class="fas fa-fw fa-history"></i>&nbsp;What's new in this version
                   </div>
                   <div class="card-content" style="height: calc(100vh - 530px); min-height: 120px; overflow-x: auto;">
-                    <div id="changelog" class="text-small"></div>
+                    <div id="changelog" class="text-small" style="padding:2px 8px;"></div>
                   </div>
                 </div>
 
@@ -1808,7 +1800,6 @@ Restore previous origins from history.">
   <script type="text/javascript" src="js/main.js"></script>
   <script type="text/javascript" src="js/updates.js"></script>
 
-  <script type="text/javascript" src="js/grbl-settings-defaults.js"></script>
   <script type="text/javascript" src="js/grbl-settings-templates.js"></script>
   <script type="text/javascript" src="js/grbl-settings.js"></script>
 
@@ -1836,11 +1827,6 @@ Restore previous origins from history.">
 
   <script type="text/javascript" src="wizards/surfacing/surfacing.js"></script>
   <script type="text/javascript" src="wizards/heightmap/heightmap.js"></script>
-
-  <!-- <script type="text/javascript" src="wizards/flashingtool/grbl-flashing.js"></script> -->
-  <script type="text/javascript" src="wizards/flashingtool2/flashingtool.js"></script>
-
-  <script type="text/javascript" src="wizards/interface/usbprep.js"></script>
 
   <script type="text/javascript" src="wizards/jobstats/jobstats.js"></script>
 

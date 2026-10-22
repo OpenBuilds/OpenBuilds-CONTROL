@@ -28,12 +28,10 @@ function loadGrblBackupFile() {
     $('#settingsModifiedFilter:checkbox').prop('checked', false);
     toggleModifiedFilter(false);
 
-    data = data.split("\n");
-    for (let i = 0; i < data.length; i++) {
-      const parts = data[i].split('=');
-      if (data[i].indexOf("$I=") == 0) {
-        setMachineButton(parts[1])
-      } else {
+    data = data.split(/\r?\n/);
+    for (const line of data) {
+      if (!line.startsWith("$I=")) {
+        const parts = line.split('=');
         const key = parts[0].substring(1);
         const value = parts[1];
         if (grblSettingsTemplate[key] == undefined || grblSettingsTemplate[key].type == "text")
@@ -153,19 +151,22 @@ function restoreAutoBackup(index) {
 
 function backupGrblSettings() {
   autoBackup("Manual Backup");
-  let grblBackup = ""
+
+  const EOL = laststatus.driver.operatingsystem == "windows" ? "\r\n" : "\n";
+
+  let grblBackup = "";
   for (let key in grblParams) {
     const key2 = key.substr(1);
 
     const template = grblSettingsTemplate[key2];
     if (template !== undefined && template.type != "text") {
-      grblBackup += key + "=" + grblParams[key] + "  ;  " + template.title + "\n";
+      grblBackup += key + "=" + grblParams[key] + "  ;  " + template.title + EOL;
     } else {
-        grblBackup += key + "=" + grblParams[key] + "\n";
+        grblBackup += key + "=" + grblParams[key] + EOL;
     }
   }
   if (laststatus.machine.name.length > 0) {
-    grblBackup += "$I=" + laststatus.machine.name
+    grblBackup += "$I=" + laststatus.machine.name + EOL;
   }
   const blob = new Blob([grblBackup], {
     type: "plain/text"
@@ -234,7 +235,7 @@ function grblSaveSettings() {
         saveProgressBar.val(counter / toSaveCommands.length * 100);
       }
       //
-      sendGcode(toSaveCommands[counter] + "\n");;
+      sendGcode(toSaveCommands[counter] + "\n");
       counter++;
       if (counter === toSaveCommands.length) {
         // Finished running
@@ -248,11 +249,11 @@ function grblSaveSettings() {
 
 }
 function grblSettings(data) {
-  const grblconfig = data.split('\n')
-  for (let i = 0; i < grblconfig.length; i++) {
-    const key = grblconfig[i].split('=')[0];
-    const param = grblconfig[i].split(/[= ;(]/)[1]
-    grblParams[key] = param
+  const grblconfig = data.split('\n');
+  for (const line of grblconfig) {
+    const key = line.split('=')[0];
+    const param = line.split(/[= ;(]/)[1];
+    grblParams[key] = param;
   }
 
   $('#grblSettings').show();
@@ -293,16 +294,6 @@ function grblSettings(data) {
   }
 }
 
-function showBasicSettings() {
-  $("#grbl-settings-basic").show();
-  $("#grbl-settings-advanced").hide();
-}
-
-function showAdvSettings() {
-  $("#grbl-settings-basic").hide();
-  $("#grbl-settings-advanced").show();
-}
-
 function grblPopulate() {
   if (isJogWidget) return;
 
@@ -311,140 +302,6 @@ function grblPopulate() {
   let template = `
   <form id="grblSettingsTable">
 
-  <ul data-role="tabs" data-expand="true" class="mb-2">
-    <li id="grblSettingsBasicTab" onclick="showBasicSettings()"><a href="#"><small><i class="fas fa-fw fa-cog mr-1 fg-darkGreen"></i>Basic Settings</a></small></li>
-    <li id="grblSettingsAdvTab" onclick="showAdvSettings()" class="active"><a href="#"><small><i class="fas fa-fw fa-cogs mr-1 fg-darkRed"></i>Advanced Settings</a></small></li>
-  </ul>
-
-
-  <div id="grbl-settings-basic" style="display: none;">
-      <ul class="step-list mb-3">
-        <li>
-          <h6>Select your Machine<br><small>Tell us what machine you have?</small></h6>
-          <a style="width: 100%;"
-            class="button dropdown-toggle bd-dark dark outline"
-            id="context_toggle2"><img src="img/mch/leadmachine1010.png" /> Select
-            your machine type from the list:</a>
-          <ul class="ribbon-dropdown machine-profile-menu" data-role="dropdown"
-            data-duration="100">
-            <li><a href="#" onclick="selectMachine('custom');"><img
-                  src="img/mch/custom.png" width="16px" /> CUSTOM Machine (Profile
-                sets sane defaults)</a></li>
-            <li>
-              <a href="#" class="dropdown-toggle"><img src="img/mch/acro55.png"
-                  width="16px" /> OpenBuilds ACRO</a>
-              <ul class="ribbon-dropdown" data-role="dropdown">
-                <li onclick="selectMachine('acro55');"><a href="#"><img
-                      src="img/mch/acro55.png" width="16px" /> OpenBuilds ACRO 55</a></li>
-                <li onclick="selectMachine('acro510');"><a href="#"><img
-                      src="img/mch/acro510.png" width="16px" /> OpenBuilds ACRO
-                    510</a></li>
-                <li onclick="selectMachine('acro1010');"><a href="#"><img
-                      src="img/mch/acro1010.png" width="16px" /> OpenBuilds ACRO
-                    1010</a></li>
-                <li onclick="selectMachine('acro1510');"><a href="#"><img
-                      src="img/mch/acro1510.png" width="16px" /> OpenBuilds ACRO
-                    1510</a></li>
-                <li onclick="selectMachine('acro1515');"><a href="#"><img
-                      src="img/mch/acro1515.png" width="16px" /> OpenBuilds ACRO
-                    1515</a></li>
-                <li class="divider"></li>
-                <li onclick="selectMachine('acroa1');"><a href="#"><img
-                      src="img/mch/acroa1.png" width="16px" /> OpenBuilds ACRO A1</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#" class="dropdown-toggle"><img src="img/mch/cbeam.png"
-                  width="16px" /> OpenBuilds C-Beam Machine</a>
-              <ul class="ribbon-dropdown" data-role="dropdown">
-                <li onclick="selectMachine('cbeam');"><a href="#"><img
-                      src="img/mch/cbeam.png" width="16px" /> OpenBuilds C-Beam
-                    Machine</a></li>
-                <li onclick="selectMachine('cbeamxl');"><a href="#"><img
-                      src="img/mch/cbeamxl.png" width="16px" /> OpenBuilds C-Beam
-                    XL</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#" class="dropdown-toggle"><img
-                  src="img/mch/leadmachine1010.png" width="16px" /> OpenBuilds
-                LEAD Machine</a>
-              <ul class="ribbon-dropdown" data-role="dropdown">
-                <li onclick="selectMachine('leadmachine1010');"><a href="#"><img
-                      src="img/mch/leadmachine1010.png" width="16px" />OpenBuilds
-                    LEAD 1010</a></li>
-                <li onclick="selectMachine('leadmachine1010laser');"><a href="#"><img
-                      src="img/mch/leadmachine1010laser.png" width="16px" />OpenBuilds
-                    LEAD 1010 with Laser Module</a></li>
-                <li onclick="selectMachine('leadmachine1010plasma');"><a href="#"><img
-                      src="img/mch/leadmachine1010plasma.png" width="16px" />OpenBuilds
-                    LEAD 1010 Plasma Add-On</a></li>
-                <li onclick="selectMachine('leadmachine1515');"><a href="#"><img
-                      src="img/mch/leadmachine1515.png" width="16px" />OpenBuilds
-                    LEAD 1515</a></li>
-              </ul>
-            </li>
-            <li><a href="#" onclick="selectMachine('minimill');"><img
-                  src="img/mch/minimill.png" width="16px" /> OpenBuilds MiniMill</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <h6>Add-Ons Installed<br><small>Telling us what kind of attachments the
-              machine has, allows us to pre-configure your Grbl Settings to match</small></h6>
-          <ul class="image-checkbox-ul">
-            <li>
-              <input type="checkbox" name="limits" id="limitsinstalled"
-                value="limits">
-              <label for="limitsinstalled"><img
-                  src="./img/toolhead/xtensionslimit.png" /></label>
-              <div class="image-checkbox-text">Xtension Limit Switches</div>
-            </li>
-            <!-- Radio Group -->
-            <li>
-              <input type="radio" name="toolhead" id="toolhead_router11"
-                value="router11">
-              <label for="toolhead_router11"><img
-                  src="./img/toolhead/router11.png" /></label>
-              <div class="image-checkbox-text">RoutER11 with IoT Relay</div>
-            </li>
-            <li>
-              <input type="radio" name="toolhead" id="toolhead_plasma"
-                value="plasma">
-              <label for="toolhead_plasma"><img
-                  src="./img/toolhead/leadplasma.png" /></label>
-              <div class="image-checkbox-text">LEAD 1010 Plasma Add-On</div>
-            </li>
-            <li>
-              <input type="radio" name="toolhead" id="toolhead_laser"
-                value="laser">
-              <label for="toolhead_laser"><img src="./img/toolhead/laser.png" /></label>
-              <div class="image-checkbox-text">Laser Diode Module</div>
-            </li>
-            <li>
-              <input type="radio" name="toolhead" id="toolhead_scribe"
-                value="scribe">
-              <label for="toolhead_scribe"><img src="./img/toolhead/plotter.png" /></label>
-              <div class="image-checkbox-text">SCRIBE<br>Pen Lifter</div>
-            </li>
-            <li>
-              <input type="radio" name="toolhead" id="toolhead_vfd_spindle"
-                value="vfd_spindle">
-              <label for="toolhead_vfd_spindle"><img src="./img/toolhead/vfd.png" /></label>
-              <div class="image-checkbox-text">Variable Speed Spindle</div>
-            </li>
-            <!-- End Radio Group -->
-          </ul>
-        </li>
-
-        <li>
-          <h6>Finished<br><small>Remember to "Save to Firmware" and Reset when Prompted. <br>If you have any custom requirements,
-              please customise the settings in the Advanced Settings section above</small></h6>
-        </li>
-
-
-      </ul>
-  </div>
   <div id="grbl-settings-advanced">
       <div id="grblSettingsTableView">
         <style>
@@ -534,23 +391,6 @@ function grblPopulate() {
   $('#grblSettingsTable').on('keyup paste click change', 'input, select', checkifchanged);
 
   $('#grblSettingsBadge').hide();
-  $('#limitsinstalled:checkbox').prop('checked', grblParams['$21'] == 1 && grblParams['$22'] > 0);
-
-  if (isMatchingConfig(grblParams, grblParams_scribe)) {
-    setSelectedToolhead('scribe')
-  } else if (isMatchingConfig(grblParams, grblParams_plasma)) {
-    setSelectedToolhead('plasma')
-  } else if (isMatchingConfig(grblParams, grblParams_router)) {
-    setSelectedToolhead('router11')
-  } else if (isMatchingConfig(grblParams, grblParams_laser)) {
-    setSelectedToolhead('laser')
-  } else if (isMatchingConfig(grblParams, grblParams_vfd)) {
-    setSelectedToolhead('vfd_spindle')
-  }
-
-  setTimeout(function() {
-    setMachineButton(laststatus.machine.name);
-  }, 500)
 
   populateRestoreMenu();
 }
@@ -878,9 +718,6 @@ function setup_settings_table() {
   }
   settingsUIConstructed = true;
 
-  $('#limitsinstalled:checkbox').change(enableLimits);
-//  $('#scribeinstalled:checkbox').change(enableScribe);
-
   // Handle the change event for radio buttons
   $('input[name="toolhead"]').on('change', function() {
     const selectedToolhead = $(this).val();
@@ -946,146 +783,6 @@ function onSettingsTableCreate() {
   }
 
   setup_settings_table();
-}
-
-function enableLimits() {
-  const grblParams_lim = {
-    $21: "0", //"Hard limits enable, boolean"
-    $22: "0", //"Homing cycle enable, boolean"
-  }
-  const hasLimits = $('#limitsinstalled').is(':checked');
-  if (hasLimits) {
-    grblParams_lim.$21 = "1"; //"Hard limits enable, boolean"
-    grblParams_lim.$22 = "1"; //"Homing cycle enable, boolean"
-  } else {
-    grblParams_lim.$21 = "0"; //"Hard limits enable, boolean"
-    grblParams_lim.$22 = "0"; //"Homing cycle enable, boolean"
-  }
-  for (let key in grblParams_lim) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_lim[key]))
-  }
-  checkifchanged();
-}
-
-const grblParams_scribe = {
-  $32: "0", //PWM Freq for RC Servo
-  $33: "50", //PWM Freq for RC Servo
-  $34: "5", //Spindle Off Value for RC Servo
-  $35: "5", //Spinde Min Value for RC Servo
-  $36: "10", //Spindle max Value for RC Servo
-}
-
-function enableScribe() {
-  for (let key in grblParams_scribe) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_scribe[key]))
-  }
-  checkifchanged();
-}
-
-const grblParams_laser = {
-  $30: "1000", // S Max
-  $32: "1", // Laser Mode On
-  $33: "1000", //PWM Freq
-  $34: "0", //Spindle Off Value
-  $35: "0", //Spinde Min Value
-  $36: "100", //Spindle max Value
-}
-
-function enableLaser() {
-
-  for (let key in grblParams_laser) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_laser[key]))
-  }
-  checkifchanged();
-}
-
-const grblParams_router = {
-  $30: "1000", // S Max
-  $32: "0", // Laser Mode On
-  $33: "5000", //PWM Freq
-  $34: "0", //Spindle Off Value
-  $35: "0", //Spinde Min Value
-  $36: "100", //Spindle max Value
-}
-
-function enableRouter() {
-
-  for (let key in grblParams_router) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_router[key]))
-  }
-  checkifchanged();
-}
-
-const grblParams_plasma = {
-  $30: "1000", // S Max
-  $32: "0", // Laser Mode On
-  $33: "1000", //PWM Freq
-  $34: "0", //Spindle Off Value
-  $35: "0", //Spinde Min Value
-  $36: "100", //Spindle max Value
-}
-
-function enablePlasma() {
-
-  for (let key in grblParams_plasma) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_plasma[key]))
-  }
-  checkifchanged();
-}
-
-const grblParams_vfd = {
-  $30: "24000", // S Max
-  $32: "0", // Laser Mode On
-  $33: "1000", //PWM Freq
-  $34: "0", //Spindle Off Value
-  $35: "0", //Spinde Min Value
-  $36: "100", //Spindle max Value
-}
-
-function enableVFD() {
-
-  for (let key in grblParams_vfd) {
-    const j = key.substring(1)
-    $("#val-" + j + "-input").val(parseFloat(grblParams_vfd[key]))
-  }
-  checkifchanged();
-}
-
-function isMatchingConfig(currentParams, predefinedParams) {
-  for (let key in predefinedParams) {
-    // Compare values as numbers to handle type mismatches
-    if (parseFloat(currentParams[key]) !== parseFloat(predefinedParams[key])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-
-// Function to programmatically set the selected radio
-function setSelectedToolhead(value) {
-  const $radio = $(`input[name="toolhead"][value="${value}"]`);
-  if ($radio.length) {
-    $radio.prop('checked', true).trigger('change'); // Trigger the change event
-  } else {
-    console.error('Toolhead not found:', value);
-  }
-
-  if (value == "scribe") {
-    // Set Default Pen Up/Down values
-    penupval = 250
-    pendownval = 0
-    servo = {
-      up: penupval,
-      down: pendownval
-    }
-    localStorage.setItem("servo-calibration", JSON.stringify(servo));
-  }
 }
 
 // Compute the accurate machine dimensions. Takes into account:
