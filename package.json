@@ -1,8 +1,8 @@
 {
-  "name": "OpenBuildsCONTROL",
-  "version": "1.0.390",
-  "license": "AGPL-3.0",
-  "description": "OpenBuildsCONTROL CNC Machine Host Software",
+  "name": "GrooveControl",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "description": "GrooveControl G-code Sender",
   "author": "github.com/ivomirb <cnc@ibeltchev.com>",
   "resolutions": {
     "@electron/notarize": "2.3.2"
@@ -58,8 +58,37 @@
       }
     ],
     "afterSign": "./notarize.js",
+    "icon": "build/icons_w2/icon_w2.icns",
+    "appId": "groove.control",
+    "productName": "GrooveControl",
+    "asar": true,
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "license": "build/licence.txt",
+      "installerIcon": "build/icons_w2/icon_w2.ico",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "include": "build/installer.nsh"
+    },
+    "files": [
+      "**/*",
+      "ssl/**/*",
+      "firmware/**/*",
+      "CHANGELOG.txt",
+      "!icons_b/*",
+      "!icons_w/*",
+      ""
+    ],
+    "extraFiles": [
+      "ssl"
+    ],
+    "asarUnpack": [
+    ],
     "mac": {
-      "icon": "build/icon.icns",
+      "icon": "build/icons_w2/icon_w2.icns",
       "category": "public.app-category.graphics-design",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
@@ -72,76 +101,46 @@
           "x64",
           "arm64"
         ]
-      }
+      },
+      "fileAssociations": [
+        {
+          "ext": "obc",
+          "name": "OpenBuilds CAM Project",
+          "description": "OpenBuilds CAM Project",
+          "role": "Viewer"
+        },
+        {
+          "ext": "gcode",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "gc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "tap",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "nc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "cnc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        }
+      ]
     },
-    "icon": "build/icon.icns",
-    "appId": "openbuilds.control",
-    "productName": "OpenBuildsCONTROL",
-    "asar": true,
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "allowElevation": true,
-      "license": "build/licence.txt",
-      "installerIcon": "build/icon.ico",
-      "installerSidebar": "build/installerSidebar.bmp",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
-    },
-    "fileAssociations": [
-      {
-        "ext": "obc",
-        "name": "OpenBuilds CAM Project",
-        "description": "OpenBuilds CAM Project",
-        "role": "Viewer"
-      },
-      {
-        "ext": "gcode",
-        "name": "GCODE File",
-        "description": "GCODE File",
-        "role": "Viewer"
-      },
-      {
-        "ext": "gc",
-        "name": "GCODE File",
-        "description": "GCODE File",
-        "role": "Viewer"
-      },
-      {
-        "ext": "tap",
-        "name": "GCODE File",
-        "description": "GCODE File",
-        "role": "Viewer"
-      },
-      {
-        "ext": "nc",
-        "name": "GCODE File",
-        "description": "GCODE File",
-        "role": "Viewer"
-      },
-      {
-        "ext": "cnc",
-        "name": "GCODE File",
-        "description": "GCODE File",
-        "role": "Viewer"
-      }
-    ],
-    "files": [
-      "**/*",
-      "ssl/**/*",
-      "firmware/**/*",
-      "CHANGELOG.txt",
-      ""
-    ],
-    "extraFiles": [
-      "ssl"
-    ],
-    "asarUnpack": [
-      "esptool.exe",
-      "esptool-mac",
-      "esptool-linux",
-      "*.bin"
-    ],
     "win": {
       "target": [
         {
@@ -151,18 +150,56 @@
           ]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "build/icons_w2/icon_w2.ico"
     },
     "linux": {
-      "icon": "build/",
+      "icon": "build/icons_w2",
       "target": [
         "deb",
         "AppImage"
+      ],
+      "fileAssociations": [
+        {
+          "ext": "obc",
+          "name": "OpenBuilds CAM Project",
+          "description": "OpenBuilds CAM Project",
+          "role": "Viewer"
+        },
+        {
+          "ext": "gcode",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "gc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "tap",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "nc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "cnc",
+          "name": "G-code File",
+          "description": "G-code File",
+          "role": "Viewer"
+        }
       ]
     },
     "dmg": {
       "sign": false,
-      "icon": "build/icon.icns",
+      "icon": "build/icons_w2/icon_w2.icns",
       "contents": [
         {
           "x": 410,

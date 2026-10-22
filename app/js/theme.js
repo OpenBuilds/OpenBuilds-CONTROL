@@ -203,7 +203,8 @@ const ThemeData = {
 
       // Update the 3D view (mostly, gcode movements will keep old colours until gcode is reloaded)
       pauseAnimation = true;
-      $('#splash').show()
+      resetSplash();
+      $('#splash').show();
       if (webgl) {
         while (scene.children.length > 0) {
           disposeGeometryAndRemove(scene.children[0]);
@@ -226,9 +227,7 @@ const ThemeData = {
         $("#currentThemeIcon").html(newIcon);
         $("#currentThemeName").html("Dark<br>Mode")
       }
-      setTimeout(function() {
-        $('#splash').fadeOut(400);
-      }, 2000);
+      animateSplash();
     }
   }
 };

@@ -208,7 +208,7 @@ function debug_log() {
   }
 } // end Debug Logger
 
-debug_log("Starting OpenBuilds CONTROL v" + status.driver.version)
+debug_log("Starting Groove Control v" + status.driver.version)
 
 process.on('uncaughtException', function(err) {
   if (DEBUG) {

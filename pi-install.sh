@@ -1,5 +1,5 @@
 echo "---------------------------------------------------"
-echo "[STARTING]  OPENBUILDS-CONTROL INSTALL SCRIPT:     "
+echo "[STARTING]  GROOVE CONTROL INSTALL SCRIPT:         "
 echo "            Please wait for each step to complete. "
 echo "---------------------------------------------------"
 echo "(1/10) Updating Repositories..."
@@ -17,18 +17,18 @@ nvm install lts/iron
 nvm alias default lts/iron
 echo "(6/10) Updating npm..."
 nvm install-latest-npm
-echo "(7/10) Downloading OpenBuilds-CONTROL source code..."
-cd ~; git clone https://github.com/OpenBuilds/OpenBuilds-CONTROL.git
+echo "(7/10) Downloading Groove Control source code..."
+cd ~; git clone https://github.com/ivomirb/OpenBuilds-CONTROL.git
 cd ~/OpenBuilds-CONTROL
-echo "(8/10) Installing OpenBuilds-CONTROL dependencies..."
+echo "(8/10) Installing Groove Control dependencies..."
 npm install
-echo "(9/10) Recompiling OpenBuilds-CONTROL dependencies..."
+echo "(9/10) Recompiling Groove Control dependencies..."
 npm rebuild
 npm install electron-rebuild
 ~/OpenBuilds-CONTROL/node_modules/.bin/electron-rebuild
 echo "(10/10) Creating Menu and Desktop Shortcuts..."
-cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop ~/Desktop/OpenBuilds-CONTROL.desktop
-sudo cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop /usr/share/applications/OpenBuilds-CONTROL.desktop
+cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop ~/Desktop/GrooveControl.desktop
+sudo cp ~/OpenBuilds-CONTROL/pi-shortcut.desktop /usr/share/applications/GrooveControl.desktop
 echo "---------------------------------------------------"
 echo "[COMPLETE] Install Complete!  Thank you!"
 echo "---------------------------------------------------"

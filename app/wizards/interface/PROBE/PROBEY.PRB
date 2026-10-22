@@ -1,7 +1,0 @@
-G21 ; mm mode
-G10 P0 L20 Y0 ; zero out current location
-; Probe X
-G38.2 Y25 F100 ; Probe Y
-G4 P0.4
-G10 P0 L20 Y-<yoffset>
-$J=G91G21Y-2F1000 ; retract

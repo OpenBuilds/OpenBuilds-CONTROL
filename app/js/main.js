@@ -32,19 +32,38 @@ function setWindowTitle(status) {
   }
 
   $('#windowtitle').html(string)
-  document.title = "OpenBuilds CONTROL" + string;
+  document.title = "Groove Control" + string;
+}
+
+function resetSplash() {
+  $('#logosplash').hide();
+}
+
+function animateSplash() {
+  $('#logosplash').fadeIn(100);
+  setTimeout(function() {
+    $('#splash').fadeOut(500);
+  }, 1500);
+
+  const splashSvg = document.getElementById('logosplash');
+  splashSvg.querySelector("#animation1").beginElement();
+  splashSvg.querySelector("#animation2").beginElement();
+}
+
+async function initSplash() {
+  const svgImage = await fetch('/img/groove-control-logo_anim.svg');
+  const svgSrc = await svgImage.text();
+  $('#logosplash').html(svgSrc);
+  animateSplash();
 }
 
 $(document).ready(function() {
-  $('#openbuildslogosplash').fadeIn(100);
-  setTimeout(function() {
-    $('#splash').fadeOut(500);
-  }, 1400)
-
   if (isJogWidget) {
     jogDocReady();
   }
   else {
+    resetSplash();
+    initSplash();
     init3D();
 
     jogDocReady();
@@ -115,8 +134,7 @@ However it may be rude to show the full text every time. Maybe only print "for h
   Object.defineProperty(element, 'id', {
     get: function() {
       socket.emit("maximize", true)
-      console.log("%c                        ", "background-image: url('https://openbuilds.com/styles/uix/uix/OpenBuildsHeader_logo.png'); font-size: 41px; background-repeat: no-repeat; background-size: 183px 41px; ");
-      console.log('%cOpenBuilds CONTROL Devtools', 'font-weight: bold; font-size: 20px;color: rgb(50,80,188); text-shadow: 1px 1px 0 rgb(0,00,39)');
+      console.log('%cGroove Control Devtools', 'font-weight: bold; font-size: 20px;color: rgb(50,80,188); text-shadow: 1px 1px 0 rgb(0,00,39)');
       console.log('%c', 'font-weight: bold; font-size: 12px;color: black; ');
       console.log('%cGeneral: Check for any errors, messages as requested by our support team', 'font-weight: bold; font-size: 12px;color: black; ');
       console.log('%c', 'font-weight: bold; font-size: 12px;color: black; ');

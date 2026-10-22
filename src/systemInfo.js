@@ -114,7 +114,7 @@ function showGpuInfo() {
     center: true,
     resizable: true,
     maximizable: true,
-    title: "OpenBuilds CONTROL: Chromium's GPU Report",
+    title: "Groove Control: Chromium's GPU Report",
     frame: true,
     autoHideMenuBar: true,
     icon: nativeImage.createFromPath(

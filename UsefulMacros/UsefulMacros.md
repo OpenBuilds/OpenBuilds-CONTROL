@@ -1,8 +1,8 @@
-# Useful macros for OpenBuilds CONTROL
+# Useful macros for Groove Control and OpenBuilds
 
 In this folder I keep a collection of useful Javascript macros.
 
-## Macros for the original OpenBuilds that replicate features from the new version of the software
+## Macros for the original OpenBuilds that replicate new features from the Groove software
 
 ### MacroManager
 Allows macro buttons to be organized in groups, which makes large number of macros more manageable.
@@ -43,7 +43,7 @@ It is a simplified version of the original by Thayne Co: https://thayneco.com/si
 
 ![Screenshot](screenshots/open_gcode.png)
 
-## Macros that work with both versions of OpenBuilds
+## Macros that work with both Groove and OpenBuilds
 
 ### DisableZ
 Disables the Z up/down buttons when the jog step is at the highest setting.

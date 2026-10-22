@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=OpenBuilds-CONTROL
+Name=Groove Control
 Version=1.0
-Comment=OpenBuildsCONTROL
+Comment=Groove Control
 Exec=bash -c "cd ~/OpenBuilds-CONTROL; git fetch --all; git reset --hard origin/master; MESA_EXTENSION_OVERRIDE=-GL_MESA_framebuffer_flip_y ~/OpenBuilds-CONTROL/node_modules/.bin/electron ~/OpenBuilds-CONTROL"
-Icon=/home/pi/OpenBuilds-CONTROL/build/icons/32x32.png
+Icon=/home/pi/OpenBuilds-CONTROL/app/img/groove-logo_w.svg
 Terminal=false
 Type=Application
 Categories=Other

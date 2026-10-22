@@ -112,12 +112,6 @@ copy /b all.js + wizards\surfacing\surfacing.js
 echo // NOTE: wizards\heightmap\heightmap.js >> all.js
 copy /b all.js + wizards\heightmap\heightmap.js
 
-echo // NOTE: w..\flashingtool2\flashingtool.js >> all.js
-copy /b all.js + wizards\flashingtool2\flashingtool.js
-
-echo // NOTE: wizards\interface\usbprep.js >> all.js
-copy /b all.js + wizards\interface\usbprep.js
-
 echo // NOTE: wizards\jobstats\jobstats.js >> all.js
 copy /b all.js + wizards\jobstats\jobstats.js
 
