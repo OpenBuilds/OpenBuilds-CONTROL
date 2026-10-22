@@ -68,6 +68,10 @@ function RunProgramSequence(onStep, onClose)
 	g_OnStep = onStep;
 	g_OnClose = onClose;
 	g_JobStarted = false;
+	if (window.SequenceFrameworkHandleStatus) {
+		socket.off('status', window.SequenceFrameworkHandleStatus);
+	}
+	window.SequenceFrameworkHandleStatus = HandleStatus;
 	socket.on('status', HandleStatus);
 	g_CurrentStep = -1;
 	ExecuteNextStep();
@@ -77,6 +81,7 @@ function CloseProgramSequence()
 {
 	g_OnStep = undefined;
 	socket.off('status', HandleStatus);
+	window.SequenceFrameworkHandleStatus = undefined;
 	if (g_OnClose)
 	{
 		g_OnClose();

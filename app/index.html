@@ -720,6 +720,7 @@ Restore previous origins from history.">
                           <button class="button light jogbtn" style="width: 42px;"><i class="fas fa-caret-down fg-openbuilds"></i></button>
                           <ul class="d-menu context drop-shadow drop-right" data-role="dropdown">
                             <li><a href="#" onclick="sendGcode('G0 G90 G21 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Work Coord) (G0 A0)</a></li>
+                            <li><a href="#" onclick="sendGcode('G0 G53 G90 G21 A0')"><span class="fas fa-chart-line fg-orange icon"></span>Goto A0 (Machine Coord) (G0 G53 A0)</a></li>
                             <li id="gotoAMinMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto CCW limit (G0 G53 A<span class="coord">0</span>)</a></li>
                             <li id="gotoAMaxMpos"><a href="#"><span class="fas fa-chart-line fg-orange icon"></span>Goto CW limit (G0 G53 A<span class="coord">0</span>)</a></li>
                         </div>
@@ -1324,7 +1325,7 @@ Restore previous origins from history.">
 
                 <div class="card">
                   <div class="card-header p-1 m-0">
-                    <i class="fas fa-fw fa-history"></i>&nbsp;Changelog
+                    <i class="fas fa-fw fa-history"></i>&nbsp;What's new in this version
                   </div>
                   <div class="card-content" style="height: calc(100vh - 530px); min-height: 120px; overflow-x: auto;">
                     <div id="changelog" class="text-small"></div>
@@ -1409,27 +1410,6 @@ Restore previous origins from history.">
     </div>
 
     <div id="hiddendivs" style="display:none;">
-
-      <div class="dialog dark" id="downloadUpdate" data-role="dialog" data-overlay-click-close="false" data-to-top="true">
-        <div class="dialog-title">Update Ready</div>
-        <div class="dialog-content">
-          OpenBuilds-CONTROL v<span id="availVersion">1.0.100</span> has finished downloading and is ready to be installed!<br>
-          <small>Note that proceeding will:
-            <ul>
-              <li>Stop any running jobs</li>
-              <li>Shut down this instance of OpenBuilds CONTROL</li>
-              <li>Launch the installer for the new version</li>
-            </ul>
-          </small>
-          <small>You may want to wait until your machine is idle, and it it's a convenient time for you to do this, before continuing</small>
-          <p id="changelogupdate" class="text-small"></p>
-          This release has already been downloaded <span id="releaseStats">several</span> times since its release on <span id="releaseDate"></span>
-        </div>
-        <div class="dialog-actions ">
-          <button class="button success js-dialog-close" onclick="socket.emit('applyUpdate', true)">OK, Proceed with Update</button>
-          <button class="button js-dialog-close">Not right now</button>
-        </div>
-      </div>
 
       <div class="dialog dark" data-overlay-click-close="false" data-role="dialog" data-to-top="true" id="jogWidgetDialog">
         <div class="dialog-title"><i class="fas fa-mobile-alt"></i> Jog Widget</div>

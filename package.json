@@ -130,6 +130,7 @@
       "**/*",
       "ssl/**/*",
       "firmware/**/*",
+      "CHANGELOG.txt",
       ""
     ],
     "extraFiles": [

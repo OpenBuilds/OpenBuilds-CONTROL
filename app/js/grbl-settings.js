@@ -1202,6 +1202,8 @@ function updateGotoLimits() {
   $('#gotoAMinMpos > a > .coord').html(limits.minA.toFixed(0));
   $('#gotoAMaxMpos > a > .coord').html(limits.maxA.toFixed(0));
 
+  addRemoveClass($('#gotoAMinMpos, #gotoAMaxMpos'), 'disabled', parseFloat(grblParams.$133) == 0);
+
   $('#gotozeroZmPosXYwPos > a > .oord').html(limits.maxZ.toFixed(0));
   const command = isJogWidget ? "G53" : "G0 G53";
   const commandXY = command + " X"+ limits.X0.toFixed(0) +" Y" + limits.Y0.toFixed(0);

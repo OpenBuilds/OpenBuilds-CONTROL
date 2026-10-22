@@ -221,11 +221,21 @@ const keyboardActions = [
 
   { // Decrease Tool Speed Override
     name: "toDec",
-    label: `<i class="far fa-hand-point-down fg-openbuilds fa-fw"></i>  Decrease Tool Override`,
+    label: `<i class="far fa-hand-point-down fg-openbuilds fa-fw"></i> Decrease Tool Override`,
     defaultKey: "s",
     keydown: (event) => {
       event.preventDefault();
       spindleOverride(laststatus.machine.overrides.spindleOverride - 10);
+    },
+  },
+
+  { // Open File
+    name: "openFile",
+    label: `<i class="fas fa-folder-open fg-openbuilds fa-fw"></i> Open File`,
+    defaultKey: "ctrl+o",
+    keydown: (event) => {
+      event.preventDefault();
+      loadJobFile();
     },
   },
 ];

@@ -1,96 +1,121 @@
 name: Build/release
 
-on: push
+# on: push
+
+on:
+  workflow_dispatch: # Enables the manual "Run workflow" button
 
 jobs:
   release:
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      contents: write
+
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+#        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 26
+          cache: 'npm'
 
-      # new Windows Signing (2024)
-      - name: Setup Certificate (Windows)
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
-          cat /d/Certificate_pkcs12.p12
-        shell: bash
+      - name: Install Dependencies
+        run: npm ci
 
-      # new Windows Signing (2024)
-      - name: Set variables (Windows)
-        if: startsWith(matrix.os, 'windows')
-        id: variables
-        run: |
-          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
-          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
-          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
-          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
-          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
-          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
-        shell: bash
-
-      # new Windows Signing (2024)
-      - name: Setup SSM KSP on windows latest (Windows)
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi
-          msiexec /i smtools-windows-x64.msi /quiet /qn
-          smksp_registrar.exe list
-          smctl.exe keypair ls
-          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
-          smksp_cert_sync.exe
-        shell: cmd
-
-      - name: Certificates Sync
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          smctl windows certsync
-        shell: cmd
-
-      - name: Install setuptools (macos)
-        if: startsWith(matrix.os, 'macos')
-        run: sudo -H pip install setuptools
-
-      - name: Prepare for app notarization (macos)
-        if: startsWith(matrix.os, 'macos')
-        # Import Apple API key for app notarization on macOS
-        run: |
-          mkdir -p ~/private_keys/
-          echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
-
-      - name: Electron Builder Action
-        uses: OpenBuilds/action-electron-build@v1.9.0
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-          release: true
-          debugElectron: true
-          # Used to Sign before notarizing with Notarize.js
-          mac_certs: ${{ secrets.mac_certs }}
-          mac_certs_password: ${{ secrets.mac_certs_password }}
+      - name: Compile and Package App
+        run: npx electron-builder --publish always
         env:
-          #npm_config_verbose: true
-          #npm_config_loglevel: verbose
-          # new MacOS notarize.js secrets (2024)
-          DEBUG: electron-builder # To debug electron-builder
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          # Required to authenticate Signing certs
-          API_KEY_ID: ${{ secrets.api_key_id }}
-          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+#      - name: Upload Artifacts
+#        uses: actions/upload-artifact@v6
+#        with:
+#          name: electron-binaries
+#          path: |
+#            dist/*.*
+#          if-no-files-found: error
+
+#      # new Windows Signing (2024)
+#      - name: Setup Certificate (Windows)
+#        if: startsWith(matrix.os, 'windows')
+#        run: |
+#          echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+#          cat /d/Certificate_pkcs12.p12
+#        shell: bash
+#
+#      # new Windows Signing (2024)
+#      - name: Set variables (Windows)
+#        if: startsWith(matrix.os, 'windows')
+#        id: variables
+#        run: |
+#          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+#          echo "SM_CODE_SIGNING_CERT_SHA1_HASH=${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }}" >> "$GITHUB_ENV"
+#          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
+#          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
+#          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
+#          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+#          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
+#          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
+#          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH
+#        shell: bash
+#
+#      # new Windows Signing (2024)
+#      - name: Setup SSM KSP on windows latest (Windows)
+#        if: startsWith(matrix.os, 'windows')
+#        run: |
+#          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi
+#          msiexec /i smtools-windows-x64.msi /quiet /qn
+#          smksp_registrar.exe list
+#          smctl.exe keypair ls
+#          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+#          smksp_cert_sync.exe
+#        shell: cmd
+#
+#      - name: Certificates Sync
+#        if: startsWith(matrix.os, 'windows')
+#        run: |
+#          smctl windows certsync
+#        shell: cmd
+#
+#      - name: Install setuptools (macos)
+#        if: startsWith(matrix.os, 'macos')
+#        run: sudo -H pip install setuptools
+
+#      - name: Prepare for app notarization (macos)
+#        if: startsWith(matrix.os, 'macos')
+#        # Import Apple API key for app notarization on macOS
+#        run: |
+#          mkdir -p ~/private_keys/
+#          echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
+#
+#      - name: Electron Builder Action
+#        uses: OpenBuilds/action-electron-build@v1.9.0
+#        with:
+#          # GitHub token, automatically provided to the action
+#          # (No need to define this secret in the repo settings)
+#          github_token: ${{ secrets.github_token }}
+#          release: true
+#          debugElectron: true
+#          # Used to Sign before notarizing with Notarize.js
+#          mac_certs: ${{ secrets.mac_certs }}
+#          mac_certs_password: ${{ secrets.mac_certs_password }}
+#        env:
+#          #npm_config_verbose: true
+#          #npm_config_loglevel: verbose
+#          # new MacOS notarize.js secrets (2024)
+#          DEBUG: electron-builder # To debug electron-builder
+#          APPLE_ID: ${{ secrets.APPLE_ID }}
+#          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+#          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+#          # Required to authenticate Signing certs
+#          API_KEY_ID: ${{ secrets.api_key_id }}
+#          API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}

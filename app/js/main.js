@@ -33,65 +33,6 @@ function setWindowTitle(status) {
 
   $('#windowtitle').html(string)
   document.title = "OpenBuilds CONTROL" + string;
-
-}
-
-
-function getReleaseStats() {
-  const url = "https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest";
-  $.getJSON(url, function(data) {
-    console.log(data)
-    const assets = data.assets;
-    let downloadCount = 0
-    for (let i = 0; i < assets.length; i++) {
-      if (assets[i].name.indexOf("exe") != -1) {
-        downloadCount = downloadCount + assets[i].download_count;
-      }
-      if (assets[i].name.indexOf("dmg") != -1) {
-        downloadCount = downloadCount + assets[i].download_count;
-      }
-      if (assets[i].name.indexOf("zip") != -1) {
-        downloadCount = downloadCount + assets[i].download_count;
-      }
-      if (assets[i].name.indexOf("AppImage") != -1) {
-        downloadCount = downloadCount + assets[i].download_count;
-      }
-    }
-    console.log("Latest version has already been installed " + downloadCount + " times")
-    $("#releaseStats").html(downloadCount)
-    $("#releaseDate").html(data.published_at.split("T")[0])
-  });
-
-}
-
-
-function getChangelog() {
-
-  // Splash Screen Begin
-
-  $("#changelog").empty()
-  let template2 = `<ul>`
-  $.get("https://raw.githubusercontent.com/OpenBuilds/OpenBuilds-CONTROL/master/CHANGELOG.txt?date=" + new Date().getTime(), function(data) {
-    const lines = data.split('\n');
-    const count = (lines.length <= 12) ?lines.length - 1 : 12;
-
-    for (let line = 0; line < count - 1; line++) {
-      template2 += '<li>' + lines[line] + '</li>'
-    }
-    template2 += `</ul>`
-    $("#changelog").html(template2);
-
-    // Update Dialog
-    let template3 = `<h6>Changelog:</h6> <hr> <ul>`
-    for (let line = 0; line < 5; line++) {
-      template3 += '<li>' + lines[line] + '</li>'
-    }
-    template3 += `</ul>`
-
-    $("#changelogupdate").html(template3);
-
-
-  });
 }
 
 $(document).ready(function() {
@@ -111,7 +52,6 @@ $(document).ready(function() {
     macrosDocReady();
     servoDocReady();
     themeDocReady();
-    updatesDocReady();
     heightmapDocReady();
 
     $("#command").inputHistory({
@@ -159,8 +99,6 @@ $(document).ready(function() {
       $('#gcodeviewertab').hide();
       $('#consoletab').click();
     }
-
-    getChangelog();
   }
 
   setInterval(function() {
@@ -227,6 +165,8 @@ function onDocReady(data) {
     if (data.platform == 'linux') {
       $('#disableAutoStartLabel').html("Disable Tray Icon"); // no autostart on linux
     }
+
+    setChangelog(data.changelogText);
   }
 }
 
@@ -317,52 +257,6 @@ function loadJobFile() {
 function reloadJobFile(filePath) {
   socket.emit('reopenFile', filePath);
 }
-
-function versionCompare(v1, v2, options) {
-  const lexicographical = options && options.lexicographical;
-  const zeroExtend = options && options.zeroExtend;
-  let v1parts = v1.split('.');
-  let v2parts = v2.split('.');
-
-  function isValidPart(x) {
-    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
-  }
-
-  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
-    return NaN;
-  }
-
-  if (zeroExtend) {
-    while (v1parts.length < v2parts.length) v1parts.push("0");
-    while (v2parts.length < v1parts.length) v2parts.push("0");
-  }
-
-  if (!lexicographical) {
-    v1parts = v1parts.map(Number);
-    v2parts = v2parts.map(Number);
-  }
-
-  for (let i = 0; i < v1parts.length; ++i) {
-    if (v2parts.length == i) {
-      return 1;
-    }
-
-    if (v1parts[i] == v2parts[i]) {
-      continue;
-    } else if (v1parts[i] > v2parts[i]) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
-
-  if (v1parts.length != v2parts.length) {
-    return -1;
-  }
-
-  return 0;
-}
-
 
 
 function isWebGLAvailable() {

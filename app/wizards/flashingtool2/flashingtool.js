@@ -1,5 +1,60 @@
 var selectedControllerType = 'blackboxx32'
 
+function onProgStatus(data) {
+  $('#controlTab').click();
+  $('#consoletab').click();
+  let string = data.string
+  if (string) {
+    if (string.indexOf('flash complete') != -1) {
+      setTimeout(function() {
+        populatePortsMenu();
+      }, 400)
+    }
+    string = string.replace('[31mflash complete.[39m', "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'> </i> FLASH FAILED!</span> ");
+    string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
+    string = string.replace('[39m', "</span>");
+    if (string.indexOf("Hash of data verified") != -1) {
+      string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
+    }
+    if (string.indexOf("could not open port") != -1) {
+      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
+    }
+    if (string.indexOf("something went wrong") != -1) {
+      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
+    }
+    if (string.indexOf("fatal error occurred") != -1) {
+      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
+    }
+
+    if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
+      string = "<span class='fg-darkRed'>" + string + ":  Make sure the device is in BOOTLOADER MODE. Your computer failed to put it into Bootloader mode automatically. You can enter bootloader mode by: Press and hold down MODE, then Press RESET while still holding MODE. Let go of RESET, then wait a second or two and let go of MODE.  Best performed right after starting the Firmware Flashing operation."
+    }
+
+    {
+      const icon = ''
+      const source = " Firmware Upgrade"
+      //const string = string
+      const printLogCls = "fg-dark"
+      printLogModern(icon, source, string, printLogCls)
+    }
+
+    if (data.code != undefined) {
+      const icon = ''
+      const source = " Firmware Upgrade"
+      let printLogCls;
+      if (data.code == 0) {
+        string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the device now, to reboot it with the new firmware. "
+        printLogCls = "fg-darkGreen"
+      } else {
+        string = "<i class='fas fa-times fa-fw fg-darkRed fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
+        printLogCls = "fg-darkRed"
+      }
+      printLogModern(icon, source, string, printLogCls)
+      populatePortsMenu()
+    }
+  }
+}
+
 function flashToolBoard(device) {
   selectedControllerType = device
   if (device == "blackboxx32") {

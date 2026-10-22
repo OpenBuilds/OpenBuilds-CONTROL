@@ -383,15 +383,13 @@ function init3D() {
 
     $('#renderArea').append(renderer.domElement);
     renderer.setClearColor(0xffffff, 1); // Background color of viewer = transparent
-    // renderer.setSize(window.innerWidth - 10, window.innerHeight - 10);
     renderer.clear();
 
     const sceneWidth = document.getElementById("renderArea").offsetWidth;
     const sceneHeight = document.getElementById("renderArea").offsetHeight;
+    renderer.setSize(sceneWidth, sceneHeight);
     camera.aspect = sceneWidth / sceneHeight;
-    renderer.setSize(sceneWidth, sceneHeight)
     camera.updateProjectionMatrix();
-
 
     if (!disable3Dcontrols) {
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -418,6 +416,11 @@ function init3D() {
       resetView()
       animate();
     }, 200)
+
+    // The viewport doesn't resize if it is hidden.
+    // The observer forces an update when the viewport becomes visible.
+    const observer = new IntersectionObserver(fixRenderSize, {root: document.documentElement});
+    observer.observe(document.getElementById("renderArea"));
 
   } else {
     printLog("<span class='fg-darkRed'>[ ERROR ]</span>  <span class='fg-darkRed'>No WebGL Support found on this computer! Disabled 3D Viewer - Sorry!</span>")
@@ -552,25 +555,16 @@ function fixRenderSize() {
     setTimeout(function() {
       const sceneWidth = document.getElementById("renderArea").offsetWidth;
       const sceneHeight = document.getElementById("renderArea").offsetHeight;
-      renderer.setSize(sceneWidth, sceneHeight);
-      camera.aspect = sceneWidth / sceneHeight;
-      camera.updateProjectionMatrix();
-/* prevent reset of the viewport on window resize or tab switch
-      if (!disable3Dcontrols) {
-        controls.reset();
+      if (sceneWidth > 0 && sceneHeight > 0) {
+        renderer.setSize(sceneWidth, sceneHeight);
+        camera.aspect = sceneWidth / sceneHeight;
+        camera.updateProjectionMatrix();
       }
-      setTimeout(function() {
-        resetView();
-      }, 10);*/
-    }, 10)
-
+    }, 0);
   }
-
 }
 
-$(window).on('resize', function() {
-  fixRenderSize();
-});
+$(window).on('resize', fixRenderSize);
 
 function resetView(object) {
   if (object && object.userData.pointCount > 1) {

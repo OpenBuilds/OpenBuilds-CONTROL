@@ -1,121 +1,168 @@
 "use strict";
 
-var updateCountdown = 10
+function getReleaseStats() {
+  const url = "https://api.github.com/repos/" + laststatus.misc.repoName + "/releases/latest";
+  $.getJSON(url, function(data) {
 
-function updatesDocReady() {
-// Ivo: disable update checks until there is a public version
-//  checkUpdate()
-}
-
-// eslint-disable-next-line no-unused-vars
-function checkUpdate() {
-
-  if (!isMac && webgl) {
-
-    setTimeout(function() {
-      printLog("<span class='fg-darkRed'>[ update ] </span><span class='fg-darkGray'>Checking for Updates</span>")
-      $.getJSON("https://api.github.com/repos/OpenBuilds/OpenBuilds-CONTROL/releases/latest", {
-        crossDomain: true
-      }).done(function(release) {
-        let availVersion;
-        if (release.name.indexOf("v") == 0) {
-          availVersion = release.name.substr(1)
-        } else {
-          availVersion = release.name
-        }
-
-        const currentVersion = laststatus.driver.version
-        if (versionCompare(availVersion, currentVersion) == 1) {
-          updateCountdown = 10
-          printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-green'>OpenBuilds CONTROL <code>" + availVersion + "</code>. is available now.</span>")
-          printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-darkGray'>Download will start in <span class='tally' id='countdown'>10</span> seconds (<a href='#' onclick='cancelUpdateTimer();'>cancel</a>) </span>")
-          printLog("<span class='fg-darkRed'>[ Update Available! ] </span><span class='fg-darkGray'>You will be prompted when its ready to be installed </span>")
-          setTimeout(function() {
-            updateTime();
-          }, 1000);
-        } else {
-          printLog("<span class='fg-darkRed'>[ update ] </span><span class='fg-green'>You are already running OpenBuilds CONTROL " + currentVersion + "</span>")
-          // setTimeout(function() {
-          //   checkUpdate()
-          // }, 60 * 60 * 1000) // 60 mins
-          // disable regular check - once on startup is enough
-        }
-      });
-    }, 1000)
-  }
-}
-
-
-function updateTime() {
-  updateCountdown--
-  if (updateCountdown > 0) {
-    $('#countdown').html(updateCountdown)
-    setTimeout(function() {
-      updateTime();
-    }, 1000);
-  } else if (updateCountdown == 0) {
-    $('#countdown').html(updateCountdown)
-    socket.emit('downloadUpdate', true)
-  }
-}
-
-function cancelUpdateTimer() {
-  updateCountdown = -1
-  $('#countdown').html('cancelled')
-  printLog("<span class='fg-darkRed'>[ Update Deferred! ] </span><span class='fg-darkGray'>No problem, we will ask you again next time</span>")
-}
-
-function onProgStatus(data) {
-  $('#controlTab').click();
-  $('#consoletab').click();
-  let string = data.string
-  if (string) {
-    if (string.indexOf('flash complete') != -1) {
-      setTimeout(function() {
-        populatePortsMenu();
-      }, 400)
-    }
-    string = string.replace('[31mflash complete.[39m', "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'> </i> FLASH FAILED!</span> ");
-    string = string.replace('[32m', "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> ");
-    string = string.replace('[39m', "</span>");
-    if (string.indexOf("Hash of data verified") != -1) {
-      string = "<span class='fg-darkGreen'><i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i>" + string + "</span>"
-    }
-    if (string.indexOf("could not open port") != -1) {
-      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-    }
-    if (string.indexOf("something went wrong") != -1) {
-      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-    }
-    if (string.indexOf("fatal error occurred") != -1) {
-      string = "<span class='fg-darkRed'><i class='fas fa-times fa-fw fg-darkRed fa-fw'></i>" + string + "</span>"
-    }
-
-    if (string.indexOf("A fatal error occurred: Failed to connect to ESP32: Timed out waiting for packet header") != -1) {
-      string = "<span class='fg-darkRed'>" + string + ":  Make sure the device is in BOOTLOADER MODE. Your computer failed to put it into Bootloader mode automatically. You can enter bootloader mode by: Press and hold down MODE, then Press RESET while still holding MODE. Let go of RESET, then wait a second or two and let go of MODE.  Best performed right after starting the Firmware Flashing operation."
-    }
-
-    {
-      const icon = ''
-      const source = " Firmware Upgrade"
-      //const string = string
-      const printLogCls = "fg-dark"
-      printLogModern(icon, source, string, printLogCls)
-    }
-
-    if (data.code != undefined) {
-      const icon = ''
-      const source = " Firmware Upgrade"
-      let printLogCls;
-      if (data.code == 0) {
-        string = "<i class='fas fa-check fa-fw fg-darkGreen fa-fw'></i> <b>Firmware Update COMPLETED!</b>  Please click the Reset button on the device now, to reboot it with the new firmware. "
-        printLogCls = "fg-darkGreen"
-      } else {
-        string = "<i class='fas fa-times fa-fw fg-darkRed fa-fw'></i> <b>Firmware Update FAILED!</b>  Please review the logs above, or try again"
-        printLogCls = "fg-darkRed"
+    let downloadCount = 0;
+    for (const asset of data.assets) {
+      let name = asset.name.toLowerCase();
+      if (name.endsWith(".exe")) {
+        downloadCount = downloadCount + asset.download_count;
       }
-      printLogModern(icon, source, string, printLogCls)
-      populatePortsMenu()
+      else if (name.endsWith(".dmg")) {
+        downloadCount = downloadCount + asset.download_count;
+      }
+      else if (name.endsWith(".zip")) {
+        downloadCount = downloadCount + asset.download_count;
+      }
+      else if (name.endsWith(".deb")) {
+        downloadCount = downloadCount + asset.download_count;
+      }
+      else if (name.endsWith(".appimage")) {
+        downloadCount = downloadCount + asset.download_count;
+      }
     }
+
+    $("#releaseStats").html("The latest version has already been downloaded " + downloadCount +
+      " times since its release on " + new Date(data.published_at).toLocaleDateString() + ".");
+  });
+}
+
+function setChangelog(changelogText) {
+  let template = `<ul>`;
+  for (let line of changelogText.split('\n')) {
+    template += '<li>' + line + '</li>';
+  }
+  template += `</ul>`;
+
+  $("#changelog").html(template);
+}
+
+function downloadAndInstall() {
+  let template = `
+  <div class="dialog-content">
+    <div id="installProgress" data-role="progress" data-value="0"></div>
+  </div>`;
+
+  Metro.dialog.create({
+    title: "Download Update",
+    content: template,
+    width: 600,
+    clsDialog: 'dark',
+    actions: [{
+        caption: "Cancel",
+        cls: "js-dialog-close",
+        onclick: function() {
+          socket.emit('cancelUpdate');
+        }
+      }
+    ]
+  });
+
+  socket.emit('downloadAndInstall');
+}
+
+function onUpdateAvailable(info) {
+  if (localStorage.getItem('skipVersion') == info.version) {
+    const icon = '';
+    const source = "autoupdate";
+    const string = "Ignoring update to version " + info.version + " because of a request to skip it.";
+    const printLogCls = "fg-darkRed";
+    printLogModern(icon, source, string, printLogCls);
+    return;
+  }
+
+  if (laststatus.comms.connectionStatus > 2 || continuousJogRunning) {
+    const icon = '';
+    const source = "autoupdate";
+    const string = "Ignoring update to version " + info.version + " because the machine is busy.";
+    const printLogCls = "fg-darkRed";
+    printLogModern(icon, source, string, printLogCls);
+    return; // for the unlikely event that the user manages to connect to a controller and starts using it
+  }
+
+  let template = `
+  <div class="dialog-content">
+    A new version ` + info.version + ` of OpenBuilds CONTROL is available for download.<br>
+    <h6>What's new since v` + laststatus.driver.version + `</h6>
+    <div class="text-small bd-openbuilds" style="max-height:300px; overflow-y:auto; padding:2px 10px; border:solid 1px;">
+    <style>p { margin-top: 5px; }</style>
+    `;
+
+  for (const note of info.releaseNotes) {
+    template += `<b> v` + note.version + `</b><div style="padding-left:10px">`;
+    template += note.note;
+    template += `</div>`;
+  }
+
+  template += `
+    </div>
+    <br><i><span id="releaseStats"></span></i>
+  </div>`;
+
+  Metro.dialog.create({
+    title: "Update Available",
+    content: template,
+    width: 600,
+    clsDialog: 'dark',
+    actions: [{
+        caption: info.canInstall ? "Download and Install" : "Download",
+        cls: "js-dialog-close success",
+        onclick: function() {
+          if (info.canInstall) {
+            downloadAndInstall();
+          } else {
+            socket.emit('openUpdatePage');
+          }
+        }
+      },
+      {
+        caption: "Skip this version",
+        cls: "js-dialog-close",
+        onclick: function() {
+          localStorage.setItem('skipVersion', info.version);
+        }
+      },
+      {
+        caption: "Ask Next Time",
+        cls: "js-dialog-close",
+        onclick: function() {}
+      }
+    ]
+  });
+
+  getReleaseStats();
+}
+
+function updatesFirstStatus() {
+  socket.on('updatedata', function(data) {
+    const icon = '';
+    const source = data.command;
+    const string = data.response;
+    const printLogCls = "fg-darkGreen";
+    printLogModern(icon, source, string, printLogCls);
+  });
+
+  socket.on('update-available', onUpdateAvailable);
+
+  socket.on('download-progress', function(data) {
+    if (data >= 0) {
+      $('#installProgress').data('progress').val(data);
+    } else {
+      const icon = '';
+      const source = "autoupdate";
+      const string = "The download was canceled.";
+      const printLogCls = "fg-darkRed";
+      printLogModern(icon, source, string, printLogCls);
+    }
+  });
+
+  if (!laststatus.misc.enableUpdates) {
+    const icon = '';
+    const source = "autoupdate";
+    const string = "The check for software updates is disabled.";
+    const printLogCls = "fg-darkRed";
+    printLogModern(icon, source, string, printLogCls);
   }
 }
