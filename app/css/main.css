@@ -338,3 +338,7 @@ select {
 .dark_theme_only {
   display: none;
 }
+
+.ribbon-dropdown a {
+  padding-right: 12px;
+}

@@ -30,66 +30,99 @@ function updateSettingsState() {
 }
 
 const appSettingsDlg = `
-<div class="row border-top bd-gray">
-  <label class="cell-sm-8"><b>Performance</b></label>
-</div>
+<nav data-role="ribbonmenu">
+<ul class="tabs-holder">
+  <li><a id="mainSettingsTab" href="#mainSettings" style="font-size:14px;"><i class="fas fa-sliders-h"></i> Main</a></li>
+  <li><a id="keyboardSettingsTab" href="#keyboardSettings" style="font-size:14px;"><i class="fas fa-keyboard"></i> Keyboard</a></li>
+<!--  <li><a id="gamepadSettingsTab" href="#gamepadSettings" style="font-size:14px;"><i class="fas fa-gamepad"></i> Gamepad</a></li> -->
+  <li><a id="rotarySettingsTab" href="#rotarySettings" style="font-size:14px;"><i class="fab fa-ubuntu"></i> Rotary</a></li>
+<!--  <li><a id="toolchangeSettingsTab" href="#toolchangeSettings" style="font-size:14px;"><i class="fas fa-wrench"></i> Toolchange</a></li> -->
+</ul>
+<div class="content-holder" style="background-color:inherit;">
 
-<div class="row ml-2" title="You may try disabling this for slower computers">
-  <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer System" id="enable3DviewerCheck" onclick="updateSettingsState()"/>
-</div>
+<div class="section" id="mainSettings" style="height:500px; flex-direction:column; border-bottom: 0px;">
+  <div class="row">
+    <label class="cell-sm-8 mt-1"><b>Performance</b></label>
+  </div>
 
-<div class="row ml-8">
-  <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer Skybox/Fog"id="enable3DskyboxCheck" />
-</div>
+  <div class="row ml-2" title="You may try disabling this for slower computers">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer System" id="enable3DviewerCheck" onclick="updateSettingsState()"/>
+  </div>
 
-<div class="row ml-8">
-  <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer Realtime Jog Position Indicator" id="enable3DrealtimeposCheck" />
-</div>
+  <div class="row ml-8">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer Skybox/Fog"id="enable3DskyboxCheck" />
+  </div>
 
-<div class="row ml-8">
-  <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer G-code Preview" id="enable3DgcodepreviewCheck" />
-</div>
+  <div class="row ml-8">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer Realtime Jog Position Indicator" id="enable3DrealtimeposCheck" />
+  </div>
 
-<div id="osSettings">
+  <div class="row ml-8">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable 3D Viewer G-code Preview" id="enable3DgcodepreviewCheck" />
+  </div>
+
+  <div id="osSettings">
+    <div class="row border-top mt-2 bd-gray">
+      <label class="cell-sm-8 mt-1"><b>OS Integration</b></label>
+    </div>
+
+    <div class="cell-sm-10" style="padding-left:8px;">
+      <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Check for updates on startup" id="enableUpdatesCheck" />
+    </div>
+    <div class="row" style="padding-left:8px;">
+      <div class="cell-sm-5" id="enableTrayIconCell">
+        <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable Tray Icon" id="enableTrayIconCheck" onclick="updateSettingsState()" />
+      </div>
+      <div class="cell-sm-5" id="enableAutoStartCell">
+        <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Autostart at Login" id="enableAutoStartCheck" />
+      </div>
+      <small class="cell-sm-5" style="margin-top:-4px; display:none;" id="trayIconNote"><i>The tray icon will be fully removed once the app closes</i></small>
+    </div>
+  </div>
+
   <div class="row border-top mt-2 bd-gray">
-    <label class="cell-sm-8"><b>OS Integration</b></label>
+    <label class="cell-sm-8 mt-1"><b>Machine Control</b></label>
   </div>
 
-  <div class="cell-sm-10" style="padding-left:8px;">
-    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Check for updates on startup" id="enableUpdatesCheck" />
-  </div>
-  <div class="row" style="padding-left:8px;">
-    <div class="cell-sm-5" id="enableTrayIconCell">
-      <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Enable Tray Icon" id="enableTrayIconCheck" onclick="updateSettingsState()" />
+  <div class="row ml-3">
+    <label class="cell-sm-3" style="padding-left:0px; padding-top:5px;" title="Insert a pause after the spindle starts. Useful primarily for Grbl.
+  For GrblHAL use parameter $394 instead and for FluidNC use the spinup_ms setting.
+  Ignored in Laser mode.">Spindle Delay</label>
+    <div class="cell-sm-6">
+      <select data-role="select" id="spindleDelay" data-filter="false" data-drop-height="">
+        <option value="0" selected>No Delay</option>
+        <option value="3">Delay 3 sec (G4 P3)</option>
+        <option value="5">Delay 5 sec (G4 P5)</option>
+        <option value="8">Delay 8 sec (G4 P8)</option>
+      </select>
     </div>
-    <div class="cell-sm-5" id="enableAutoStartCell">
-      <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Autostart at Login" id="enableAutoStartCheck" />
-    </div>
-    <small class="cell-sm-5" style="margin-top:-4px; display:none;" id="trayIconNote"><i>The tray icon will be fully removed once the app closes</i></small>
+  </div>
+
+</div>
+
+<div class="section" id="keyboardSettings" style="height:500px; flex-direction:column; border-bottom: 0px;">
+  <span class="text-small fg-red" id="alreadyAssignedWarnShortcut" style="display: none;"></span>
+  <span style="font-size:14px;">Click below to assign a new Keyboard Shortcut to each action.<br>Ctrl, Alt and Shift can be added to create combinations.</span>
+  <div class="p-0 mt-2" style="overflow-y:auto; height:430px;">
+    <form id="keyboardAssignmentForm" style="padding:2px 0px;">
+    </form>
   </div>
 </div>
 
-<div class="row border-top mt-2 bd-gray">
-  <label class="cell-sm-8"><b>Machine Control</b></label>
-</div>
+<!--<div class="section" id="gamepadSettings" style="height:500px; flex-direction:column; border-bottom: 0px;">
+</div> -->
 
-<div class="row ml-3">
-  <label class="cell-sm-3" style="padding-left:0px; padding-top:5px;" title="Insert a pause after the spindle starts. Useful primarily for Grbl.
-For GrblHAL use parameter $394 instead and for FluidNC use the spinup_ms setting.
-Ignored in Laser mode.">Spindle Delay</label>
-  <div class="cell-sm-7">
-    <select data-role="select" id="spindleDelay" data-filter="false" data-drop-height="">
-      <option value="0" selected>No Delay</option>
-      <option value="3">Delay 3 sec (G4 P3)</option>
-      <option value="5">Delay 5 sec (G4 P5)</option>
-      <option value="8">Delay 8 sec (G4 P8)</option>
-    </select>
+<div class="section" id="rotarySettings" style="height:500px; flex-direction:column; border-bottom: 0px;">
+  <div class="row ml-2" title="Hide the 4th axis controls if the controller supports a 4th axis but it is not currently in use">
+    <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Hide 4th Axis Controls" id="disable4thAxisCheck" />
   </div>
 </div>
 
-<div class="row ml-2" title="Hide the 4th axis controls if the controller supports a 4th axis but it is not currently in use">
-  <input type="checkbox" data-role="checkbox" data-style="2" data-caption="Hide 4th Axis Controls" id="disable4thAxisCheck" />
-</div>`;
+<!--<div class="section" id="toolchangeSettings" style="height:500px; flex-direction:column; border-bottom: 0px;">
+</div> -->
+
+</div>
+</nav>`;
 
 function applySettings() {
   const disable3DviewerNew = !$('#enable3DviewerCheck').prop('checked');
@@ -126,6 +159,8 @@ function applySettings() {
 
   spindleDelay(parseInt($('#spindleDelay').val()));
 
+  applyKeyboardSettings();
+
   if (reload) {
     location.reload();
   }
@@ -136,16 +171,26 @@ function resetWarnings() {
   localStorage.setItem('disablePauseSpindleDlg', "false");
 }
 
-// eslint-disable-next-line no-unused-vars
-function appSettings(category) {
+function showAppSettings(category) {
   if (!laststatus) return; // not ready
-  if ($('#enable3DviewerCheck').length > 0) return; // avoid reentrancy
+
+  if (category) {
+    category = category.split(':')[0];
+  }
+
+  if ($('#enable3DviewerCheck').length > 0) { // avoid reentrancy
+    if (category) {
+      const tab = $('#' + category + "SettingsTab");
+      tab.click();
+    }
+    return;
+  }
 
   Metro.dialog.create({
     clsDialog: 'dark',
     title: "<i class='fas fa-cog'></i> Settings",
     content: appSettingsDlg,
-    width: 500,
+    width: 600,
     actions: [
       {
         caption: "Reset Warnings",
@@ -164,6 +209,8 @@ function appSettings(category) {
       },
     ],
   });
+
+  initKeyboardEditor();
 
   $('#enable3DviewerCheck').prop('checked', !disable3Dviewer);
   $('#enable3DskyboxCheck').prop('checked', !disable3Dskybox);
@@ -190,6 +237,13 @@ function appSettings(category) {
   $('.reset-warnings').attr('title', "Resets \"Don't show this again\" for all warning dialogs");
 
   updateSettingsState();
+
+  if (category) {
+    const tab = $('#' + category + "SettingsTab");
+    tab.parent().addClass('active');
+    const content = $(tab.attr('href'));
+    content.addClass('active');
+  }
 }
 
 function initSettings() {

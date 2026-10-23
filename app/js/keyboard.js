@@ -470,53 +470,20 @@ function keyInUse(newVal, forMacro) {
   };
 }
 
-function keyboardShortcutsEditor() {
+function initKeyboardEditor() {
 
   newKeyAssignment = undefined;
 
-  let template = `
-  <span class="text-small fg-red" id="alreadyAssignedWarnShortcut" style="display: none;"></span>
-  <span class="text-small">Click below to assign a new Keyboard Shortcut to each action.<br>Ctrl, Alt and Shift can be added to create combinations.</span>
-  <div class="p-0 mt-2" style="overflow-y:auto; height:430px;">
-    <form id="keyboardAssignmentForm" style="padding:2px 0px;">`;
-
   for (const action of keyboardActions) {
-    template += `
+    $('#keyboardAssignmentForm').append(`
       <div class="row mt-1 ml-1 mr-1">
         <label class="cell-sm-6" style="margin-top:4px">` + action.label + `</label>
         <div class="cell-sm-6">
           <input type="text" class="keyboardshortcutinput" readonly data-role="input" data-clear-button="true" data-editable="true" onchange="onShortcutInputChange()"
               id="` + action.name + `newKey" value="` + keyboardShortcuts[action.name] + `" onclick="onShortcutInputClick('` + action.name + `newKey')">
         </div>
-      </div>`
+      </div>`);
   }
-
-  template += `
-    </form>
-  </div>`;
-
-  Metro.dialog.create({
-    title: "<i class='far fa-keyboard fa-fw'></i> Customize Keyboard Shortcuts",
-    content: template,
-    width: 600,
-    clsDialog: 'dark',
-    actions: [{
-        caption: "Save and apply",
-        cls: "js-dialog-close success",
-        onclick: function() {
-          for (const action of keyboardActions) {
-            keyboardShortcuts[action.name] = $('#' + action.name + 'newKey').val();
-          }
-          bindKeys()
-        }
-      },
-      {
-        caption: "Cancel",
-        cls: "js-dialog-close",
-        onclick: function() {}
-      }
-    ]
-  });
 
   $('#keyboardAssignmentForm').bind('keydown', null, function(event) {
     event.preventDefault();
@@ -545,3 +512,17 @@ function keyboardShortcutsEditor() {
 
 }
 
+function applyKeyboardSettings() {
+  let keysChanged = false;
+  for (const action of keyboardActions) {
+    const newKey = $('#' + action.name + 'newKey').val();
+    if (keyboardShortcuts[action.name] != newKey) {
+      keyboardShortcuts[action.name] = newKey;
+      keysChanged = true;
+    }
+  }
+
+  if (keysChanged) {
+    bindKeys();
+  }
+}

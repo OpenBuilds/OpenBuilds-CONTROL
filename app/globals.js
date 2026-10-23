@@ -18,7 +18,7 @@ const IconPicker = {};
 const usedFunctions = {
   gotoHistory,
   updateSettingsState,
-  appSettings,
+  showAppSettings,
   onMacroShortcutInputClick,
   onMacroShortcutInputChange,
   createMacro,

@@ -260,13 +260,13 @@ function grblSettings(data) {
 
   if (laststatus.machine.firmware.platform == "FluidNC") {
     $('#backupSettingsGroup').hide();
-    $("#grbl-settings-tab-title").html('FluidNC Configuration (read-only)');
+    $("#grbl-settings-tab-title").html('FluidNC Settings (read-only)');
   } else {
     $('#backupSettingsGroup').show();
     if (laststatus.machine.firmware.platform == "grblHAL") {
-      $("#grbl-settings-tab-title").html('grblHAL Configuration');
+      $("#grbl-settings-tab-title").html('grblHAL Settings');
     } else {
-      $("#grbl-settings-tab-title").html('Grbl Configuration');
+      $("#grbl-settings-tab-title").html('Grbl Settings');
     }
   }
 
@@ -513,8 +513,8 @@ function checkifchanged() {
 function askToResetOnGrblSettingsChange() {
   Metro.dialog.close('#savingGrblSettingsProgress')
   Metro.dialog.create({
-    title: "Configuration Updated. Reset Grbl?",
-    content: "<div>Some changes in the Grbl Configuration only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
+    title: "Settings Updated. Reset Grbl?",
+    content: "<div>Some changes in the Grbl Settings only take effect after a restart/reset of the controller. Would you like to Reset the controller now?</div>",
     clsDialog: 'dark',
     actions: [{
         caption: "Yes",
@@ -717,22 +717,6 @@ function setup_settings_table() {
       input.closest('td').prev().attr('title', setting.description);
   }
   settingsUIConstructed = true;
-
-  // Handle the change event for radio buttons
-  $('input[name="toolhead"]').on('change', function() {
-    const selectedToolhead = $(this).val();
-    if (selectedToolhead == 'router11') {
-      enableRouter();
-    } else if (selectedToolhead == 'scribe') {
-      enableScribe();
-    } else if (selectedToolhead == 'laser') {
-      enableLaser();
-    } else if (selectedToolhead == 'plasma') {
-      enablePlasma();
-    } else if (selectedToolhead == 'vfd_spindle') {
-      enableVFD();
-    }
-  });
 
   $('#xdirinvert:checkbox').change(changeDirInvert);
   $('#ydirinvert:checkbox').change(changeDirInvert);

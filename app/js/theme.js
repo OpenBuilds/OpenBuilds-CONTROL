@@ -148,7 +148,7 @@ const ThemeData = {
     // }
   },
 
-  currentThemeId: "light", // Forcing dark mode after update
+  currentThemeId: "light",
 
   init: function init() {
     let themeId = localStorage.getItem('themeId');
@@ -164,20 +164,6 @@ const ThemeData = {
 
     $('.theme_btn').removeClass("checked");
     $('.theme_btn_' + themeId).addClass("checked");
-
-    if (themeId == "dark") {
-      let theme = ThemeData.THEMES["light"];
-      let newIcon = $('<i class="fas fa-fw fa-' + theme.ICON + '"></i>');
-      $("#currentThemeIcon").html(newIcon);
-      $("#currentThemeName").html("Light<br>Mode")
-    } else if (themeId == "light") {
-      let theme = ThemeData.THEMES["dark"];
-      let newIcon = $('<i class="fas fa-fw fa-' + theme.ICON + '"></i>');
-      $("#currentThemeIcon").html(newIcon);
-      $("#currentThemeName").html("Dark<br>Mode")
-    }
-
-
   },
 
   getColor: function getColor(key) {
@@ -186,14 +172,6 @@ const ThemeData = {
 
   get: function get() {
     return ThemeData.currentThemeId;
-  },
-
-  toggle: function toggle() {
-    if (ThemeData.currentThemeId == "dark") {
-      ThemeData.set("light")
-    } else if (ThemeData.currentThemeId == "light") {
-      ThemeData.set("dark")
-    }
   },
 
   set: function set(themeId) {
@@ -216,17 +194,6 @@ const ThemeData = {
 
       clearSceneFlag = true;
       pauseAnimation = false;
-      if (themeId == "dark") {
-        let theme = ThemeData.THEMES["light"];
-        let newIcon = $('<i class="fas fa-fw fa-' + theme.ICON + '"></i>');
-        $("#currentThemeIcon").html(newIcon);
-        $("#currentThemeName").html("Light<br>Mode")
-      } else if (themeId == "light") {
-        let theme = ThemeData.THEMES["dark"];
-        let newIcon = $('<i class="fas fa-fw fa-' + theme.ICON + '"></i>');
-        $("#currentThemeIcon").html(newIcon);
-        $("#currentThemeName").html("Dark<br>Mode")
-      }
       animateSplash();
     }
   }
@@ -242,8 +209,6 @@ const Theme = new Proxy(ThemeData, {
       return theme.get;
     } else if (key == "set") {
       return theme.set;
-    } else if (key == "toggle") {
-      return theme.toggle;
     }
     return theme.getColor(key);
   }
@@ -251,31 +216,10 @@ const Theme = new Proxy(ThemeData, {
 ThemeData.init();
 
 function themeDocReady() {
-  // Commented out Dropdown menu item creating - will use when we have more theme options
-  //
-  // -- Dropdown Ribbon Button
-  // <div class="group">
-  //
-  //   <div id="ddThemeButton">
-  //     <button id="btnTheme" class="ribbon-button dropdown-toggle">
-  //       <span class="icon" id="currentThemeIcon">
-  //         <i class="fas fa-paint-brush"></i>
-  //       </span>
-  //       <span class="caption" id="currentThemeName">Dark<br>Mode</span>
-  //       <span class="h6 badge bg-green fg-white"> <i class="fas fa-brush  fa-spin"></i> New!</span>
-  //
-  //     </button>
-  //     <ul class="ribbon-dropdown grblmode" data-role="dropdown" data-duration="100" id="ddTheme">
-  //
-  //     </ul>
-  //   </div>
-  //   <span class="title">Theme</span>
-  // </div>
-  //
   for (let themeId in ThemeData.THEMES) {
-    // let theme = ThemeData.THEMES[themeId];
-    // let menuItem = $('<li><a href="#"><i class="fas fa-fw fa-' + theme.ICON + '"></i> ' + theme.DESCRIPTION + '</a></li>');
-    // $("#ddTheme").append($(menuItem).addClass(['theme_btn', 'theme_btn_' + themeId]).click(() => Theme.set(themeId)));
+    let theme = ThemeData.THEMES[themeId];
+    let menuItem = $('<li><a href="#"><i class="fas fa-fw fa-' + theme.ICON + '"></i> ' + theme.DESCRIPTION + '</a></li>');
+    $("#ddTheme").append($(menuItem).addClass(['theme_btn', 'theme_btn_' + themeId]).click(() => Theme.set(themeId)));
     if (themeId != "light") {
       $('head').append('<link rel="stylesheet" type="text/css" href="css/themes/' + themeId + '.css">');
     }

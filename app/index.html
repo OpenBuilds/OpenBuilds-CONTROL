@@ -46,123 +46,10 @@
         <nav data-role="ribbonmenu" class="mt-1">
           <ul class="tabs-holder">
             <li><a id="controlTab" href="#section-jog" onclick="manualcontrolPanel();"><i class="fas fa-fw fa-play"></i> Machine Control</a></li>
-            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl Configuration</span></a></li>
-            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Settings &amp; Troubleshooting</a></li>
+            <li id="grblSettings" style="display: none;"><a id="grblTab" href="#section-grbl" onclick="grblPanel();"><i class="fas fa-fw fa-sliders-h"></i> <span id="grbl-settings-tab-title">Grbl Settings</span></a></li>
+            <li><a href="#section-troubleshooting" id="troubleshootingTab" onclick="troubleshootingPanel();"><i class="fas fa-fw fa-file-medical-alt"></i> Help &amp; Troubleshooting</a></li>
           </ul>
           <div class="content-holder">
-
-            <!-- Start Grbl Settings -->
-
-            <div class="section" id="section-grbl">
-              <div class="group" id="backupSettingsGroup">
-                <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i id="saveBtnIcon" class="fas fa-save fg-gray" data-fa-transform="grow-8"></i>
-                      <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Save<br> to Firmware</span>
-                </button>
-
-                <button class="ribbon-button" onclick="backupGrblSettings()">
-                  <span class="icon">
-                    <i class="fas fa-download fg-lightOrange"></i>
-                  </span>
-                  <span class="caption">Backup<br>Settings</span>
-                </button>
-
-                <div>
-                  <button id="" class="ribbon-button dropdown-toggle">
-                    <span class="icon">
-                      <span class="fa-layers fa-fw">
-                        <i class="fas fa-upload"></i>
-                      </span>
-                    </span>
-                    <span class="caption">Restore<br>Backup</span>
-                  </button>
-                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
-                    <li onclick="loadGrblBackupFile()"><a href="#"><i class="fas fa-folder-open"></i> Restore Backup File</a>
-                    </li>
-                    <li class="divider fg-gray"></li>
-                    <div id="restoreBackupMenu">
-                    </div>
-                  </ul>
-                </div>
-
-                <span class="title">Grbl Settings</span>
-              </div>
-              <div class="group">
-                <div class="ribbon-group" style="width: 90px;">
-                  <button class="ribbon-icon-button" onclick="socket.emit('resetMachine')">
-                    <span class="icon">
-                      <span class="mif-loop"></span>
-                    </span>
-                    <span class="caption">Restart</span>
-                  </button>
-                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
-                    <span class="icon">
-                      <span class="mif-unlock"></span>
-                    </span>
-                    <span class="caption">Unlock</span>
-                  </button>
-                  <button class="ribbon-icon-button" onclick="refreshGrblSettings();">
-                    <span class="icon">
-                      <i class="fas fa-sync-alt"></i>
-                    </span>
-                    <span class="caption">Refresh</span>
-                  </button>
-
-                </div>
-                <span class="title">Grbl</span>
-              </div>
-              <div class="group">
-                <div class="ribbon-group">
-                  <button class="ribbon-icon-button" title="Reset settings to factory defaults ($RST=$)" onclick="clearSettings();">
-                    <span class="icon">
-                      <i class="fas fa-sliders-h"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;Settings</span>
-                  </button><br>
-                  <button class="ribbon-icon-button" title="Clear coordinate system offsets, set G28 and G30 to zero ($RST=#)" onclick="clearWCO();">
-                    <span class="icon">
-                      <i class="fas fa-layer-group"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;WCOs</span>
-                  </button><br>
-                  <button class="ribbon-icon-button" title="Reset all settings, coordinate systems, $N lines, $I info ($RST=*)" onclick="clearEEPROM();">
-                    <span class="icon">
-                      <i class="fas fa-microchip"></i>
-                    </span>
-                    <span class="caption">Reset&nbsp;EEPROM</span>
-                  </button>
-                </div>
-                <span class="title">Firmware Reset Defaults</span>
-              </div>
-              <div class="group estop">
-                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
-                  <span class="icon">
-                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
-                      <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
-                      <i class="far fa-bell"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Unlock<br>Alarm</span>
-                </button>
-                <button class="ribbon-button" style="padding-left:6px; padding-right:6px;" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
-                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Abort<br>&nbsp;</span>
-                </button>
-                <span class="title">E-Stop</span>
-              </div>
-            </div>
-
-            <!-- End Grbl Settings -->
 
             <!-- Start Jog/Main -->
 
@@ -409,16 +296,30 @@ The spindle will automatically start when the job is resumed.">
               </div>
 
               <div class="group">
-
-                <div id="ddThemeButton">
-                  <button id="btnTheme" class="ribbon-button" onclick="Theme.toggle();">
-                    <span class="icon" id="currentThemeIcon">
-                      <i class="fas fa-paint-brush"></i>
-                    </span>
-                    <span class="caption" id="currentThemeName">Dark<br>Mode</span>
+                <div class="ribbon-split-button">
+                  <button class="ribbon-main" onclick="showAppSettings()" style="padding-bottom:5px;">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-cog"></i>
+                      </span>
+                    </span><br>
+                    <span class="caption">Settings<br></span>
                   </button>
+                  <style>#settingsMore::after {left:initial; right:4px; top: 8px;}</style>
+                  <span id="settingsMore" class="ribbon-split dropdown-toggle" style="padding-bottom:1px; padding-right:8px !important;">More</span>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100" style="text-align:start;">
+                    <li onclick="showAppSettings('main')"><a href="#"><i class="fas fa-sliders-h"></i> Main Settings</a></li>
+                    <li onclick="showAppSettings('keyboard')"><a href="#"><i class="fas fa-keyboard"></i> Keyboard Settings</a></li>
+<!--                    <li onclick="showAppSettings('gamepad')"><a href="#"><i class="fas fa-gamepad"></i> Gamepad Settings</a></li> -->
+                    <li onclick="showAppSettings('rotary')"><a href="#"><i class="fab fa-ubuntu"></i> Rotary Settings</a></li>
+<!--                    <li onclick="showAppSettings('toolchange')"><a href="#"><i class="fas fa-wrench"></i> Toolchange Settings</a></li> -->
+                    <li><a a href="#" class="dropdown-toggle"><i class="fas fa-palette"></i> Color Theme</a>
+                      <ul id="ddTheme" class="ribbon-dropdown" data-role="dropdown" data-duration="100" style="text-align:start;">
+                      </ul>
+                    </li>
+                  </ul>
                 </div>
-                <span class="title">Theme</span>
+                <span class="title">Settings</span>
               </div>
 
               <div class="group estop">
@@ -447,6 +348,119 @@ The spindle will automatically start when the job is resumed.">
 
             <!-- End Jog/Main -->
 
+            <!-- Start Grbl Settings -->
+
+            <div class="section" id="section-grbl">
+              <div class="group" id="backupSettingsGroup">
+                <button class="ribbon-button disabled" onclick="grblSaveSettings();" id="saveBtn" disabled>
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i id="saveBtnIcon" class="fas fa-save fg-gray" data-fa-transform="grow-8"></i>
+                      <i id="grblSettingsBadge" class="fas fa-exclamation-circle fg-red" data-fa-transform="shrink-4 right-10 up-10" style="display: none;"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Save<br> to Firmware</span>
+                </button>
+
+                <button class="ribbon-button" onclick="backupGrblSettings()">
+                  <span class="icon">
+                    <i class="fas fa-download fg-lightOrange"></i>
+                  </span>
+                  <span class="caption">Backup<br>Settings</span>
+                </button>
+
+                <div>
+                  <button id="" class="ribbon-button dropdown-toggle">
+                    <span class="icon">
+                      <span class="fa-layers fa-fw">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                    </span>
+                    <span class="caption">Restore<br>Backup</span>
+                  </button>
+                  <ul class="ribbon-dropdown" data-role="dropdown" data-duration="100">
+                    <li onclick="loadGrblBackupFile()"><a href="#"><i class="fas fa-folder-open"></i> Restore Backup File</a>
+                    </li>
+                    <li class="divider fg-gray"></li>
+                    <div id="restoreBackupMenu">
+                    </div>
+                  </ul>
+                </div>
+
+                <span class="title">Grbl Settings</span>
+              </div>
+              <div class="group">
+                <div class="ribbon-group" style="width: 90px;">
+                  <button class="ribbon-icon-button" onclick="socket.emit('resetMachine')">
+                    <span class="icon">
+                      <span class="mif-loop"></span>
+                    </span>
+                    <span class="caption">Restart</span>
+                  </button>
+                  <button class="ribbon-icon-button" onclick="sendGcode('$X')">
+                    <span class="icon">
+                      <span class="mif-unlock"></span>
+                    </span>
+                    <span class="caption">Unlock</span>
+                  </button>
+                  <button class="ribbon-icon-button" onclick="refreshGrblSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sync-alt"></i>
+                    </span>
+                    <span class="caption">Refresh</span>
+                  </button>
+
+                </div>
+                <span class="title">Grbl</span>
+              </div>
+              <div class="group">
+                <div class="ribbon-group">
+                  <button class="ribbon-icon-button" title="Reset settings to factory defaults ($RST=$)" onclick="clearSettings();">
+                    <span class="icon">
+                      <i class="fas fa-sliders-h"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;Settings</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" title="Clear coordinate system offsets, set G28 and G30 to zero ($RST=#)" onclick="clearWCO();">
+                    <span class="icon">
+                      <i class="fas fa-layer-group"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;WCOs</span>
+                  </button><br>
+                  <button class="ribbon-icon-button" title="Reset all settings, coordinate systems, $N lines, $I info ($RST=*)" onclick="clearEEPROM();">
+                    <span class="icon">
+                      <i class="fas fa-microchip"></i>
+                    </span>
+                    <span class="caption">Reset&nbsp;EEPROM</span>
+                  </button>
+                </div>
+                <span class="title">Firmware Reset Defaults</span>
+              </div>
+              <div class="group estop">
+                <button class="ribbon-button" onclick="socket.emit('clearAlarm', 2)">
+                  <span class="icon">
+                    <span class="fa-layers" data-toggle="tooltip" data-placement="bottom" title="Flashes red when machine has entered ALARM state, click Clear Alarm button">
+                      <i id="navbellBtn3" class="fas fa-bell fg-red" style="display: none;"></i>
+                      <i class="far fa-bell"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Unlock<br>Alarm</span>
+                </button>
+                <button class="ribbon-button" style="padding-left:6px; padding-right:6px;" onclick="socket.emit('stop', { stop: false, jog: false, abort: true});">
+                  <span class="icon">
+                    <span class="fa-layers fa-fw">
+                      <i class="fas fa-circle fg-red" data-fa-transform="grow-8"></i>
+                      <i class="fa-inverse far fa-hand-paper" data-fa-transform="grow-1 left-0.5"></i>
+                    </span>
+                  </span>
+                  <span class="caption">Abort<br>&nbsp;</span>
+                </button>
+                <span class="title">E-Stop</span>
+              </div>
+            </div>
+
+            <!-- End Grbl Settings -->
+
             <!-- Start Troubleshooting -->
 
             <div class="section" id="section-troubleshooting">
@@ -459,25 +473,6 @@ The spindle will automatically start when the job is resumed.">
                   <span class="caption">Groove<br>Control</span>
                 </button>
                 <span class="title">Website</span>
-              </div>
-              <div class="group">
-                <button class="ribbon-button" onclick="appSettings()">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-cog"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Application<br>Settings</span>
-                </button>
-                <button class="ribbon-button" onclick="keyboardShortcutsEditor()">
-                  <span class="icon">
-                    <span class="fa-layers fa-fw">
-                      <i class="fas fa-keyboard"></i>
-                    </span>
-                  </span>
-                  <span class="caption">Keyboard<br>Shortcuts</span>
-                </button>
-                <span class="title">Settings</span>
               </div>
 
               <div class="group">

@@ -757,7 +757,7 @@ function initSocket() {
      captureWcsHistoryInternal(data.position, data.wcs, data.name, data.tooltip, data.isRunJob);
     });
 
-    socket.on('showSettings', appSettings);
+    socket.on('showSettings', showAppSettings);
 
     socket.on('recentFiles', onRecentFiles);
   }
